@@ -91,7 +91,7 @@ namespace Client.MirControls
                 Size = new Size(640, 24),
                 Text = _status,
                 ForeColour = Color.FromArgb(235, 235, 235),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _statusLabel.ApplyAnchor();
 
@@ -103,7 +103,7 @@ namespace Client.MirControls
                 Size = new Size(640, 28),
                 Text = "0%",
                 ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _percentLabel.ApplyAnchor();
 

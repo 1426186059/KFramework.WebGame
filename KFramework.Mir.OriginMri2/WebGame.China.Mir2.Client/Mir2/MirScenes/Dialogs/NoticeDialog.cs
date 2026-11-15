@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using System.Text.RegularExpressions;
@@ -265,7 +265,7 @@ namespace Client.MirScenes.Dialogs
                 TextLabel[i] = new MirLabel
                 {
                     Font = font,
-                    DrawFormat = TextFormatFlags.WordBreak,
+                    DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
                     Size = new Size(420, 20),
@@ -297,7 +297,7 @@ namespace Client.MirScenes.Dialogs
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
 
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(text, TextLabel[i].Font, TextLabel[i].Size, TextFormatFlags.TextBoxControl);
+                    Size size = TextRenderer.MeasureText(text, TextLabel[i].Font, TextLabel[i].Size, new TextStyle(TextAnchor.UpperLeft));
 
                     if (L.Match(match.Value).Success)
                     {

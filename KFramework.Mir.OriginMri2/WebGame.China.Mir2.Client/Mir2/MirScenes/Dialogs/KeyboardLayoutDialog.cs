@@ -45,7 +45,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.KeyboardSettings),
                 Font = new Font(Settings.FontName, 8F + 2, KFramework.MonoGame.FontStyle.Bold),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Size = new Size(242, 30),
                 Location = new Point(135, 34)

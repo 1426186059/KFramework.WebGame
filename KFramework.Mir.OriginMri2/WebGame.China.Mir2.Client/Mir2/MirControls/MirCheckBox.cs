@@ -1,4 +1,4 @@
-﻿using Client.MirSounds;
+using Client.MirSounds;
 
 namespace Client.MirControls
 {
@@ -41,7 +41,7 @@ namespace Client.MirControls
                 if (_center)
                 {
                     _label.Size = Size;
-                    _label.DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                    _label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
                 }
                 else
                     _label.AutoSize = true;

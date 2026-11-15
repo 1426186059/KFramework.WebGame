@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -143,7 +143,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(HPButton.Location.X, HPButton.Location.Y + 27),
                 AutoSize = false,
                 Size = new Size(60, 25),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Visible = false
             };
 
@@ -153,7 +153,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(MPButton.Location.X, MPButton.Location.Y + 27),
                 AutoSize = false,
                 Size = new Size(60, 25),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Visible = false
             };
 
@@ -526,7 +526,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(17, 14),
                 Location = new Point(3, -1),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Parent = NameContainer,
             };
 
@@ -535,7 +535,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(97, 14),
                 Location = new Point(2, 14),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Parent = NameContainer,
             };
 
@@ -564,7 +564,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(55, 18),
                 Location = new Point(71, 28),
-                DrawFormat = TextFormatFlags.Default,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
                 Parent = this,
 
             };
@@ -584,7 +584,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(55, 18),
                 Location = new Point(71, 41),
-                DrawFormat = TextFormatFlags.Default,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
                 Parent = this,
             };
             ExperienceBar = new MirImageControl
@@ -603,7 +603,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(65, 18),
                 Location = new Point(71, 54),
-                DrawFormat = TextFormatFlags.Default,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
                 Parent = this,
             };
             HPItem = new HeroAutoPotPreview()
@@ -715,7 +715,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 6),
                 AutoSize = false,
                 Size = new Size(22, 17),
-                DrawFormat = TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 ForeColour = Color.Yellow,
                 Visible = false
             };

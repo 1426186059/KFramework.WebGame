@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using Client.MirNetwork;
@@ -47,7 +47,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Type),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(37, 19),
                 Location = new Point(8, 34)
             };
@@ -57,7 +57,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sender),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(132, 19),
                 Location = new Point(47, 34)
             };
@@ -67,7 +67,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Message),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(122, 19),
                 Location = new Point(181, 34)
             };
@@ -125,7 +125,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(120, Size.Height - 55),
                 Size = new Size(67, 15),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
 
             NextButton = new MirButton
@@ -484,7 +484,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(35, 0),
                 Size = new Size(130, 31),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
             };
@@ -493,7 +493,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(170, 0),
                 Size = new Size(115, 31),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
             };
@@ -787,7 +787,7 @@ namespace Client.MirScenes.Dialogs
 
             ParcelCostLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(63, 269),
                 Parent = this,
@@ -796,7 +796,7 @@ namespace Client.MirScenes.Dialogs
 
             GoldSendLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(63, 290),
                 Parent = this,
@@ -1165,7 +1165,7 @@ namespace Client.MirScenes.Dialogs
 
             GoldSendLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(63, 290),
                 Parent = this,

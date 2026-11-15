@@ -41,7 +41,7 @@ namespace Client.MirScenes
                 Size = new Size(64, 64),
                 Text = Spinner[0].ToString(),
                 ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _spinnerLabel.ApplyAnchor();
 
@@ -53,7 +53,7 @@ namespace Client.MirScenes
                 Size = new Size(800, 30),
                 Text = "正在初始化…",
                 ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _statusLabel.ApplyAnchor();
         }

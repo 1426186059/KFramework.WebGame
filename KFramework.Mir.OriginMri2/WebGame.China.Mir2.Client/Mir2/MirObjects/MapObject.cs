@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirScenes.Dialogs;
@@ -381,7 +381,7 @@ namespace Client.MirObjects
                 ForeColour = Color.White,
                 OutLine = true,
                 OutLineColour = Color.Black,
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Text = text,
             };
             ChatTime = CMain.Time + 5000;

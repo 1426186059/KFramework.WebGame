@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using System.Globalization;
@@ -146,7 +146,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Size = new Size(128, 20),
                     Location = new Point(5, 0),
-                    DrawFormat = TextFormatFlags.HorizontalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                     Parent = this,
                     NotControl = true,
                 };
@@ -155,7 +155,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Size = new Size(128, 20),
                     Location = new Point(137, 0),
-                    DrawFormat = TextFormatFlags.HorizontalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                     Parent = this,
                     NotControl = true,
                 };
@@ -164,7 +164,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Size = new Size(128, 20),
                     Location = new Point(264, 0),
-                    DrawFormat = TextFormatFlags.HorizontalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                     Parent = this,
                     NotControl = true,
                 };

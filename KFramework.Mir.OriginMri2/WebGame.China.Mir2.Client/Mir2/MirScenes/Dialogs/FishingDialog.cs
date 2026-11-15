@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -27,7 +27,7 @@ namespace Client.MirScenes.Dialogs
             TitleLabel = new MirLabel
             {
                 Location = new Point(10, 4),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
                 Size = new Size(180, 20),
@@ -191,7 +191,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(14, 62),
                 Size = new Size(216, 12),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
             };

@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -90,7 +90,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(30, 8),
                 Size = new Size(150, 14),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
             };
 
@@ -99,7 +99,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(60, 42),
                 Size = new Size(150, 14),
-                DrawFormat = TextFormatFlags.Left | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
             };
             _rentalPriceLabel.Click += (o, e) =>
             {
@@ -231,7 +231,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(30, 8),
                 Size = new Size(150, 14),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
             };
 
@@ -240,7 +240,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(60, 42),
                 Size = new Size(150, 14),
-                DrawFormat = TextFormatFlags.Left | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 NotControl = true,
             };
         }

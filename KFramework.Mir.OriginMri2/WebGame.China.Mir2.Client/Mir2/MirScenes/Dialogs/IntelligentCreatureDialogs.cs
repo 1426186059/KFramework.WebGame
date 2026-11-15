@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -260,7 +260,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(170, 50),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(166, 21),
                 NotControl = true,
             };
@@ -269,7 +269,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(140, 85),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Size = new Size(350, 21),
                 NotControl = true,
 
@@ -280,7 +280,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 Location = new Point(53, 348),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 //Size = new Size(350, 21),
                 Text = "0",
                 NotControl = true,
@@ -290,7 +290,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(19, 161),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Size = new Size(350, 15),
                 NotControl = true,
             };
@@ -299,7 +299,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(19, 176),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Size = new Size(350, 15),
                 NotControl = true,
             };
@@ -308,7 +308,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(19, 191),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Size = new Size(350, 15),
                 NotControl = true,
             };
@@ -317,7 +317,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(25, 25),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(166, 21),
                 NotControl = true,
                 Visible = false //FAR made invisible as position was wierd - not sure where it's meant to be displayed
@@ -327,7 +327,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(0, 0),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(100, 15),
                 NotControl = true,
             };
@@ -893,7 +893,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(-22, -12),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(80, 15),
                 NotControl = true,
                 Visible = false,
@@ -1318,7 +1318,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(8, 0),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Size = new Size(70, 21),
                 NotControl = true,
             };

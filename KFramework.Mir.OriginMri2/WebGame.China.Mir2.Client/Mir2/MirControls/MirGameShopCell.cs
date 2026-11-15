@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
@@ -35,7 +35,7 @@ namespace Client.MirControls
             nameLabel = new MirLabel
             {
                 Size = new Size(125, 15),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Location = new Point(0, 13),
                 Parent = this,
                 NotControl = true,
@@ -45,7 +45,7 @@ namespace Client.MirControls
             goldLabel = new MirLabel
             {
                 Size = new Size(95, 20),
-                DrawFormat = TextFormatFlags.RightToLeft | TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 Location = new Point(2, 102),
                 Parent = this,
                 NotControl = true,
@@ -55,7 +55,7 @@ namespace Client.MirControls
             gpLabel = new MirLabel
             {
                 Size = new Size(95, 20),
-                DrawFormat = TextFormatFlags.RightToLeft | TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 Location = new Point(2, 81),
                 Parent = this,
                 NotControl = true,
@@ -76,7 +76,7 @@ namespace Client.MirControls
             stockLabel = new MirLabel
             {
                 Size = new Size(20, 20),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Location = new Point(93, 37),
                 Parent = this,
                 NotControl = true,
@@ -86,7 +86,7 @@ namespace Client.MirControls
             countLabel = new MirLabel
             {
                 Size = new Size(30, 20),
-                DrawFormat = TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 Location = new Point(16, 60),
                 Parent = this,
                 NotControl = true,
@@ -176,7 +176,7 @@ namespace Client.MirControls
             quantity = new MirLabel
             {
                 Size = new Size(20, 13),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Location = new Point(74, 56),
                 Parent = this,
                 NotControl = true,

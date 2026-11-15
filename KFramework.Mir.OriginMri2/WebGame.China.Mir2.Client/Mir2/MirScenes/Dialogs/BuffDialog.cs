@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -67,7 +67,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 AutoSize = true,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 NotControl = true,
                 Sort = true,
@@ -598,7 +598,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 AutoSize = true,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 NotControl = true,
                 Sort = true,

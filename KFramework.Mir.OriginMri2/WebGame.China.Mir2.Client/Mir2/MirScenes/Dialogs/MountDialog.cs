@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -29,14 +29,14 @@ namespace Client.MirScenes.Dialogs
             MountName = new MirLabel
             {
                 Location = new Point(30, 10),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
             };
             MountLoyalty = new MirLabel
             {
                 Location = new Point(30, 30),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
             };

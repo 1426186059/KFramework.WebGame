@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -61,13 +61,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(20, 10),
                 Size = new Size(150, 14),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
             };
 
             GoldLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(35, 123),
                 Parent = this,
@@ -210,13 +210,13 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(0, 10),
                 Size = new Size(204, 14),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
             };
 
             GuestGoldLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(35, 123),
                 Parent = this,

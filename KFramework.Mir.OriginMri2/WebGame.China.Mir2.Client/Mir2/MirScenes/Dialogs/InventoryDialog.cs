@@ -161,7 +161,7 @@ namespace Client.MirScenes.Dialogs
             YiJianShiYongButton.Label.Text = "一键使用";
             YiJianShiYongButton.Label.OutLine = true;
             YiJianShiYongButton.Label.ForeColour = Color.Yellow;
-            YiJianShiYongButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            YiJianShiYongButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             ZhengLiButton = new MirButton
             {
@@ -176,7 +176,7 @@ namespace Client.MirScenes.Dialogs
             ZhengLiButton.Label.Text = "整理";
             ZhengLiButton.Label.OutLine = true;
             ZhengLiButton.Label.ForeColour = Color.Yellow;
-            ZhengLiButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            ZhengLiButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             HuiShouButton = new MirButton
             {
@@ -191,7 +191,7 @@ namespace Client.MirScenes.Dialogs
             HuiShouButton.Label.Text = "回收";
             HuiShouButton.Label.OutLine = true;
             HuiShouButton.Label.ForeColour = Color.Yellow;
-            HuiShouButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            HuiShouButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             var mCoin = new MirImageControl
             {

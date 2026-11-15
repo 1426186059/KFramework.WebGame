@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -199,7 +199,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.BurlyWood,
                 Location = new Point(229, 36),
                 Size = new Size(82, 22),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 //AutoSize = true
             };
             MyRank.Click += (o, e) => GoToMyRank();
@@ -340,7 +340,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Location = new Point(0, 0),
                     AutoSize = true,
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     Parent = this,
                     NotControl = true,
                 };
@@ -348,7 +348,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Location = new Point(55, 0),
                     AutoSize = true,
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     Parent = this,
                     NotControl = true,
                 };
@@ -357,7 +357,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Location = new Point(150, 0),
                     AutoSize = true,
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     Parent = this,
                     NotControl = true,
                 };
@@ -366,7 +366,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Location = new Point(220, 0),
                     AutoSize = true,
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     Parent = this,
                     NotControl = true,
                 };

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
 using MirEngine;
 
@@ -48,7 +48,7 @@ namespace Client.MirControls
                 _textLabel[i - Index] = new MirLabel
                 {
                     Font = Font,
-                    DrawFormat = TextFormatFlags.WordBreak,
+                    DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
                     Size = new Size(Size.Width, 20),

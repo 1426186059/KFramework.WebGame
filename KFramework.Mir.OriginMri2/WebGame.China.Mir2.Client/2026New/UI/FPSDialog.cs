@@ -99,7 +99,7 @@ public sealed class FPSDialog : MirControl
             {
                 TextRenderer.DrawText(_text, _font,
                     new MirEngine.Rectangle(0, 0, Size.Width, Size.Height), ForeColour.ToArgb(),
-                    TextFormatFlags.Left);
+                    new TextStyle(TextAnchor.UpperLeft));
             }
             finally
             {

@@ -97,7 +97,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Location = new Point(19, 6),
                 Font = new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Bold),
-                DrawFormat = TextFormatFlags.HorizontalCenter
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter)
             };
 
             CloseButton = new MirButton

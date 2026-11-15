@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -164,7 +164,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(200, 30),
                 BackColour = Color.Empty,
                 ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 10F),
@@ -176,7 +176,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(200, 30),
                 BackColour = Color.Empty,
                 ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 10F),
@@ -188,7 +188,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(200, 30),
                 BackColour = Color.Empty,
                 ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 10F),
@@ -200,7 +200,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(200, 30),
                 BackColour = Color.Empty,
                 ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 10F),

@@ -76,7 +76,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Font = new Font(Settings.FontName, 9F),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
                 Location = new Point(230, 480),
@@ -309,7 +309,7 @@ namespace Client.MirScenes.Dialogs
             MirLabel shortcutTitleLabel = new MirLabel
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Shortcuts),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = Color.White,
                 Font = new Font(Settings.FontName, 10F),
                 Parent = this,
@@ -321,7 +321,7 @@ namespace Client.MirScenes.Dialogs
             MirLabel infoTitleLabel = new MirLabel
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Information),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = Color.White,
                 Font = new Font(Settings.FontName, 10F),
                 Parent = this,
@@ -341,7 +341,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Text = Shortcuts[i].Shortcut,
                     ForeColour = Color.Yellow,
-                    DrawFormat = TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                     Font = new Font(Settings.FontName, 9F),
                     Parent = this,
                     AutoSize = true,
@@ -352,7 +352,7 @@ namespace Client.MirScenes.Dialogs
                 MirLabel informationLabel = new MirLabel
                 {
                     Text = Shortcuts[i].Information,
-                    DrawFormat = TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                     ForeColour = Color.White,
                     Font = new Font(Settings.FontName, 9F),
                     Parent = this,
@@ -387,7 +387,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = Title,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Size = new Size(242, 30),
                 Location = new Point(135, 4)

@@ -153,7 +153,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.White, // Content in white
                 Location = new Point(70, 25),
                 NotControl = true,
-                DrawFormat = TextFormatFlags.WordBreak | TextFormatFlags.ExpandTabs,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                 OutLine = true
             };
         }
@@ -319,7 +319,7 @@ namespace Client.MirScenes.Dialogs
                 TextLabel[i] = new MirLabel
                 {
                     Font = font,
-                    DrawFormat = TextFormatFlags.WordBreak,
+                    DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
                     Size = new Size(420, 20),
@@ -877,8 +877,6 @@ namespace Client.MirScenes.Dialogs
             if (GameScene.Scene.NPCDialog == null) return;
             GameScene.Scene.NPCDialog.HideTooltip();
         }
-
-        private static readonly TextFormatFlags LinkMeasureFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
 
         internal static Point CalculateLinkOffset(string text, MirLabel label)
         {
@@ -2813,7 +2811,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(40, 322),
                 AutoSize = true,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked),
                 ForeColour = Color.Red
@@ -2824,7 +2822,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(40, 304),
                 AutoSize = true,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 ForeColour = Color.White,
                 Visible = false
@@ -3354,9 +3352,9 @@ namespace Client.MirScenes.Dialogs
                 if (_center)
                 {
                     _label.Size = Size;
-                    _label.DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                    _label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
                     _shadowLabel.Size = Size;
-                    _shadowLabel.DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                    _shadowLabel.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
                 }
                 else
                 {
@@ -3420,7 +3418,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(2, 7),
                 AutoSize = false,
                 Size = new Size(237, 20),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 ForeColour = Color.Black,
                 Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
             };
@@ -3432,7 +3430,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 5),
                 AutoSize = false,
                 Size = new Size(237, 20),
-                DrawFormat = TextFormatFlags.HorizontalCenter,                
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),                
                 Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
             };
         }

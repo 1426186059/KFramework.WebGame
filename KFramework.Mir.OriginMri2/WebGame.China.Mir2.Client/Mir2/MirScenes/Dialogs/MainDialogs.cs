@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -377,7 +377,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(50, 22),
                 Parent = this,
                 Location = new Point(this.Size.Width - 218, 135),
-                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 NotControl = true,
             };
 
@@ -425,7 +425,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(this.Size.Width - 250, 165),
                 AutoSize = false,
                 Size = new Size(88, 22),
-                Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
             };
 
@@ -708,7 +708,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = mChatTextBoxBg,
                 Text = "请输入文字",
                 Size = new Size(465, 20),
-                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Location = new Point(5, 0),
                 Opacity = 0.5f,
             };
@@ -1730,7 +1730,7 @@ namespace Client.MirScenes.Dialogs
 
             MapNameLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Size = new Size(120, 18),
                 Location = new Point(2, 2),
@@ -1739,7 +1739,7 @@ namespace Client.MirScenes.Dialogs
 
             LocationLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Size = new Size(56, 18),
                 Location = new Point(46, 131),
@@ -1947,7 +1947,7 @@ namespace Client.MirScenes.Dialogs
                         AutoSize = true,
                         Parent = GameScene.Scene.MiniMapDialog,
                         Font = new Font(Settings.FontName, 9f, KFramework.MonoGame.FontStyle.Bold),
-                        DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                        DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                         Text = text,
                         ForeColour = color,
                         Location = new Point((int)(x - Settings.ScreenWidth + GameScene.Scene.MiniMapDialog.Size.Width) - 6, (int)(y) - 10),
@@ -2265,7 +2265,7 @@ namespace Client.MirScenes.Dialogs
 
             NameLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Location = new Point(50, 12),
                 Size = new Size(190, 20),
@@ -2291,7 +2291,7 @@ namespace Client.MirScenes.Dialogs
 
             GuildLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Location = new Point(50, 33),
                 Size = new Size(190, 30),
@@ -3768,7 +3768,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(49, 17),
                 Parent = this,
                 Size = new Size(230, 32),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.WordBreak,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter, HorizontalWrapMode.Wrap),
                 Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SelectKey), magic.Name)
             };
 

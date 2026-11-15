@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -224,7 +224,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Size = new Size(70, 18),
                 Location = new Point(260, 419),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Text = "0/0",
                 NotControl = true,
                 Parent = this,
@@ -522,7 +522,7 @@ namespace Client.MirScenes.Dialogs
             TotalGold = new MirLabel
             {
                 Size = new Size(120, 16),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Location = new Point(6, 451),
                 Parent = this,
                 NotControl = true,
@@ -598,7 +598,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePrice),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(100, 21),
                 Location = new Point(15, 142)
             };
@@ -608,7 +608,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SellItem),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(110, 21),
                 Location = new Point(10, 60)
             };
@@ -618,7 +618,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Item),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(166, 21),
                 Location = new Point(127, 60)
             };
@@ -628,7 +628,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Price),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(88, 21),
                 Location = new Point(295, 60)
             };
@@ -649,7 +649,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Expiry),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(98, 21),
                 Location = new Point(384, 60)
             };
@@ -1447,7 +1447,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Size = new Size(140, 20),
                     Location = new Point(38, 8),
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     NotControl = true,
                     Parent = this,
                 };
@@ -1457,7 +1457,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Size = new Size(178, 20),
                     Location = new Point(170, 8),
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     NotControl = true,
                     Parent = this,
                 };
@@ -1467,7 +1467,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Size = new Size(148, 20),
                     Location = new Point(256, 0),
-                    DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     NotControl = true,
                     Parent = this,
                 };
@@ -1496,7 +1496,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Location = new Point(256, 14),
                     Size = new Size(110, 22),
-                    DrawFormat = TextFormatFlags.Left | TextFormatFlags.VerticalCenter,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                     Parent = this,
                     NotControl = true,
                 };

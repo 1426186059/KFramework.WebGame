@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirObjects;
 using Client.MirSounds;
@@ -98,7 +98,7 @@ namespace Client.MirScenes.Dialogs
         {
             NameLabel = new MirLabel
             {
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Location = new Point(0, 20),
                 Size = new Size(300, 20),
@@ -675,7 +675,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = false,
                     Size = new Size(103, StatusRowHeight),
                     Location = new Point(2, y),
-                    DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.Right,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleRight),
                     ForeColour = Color.White,
                     OutLine = true,
                     NotControl = true,

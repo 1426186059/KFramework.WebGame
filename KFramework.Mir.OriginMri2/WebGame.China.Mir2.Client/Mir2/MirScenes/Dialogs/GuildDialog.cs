@@ -492,7 +492,7 @@ namespace Client.MirScenes.Dialogs
             StatusHeaders = new MirLabel()
             {
                 Location = new Point(7, 47),
-                DrawFormat = TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 Size = new Size(75, 300),
                 NotControl = true,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildNameLevelMembers),
@@ -542,7 +542,7 @@ namespace Client.MirScenes.Dialogs
             StatusExpLabel = new MirLabel()
             {
                 Visible = true,
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Location = new Point(322, 405),
                 NotControl = true,
                 Parent = this,
@@ -860,7 +860,7 @@ namespace Client.MirScenes.Dialogs
 
             PointsLeft = new MirLabel
             {
-                DrawFormat = TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Parent = BuffPage,
                 Location = new Point(118, 3),
                 Size = new Size(100, 20),
@@ -2161,7 +2161,7 @@ namespace Client.MirScenes.Dialogs
             };
             Obtained = new MirLabel
             {
-                DrawFormat = TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 AutoSize = true,
                 Parent = this,
                 Location = new Point(140, 17),

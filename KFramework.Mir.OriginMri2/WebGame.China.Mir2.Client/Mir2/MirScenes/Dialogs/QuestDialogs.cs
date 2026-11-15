@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -65,7 +65,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(PanelIndent, 34),
                 Size = new Size(450, 130),
-                DrawFormat = TextFormatFlags.WordBreak,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                 ForeColour = Color.White,
             };
 
@@ -364,7 +364,7 @@ namespace Client.MirScenes.Dialogs
 
             // 奖励提示紧挨着任务描述的下一行：按描述实际换行高度动态定位 Reward（Finish 按钮保持原位置不动）。
             int descWidth = _descLabel.Size.Width;
-            var measured = TextRenderer.MeasureText(text, _descLabel.Font, new Size(descWidth, 2000), TextFormatFlags.WordBreak);
+            var measured = TextRenderer.MeasureText(text, _descLabel.Font, new Size(descWidth, 2000), new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap));
             int descHeight = Math.Max(16, measured.Height);
             _descLabel.Size = new Size(descWidth, descHeight);
 
@@ -453,7 +453,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(20, 0),
                 Size = new Size(178, 17),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
             };
@@ -462,7 +462,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(60, 0),
                 Size = new Size(140, 17),
-                DrawFormat = TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
             };
@@ -754,7 +754,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Font = font,
                     ForeColour = fontColor,
-                    DrawFormat = TextFormatFlags.WordBreak,
+                    DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
                     Size = new Size(Size.Width, 20),

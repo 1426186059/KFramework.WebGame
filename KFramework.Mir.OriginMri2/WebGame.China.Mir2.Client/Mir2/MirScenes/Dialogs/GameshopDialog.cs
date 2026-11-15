@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -80,7 +80,7 @@ namespace Client.MirScenes.Dialogs
             totalGold = new MirLabel
             {
                 Size = new Size(100, 20),
-                DrawFormat = TextFormatFlags.RightToLeft | TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
 
                 Location = new Point(123, 449),
                 Parent = this,
@@ -90,7 +90,7 @@ namespace Client.MirScenes.Dialogs
             totalCredits = new MirLabel
             {
                 Size = new Size(100, 20),
-                DrawFormat = TextFormatFlags.RightToLeft | TextFormatFlags.Right,
+                DrawFormat = new TextStyle(TextAnchor.UpperRight),
                 Location = new Point(5, 449),
                 Parent = this,
                 NotControl = true,
@@ -383,7 +383,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(83, 17),
                 Location = new Point(597, 446),
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, 7F),
             };
 

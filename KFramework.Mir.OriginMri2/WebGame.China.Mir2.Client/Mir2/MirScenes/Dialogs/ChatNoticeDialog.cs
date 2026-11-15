@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
 
@@ -24,7 +24,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Font = new Font(Settings.FontName, 10F),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
                 Location = new Point(0, -6),
@@ -37,7 +37,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Font = new Font(Settings.FontName, 15F),
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
                 Location = new Point(0, 0),

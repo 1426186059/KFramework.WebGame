@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using KFramework.MonoGameExtend;
 using WebGame.Mir2.MonoGame.Client;
 
@@ -52,7 +52,7 @@ namespace Client.MirControls
             CaptionLabel = new MirLabel
             {
                 Parent = mBg,
-                Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Location = new Point(0, 20),
                 Size = new Size(450, 30),
                 Text = message,

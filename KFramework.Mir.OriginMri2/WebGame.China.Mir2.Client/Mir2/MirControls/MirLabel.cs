@@ -28,8 +28,8 @@ namespace Client.MirControls
                 AutoSizeChanged.Invoke(this, e);
         }
 
-        private TextFormatFlags _drawFormat;
-        public TextFormatFlags DrawFormat
+        private KFramework.MonoGame.TextStyle _drawFormat = KFramework.MonoGame.TextStyle.Default;
+        public KFramework.MonoGame.TextStyle DrawFormat
         {
             get { return _drawFormat; }
             set
@@ -45,26 +45,6 @@ namespace Client.MirControls
 
             if (DrawFormatChanged != null)
                 DrawFormatChanged.Invoke(this, e);
-        }
-
-        // 对齐（KLabel 风格）：显式设置后用 TextAnchor 覆盖 DrawFormat 里的对齐位，其余位（如 WordBreak）保留。
-        private KFramework.MonoGame.TextAnchor? _alignment;
-        public KFramework.MonoGame.TextAnchor Alignment
-        {
-            get { return _alignment ?? KFramework.MonoGame.TextAnchor.UpperLeft; }
-            set { _alignment = value; TextureValid = false; Redraw(); }
-        }
-
-        private static TextFormatFlags AlignToFlags(KFramework.MonoGame.TextAnchor a)
-        {
-            int col = ((int)a) % 3;   // 0=Left 1=Center 2=Right
-            int row = ((int)a) / 3;   // 0=Upper 1=Middle 2=Lower
-            var f = TextFormatFlags.Default;
-            if (col == 1) f |= TextFormatFlags.HorizontalCenter | TextFormatFlags.Center;
-            else if (col == 2) f |= TextFormatFlags.Right;
-            if (row == 1) f |= TextFormatFlags.VerticalCenter;
-            else if (row == 2) f |= TextFormatFlags.Bottom;
-            return f;
         }
 
         private Font _font;
@@ -191,7 +171,7 @@ namespace Client.MirControls
         public MirLabel()
         {
             DrawControlTexture = true;
-            _drawFormat = TextFormatFlags.WordBreak;
+            _drawFormat = new KFramework.MonoGame.TextStyle(KFramework.MonoGame.TextAnchor.UpperLeft, KFramework.MonoGame.HorizontalWrapMode.Wrap);
 
             _font = ScaleFont(new Font(Settings.FontName, 12F));
             _outLine = true;
@@ -221,10 +201,11 @@ namespace Client.MirControls
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
 
-            // 对齐：显式设了 Alignment 就用它覆盖 DrawFormat 的对齐位（WordBreak 等其余位保留），否则沿用 DrawFormat。
-            TextFormatFlags format = _alignment.HasValue
-                ? (_drawFormat & ~(TextFormatFlags.Right | TextFormatFlags.Center | TextFormatFlags.HorizontalCenter | TextFormatFlags.Bottom | TextFormatFlags.VerticalCenter)) | AlignToFlags(_alignment.Value)
-                : _drawFormat;
+            // 垂直一律 Overflow：Truncate 的"放不下整行不画"会让高度略小的标签整行消失。
+            KFramework.MonoGame.TextStyle format = new KFramework.MonoGame.TextStyle(
+                _drawFormat.Anchor,
+                _drawFormat.HorizontalWrap,
+                KFramework.MonoGame.VerticalWrapMode.Overflow);
 
             // 目标、清屏、批三件事都由调用方管（GDI 与游戏渲染已合并为一个渲染系统）：
             // 下面最多 5 次 DrawText（4 次描边 + 1 次前景）共用一次 Begin/End → 合成 1 次 draw call；
@@ -281,7 +262,7 @@ namespace Client.MirControls
             _autoSize = false;
 
             DrawFormatChanged = null;
-            _drawFormat = 0;
+            _drawFormat = KFramework.MonoGame.TextStyle.Default;
 
             FontChanged = null;
             if (_font != null)

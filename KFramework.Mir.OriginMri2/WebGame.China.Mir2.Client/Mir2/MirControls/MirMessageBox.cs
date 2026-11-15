@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
@@ -71,7 +71,7 @@ namespace Client.MirControls
                 Parent = _panel,
                 Text = message,
                 ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
 
             // 按钮按 AlertDialogSkin（gameEui.json）还原：Button23Skin + y_common-sheet 的两态贴图，
