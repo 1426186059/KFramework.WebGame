@@ -3,8 +3,6 @@ using KFramework.MonoGame;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using Color = MirEngine.Color;
-using Rectangle = MirEngine.Rectangle;
-
 namespace Client.MirGraphics
 {
     class DXManager

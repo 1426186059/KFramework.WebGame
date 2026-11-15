@@ -11,7 +11,6 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
-using Point = MirEngine.Point;
 using Color = MirEngine.Color;
 
 namespace Client.MirScenes.Dialogs

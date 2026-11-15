@@ -221,12 +221,12 @@ namespace Client.MirControls
                     // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
                     if (outline != 0)
                     {
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, format);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, format);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, format);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new Rectangle(0, 1, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), outline, format);
                     }
-                    TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, format);
+                    TextRenderer.DrawText(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), fore, format);
 
                     if (_underLine)
                     {

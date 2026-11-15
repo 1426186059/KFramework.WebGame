@@ -257,7 +257,7 @@ namespace Client.MirGraphics
                 break;
             }
 
-            TrueSize = Rectangle.FromLTRB(l, t, r, b).Size;
+            TrueSize = GeometryExtensions.FromLTRB(l, t, r, b).Size.ToSize();
 
             return TrueSize;
         }

@@ -19,7 +19,7 @@ namespace Client.MirScenes.Dialogs
 
         public BigMapViewPort ViewPort;
 
-        private Point mouseLocation = Point.Empty;
+        private Point mouseLocation = Point.Zero;
         public Point MouseLocation
         {
             get { return mouseLocation; }
@@ -348,7 +348,7 @@ namespace Client.MirScenes.Dialogs
             viewRect.Y = 52 + (380 - viewRect.Height) / 2;
 
             Location = viewRect.Location;
-            Size = viewRect.Size;
+            Size = viewRect.Size.ToSize();
 
             BigMap_MouseCoordsProcessing_OffsetX = DisplayLocation.X;
             BigMap_MouseCoordsProcessing_OffsetY = DisplayLocation.Y;

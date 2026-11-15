@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirScenes;
 using S = ServerPackets;
 
@@ -80,7 +80,7 @@ namespace Client.MirObjects
             DrawLocation.Offset(GlobalDisplayLocationOffset);
             FinalDrawLocation = DrawLocation;
 
-            DisplayRectangle = new Rectangle(DrawLocation, Size);
+            DisplayRectangle = new Rectangle(DrawLocation, Size.ToPoint());
         }
         public override bool MouseOver(Point p)
         {

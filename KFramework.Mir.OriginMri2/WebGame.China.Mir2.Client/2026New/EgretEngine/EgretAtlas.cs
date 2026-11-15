@@ -2,7 +2,6 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
 // MirEngine 全局 using 也导出了 Rectangle / Vector2；这里用别名消歧，明确使用 KFramework.MonoGame 版本。
-using Rectangle = KFramework.MonoGame.Rectangle;
 using Vector2 = KFramework.MonoGame.Vector2;
 
 /// <summary>

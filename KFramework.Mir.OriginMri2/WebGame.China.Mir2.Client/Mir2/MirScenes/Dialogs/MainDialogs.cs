@@ -585,10 +585,7 @@ namespace Client.MirScenes.Dialogs
             if (percent > 1) percent = 1;
             if (percent <= 0) return;
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((ExperienceBar.Size.Width - 3) * percent), ExperienceBar.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)((ExperienceBar.Size.Width - 3) * percent), ExperienceBar.Size.Height);
 
             ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, Color.White, false);
         }
@@ -617,10 +614,7 @@ namespace Client.MirScenes.Dialogs
                 WeightBar.Index = 472;
             }
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((WeightBar.Size.Width - 2) * percent), WeightBar.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)((WeightBar.Size.Width - 2) * percent), WeightBar.Size.Height);
 
             WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, Color.White, false);
         }
@@ -2808,13 +2802,10 @@ namespace Client.MirScenes.Dialogs
             if (percent > 1) percent = 1;
             if (percent > 0)
             {
-                Rectangle section = new Rectangle
-                {
-                    Size = new Size((int)((SoundBar.Size.Width - 2) * percent), SoundBar.Size.Height)
-                };
+                Rectangle section = new Rectangle(0, 0, (int)((SoundBar.Size.Width - 2) * percent), SoundBar.Size.Height);
 
                 SoundBar.Library.Draw(SoundBar.Index, section, SoundBar.DisplayLocation, Color.White, false);
-                VolumeBar.Location = new Point(159 + section.Size.Width, 218);
+                VolumeBar.Location = new Point(159 + section.Width, 218);
             }
             else
                 VolumeBar.Location = new Point(159, 218);
@@ -2831,13 +2822,10 @@ namespace Client.MirScenes.Dialogs
             if (percent > 1) percent = 1;
             if (percent > 0)
             {
-                Rectangle section = new Rectangle
-                {
-                    Size = new Size((int)((MusicSoundBar.Size.Width - 2) * percent), MusicSoundBar.Size.Height)
-                };
+                Rectangle section = new Rectangle(0, 0, (int)((MusicSoundBar.Size.Width - 2) * percent), MusicSoundBar.Size.Height);
 
                 MusicSoundBar.Library.Draw(MusicSoundBar.Index, section, MusicSoundBar.DisplayLocation, Color.White, false);
-                MusicVolumeBar.Location = new Point(159 + section.Size.Width, 244);
+                MusicVolumeBar.Location = new Point(159 + section.Width, 244);
             }
             else
                 MusicVolumeBar.Location = new Point(159, 244);

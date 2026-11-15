@@ -3,7 +3,6 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using Color = MirEngine.Color;
 using GraphicsDevice = KFramework.MonoGame.GraphicsDevice;
-using Point = MirEngine.Point;
 namespace Client.MirControls
 {
     /// <summary>

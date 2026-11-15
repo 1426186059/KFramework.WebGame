@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using KFramework.MonoGame;
 
-using Rectangle = KFramework.MonoGame.Rectangle;
-
 // 白鹭(Egret) MovieClip 时序对象。
 //
 // 核心数据 = 两个 JSON 数据类，它们就是唯一数据源，不再复制成另一套运行时对象：

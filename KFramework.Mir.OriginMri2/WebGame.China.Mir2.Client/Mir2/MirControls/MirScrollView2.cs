@@ -64,7 +64,7 @@ namespace Client.MirControls
             // 宽度必须=视口宽，否则 Content.DisplayRectangle 宽度为 0 → IsMouseOver 永远 false，
             // 鼠标事件递归不进内容容器，行内按钮/输入框/点击全都点不到。
             Content.Size = new Size(Size.Width, _itemCount * _rowHeight);
-            SetScrollOffset(Point.Empty);   // 回到顶部（会触发 ScrollChanged → RefreshVisible）
+            SetScrollOffset(Point.Zero);   // 回到顶部（会触发 ScrollChanged → RefreshVisible）
             RefreshVisible();
         }
 

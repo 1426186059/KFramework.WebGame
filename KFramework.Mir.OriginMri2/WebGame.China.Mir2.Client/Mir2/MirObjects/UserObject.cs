@@ -1,4 +1,4 @@
-﻿using Client.MirScenes;
+using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
@@ -826,7 +826,7 @@ namespace Client.MirObjects
         {
             NextMagic = null;
             NextMagicDirection = 0;
-            NextMagicLocation = Point.Empty;
+            NextMagicLocation = Point.Zero;
             NextMagicObject = null;
         } 
     }

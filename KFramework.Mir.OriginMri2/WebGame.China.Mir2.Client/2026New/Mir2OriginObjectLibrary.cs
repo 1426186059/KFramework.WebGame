@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using Client.MirGraphics;              // DXManager / MirBlend
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;       // KSpriteInfo
-using Rectangle = KFramework.MonoGame.Rectangle;
-
 /// <summary>需要走原始传奇 CDN 独立图集的对象类型（玩家与怪物/NPC 同一套 model 资源）。</summary>
 public enum Mir2ObjectKind
 {

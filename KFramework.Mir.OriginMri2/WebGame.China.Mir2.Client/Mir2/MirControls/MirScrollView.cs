@@ -31,8 +31,8 @@ namespace Client.MirControls
             DrawControlTexture = true;       // 走离屏烘焙：把内容烘进 ControlTexture 再上屏
             _content = new DragContent(this); // 内容容器（也在 Controls 里，并把按下/移动/抬起转发给本控件做拖拽）
             InsertControl(0, _content);      // 设 _content.Parent = this，使其 DisplayLocation 参与滚动
-            ScrollOffset = Point.Empty;
-            _content.Location = Point.Empty;
+            ScrollOffset = Point.Zero;
+            _content.Location = Point.Zero;
 
             // 滚动条（直接挂在 ScrollView 下、NOT 在 _content 内，所以不被滚动/烘焙，固定显示在右缘）
             _track = new ScrollTrack(this)

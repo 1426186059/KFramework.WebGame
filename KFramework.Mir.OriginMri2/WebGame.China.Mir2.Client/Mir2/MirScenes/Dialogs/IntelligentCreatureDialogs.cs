@@ -354,15 +354,12 @@ namespace Client.MirScenes.Dialogs
             if (HoverLabel.Visible && HoverLabelParent != null && HoverLabelParent == FullnessFG)
                 HoverLabel.Text = GameScene.User.IntelligentCreatures[selectedCreature].Fullness.ToString() + " / 10000";
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((FullnessFG.Size.Width) * percent), FullnessFG.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)((FullnessFG.Size.Width) * percent), FullnessFG.Size.Height);
 
             FullnessFG.Library.Draw(FullnessFG.Index, section, FullnessFG.DisplayLocation, Color.White, false);
 
 
-            FullnessNow.Location = new Point(FullnessFG.Location.X + section.Size.Width - 8, FullnessNow.Location.Y);
+            FullnessNow.Location = new Point(FullnessFG.Location.X + section.Width - 8, FullnessNow.Location.Y);
 
             percent = GameScene.User.IntelligentCreatures[selectedCreature].CreatureRules.MinimalFullness / ((double)10000);
             Size size = new Size((int)((FullnessFG.Size.Width) * percent), FullnessFG.Size.Height);
@@ -386,10 +383,7 @@ namespace Client.MirScenes.Dialogs
                     HoverLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NoProduction);
             }
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((BlackStoneImageFG.Size.Width) * percent), BlackStoneImageFG.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)((BlackStoneImageFG.Size.Width) * percent), BlackStoneImageFG.Size.Height);
 
             BlackStoneImageFG.Library.Draw(BlackStoneImageFG.Index, section, BlackStoneImageFG.DisplayLocation, Color.White, false);
         }

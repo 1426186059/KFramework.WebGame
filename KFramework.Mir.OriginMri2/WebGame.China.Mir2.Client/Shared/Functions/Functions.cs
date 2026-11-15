@@ -31,7 +31,7 @@ public static class Functions
 
     public static bool TryParse(string s, out Point temp)
     {
-        temp = Point.Empty;
+        temp = Point.Zero;
 
         if (String.IsNullOrWhiteSpace(s)) return false;
 

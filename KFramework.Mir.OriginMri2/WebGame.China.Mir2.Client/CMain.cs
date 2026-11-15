@@ -28,7 +28,7 @@ namespace WebGame.Mir2.MonoGame.Client
         private static int _libLoadedCount;
 
 
-        public static MirEngine.Point MPoint;
+        public static Point MPoint;
         public static Random Random = new Random();
         public static KeyBindSettings InputKeys = new KeyBindSettings();
         public static long BytesReceived, BytesSent;
@@ -56,7 +56,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public object ActiveControl;
         public string Text = "";
         public Size ClientSize = new Size(1024, 768);
-        public MirEngine.Rectangle ClientRectangle => new MirEngine.Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
+        public Rectangle ClientRectangle => new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
         public FormBorderStyle FormBorderStyle;
         public bool TopMost;
         // 完全限定 MirEngine.Cursors：本类存在 static Cursor[] Cursors 字段，会遮蔽同名类型。
@@ -64,9 +64,9 @@ namespace WebGame.Mir2.MonoGame.Client
         public void Focus() { }
         public void Activate() { }
         public void CenterToScreen() { }
-        public MirEngine.Point PointToClient(MirEngine.Point p) => p;
-        public MirEngine.Point PointToScreen(MirEngine.Point p) => p;
-        public MirEngine.Rectangle RectangleToScreen(MirEngine.Rectangle r) => r;
+        public Point PointToClient(Point p) => p;
+        public Point PointToScreen(Point p) => p;
+        public Rectangle RectangleToScreen(Rectangle r) => r;
         public void CreateScreenShot() { }
 
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
@@ -166,7 +166,7 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             UpdateTime(gameTime);
 
-            CMain.MPoint = Input_Mouse.Position;
+            CMain.MPoint = Input_Mouse.Position.ToPoint();
             CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
             SoundManager.ProcessDelayedSounds();
 
@@ -286,7 +286,7 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             if (DebugDialog == null || DebugDialog.IsDisposed)
             {
-                DebugDialog = new FPSDialog { Location = new MirEngine.Point(5, 5) };
+                DebugDialog = new FPSDialog { Location = new Point(5, 5) };
                 UpdateDebugDialogText(); // 立即填一次，避免空窗
             }
         }
@@ -388,7 +388,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
             HintTextLabel.Text = MirControl.MouseControl.Hint;
 
-            MirEngine.Point point = MPoint.Add(-HintTextLabel.Size.Width, 20);
+            Point point = MPoint.Add(-HintTextLabel.Size.Width, 20);
 
             if (point.X + HintBaseLabel.Size.Width >= Settings.ScreenWidth)
                 point.X = Settings.ScreenWidth - HintBaseLabel.Size.Width - 1;
@@ -550,7 +550,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void CMain_MouseMove(object sender, MirEngine.MouseEventArgs e)
         {
-            MPoint = KCamera.ScreenToWorldPos(new MirEngine.Point(e.Location.X, e.Location.Y));
+            MPoint = KCamera.ScreenToWorldPos(new Point(e.Location.X, e.Location.Y));
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
@@ -587,15 +587,15 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
-            var lp = KCamera.ScreenToWorldPos(p);
-            CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
-            MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, lp));
+            var lp = KCamera.ScreenToWorldPos(p.ToPoint());
+            CMain.MPoint = new Point((int)lp.X, (int)lp.Y);
+            MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, lp.ToVector2()));
         }
         private static void OnMouseUp(MG.MouseButton b, MG.Vector2 p)
         {
-            var lp = KCamera.ScreenToWorldPos(p);
-            CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
-            var e = ToMouseEventArgs(b, lp);
+            var lp = KCamera.ScreenToWorldPos(p.ToPoint());
+            CMain.MPoint = new Point((int)lp.X, (int)lp.Y);
+            var e = ToMouseEventArgs(b, lp.ToVector2());
             if (MapControl.MapButtons == e.Button) MapControl.MapButtons = MouseButtons.None;
             if (e.Button != MouseButtons.Right || !Settings.NewMove)
                 GameScene.CanRun = false;

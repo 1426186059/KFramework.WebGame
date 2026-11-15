@@ -1,8 +1,6 @@
 using Client.MirControls;                  // MirControl / MirAnimatedAtlasControl
 using Client.MirGraphics;                 // DXManager
 using Color = MirEngine.Color;
-using Point = MirEngine.Point;
-
 namespace Client.MirScenes.Dialogs
 {
     /// <summary>

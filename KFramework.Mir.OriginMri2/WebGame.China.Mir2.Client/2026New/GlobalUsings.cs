@@ -8,3 +8,7 @@ global using VerticalWrapMode = KFramework.MonoGame.VerticalWrapMode;
 global using PrintTool = KFramework.MonoGame.PrintTool;
 global using Size = KFramework.MonoGame.Size;
 global using RectangleF = KFramework.MonoGame.RectangleF;
+global using PointF = KFramework.MonoGame.Vector2;
+global using SizeF = KFramework.MonoGame.Vector2;
+global using Point = KFramework.MonoGame.Point;
+global using Rectangle = KFramework.MonoGame.Rectangle;

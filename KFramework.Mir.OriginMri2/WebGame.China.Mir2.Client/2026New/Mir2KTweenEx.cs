@@ -1,7 +1,5 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
-using Point = MirEngine.Point;
-
 namespace Client.MirControls
 {
     public static class Mir2KTweenEx

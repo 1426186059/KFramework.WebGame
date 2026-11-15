@@ -32,7 +32,7 @@ namespace Client.MirControls
             get { return Parent == null ? Location : Parent.DisplayLocation.Add(Location); }
         }
 
-        public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size); } }
+        public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size.ToPoint()); } }
 
         public bool GrayScale { get; set; }
         public bool Blending { get; set; }
@@ -289,7 +289,7 @@ namespace Client.MirControls
         public EAnchorType Anchor { get; set; } = EAnchorType.None;
 
 
-        private Point _AnchorPos = Point.Empty;
+        private Point _AnchorPos = Point.Zero;
         /// <summary>相对锚点的固定偏移，用于"贴边/居中后再偏移"这类布局。</summary>
         public Point AnchorPos
         {
@@ -332,7 +332,7 @@ namespace Client.MirControls
                 case EAnchorType.BottomLeft: anchorPoint = BottomLeft; break;
                 case EAnchorType.BottomCenter: anchorPoint = Bottom; break;
                 case EAnchorType.BottomRight: anchorPoint = BottomRight; break;
-                default: anchorPoint = Point.Empty; break;
+                default: anchorPoint = Point.Zero; break;
             }
 
             Location = new Point(anchorPoint.X + AnchorPos.X, anchorPoint.Y + AnchorPos.Y);
@@ -593,7 +593,7 @@ namespace Client.MirControls
                 VisibleChanged.Invoke(this, EventArgs.Empty);
 
             Moving = false;
-            _movePoint = Point.Empty;
+            _movePoint = Point.Zero;
 
             if (Sort && Parent != null)
             {
@@ -829,7 +829,7 @@ namespace Client.MirControls
 
             ActiveControl = null;
             Moving = false;
-            _movePoint = Point.Empty;
+            _movePoint = Point.Zero;
         }
         protected virtual void Dehighlight()
         {
@@ -935,7 +935,7 @@ namespace Client.MirControls
 
             if (Moving)
             {
-                // 直接用整数分量计算位移（等价于 MirEngine.Point.Subtract 扩展方法）。
+                // 直接用整数分量计算位移（等价于 Point.Subtract 扩展方法）。
                 // 之前"拖不动"的根因不是这里清零，而是父容器 TrueSize 恒为 (0,0)，
                 // 导致下面 Parent.TrueSize 钳制把位置钳到 (0,0)。现已随场景重构（父为 MirScene）修正。
                 Point tempPoint = new Point(CMain.MPoint.X - _movePoint.X, CMain.MPoint.Y - _movePoint.Y);
@@ -1007,7 +1007,7 @@ namespace Client.MirControls
             if (Moving)
             {
                 Moving = false;
-                _movePoint = Point.Empty;
+                _movePoint = Point.Zero;
             }
 
             if (ActiveControl != null) ActiveControl.Deactivate();
@@ -1180,7 +1180,7 @@ namespace Client.MirControls
                 _modal = false;
 
                 MovableChanged = null;
-                _movePoint = Point.Empty;
+                _movePoint = Point.Zero;
                 Moving = false;
                 OnMoving = null;
                 _movable = false;

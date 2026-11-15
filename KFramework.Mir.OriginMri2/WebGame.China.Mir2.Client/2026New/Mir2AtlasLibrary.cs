@@ -4,8 +4,6 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.IO;
 using Color = KFramework.MonoGame.Color;
-using Rectangle = KFramework.MonoGame.Rectangle;
-
 public static class Mir2AtlasLibrary
 {
     private static readonly Dictionary<string, Mir2AtlasSheet> _sheets =

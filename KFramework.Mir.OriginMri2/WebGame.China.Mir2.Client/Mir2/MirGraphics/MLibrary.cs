@@ -227,10 +227,10 @@ namespace Client.MirGraphics
 
         public Point GetOffSet(int index)
         {
-            if (!_loaded) return Point.Empty;
+            if (!_loaded) return Point.Zero;
 
             if (_images == null || index < 0 || index >= _images.Length)
-                return Point.Empty;
+                return Point.Zero;
 
             if (_images[index] == null)
             {

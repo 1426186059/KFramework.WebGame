@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirScenes;
 using WebGame.Mir2.MonoGame.Client;
@@ -144,7 +144,7 @@ namespace Client.MirObjects
             if (BodyLibrary != null && update)
             {
                 FinalDrawLocation = DrawLocation.Add(BodyLibrary.GetOffSet(DrawFrame));
-                DisplayRectangle = new Rectangle(DrawLocation, BodyLibrary.GetTrueSize(DrawFrame));
+                DisplayRectangle = new Rectangle(DrawLocation, BodyLibrary.GetTrueSize(DrawFrame).ToPoint());
             }
 
             for (int i = 0; i < Effects.Count; i++)

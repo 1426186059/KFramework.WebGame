@@ -261,7 +261,7 @@ public sealed class MapControl : MirControl
 
     public static Point MapLocation
     {
-        get { return GameScene.User == null ? Point.Empty : new Point(MouseLocation.X / CellWidth - OffSetX, MouseLocation.Y / CellHeight - OffSetY).Add(GameScene.User.CurrentLocation); }
+        get { return GameScene.User == null ? Point.Zero : new Point(MouseLocation.X / CellWidth - OffSetX, MouseLocation.Y / CellHeight - OffSetY).Add(GameScene.User.CurrentLocation); }
     }
 
     public static Point ToMouseLocation(Point p)
@@ -1770,7 +1770,7 @@ public sealed class MapControl : MirControl
 
         PointF c = new PointF(OffSetX * CellWidth + CellWidth / 2F, OffSetY * CellHeight + CellHeight / 2F);
         PointF a = new PointF(c.X, 0);
-        PointF b = MouseLocation;
+        PointF b = MouseLocation.ToVector2();
         float bc = (float)Distance(c, b);
         float ac = bc;
         b.Y -= c.Y;
@@ -1997,7 +1997,7 @@ public sealed class MapControl : MirControl
             Objects.Clear();
 
             MapButtons = MouseButtons.None;
-            MouseLocation = Point.Empty;
+            MouseLocation = Point.Zero;
             InputDelay = 0;
             NextAction = 0;
 

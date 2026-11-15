@@ -4,7 +4,6 @@ using Client.MirControls;
 using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
 using Color = MirEngine.Color;
-using Point = MirEngine.Point;
 namespace Client.MirScenes
 {
     /// <summary>

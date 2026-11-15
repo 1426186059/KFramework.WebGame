@@ -1716,10 +1716,7 @@ namespace Client.MirScenes.Dialogs
             StatusExpLabel.Text = string.Format("{0:#0.##%}", percent);
             if (percent > 1) percent = 1;
             if (percent <= 0) return;
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((260 - 3) * percent), 22)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)((260 - 3) * percent), 22);
 
             StatusExpBar.Library.Draw(StatusExpBar.Index, section, StatusExpBar.DisplayLocation, Color.White, false);
 

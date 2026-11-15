@@ -296,7 +296,7 @@ namespace Client.MirControls
             Point offSet = new Point((32 - size.Width) / 2, (32 - size.Height) / 2);
 
             Libraries.Items.Draw((int)Item.Info.Image, offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40);
-            ItemDisplayArea = new Rectangle(new Point(offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40), size);
+            ItemDisplayArea = new Rectangle(new Point(offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40), size.ToPoint());
         }
 
         protected override void Dispose(bool disposing)

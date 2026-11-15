@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
@@ -861,7 +861,7 @@ namespace Client.MirObjects
                 case MirAction.DashAttack:
                     if (Frame == null)
                     {
-                        OffSetMove = Point.Empty;
+                        OffSetMove = Point.Zero;
                         Movement = CurrentLocation;
                         break;
                     }
@@ -917,7 +917,7 @@ namespace Client.MirObjects
                     OffSetMove = new Point(OffSetMove.X % 2 + OffSetMove.X, OffSetMove.Y % 2 + OffSetMove.Y);
                     break;
                 default:
-                    OffSetMove = Point.Empty;
+                    OffSetMove = Point.Zero;
                     Movement = CurrentLocation;
                     break;
             }
@@ -938,7 +938,7 @@ namespace Client.MirObjects
             if (BodyLibrary != null && update)
             {
                 FinalDrawLocation = DrawLocation.Add(BodyLibrary.GetOffSet(DrawFrame));
-                DisplayRectangle = new Rectangle(DrawLocation, BodyLibrary.GetTrueSize(DrawFrame));
+                DisplayRectangle = new Rectangle(DrawLocation, BodyLibrary.GetTrueSize(DrawFrame).ToPoint());
             }
 
             for (int i = 0; i < Effects.Count; i++)

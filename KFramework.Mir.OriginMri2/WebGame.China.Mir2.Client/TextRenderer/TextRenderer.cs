@@ -17,7 +17,7 @@ public static class TextRenderer
 
     // ---------------- DrawText ----------------
 
-    public static void DrawText(string text, Font font, MirEngine.Rectangle bounds, int foreColor, EngineTextStyle style)
+    public static void DrawText(string text, Font font, Rectangle bounds, int foreColor, EngineTextStyle style)
     {
         EngineText.DrawText(DXManager.Batch, text, font,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),

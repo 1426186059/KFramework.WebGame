@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -24,7 +24,7 @@ namespace Client.MirObjects
         public bool Blend = true;
         public float Rate = 1F;
         public Point DrawLocation;
-        public Point DrawOffset = Point.Empty;
+        public Point DrawOffset = Point.Zero;
         public bool Repeat;
         public long RepeatUntil;
 

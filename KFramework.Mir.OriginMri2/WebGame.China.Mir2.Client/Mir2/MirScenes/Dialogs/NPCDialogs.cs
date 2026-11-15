@@ -881,7 +881,7 @@ namespace Client.MirScenes.Dialogs
         internal static Point CalculateLinkOffset(string text, MirLabel label)
         {
             if (label == null || string.IsNullOrEmpty(text))
-                return Point.Empty;
+                return Point.Zero;
 
             // 用整串前缀 MeasureText 量“链接前”宽度（与 TextRenderer.DrawText 同一度量），
             // 而非逐字符累加（逐字符会漏算字间距/kerning，中文越长越往左偏）。

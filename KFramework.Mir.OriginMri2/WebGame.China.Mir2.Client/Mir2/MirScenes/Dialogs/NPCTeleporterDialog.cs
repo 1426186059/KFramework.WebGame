@@ -283,7 +283,7 @@ namespace Client.MirScenes.Dialogs
                 _destButtons.Add(btn);
             }
             _destScroll.UpdateContentSize();
-            _destScroll.SetScrollOffset(Point.Empty);   // 切换分类后回到顶部
+            _destScroll.SetScrollOffset(Point.Zero);   // 切换分类后回到顶部
         }
 
         private void SelectDestination(DeliverDestination item)

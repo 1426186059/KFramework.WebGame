@@ -652,10 +652,7 @@ namespace Client.MirScenes.Dialogs
 
             int sectionWidth = (int)(ExperienceBar.Size.Width * (percent / 100));
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size(sectionWidth, ExperienceBar.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, sectionWidth, ExperienceBar.Size.Height);
 
             ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, Color.White, false);
             ExLabel.Text = string.Format("{0:F2}%", percent);
@@ -669,10 +666,7 @@ namespace Client.MirScenes.Dialogs
             if (percent > 1) percent = 1;
             if (percent <= 0) return;
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)(HealthBar.Size.Width * percent), HealthBar.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)(HealthBar.Size.Width * percent), HealthBar.Size.Height);
 
             HealthBar.Library.Draw(HealthBar.Index, section, HealthBar.DisplayLocation, Color.White, false);
             Hplabel.Text = GameScene.Hero?.HP.ToString() + "/" + GameScene.Hero?.Stats[Stat.HP].ToString();
@@ -686,10 +680,7 @@ namespace Client.MirScenes.Dialogs
             if (percent > 1) percent = 1;
             if (percent <= 0) return;
 
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)(ManaBar.Size.Width * percent), ManaBar.Size.Height)
-            };
+            Rectangle section = new Rectangle(0, 0, (int)(ManaBar.Size.Width * percent), ManaBar.Size.Height);
 
             ManaBar.Library.Draw(ManaBar.Index, section, ManaBar.DisplayLocation, Color.White, false);
             Mplabel.Text = GameScene.Hero?.MP.ToString() + "/" + GameScene.Hero?.Stats[Stat.MP].ToString();
