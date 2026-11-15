@@ -74,19 +74,25 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
    - **开发 / Debug 态默认不走 AOT**，跑的是解释器；其性能比原生 JIT **慢一到数个数量级**。反射路径（元数据查找、IL 解释、动态分发）更是重灾区。
    - 后果：同一个游戏在解释器下可能卡到几乎不可玩，**只有 Release + AOT 发布才接近可用性能**。因此务必用 AOT 形态做性能评估，不要拿解释器下的帧率下结论；也不要指望"开发环境凑合、发布自然流畅"——发布若漏配 AOT 反而更慢。
 
-2. **禁止运行时反射，开发约束多**
+2. **JSON 解析巨慢——中大型游戏加载大量配置表可卡几十秒**
+   - JSON 是中大型游戏配置的主要载体：成百上千张配置表、地图数据、存档、网络协议几乎都是 JSON。而 JSON 解析恰好踩中上面所有性能雷区——默认 `JsonSerializer` 走**反射式反序列化**（元数据查找 + 动态构造 + IL 解释），在 wasm 解释器下慢得离谱。
+   - **典型现象**：中大型游戏一次性加载几十 / 上百张配置表，非 AOT 下**直接卡住几十秒**，页面假死；同一份逻辑换成 AOT + 源生成序列化后，耗时可降到可接受范围。差距不是几倍，而是一到数个数量级。
+   - **正确做法**：禁用反射式反序列化，改用 `JsonDocument` / `Utf8JsonReader` 这类读取器 API（纯顺序解析、零反射、AOT 安全），或用 source-generated `JsonSerializerContext`（`[JsonSerializable]` + `JsonSerializer.Deserialize(json, ctx.XXX)`）生成强类型访问代码；配置表尽量在构建期转成二进制 / 紧凑格式，避免运行时全量解析。
+   - **附带约束**：反射式路径在 IL 裁剪后还会直接抛 `TypeLoadException` / `NullReferenceException`（开发期正常、发布期崩），双重坑。
+
+3. **禁止运行时反射，开发约束多**
    `Type.GetType` / `Activator.CreateInstance` / `PropertyInfo.GetValue` / `Expression.Compile` / 依赖反射的反序列化（默认 `JsonSerializer` 对未知 / 多态类型）一律不可用。任何"按名字建对象 / 通用属性读写 / 多态分发 / 序列化"都必须改成显式 `switch`、静态字典工厂或 Roslyn 源生成器。大量现成 .NET 库因此不能直接拿来用，开发效率显著低于原生 C# 桌面 / 服务端。
 
-3. **AOT + IL 裁剪的"开发期正常、发布期崩"陷阱**
+4. **AOT + IL 裁剪的"开发期正常、发布期崩"陷阱**
    发布默认开启 IL 裁剪，未被静态引用到的类型 / 成员会被移除；若靠字符串反射取类型，开发期一切正常，发布版直接抛 `NullReferenceException` / `TypeLoadException`，极难排查。AOT 无 JIT，任何依赖运行时代码发射（Emit / Expression.Compile）的方案都会直接失败。
 
-4. **启动速度与体积不及原生 JS**
-   与 PixiJS / Phaser 等原生 JS 方案相比，WASM 需先下载、实例化运行时再启动，首屏和启动速度都不占优；即便 AOT 后 `.wasm` 仍是大头（见第七节）。
+5. **启动速度与体积不及原生 JS**
+   与 PixiJS / Phaser 等原生 JS 方案相比，WASM 需先下载、实例化运行时再启动，首屏和启动速度都不占优；即便 AOT 后 `.wasm` 仍是大头（见第六节）。
 
-5. **构建 / 调试链偏重**
+6. **构建 / 调试链偏重**
    TS 层（C# 渲染桥）与 C# 层双构建；改渲染要动 TS 并重生成 JS，业务改 C# 要重编 wasm；互操作边界的排错成本高于纯 JS 或纯 C# 工程。
 
-6. **无 `System.Drawing` / 有内存约束**
+7. **无 `System.Drawing` / 有内存约束**
    WASM 运行环境没有桌面 API，纹理 / 音频 / 字体都要走框架提供的加载与解码通道，Canvas / 大图处理受浏览器内存与 GC 约束。
 
 ---
