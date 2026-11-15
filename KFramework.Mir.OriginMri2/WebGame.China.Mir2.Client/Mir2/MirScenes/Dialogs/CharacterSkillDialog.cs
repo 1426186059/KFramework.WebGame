@@ -195,9 +195,6 @@ namespace Client.MirScenes.Dialogs
                     Parent = this,
                     Location = new Point(8, 7),
                     Size = new Size(56, 56),
-                    Library = Libraries.MagIcon2,
-                    Index = 0,
-                    PressedIndex = 1,
                     Sound = SoundList.ButtonA,
                 };
                 _icon.Click += (o, e) =>
@@ -292,9 +289,20 @@ namespace Client.MirScenes.Dialogs
                 }
 
                 bool learned = magic.Level > 0;
-                int iconIndex = magic.Icon * 2;
-                _icon.Index = iconIndex;
-                _icon.PressedIndex = iconIndex + 1;
+                // 原始传奇技能图标：按 OriginIcon 从 CDN 加载；无图标号的技能回落本地 MagIcon2 帧。
+                string skillIconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                if (!string.IsNullOrEmpty(skillIconUrl))
+                {
+                    _icon.ImageUrl = skillIconUrl;
+                    _icon.ForeColour = Color.White;   // Texture 通道按 ForeColour 着色，白色=原色
+                }
+                else
+                {
+                    _icon.ImageUrl = null;
+                    _icon.Library = Libraries.MagIcon2;
+                    _icon.Index = magic.Icon * 2;
+                    _icon.PressedIndex = magic.Icon * 2 + 1;
+                }
                 _name.Text = magic.Name;
                 _name.ForeColour = learned ? Color.White : Color.Gray;
                 _level.Text = learned ? "Lv" + magic.Level : "未学";

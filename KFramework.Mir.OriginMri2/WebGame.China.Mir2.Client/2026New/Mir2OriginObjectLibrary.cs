@@ -325,6 +325,17 @@ public static class Mir2OriginObjectLibrary
         return rel + VerQuery;
     }
 
+    /// <summary>
+    /// 技能图标相对路径：assets/resource/icon/skills/{图标号}.png?ver=1.0.2
+    /// 图标号来自 MagicInfo.OriginIcon（如 "11021"=攻杀剑术）。技能图标不走 resourceVersion 版本目录
+    /// （线上实测 https://cdn.yscq-wy.yscq.com/fugu_20201203/assets/resource/icon/skills/11021.png?ver=1.0.2 可直接访问）。
+    /// </summary>
+    public static string SkillIconPath(string iconId)
+    {
+        if (string.IsNullOrWhiteSpace(iconId)) return null;
+        return $"{AssetsRoot}icon/skills/{iconId}.png" + VerQuery;
+    }
+
     private static string CacheKey(Mir2ObjectKind kind, int id, int action, int direction)
     {
         return $"{(int)kind}:{id}:{action}:{direction}";

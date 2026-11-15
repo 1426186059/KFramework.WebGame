@@ -14,6 +14,9 @@ public class ClientMagic
     public bool IsTempSpell;
     public long CastTime, Delay;
 
+    // 原始传奇技能图标号（如 "11021"），客户端据此从 CDN 加载 assets/resource/icon/skills/{号}.png
+    public string OriginIcon = "";
+
     public ClientMagic() { }
 
     public ClientMagic(BinaryReader reader)
@@ -39,6 +42,8 @@ public class ClientMagic
 
         Range = reader.ReadByte();
         CastTime = reader.ReadInt64();
+
+        OriginIcon = reader.ReadString();
     }
 
     public void Save(BinaryWriter writer)
@@ -64,6 +69,8 @@ public class ClientMagic
 
         writer.Write(Range);
         writer.Write(CastTime);
+
+        writer.Write(OriginIcon ?? string.Empty);
     }
 
 }

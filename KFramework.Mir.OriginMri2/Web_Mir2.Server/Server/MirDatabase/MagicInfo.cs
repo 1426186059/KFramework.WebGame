@@ -189,7 +189,8 @@ namespace Server.MirDatabase
                     IsTempSpell = IsTempSpell,
                     Delay = GetDelay(),
                     Range = Info.Range,
-                    CastTime = CastTime - Envir.Time
+                    CastTime = CastTime - Envir.Time,
+                    OriginIcon = Info.OriginIcon
             };
         }
 
