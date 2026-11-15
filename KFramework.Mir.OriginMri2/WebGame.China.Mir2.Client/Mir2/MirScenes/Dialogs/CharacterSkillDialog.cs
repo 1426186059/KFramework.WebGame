@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using Color = MirEngine.Color;
-using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
