@@ -10,46 +10,13 @@ namespace MirEngine
     // 文本排版统一使用引擎的三元组（TextAnchor / HorizontalWrapMode / VerticalWrapMode），
     // 经引擎 TextStyle 传递；原先的 TextFormatFlags shim 已移除。
 
-    public struct Message
-    {
-        public IntPtr HWnd;
-        public int Msg;
-        public IntPtr WParam;
-        public IntPtr LParam;
-        public IntPtr Result;
-        public static Message Create(IntPtr hWnd, int msg, IntPtr wparam, IntPtr lparam)
-            => new Message { HWnd = hWnd, Msg = msg, WParam = wparam, LParam = lparam };
-    }
-
     public static class Application
     {
-        public static void Run() { }
-        public static void Run(object f) { }
-        public static void Exit() { }
-        public static void DoEvents() { }
-        public static void SetSuspendPower(bool enabled) { }
-        public static event EventHandler ApplicationExit;
-        public static event EventHandler ThreadException;
-        public static event EventHandler Idle;
         public static string ProductVersion => "1.0.0.0";
-        public static string ExecutablePath => "";
-        public static string StartupPath => "/";
-        public static void EnableVisualStyles() { }
-        public static void SetCompatibleTextRenderingDefault(bool defaultValue) { }
-        public static void Restart() { }
     }
 
     public static class SystemInformation
     {
-        public static int MouseButtons => 2;
-        public static bool MouseWheelPresent => true;
-        public static int BorderSize => 1;
-        public static int Border3DSizeWidth => 2;
-        public static int Border3DSizeHeight => 2;
-        public static int FrameBorderSize => 1;
-        public static int CaptionHeight => 22;
-        public static int MenuHeight => 19;
-        public static int ToolWindowCaptionHeight => 16;
         public static int DoubleClickTime => 500;
         public static int MouseWheelScrollDelta => 120;
     }
@@ -72,11 +39,6 @@ namespace MirEngine
         public bool UseSystemPasswordChar { get => _inner.UseSystemPasswordChar; set => _inner.UseSystemPasswordChar = value; }
         public bool Visible { get => _inner.Visible; set => _inner.Visible = value; }
         public bool Enabled { get => _inner.Enabled; set => _inner.Enabled = value; }
-        public bool AcceptsReturn { get => _inner.AcceptsReturn; set => _inner.AcceptsReturn = value; }
-        public bool AcceptsTab { get => _inner.AcceptsTab; set => _inner.AcceptsTab = value; }
-        public int TextLength => _inner.TextLength;
-        public IntPtr Handle { get => _inner.Handle; set => _inner.Handle = value; }
-        public bool ReadOnly { get => _inner.ReadOnly; set => _inner.ReadOnly = value; }
         public object Tag { get => _inner.Tag; set => _inner.Tag = value; }
         public object Parent { get => _inner.Parent; set => _inner.Parent = value; }
         public bool CanFocus { get => _inner.CanFocus; set => _inner.CanFocus = value; }
@@ -105,10 +67,6 @@ namespace MirEngine
             set => _inner.Font = value;
         }
 
-        public void AppendText(string value) => _inner.AppendText(value);
-
-        public void SimulateKeyDown(Keys keyCode) => _inner.SimulateKeyDown(keyCode);
-
         public void Focus()
         {
             // 按当前视口计算逻辑→后备缓冲像素缩放（本工程恒等变换下为 1，但保留公式以兼容真实缩放部署）。
@@ -127,22 +85,16 @@ namespace MirEngine
         public void LoseFocus() => _inner.Blur();
         public void Dispose() => _inner.Dispose();
 
-        public Point GetPositionFromCharIndex(int index) => _inner.GetPositionFromCharIndex(index);
-        public int GetLineFromCharIndex(int index) => _inner.GetLineFromCharIndex(index);
         public int GetFirstCharIndexFromLine(int line) => _inner.GetFirstCharIndexFromLine(line);
-        public int GetCharIndexFromPosition(Point pt) => _inner.GetCharIndexFromPosition(pt);
         public void ScrollToCaret() => _inner.ScrollToCaret();
 
         // 双击全选 / 单击取消全选，并把光标移到点击处：转发给引擎 TextBox 自带的点击逻辑。
         public void HandleClick(Point pt) => _inner.HandleClick(pt);
-        public void SelectAll() => _inner.SelectAll();
-        public void ClearSelection(int caret = -1) => _inner.ClearSelection(caret);
 
         public event EventHandler TextChanged { add => _inner.TextChanged += value; remove => _inner.TextChanged -= value; }
         public event EventHandler GotFocus { add => _inner.GotFocus += value; remove => _inner.GotFocus -= value; }
         public event EventHandler LostFocus { add => _inner.LostFocus += value; remove => _inner.LostFocus -= value; }
         public event EventHandler VisibleChanged { add => _inner.VisibleChanged += value; remove => _inner.VisibleChanged -= value; }
-        public event EventHandler EnabledChanged { add => _inner.EnabledChanged += value; remove => _inner.EnabledChanged -= value; }
         public event EventHandler ParentChanged { add => _inner.ParentChanged += value; remove => _inner.ParentChanged -= value; }
 
         public event KeyPressEventHandler KeyPress;

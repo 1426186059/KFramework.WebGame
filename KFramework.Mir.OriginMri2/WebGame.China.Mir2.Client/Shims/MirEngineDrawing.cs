@@ -19,7 +19,5 @@ namespace MirEngine
                 return Color.FromArgb((int)((v8 >> 24) & 0xFF), (int)((v8 >> 16) & 0xFF), (int)((v8 >> 8) & 0xFF), (int)(v8 & 0xFF));
             return Color.FromName(name);
         }
-
-        public static string ToHtml(Color c) => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
     }
 }

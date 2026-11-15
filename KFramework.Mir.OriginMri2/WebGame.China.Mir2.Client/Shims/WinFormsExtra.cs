@@ -3,21 +3,7 @@ namespace MirEngine
 {
     public enum FormBorderStyle
     {
-        None = 0,
-        FixedDialog = 1,
-        Sizable = 2,
-        FixedSingle = 3,
-        Fixed3D = 4,
-        FixedToolWindow = 5,
-        SizableToolWindow = 6
-    }
-
-    public enum ScreenOrientation
-    {
-        Angle0 = 0,
-        Angle90 = 1,
-        Angle180 = 2,
-        Angle270 = 3
+        None = 0
     }
 
     public delegate void MouseEventHandler(object sender, MouseEventArgs e);

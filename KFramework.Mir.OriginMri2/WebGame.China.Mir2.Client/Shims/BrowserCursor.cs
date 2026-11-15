@@ -12,11 +12,4 @@ public static class BrowserCursor
         try { MouseCursorFunc.Set(name); }
         catch { }
     }
-
-    // 复位为默认箭头。
-    public static void Reset()
-    {
-        try { MouseCursorFunc.Reset(); }
-        catch { }
-    }
 }

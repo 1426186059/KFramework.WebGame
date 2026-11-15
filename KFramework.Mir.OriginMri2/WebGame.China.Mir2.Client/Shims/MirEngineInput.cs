@@ -33,7 +33,6 @@ namespace MirEngine
         public bool Shift { get; }
         public bool Control { get; }
         public bool Alt { get; }
-        public Keys KeyData => KeyCode;
         public bool Handled { get; set; }
         public bool SuppressKeyPress { get; set; }
     }
@@ -42,25 +41,9 @@ namespace MirEngine
     {
         public KeyPressEventArgs(Keys keyCode, bool shift = false, bool control = false, bool alt = false)
         {
-            KeyCode = keyCode; Shift = shift; Control = control; Alt = alt;
+            KeyCode = keyCode;
         }
         public Keys KeyCode { get; }
-        public bool Shift { get; }
-        public bool Control { get; }
-        public bool Alt { get; }
         public bool Handled { get; set; }
-    }
-
-    public class PreviewKeyDownEventArgs : EventArgs
-    {
-        public PreviewKeyDownEventArgs(Keys keyData, bool shift = false, bool control = false, bool alt = false)
-        {
-            KeyData = keyData; Shift = shift; Control = control; Alt = alt;
-        }
-        public Keys KeyData { get; }
-        public bool Shift { get; }
-        public bool Control { get; }
-        public bool Alt { get; }
-        public bool IsInputKey { get; set; }
     }
 }

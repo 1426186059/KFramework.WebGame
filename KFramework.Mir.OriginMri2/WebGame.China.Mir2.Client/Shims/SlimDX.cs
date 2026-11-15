@@ -39,10 +39,6 @@ namespace SlimDX
     public struct Color4
     {
         public float Red, Green, Blue, Alpha;
-        public float R { get => Red; set => Red = value; }
-        public float G { get => Green; set => Green = value; }
-        public float B { get => Blue; set => Blue = value; }
-        public float A { get => Alpha; set => Alpha = value; }
 
         public Color4(float alpha, float red, float green, float blue)
         {
@@ -61,7 +57,6 @@ namespace SlimDX.Direct3D9
     // 纹理句柄：浏览器端用 int 句柄（普通贴图）或包裹 KFramework.MonoGame 的离屏渲染目标。
     public class Texture
     {
-        public int Handle;
         public int Width, Height;
         public bool Disposed;
 
@@ -70,12 +65,6 @@ namespace SlimDX.Direct3D9
 
         // 普通贴图（浏览器端走 KFramework.MonoGame.Texture2D 主路径）：用于程序化生成的光晕等静态纹理。
         internal KFramework.MonoGame.Texture2D? PlainTexture;
-
-        public Texture(int handle, int width, int height)
-        {
-            Handle = handle; Width = width; Height = height; Disposed = false;
-        }
-        public bool Valid => Handle != 0 && !Disposed;
 
         public Texture(Device device, int width, int height, int levels, Usage usage, Format format, Pool pool)
         {
@@ -90,12 +79,6 @@ namespace SlimDX.Direct3D9
                     RenderTarget = new KFramework.MonoGame.RenderTarget2D(
                         g, width, height, false, KFramework.MonoGame.SurfaceFormat.Color,
                         KFramework.MonoGame.DepthFormat.None, 0, KFramework.MonoGame.RenderTargetUsage.PreserveContents);
-                Handle = -2; // 标记：RenderTarget 包裹（非普通 int 句柄）
-            }
-            else
-            {
-                // 普通贴图在浏览器端走 Texture2D 主路径，这里只给无效占位。
-                Handle = -1;
             }
         }
 
@@ -106,7 +89,7 @@ namespace SlimDX.Direct3D9
             if (Disposed) return;
             if (RenderTarget != null) { RenderTarget.Dispose(); RenderTarget = null; }
             if (PlainTexture != null) { PlainTexture.Dispose(); PlainTexture = null; }
-            Disposed = true; Handle = 0;
+            Disposed = true;
         }
     }
 
@@ -114,44 +97,19 @@ namespace SlimDX.Direct3D9
     public class Surface
     {
         public Texture? Owner;
-        public Surface(int handle) { Owner = null; }   // 占位兼容（不被新路径使用）
         public Surface(Texture owner) { Owner = owner; }
-        public bool Disposed => Owner == null || Owner.Disposed;
         public void Dispose() { Owner = null; }
     }
 
-    // 仅 DXManager 重写后内部用到的占位类型（供潜在残留引用编译通过）。
-    public enum Blend { SourceAlpha, InverseSourceAlpha, One, BlendFactor, InverseBlendFactor, Zero, SourceColor }
-    public enum Format { A8R8G8B8, X8R8G8B8 }
+    public enum Format { A8R8G8B8 }
     public enum Usage { None, RenderTarget }
     public enum Pool { Managed, Default }
-    public enum LockFlags { Discard, None }
-    public enum DeviceType { Hardware, Reference }
-    public enum CreateFlags { HardwareVertexProcessing, PureDevice }
-    public enum PresentFlags { LockableBackBuffer, None }
-    public enum SwapEffect { Discard }
-    public enum SpriteFlags { None = 0, AlphaBlend = 1 }
-    public enum PresentInterval { One, Immediate, Default }
-    public enum RenderState { AlphaBlendEnable, SourceBlend, DestinationBlend, BlendFactor, SourceBlendAlpha }
-    public enum BlendOperation { Add }
     public enum ClearFlags { Target }
-    public enum DeviceCaps { HWTransformAndLight, PureDevice }
-    public class PixelShader { public void Dispose() { } }
-    // 浏览器端 Device：不再持有真实 D3D9 设备。CurrentTarget 即"当前渲染目标"（Unity 的 RenderTexture.active 等价物）。
     public class Device
     {
-        public static int CurrentTarget = 0;   // 0 = 主画布，>0 = 离屏 canvas 句柄
-        public static int LastTarget = -1;
-        public static void ApplyTarget()
-        {
-            LastTarget = CurrentTarget;
-        }
-        public void Dispose() { }
-        // 对齐原版 D3D9 Device 的场景包围（浏览器端由 CMain 帧循环 + SpriteBatch 承载，这里保持同名占位）。
         public void BeginScene() { }
         public void EndScene() { }
         public void Present() { }
-        public void SetRenderState(RenderState s, object v) { }
         public void Clear(ClearFlags f, Color c, float z, int s)
         {
             // 清屏作用到当前绑定的渲染目标（离屏 RT 或默认画布），交由 KFramework.MonoGame.GraphicsDevice 下发。
@@ -162,15 +120,8 @@ namespace SlimDX.Direct3D9
         public void SetRenderTarget(int i, Surface sf) { Client.MirGraphics.DXManager.SetSurface(sf); }
     }
 
-    // 精灵/线条：浏览器端即时模式绘制，Flush/Begin/End 为无操作。
     public class Sprite
     {
-        public Matrix Transform;
-        public Sprite() { Transform = Matrix.Identity; }
-        public void Flush() { }
-        public void Begin(object flags) { }
-        public void End() { }
-        public void Draw(Texture texture, Rectangle? src, Vector3 position, Vector3 scaling, Color4 color) { }
     }
 
     public class Line
@@ -183,20 +134,4 @@ namespace SlimDX.Direct3D9
         }
     }
 
-    public struct Matrix
-    {
-        public float M11, M12, M13, M14, M21, M22, M23, M24, M31, M32, M33, M34, M41, M42, M43, M44;
-        public static readonly Matrix Identity = new Matrix
-        {
-            M11 = 1, M22 = 1, M33 = 1, M44 = 1
-        };
-        public static Matrix Scaling(float x, float y, float z)
-        {
-            return new Matrix { M11 = x, M22 = y, M33 = z, M44 = 1 };
-        }
-        public static Matrix Translation(float x, float y, float z)
-        {
-            return new Matrix { M11 = 1, M22 = 1, M33 = 1, M44 = 1, M41 = x, M42 = y, M43 = z };
-        }
-    }
 }

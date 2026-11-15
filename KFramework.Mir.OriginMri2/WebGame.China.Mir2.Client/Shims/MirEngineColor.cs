@@ -162,19 +162,9 @@ namespace MirEngine
         }
 
         public Color(byte red, byte green, byte blue) : this(255, red, green, blue) { }
-        public Color(float red, float green, float blue) : this(1f, red, green, blue) { }
-        public Color(float alpha, float red, float green, float blue)
-        {
-            int a = (int)Math.Round(Math.Max(0f, Math.Min(1f, alpha)) * 255);
-            int r = (int)Math.Round(Math.Max(0f, Math.Min(1f, red)) * 255);
-            int g = (int)Math.Round(Math.Max(0f, Math.Min(1f, green)) * 255);
-            int b = (int)Math.Round(Math.Max(0f, Math.Min(1f, blue)) * 255);
-            value = (uint)((a << AlphaShift) | (r << RedShift) | (g << GreenShift) | b);
-        }
 
         public static Color FromArgb(int argb) => new Color((byte)(argb >> AlphaShift & 0xFF), (byte)(argb >> RedShift & 0xFF), (byte)(argb >> GreenShift & 0xFF), (byte)(argb & 0xFF));
         public static Color FromArgb(int alpha, int red, int green, int blue) => new Color((byte)alpha, (byte)red, (byte)green, (byte)blue);
-        public static Color FromArgb(int alpha, Color baseColor) => FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
         public static Color FromArgb(int red, int green, int blue) => FromArgb(255, red, green, blue);
 
         // 手动登记命名色（大小写不敏感），避免 WASM 上 typeof(Color).GetFields 反射开销。
@@ -353,41 +343,6 @@ namespace MirEngine
         public override bool Equals(object obj) => obj is Color other && Equals(other);
 
         public override int GetHashCode() => value.GetHashCode();
-
-        public static Color MinValue => Color.Empty;
-        public static Color MaxValue => Color.White;
-
-        public float GetBrightness()
-        {
-            float r = R / 255f, g = G / 255f, b = B / 255f;
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            return (max + min) / 2f;
-        }
-
-        public float GetHue()
-        {
-            float r = R / 255f, g = G / 255f, b = B / 255f;
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            if (max == min) return 0f;
-            float delta = max - min;
-            float h;
-            if (max == r) h = 60 * (((g - b) / delta) % 6);
-            else if (max == g) h = 60 * (((b - r) / delta) + 2);
-            else h = 60 * (((r - g) / delta) + 4);
-            return h < 0 ? h + 360 : h;
-        }
-
-        public float GetSaturation()
-        {
-            float r = R / 255f, g = G / 255f, b = B / 255f;
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            if (max == min) return 0f;
-            float l = (max + min) / 2f;
-            return (max - min) / (1 - Math.Abs(2 * l - 1));
-        }
 
         public override string ToString()
         {

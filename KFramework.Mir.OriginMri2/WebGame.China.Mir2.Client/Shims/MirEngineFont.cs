@@ -11,7 +11,6 @@ namespace MirEngine
         public float Size;
         public FontStyle Style;
 
-        public int Height => (int)Math.Ceiling(GetPixelSize() * 4f / 3f);
         public bool Bold => (Style & FontStyle.Bold) != 0;
         public bool Italic => (Style & FontStyle.Italic) != 0;
 
