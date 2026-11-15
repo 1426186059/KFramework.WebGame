@@ -205,13 +205,7 @@ namespace Client.MirScenes.Dialogs
 
             SkillButton.Click += (o, e) =>
             {
-                if (GameScene.Scene.CharacterDialog.Visible && GameScene.Scene.CharacterDialog.SkillPage.Visible)
-                    GameScene.Scene.CharacterDialog.Hide();
-                else
-                {
-                    GameScene.Scene.CharacterDialog.Show();
-                    GameScene.Scene.CharacterDialog.ShowSkillPage();
-                }
+                GameScene.Scene.CharacterSkillDialog.Toggle();
             };
 
             QuestButton = new MirButton

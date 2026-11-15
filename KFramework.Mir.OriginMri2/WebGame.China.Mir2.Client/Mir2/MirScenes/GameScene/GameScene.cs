@@ -59,6 +59,7 @@ namespace Client.MirScenes
         public ChatDialog ChatDialog;
         public InventoryDialog InventoryDialog;
         public CharacterDialog CharacterDialog;
+        public CharacterSkillDialog CharacterSkillDialog;
         public CharacterDialog HeroDialog;
         public HeroInventoryDialog HeroInventoryDialog;
         public HeroManageDialog HeroManageDialog;
@@ -611,12 +612,7 @@ namespace Client.MirScenes
                         break;
                     case KeybindOptions.Skills:
                     case KeybindOptions.Skills2:
-                        if (!CharacterDialog.Visible || !CharacterDialog.SkillPage.Visible)
-                        {
-                            CharacterDialog.Show();
-                            CharacterDialog.ShowSkillPage();
-                        }
-                        else CharacterDialog.Hide();
+                        CharacterSkillDialog.Toggle();
                         break;
                     case KeybindOptions.HeroInventory:
                         if (Hero == null)
@@ -635,14 +631,7 @@ namespace Client.MirScenes
                         else HeroDialog.Hide();
                         break;
                     case KeybindOptions.HeroSkills:
-                        if (Hero == null)
-                            break;
-                        if (!HeroDialog.Visible || !HeroDialog.SkillPage.Visible)
-                        {
-                            HeroDialog.Show();
-                            HeroDialog.ShowSkillPage();
-                        }
-                        else HeroDialog.Hide();
+                        CharacterSkillDialog.Toggle();
                         break;
                     case KeybindOptions.Creature:
                         if (!IntelligentCreatureDialog.Visible) IntelligentCreatureDialog.Show();
@@ -708,6 +697,7 @@ namespace Client.MirScenes
                     case KeybindOptions.Closeall:
                         InventoryDialog.Hide();
                         CharacterDialog.Hide();
+                        CharacterSkillDialog.Hide();
                         OptionDialog.Hide();
                         MenuDialog.Hide();
                         if (NPCDialog.Visible) NPCDialog.Hide();
@@ -2257,6 +2247,7 @@ namespace Client.MirScenes
             Credit = p.Credit;
 
             CharacterDialog = new CharacterDialog(MirGridType.Equipment, User) { Parent = this, Visible = false };
+            CharacterSkillDialog = new CharacterSkillDialog { Parent = this, Visible = false };
             InventoryDialog.RefreshInventory();
             foreach (SkillBarDialog Bar in SkillBarDialogs)
                 Bar.Update();

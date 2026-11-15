@@ -17,7 +17,7 @@ namespace Client.MirScenes.Dialogs
         private readonly MirButton[] _tabButtons = new MirButton[TabCount];
         private readonly MirButton[] _tabSelectButtons = new MirButton[TabCount];
 
-        public MirImageControl CharacterPage, StatusPage, SkillPage;
+        public MirImageControl CharacterPage, StatusPage;
         public MirImageControl FashionPage, SuitPage;
         private MirImageControl[] _pages;
 
@@ -31,9 +31,6 @@ namespace Client.MirScenes.Dialogs
 
         public MirItemCell[] Grid;
         private MirGridType GridType;
-        public MagicButton[] Magics;
-
-        public int StartIndex;
         private UserObject Actor;
 
         // 角色面板人物立绘分层（页游 UIStaticModel 的 Body/Head/Weapon/Shield/Miansha）。
@@ -63,11 +60,9 @@ namespace Client.MirScenes.Dialogs
             CreateTabButtons();
             CreateCharacterPage(actor, gridType);
             CreateStatusPage(actor, gridType);
-            CreateSkillPage(actor, gridType);
             CreateExtraPages();
 
             // 「状态」与「属性」共用同一个滚动页：状态停在顶部角色资料，属性滚到属性表起点。
-            // 技能页不在其中，由 ShowSkillPage 单独切换。
             _pages = new[] { CharacterPage, StatusPage, FashionPage, SuitPage };
             ShowPage(0);
 
@@ -704,35 +699,6 @@ namespace Client.MirScenes.Dialogs
 
 
 
-        private void CreateSkillPage(UserObject actor, MirGridType gridType)
-        {
-            SkillPage = new MirImageControl
-            {
-                Parent = this,
-                Location = new Point(8, 70),
-                Visible = false,
-                NotControl = true,
-            };
-            new MirImageControl
-            {
-                Parent = SkillPage,
-                Index = 508,
-                Library = Libraries.Title,
-                NotControl = true,
-                Location = new Point(0, 0),
-            };
-
-            Magics = new MagicButton[7];
-            for (int i = 0; i < Magics.Length; i++)
-                Magics[i] = new MagicButton
-                {
-                    Parent = SkillPage,
-                    Visible = false,
-                    Location = new Point(8, 8 + i * 33),
-                    HeroMagic = gridType == MirGridType.HeroEquipment
-                };
-        }
-
 
         public override void Show()
         {
@@ -756,8 +722,6 @@ namespace Client.MirScenes.Dialogs
                 _pages[i].Visible = false;
             _pages[index].Visible = true;
 
-            SkillPage.Visible = false;
-
             for (int i = 0; i < TabCount; i++)
                 _tabSelectButtons[i].Visible = i == index;
 
@@ -767,23 +731,10 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        // 快捷键 / 主界面按钮仍调用这两个入口，保持原有语义。
+        // 主界面按钮仍调用这个入口，保持原有语义。
         public void ShowCharacterPage()
         {
             ShowPage(0);
-        }
-
-        /// <summary>技能页不在新的 5 个页签里，但快捷键与英雄面板靠 SkillPage.Visible 判断是否收起窗口，
-        /// 因此保留为独立隐藏页：显示它时熄灭全部页签高亮。</summary>
-        public void ShowSkillPage()
-        {
-            foreach (MirImageControl page in _pages)
-                page.Visible = false;
-
-            foreach (MirButton button in _tabSelectButtons)
-                button.Visible = false;
-
-            SkillPage.Visible = true;
         }
 
         private void RefreshInterface()
@@ -794,18 +745,6 @@ namespace Client.MirScenes.Dialogs
             {
                 Grid[i].Item = Actor.Equipment != null && i < Actor.Equipment.Length ?
                     Actor.Equipment[i] : null;
-            }
-
-            for (int i = 0; i < Magics.Length; i++)
-            {
-                if (i + StartIndex >= Actor.Magics.Count)
-                {
-                    Magics[i].Visible = false;
-                    continue;
-                }
-
-                Magics[i].Visible = true;
-                Magics[i].Update(Actor.Magics[i + StartIndex]);
             }
         }
 

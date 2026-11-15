@@ -408,13 +408,7 @@ namespace Client.MirScenes.Dialogs
             };
             HeroMagicsButton.Click += (o, e) =>
             {
-                if (GameScene.Scene.HeroDialog.Visible && GameScene.Scene.HeroDialog.SkillPage.Visible)
-                    GameScene.Scene.HeroDialog.Hide();
-                else
-                {
-                    GameScene.Scene.HeroDialog.Show();
-                    GameScene.Scene.HeroDialog.ShowSkillPage();
-                }
+                GameScene.Scene.CharacterSkillDialog.Toggle();
             };
 
             HeroInventoryButton = new MirButton
