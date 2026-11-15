@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-
 namespace MirEngine
 {
-    // MirEngine.Color（纯值类型，无 Browser 依赖）
     public struct Color : IEquatable<Color>
     {
         private const int AlphaShift = 24;
@@ -312,9 +308,6 @@ namespace MirEngine
             { "YellowGreen", YellowGreen },
         };
 
-        // 大小写不敏感地解析命名色（与 .NET 原版 Color.FromName 行为一致）。
-        // 旧实现用 typeof(Color).GetField(name) 反射，仅按精确大小写匹配，导致小写色名（如 "yellow"）
-        // 解析为 Empty → 前景透明 → 只剩下黑描边（即“黑层”覆盖着色字）。
         public static Color FromName(string name)
         {
             if (string.IsNullOrEmpty(name)) return Empty;
@@ -329,11 +322,11 @@ namespace MirEngine
         public byte B => (byte)(value & 0xFF);
 
         public int ToArgb() => (int)value;
-
-        // 与引擎 KFramework.MonoGame.Color 互通：边界代码（如 MirTextBox 桥接到引擎 TextBox）可直接赋值，
-        // 无需把全工程的 MirEngine.Color 重写成另一套类型。
         public static implicit operator KFramework.MonoGame.Color(Color c)
-            => KFramework.MonoGame.Color.FromArgb((uint)c.ToArgb());
+        {
+            return KFramework.MonoGame.Color.FromArgb((uint)c.ToArgb());
+        }
+
         public bool IsEmpty => value == 0;
 
         public static bool operator ==(Color left, Color right) => left.value == right.value;
