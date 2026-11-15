@@ -111,6 +111,13 @@ namespace Client.MirControls
             _ = Task.Run(async () => await PreLoad_NotNeedWaitRes());
         }
 
+        /// 在登陆界面里，预加载自身UI的资源
+        public static void PreLoadSelfRes()
+        {
+            _ = Mir2OriginResource.GetTextureAsync(BgImageName);
+            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, Mir2OriginObjectLibrary.PriorityBackground);
+        }
+
         //加载阻塞等待的资源
         private async Task PreLoadNeedWaitRes()
         {
@@ -132,14 +139,6 @@ namespace Client.MirControls
                 PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
                 _status = "部分资源加载失败：" + ex.Message;
             }
-        }
-
-        /// <summary>在登录界面即以最低优先级后台预加载进度条图集（preload-sheet）：仅暖缓存、不阻塞、可失败，
-        /// 进度条组件经 AtlasNameKey 复用本次加载（按 sheet key 去重，只下载一次）；取不到时进度条退化为纯色条，故用最低优先级。</summary>
-        public static void PreLoadRes()
-        {
-            _ = Mir2OriginResource.GetTextureAsync(BgImageName);
-            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, Mir2OriginObjectLibrary.PriorityBackground);
         }
 
         //加载非阻塞等待的资源
