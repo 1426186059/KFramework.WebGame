@@ -37,18 +37,26 @@ namespace Client.MirScenes.Dialogs
 
         public CharacterSkillDialog()
         {
-            Size = new Size(PanelW, PanelH);
             Movable = true;
             Sort = true;
             AutoSize = false;
-            ImageKey = BgUrl;
+            Size = new Size(354, 475);
+
+            var mBG = new MirImageControl
+            {
+                Parent = this,
+                ImageKey = BgUrl,
+                Location = new Point(0, 0),
+                Size = new Size(318, 475),
+                NotControl = true
+            };
 
             var title = new MirLabel
             {
                 Parent = this,
                 Text = "技能",
                 Location = new Point(0, 20),
-                Size = new Size(PanelW, 30),
+                Size = new Size(318, 30),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = Color.White,
                 Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
@@ -68,8 +76,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = Sheet + "#com_btn_close0",
                 PressedAtlasFrame = "com_btn_close1",
                 Parent = this,
-                Location = new Point(Size.Width - 30, 60),
-                Size = new Size(26, 26),
+                Location = new Point(318, 60),
                 Sound = SoundList.ButtonA,
             };
             _closeButton.Click += (o, e) => Hide();

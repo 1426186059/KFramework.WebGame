@@ -76,7 +76,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
                 NotControl = true,
-                Size = new Size(390, 525)
+                Size = new Size(318, 475)
             };
 
             var originInner = new MirImageControl
