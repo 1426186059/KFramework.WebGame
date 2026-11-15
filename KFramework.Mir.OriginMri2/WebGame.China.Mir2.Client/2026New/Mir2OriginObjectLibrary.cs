@@ -105,8 +105,6 @@ public static class Mir2OriginObjectLibrary
     // 的 AtlasNameKey / Mir2AtlasLibrary._sheetTasks 是同一套思路。
     private static readonly ConcurrentDictionary<string, Task<Mir2AtlasSheet>> _sheets =
         new(StringComparer.OrdinalIgnoreCase);
-    private static readonly ConcurrentDictionary<string, Task<Texture2D>> _images =
-        new(StringComparer.OrdinalIgnoreCase);
     // 缺失缓存：确认「加载失败」的资源 key → 失败时间戳（自愈，不再永久硬停）。
     // 设计动机：原先是“永久黑名单”，一次瞬时失败（如连接池被 404 刷屏占满导致 action12 死亡帧超时）
     // 就会把该动画永久拉黑、永不恢复，表现为“杀几只后死亡动画没了 / 待机切不出来”。
@@ -430,9 +428,7 @@ public static class Mir2OriginObjectLibrary
         var key = CacheKey(Mir2ObjectKind.Item, iconId, 0, 0);
         if (iconId <= 0 || Game.Current.GraphicsDevice == null) return Task.FromResult<Texture2D>(null);
         if (IsMissing(key)) return Task.FromResult<Texture2D>(null);
-        if (_images.TryGetValue(key, out var cached) && cached != null) return cached;
-
-        return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, iconSubDir, priority));
+        return LoadItemAsync(key, iconId, iconSubDir, priority);
     }
 
     private static async Task<Texture2D> LoadItemAsync(string key, int iconId, string iconSubDir, int priority = PriorityItem)
@@ -478,7 +474,6 @@ public static class Mir2OriginObjectLibrary
     {
         _missing[key] = Environment.TickCount64;
         _sheets.TryRemove(key, out _);
-        _images.TryRemove(key, out _);
     }
 
     // ===================== 预加载（对齐原始 ActionLoader 急/懒双队列）=====================
@@ -559,9 +554,7 @@ public static class Mir2OriginObjectLibrary
 
         if (kind == Mir2ObjectKind.Item)
         {
-            if (!_images.TryGetValue(key, out var it) || it == null || !it.IsCompletedSuccessfully) return false;
-            var tex = it.Result;
-            if (tex == null) return false;
+            if (!Mir2OriginResource.TryGetTexture(ItemIconPath(id, "tool"), out var tex) || tex == null) return false;
             sprite = new KSpriteInfo(key, tex, new Rectangle(0, 0, tex.Width, tex.Height),
                                      new Vector2(tex.Width, tex.Height), Vector2.Zero, false);
             return true;

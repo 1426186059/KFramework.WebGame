@@ -97,8 +97,21 @@ public static class Mir2OriginResource
     {
         return GetTextureAsync(relativePath, 0, ct);
     }
+    /// <summary>同步取出已就绪的纹理（不触发下载）。供绘制路径判断「图下来了没」（物品图标等）。
+    /// 只读取 _texCache 的完成态；是否该（重新）拉取由上层（IsMissing 冷却）决定。</summary>
+    public static bool TryGetTexture(string relativePath, out Texture2D tex)
+    {
+        tex = null;
+        if (_texCache.TryGetValue(Norm(relativePath), out var entry) && entry != null
+            && entry.Task != null && entry.Task.IsCompletedSuccessfully)
+        {
+            tex = entry.Task.Result;
+            return tex != null;
+        }
+        return false;
+    }
 
-    /// <summary>上层不再需要某纹理时调用（图集从 _sheets/_images 淘汰、或场景切换释放）。refCount 归 0 后，
+    /// <summary>上层不再需要某纹理时调用（图集从 _sheets 淘汰、物品纹理同样走本层 _texCache；场景切换释放）。refCount 归 0 后，
     /// 该纹理在 TrimTextureCache 超时被 Dispose，真正释放显存。</summary>
     public static void ReleaseTexture(string relativePath)
     {
