@@ -100,7 +100,7 @@ namespace Client.MirScenes.Dialogs
             {
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Parent = this,
-                Location = new Point(0, 12),
+                Location = new Point(0, 20),
                 Size = new Size(300, 30),
                 NotControl = true,
             };

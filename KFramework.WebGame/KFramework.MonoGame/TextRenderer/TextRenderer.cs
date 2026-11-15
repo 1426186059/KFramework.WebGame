@@ -72,46 +72,54 @@ namespace KFramework.MonoGame
                                     HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
                                     VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
         {
-            if (batch == null || font == null || string.IsNullOrEmpty(text)) return;
+            if (batch == null || font == null || string.IsNullOrEmpty(text))
+            {
+                return;
+            }
 
-            // Wrap 才折行；Overflow 只按显式 '\n' 分行（maxWidth <= 0 即不折）。
             int maxWidth = hWrap == HorizontalWrapMode.Wrap ? (int)bounds.Width : 0;
             List<string> lines = WrapLines(text, font, maxWidth);
 
             float lineH = font.LineSpacing;
             float totalH = lineH * lines.Count;
 
-            // TextAnchor 是行优先布局：(int)/3 取行（0=Upper / 1=Middle / 2=Lower），%3 取列（0=Left / 1=Center / 2=Right）。
             int row = (int)anchor / 3;
             int col = (int)anchor % 3;
+            
+            float startY = bounds.Y; //上对齐
+            if (row == 1) //中间对齐
+            {
+                startY = bounds.Y + (bounds.Height - totalH) / 2f;
+            }
+            else if (row == 2) //下对齐
+            {
+                startY = bounds.Y + (bounds.Height - totalH);
+            }
 
-            // 对齐就是对齐，不做"防溢出"的夹取：bounds 比文字窄 / 矮时，让文字向上下均摊溢出，
-            // 这与 GDI 的 DT_CENTER / DT_VCENTER 语义一致（文字宽于矩形时向两侧平均溢出，而不是退化成左对齐）。
-            // 原来的 Math.Max(0f, …) 会把窄框下的"居中"悄悄变成"顶对齐"——
-            // 当 bounds 退化成一个点（例如 KButton.Label 的 MinMaxAnchor 被 Anchor 覆盖成 0）时，
-            // 就表现为"文字从锚点向右下画"，看起来像完全没居中。
-            float startY = bounds.Y;
-            if (row == 1) startY = bounds.Y + (bounds.Height - totalH) / 2f;
-            else if (row == 2) startY = bounds.Y + (bounds.Height - totalH);
-
-            // Truncate：这一行【放不下】就整行不画（只截断，不画省略号）。
-            // 判据必须是【行底】而不是【行顶】：只看行顶的话，"顶部还压在框内、底部已经越出框底"
-            // 的那一行会被完整画出去 —— 表现就是"最后一行明显冒出矩形之外"。
-            float clipBottom = vWrap == VerticalWrapMode.Truncate ? bounds.Y + bounds.Height : float.MaxValue;
+            float clipBottom = vWrap == VerticalWrapMode.Truncate ? 
+                bounds.Y + bounds.Height : float.MaxValue;
 
             foreach (string line in lines)
             {
-                if (startY + lineH > clipBottom) break;
+                if (startY + lineH > clipBottom)
+                {
+                    break;
+                }
 
-                // 同上：水平方向也不夹取 —— 文字宽于矩形时向两侧平均溢出（GDI 的 DT_CENTER 行为）。
                 float lineW = font.MeasureString(line).X;
                 float tx = bounds.X;
-                if (col == 1) tx = bounds.X + (bounds.Width - lineW) / 2f;
-                else if (col == 2) tx = bounds.X + (bounds.Width - lineW);
-
+                if (col == 1)
+                {
+                    tx = bounds.X + (bounds.Width - lineW) / 2f;
+                }
+                else if (col == 2)
+                {
+                    tx = bounds.X + (bounds.Width - lineW);
+                }
                 font.Draw(batch, line, new Vector2(tx, startY), foreColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 startY += lineH;
             }
+
         }
 
         /// <summary>带背景铺底的重载：<paramref name="backColor"/> 非透明时先用 1x1 白纹把矩形填满，再画文本。</summary>
@@ -120,7 +128,10 @@ namespace KFramework.MonoGame
                                     HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
                                     VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
         {
-            if (batch == null) return;
+            if (batch == null)
+            {
+                return;
+            }
             FillBackground(batch, bounds, backColor);
             DrawText(batch, text, font, bounds, foreColor, anchor, hWrap, vWrap);
         }
@@ -128,7 +139,11 @@ namespace KFramework.MonoGame
         /// <summary>backColor 非透明时用 1x1 白纹铺底（对齐原版 backColor 语义）。</summary>
         private static void FillBackground(SpriteBatch batch, RectangleF bounds, Color backColor)
         {
-            if (backColor.A == 0) return;
+            if (backColor.A == 0)
+            {
+                return;
+            }
+
             if (_whitePixel == null)
             {
                 _whitePixel = batch.GraphicsDevice.CreateTexture(1, 1);
@@ -137,11 +152,6 @@ namespace KFramework.MonoGame
             batch.Draw(_whitePixel, bounds, null, backColor);
         }
 
-        /// <summary>按显式 '\n' 切分；maxWidth &gt; 0 时在给定宽度内按词折行，连续中文/长串退化逐字折行。
-        /// 必须保留每段首行的行首空白（缩进）：WinForms 的 TextRenderer.MeasureText / DrawText 底层同走 GDI
-        /// DrawText（度量仅加 DT_CALCRECT），对行首空格度量与绘制一致；移植层若在此剥掉行首空格，会导致
-        /// Measure（含空格宽）与 Draw（无缩进）错位，进而使 NPC 对话框黄色链接按钮与底层文字重叠
-        /// （如赏金公告板的缩进行）。故此处把行首空格作为缩进贴回“本段第一个产出行”前，续行从 x=0 起。</summary>
         public static List<string> WrapLines(string text, IFont font, int maxWidth)
         {
             List<string> result = new List<string>();
