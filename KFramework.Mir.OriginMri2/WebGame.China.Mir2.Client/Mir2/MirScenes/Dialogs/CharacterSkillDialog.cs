@@ -69,6 +69,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(ListX, ListY),
                 Size = new Size(ViewW, ViewH),
             };
+            _scroll.ShowScrollBar = true;
 
             // 底部页码标签（原版此位置是"觉醒技能"/"技能配置"按钮，客户端无觉醒系统，仅显示提示）
             _pageLabel = new MirLabel
