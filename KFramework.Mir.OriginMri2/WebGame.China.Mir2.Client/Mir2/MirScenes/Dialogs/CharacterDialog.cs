@@ -2,6 +2,7 @@ using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirObjects;
 using Client.MirSounds;
+using KFramework.MonoGameExtend;
 using WebGame.Mir2.MonoGame.Client; // CMain.MPoint
 
 namespace Client.MirScenes.Dialogs
@@ -205,14 +206,11 @@ namespace Client.MirScenes.Dialogs
             CharacterPage = new MirImageControl
             {
                 Parent = this,
-                Location = new Point(0, 0),
-                // 命中区域必须覆盖装备格与立绘热区（最右到 x=296、最下到 y=454）。
-                // MirControl.OnMouseMove 只递归 IsMouseOver 为真的直接子控件，容器不设 Size
-                // 就是 0x0，整棵子树收不到鼠标 —— 悬停提示与点击卸下都会失效。
-                // 只取 302x461，避免盖住 x>=318 的右侧页签按钮与关闭按钮。
+                Location = new Point(0, 50),
+                AutoSize = false,
                 Size = new Size(302, 461),
+                Texture = KDefaultRes.DefaultTexture2D,
                 DrawImage = false,
-                NotControl = true
             };
 
             // —— 人物立绘：对齐页游 UIStaticModel 的分层 uiModel 皮肤 ——
@@ -224,7 +222,7 @@ namespace Client.MirScenes.Dialogs
             var modelHost = new MirImageControl
             {
                 Parent = CharacterPage,
-                Location = new Point(159, 350),
+                Location = new Point(159, 300),
                 DrawImage = false,
                 NotControl = true,
             };
@@ -264,7 +262,7 @@ namespace Client.MirScenes.Dialogs
             Point GetGridPos(int x, int y)
             {
                 Point p = new Point(y * (cellWidth + nSpace), x * (cellHeigth + nSpace));
-                p.Offset(new Point(23, 110));
+                p.Offset(new Point(23, 60));
                 return p;
             }
 
@@ -711,7 +709,7 @@ namespace Client.MirScenes.Dialogs
             SkillPage = new MirImageControl
             {
                 Parent = this,
-                Location = new Point(8, 90),
+                Location = new Point(8, 70),
                 Visible = false,
                 NotControl = true,
             };
