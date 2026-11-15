@@ -8,31 +8,31 @@ using Color = MirEngine.Color;
 namespace Client.MirScenes.Dialogs
 {
     /// <summary>
-    /// 角色技能面板（主角专用）。从 CharacterDialog 的技能页拆出，参考原始传奇 JS 的
-    /// NewheroPop_jnSkin：竖排大格列表（图标 + 名称 + 等级 + 经验条 + 快捷键），带滚动条。
-    /// 英雄功能本工程不使用，英雄技能页仍留在 CharacterDialog 中，与本类无关。
+    /// 角色技能面板（主角专用）。按原始传奇 PC 网页版 NewheroPop_jnSkin(286×396) 布局移植：
+    /// 竖向滚动的技能列表，每行 NewheroPop_jnRenderSkin(275×77)：技能图标(56×56) + 技能名 + 等级
+    /// + 技能点 + 经验条 + 右侧"设置/清空"按钮。
+    /// 数字键绑定逻辑（用户要求整合）：点每行"设置/清空"→ 弹 SkillHotKeyPop(数字键面板=AssignKeyPanel)，
+    /// 该技能若已在快捷栏则显示"清空"并可直接解绑。与 JS RolePop_jnRender.onTouch→uim.show(773) 一致。
+    /// 主角快捷栏 key = 1..16（对应数字键面板 slot 0..15），英雄走 CharacterDialog，与本类无关。
     /// </summary>
     public sealed class CharacterSkillDialog : MirImageControl
     {
-        private const string Sheet = "y_common-sheet";
-        private const string BgUrl = "resource/assets/gameui4/jpg/bag_bg.png";
+        private const string CommonSheet = "y_common-sheet";
+        private const string NGridSheet = "y_ngrid-sheet";
+        private const string RoleSheet = "y_role-sheet";
 
-        // 面板尺寸（背景 bag_bg.png 原生 354×475，沿用 CharacterDialog 同款底图）
-        private const int PanelW = 354;
-        private const int PanelH = 475;
+        private const int PanelW = 286, PanelH = 396;
+        private const int RowW = 275, RowH = 77;
+        private const int ListX = 3, ListY = 2;
+        private const int ViewW = 275, ViewH = 345;
+        private const byte MainKeyOffset = 1;   // 主角快捷栏 F1..F16
 
-        // 列表区域（JS: group_page 286×396 @ (15,66)，这里按本工程底图微调）
-        private const int ListX = 16, ListY = 62, ListW = 286, ListH = 386;
-
-        // 单个技能格（JS: NewheroPop_jnRenderSkin 275×77，本工程按可用宽度收缩）
-        private const int RowW = 266, RowH = 70, RowGap = 4, RowStep = RowH + RowGap;
-
-        private static readonly Color RowFill = new Color(45, 54, 84);
-        private static readonly Color RowHover = new Color(70, 98, 152);
-        private static readonly Texture2D DefTex = KDefaultRes.DefaultTexture2D;
+        private static readonly Color LearnColour = new Color(235, 220, 170);
+        private static readonly Color UnlearnColour = new Color(120, 120, 130);
 
         private MirScrollView _scroll;
         private MirButton _closeButton;
+        private MirLabel _pageLabel;
         private readonly List<SkillRow> _rows = new List<SkillRow>();
 
         public CharacterSkillDialog()
@@ -40,43 +40,48 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;
             AutoSize = false;
-            Size = new Size(354, 475);
+            Size = new Size(PanelW, PanelH);
 
-            var mBG = new MirImageControl
+            // 背景 bag_bg0.png（JS img_bg，y_common-sheet 帧）
+            new MirImageControl
             {
-                Parent = this,
-                ImageKey = BgUrl,
-                Location = new Point(0, 0),
-                Size = new Size(318, 475),
-                NotControl = true
+                Parent = this, AtlasNameKey = CommonSheet + "#bag_bg0",
+                Location = new Point(0, 0), Size = new Size(PanelW, PanelH), NotControl = true,
             };
 
-            var title = new MirLabel
-            {
-                Parent = this,
-                Text = "技能",
-                Location = new Point(0, 20),
-                Size = new Size(318, 30),
-                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                ForeColour = Color.White,
-                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
-                NotControl = true
-            };
-
+            // 竖向滚动技能列表（JS s1 / skillList，itemRenderer=RolePop_jnRender）
             _scroll = new MirScrollView
             {
                 Parent = this,
                 Location = new Point(ListX, ListY),
-                Size = new Size(ListW, ListH),
+                Size = new Size(ViewW, ViewH),
             };
-            _scroll.ShowScrollBar = true;
+            _scroll.ShowScrollBar = false;
 
+            // 列表右侧滚动条（JS barGro/s_bar，用 y_common-sheet 帧做滑块）
+            new MirImageControl
+            {
+                Parent = this, AtlasNameKey = CommonSheet + "#com_line_v",
+                Location = new Point(PanelW - 12, 20), Size = new Size(2, 310), NotControl = true,
+            };
+
+            // 底部页码标签（原版此位置是"觉醒技能"/"技能配置"按钮，客户端无觉醒系统，仅显示提示）
+            _pageLabel = new MirLabel
+            {
+                Parent = this, Text = "技能 · 点击【设置】绑定快捷键",
+                Location = new Point(8, 352), Size = new Size(230, 28),
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft), ForeColour = Color.FromArgb(255, 210, 180),
+                NotControl = true,
+            };
+
+            // 关闭按钮 com_btn_close0/1
             _closeButton = new MirButton
             {
-                AtlasNameKey = Sheet + "#com_btn_close0",
+                AtlasNameKey = CommonSheet + "#com_btn_close0",
                 PressedAtlasFrame = "com_btn_close1",
                 Parent = this,
-                Location = new Point(318, 60),
+                Location = new Point(PanelW - 26, 2),
+                Size = new Size(24, 24),
                 Sound = SoundList.ButtonA,
             };
             _closeButton.Click += (o, e) => Hide();
@@ -85,7 +90,6 @@ namespace Client.MirScenes.Dialogs
             BeforeDraw += (o, e) => RefreshUI();
         }
 
-        /// <summary>显示主角技能面板（居中置顶）。</summary>
         public override void Show()
         {
             base.Show();
@@ -96,29 +100,23 @@ namespace Client.MirScenes.Dialogs
 
         public void Toggle()
         {
-            if (Visible)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
+            if (Visible) Hide();
+            else Show();
         }
 
         public void RefreshUI()
         {
-            var user = GameScene.User;
-            var list = user == null ? null : user.Magics;
+            var list = GameScene.User == null ? null : GameScene.User.Magics;
             int count = list == null ? 0 : list.Count;
 
-            if (count != _rows.Count)
-            {
+            if (_rows.Count != count)
                 Rebuild(count);
-            }
-            else
+
+            for (int i = 0; i < _rows.Count; i++)
             {
-                UpdateRows();
+                bool has = list != null && i < list.Count;
+                _rows[i].Visible = has;
+                if (has) _rows[i].Update(list[i]);
             }
         }
 
@@ -133,203 +131,121 @@ namespace Client.MirScenes.Dialogs
 
             for (int i = 0; i < count; i++)
             {
-                SkillRow row = new SkillRow(i)
+                var row = new SkillRow();
+                row.Location = new Point(0, i * RowH);
+                row.Size = new Size(RowW, RowH);
+                row.AutoSize = false;
+                // 点"设置/清空"→ 弹数字键面板（与 JS RolePop_jnRender.onTouch→uim.show(773) 一致）
+                row.OnAssignKey += magic =>
                 {
-                    Location = new Point(4, i * RowStep),
-                    Size = new Size(RowW, RowH),
-                    AutoSize = false,
+                    if (magic == null || magic.Level == 0) return;
+                    new AssignKeyPanel(magic, MainKeyOffset, null) { Actor = GameScene.User };
                 };
                 _rows.Add(row);
-                _scroll.Add(row); // 必须走 Add 挂到 MirScrollView 的内容容器，Parent = _scroll 不会被烘焙渲染
-            }
-
-            UpdateRows();
-        }
-
-        private void UpdateRows()
-        {
-            var list = GameScene.User == null ? null : GameScene.User.Magics;
-            for (int i = 0; i < _rows.Count; i++)
-            {
-                if (list == null || i >= list.Count)
-                    _rows[i].Visible = false;
-                else
-                {
-                    _rows[i].Visible = true;
-                    _rows[i].Update(list[i]);
-                }
+                _scroll.Add(row);
             }
         }
 
-        /// <summary>单个技能格：JS NewheroPop_jnRenderSkin 风格（图标 + 名称 + 等级 + 经验条 + 快捷键）。</summary>
+        /// <summary>
+        /// 技能行（JS NewheroPop_jnRenderSkin 275×77）：
+        /// 图标(56×56 @12) + 名(@84,8) + 等级(@228,9) + 技能点(@139,47) + 经验条(z_skill_exp @84,47)
+        /// + 右侧"设置/清空"(@234,50) + 未学灰罩(img_rect)。
+        /// </summary>
         private sealed class SkillRow : MirImageControl
         {
-            private readonly int _index;
-            private readonly MirImageControl _bg;
-            private readonly MirButton _icon;
-            private readonly MirLabel _name;
-            private readonly MirLabel _level;
-            private readonly MirLabel _key;
-            private readonly MirImageControl _expBack;
-            private readonly MirImageControl _expFill;
-            private readonly MirLabel _hint;
+            public Action<ClientMagic> OnAssignKey;
+            private readonly MirImageControl _icon;
+            private readonly MirLabel _name, _level, _point, _state;
+            private readonly MirImageControl _expBar, _dim;
             private ClientMagic _magic;
 
-            public SkillRow(int index)
+            public SkillRow()
             {
-                _index = index;
-
-                _bg = new MirImageControl
+                // 行底 role_txtbg @79, verticalCenter（scale9）
+                new MirImageControl
                 {
-                    Parent = this,
-                    Location = new Point(0, 2),
-                    Size = new Size(RowW - 4, RowH - 4),
-                    AutoSize = false,
-                    NotControl = true,
-                    Texture = DefTex,
-                    ForeColour = RowFill,
+                    Parent = this, AtlasNameKey = RoleSheet + "#role_txtbg",
+                    Location = new Point(79, 7), Size = new Size(193, 63), NotControl = true,
                 };
-
-                _icon = new MirButton
+                // 图标边框 equip_grid @9
+                new MirImageControl
                 {
-                    Parent = this,
-                    Location = new Point(8, 7),
-                    Size = new Size(56, 56),
-                    Sound = SoundList.ButtonA,
+                    Parent = this, AtlasNameKey = NGridSheet + "#equip_grid",
+                    Location = new Point(9, 10), Size = new Size(60, 57), NotControl = true,
                 };
-                _icon.Click += (o, e) =>
+                _icon = new MirImageControl
                 {
-                    if (_magic == null || _magic.Level == 0 || GameScene.User == null || GameScene.User.Dead)
-                        return;
-                    new AssignKeyPanel(_magic, 1, new string[]
-                    {
-                        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8",
-                        "Ctrl" + Environment.NewLine + "F1", "Ctrl" + Environment.NewLine + "F2",
-                        "Ctrl" + Environment.NewLine + "F3", "Ctrl" + Environment.NewLine + "F4",
-                        "Ctrl" + Environment.NewLine + "F5", "Ctrl" + Environment.NewLine + "F6",
-                        "Ctrl" + Environment.NewLine + "F7", "Ctrl" + Environment.NewLine + "F8",
-                    }) { Actor = GameScene.User };
+                    Parent = this, Location = new Point(12, 11), Size = new Size(56, 56), NotControl = true,
                 };
-
                 _name = new MirLabel
                 {
-                    Parent = this,
-                    Location = new Point(72, 8),
-                    Size = new Size(120, 22),
-                    AutoSize = false,
-                    DrawFormat = new TextStyle(TextAnchor.UpperLeft),
-                    ForeColour = Color.White,
+                    Parent = this, Location = new Point(84, 8), Size = new Size(140, 30),
+                    DrawFormat = new TextStyle(TextAnchor.MiddleLeft), NotControl = true,
                 };
-
                 _level = new MirLabel
                 {
-                    Parent = this,
-                    Location = new Point(RowW - 62, 8),
-                    Size = new Size(54, 22),
-                    AutoSize = false,
-                    DrawFormat = new TextStyle(TextAnchor.UpperRight),
-                    ForeColour = Color.Yellow,
+                    Parent = this, Location = new Point(228, 9), Size = new Size(42, 30),
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter), NotControl = true,
                 };
-
-                _expBack = new MirImageControl
+                _expBar = new MirImageControl
                 {
-                    Parent = this,
-                    Location = new Point(72, 38),
-                    Size = new Size(RowW - 84, 8),
-                    AutoSize = false,
-                    NotControl = true,
-                    Texture = DefTex,
-                    ForeColour = new Color(18, 22, 38),
+                    Parent = this, AtlasNameKey = RoleSheet + "#z_skill_exp",
+                    Location = new Point(84, 47), Size = new Size(50, 14), NotControl = true,
                 };
-                _expFill = new MirImageControl
+                _point = new MirLabel
                 {
-                    Parent = this,
-                    Location = new Point(72, 38),
-                    Size = new Size(0, 8),
-                    AutoSize = false,
-                    NotControl = true,
-                    Texture = DefTex,
-                    ForeColour = Color.LimeGreen,
+                    Parent = this, Location = new Point(139, 47), Size = new Size(90, 18),
+                    DrawFormat = new TextStyle(TextAnchor.MiddleLeft), NotControl = true,
                 };
-
-                _key = new MirLabel
+                // "设置/清空"按钮（JS txt_state @234,50；点击弹数字键面板）
+                _state = new MirLabel
                 {
-                    Parent = this,
-                    Location = new Point(72, 50),
-                    Size = new Size(RowW - 84, 16),
-                    AutoSize = false,
-                    DrawFormat = new TextStyle(TextAnchor.UpperLeft),
-                    ForeColour = Color.LightGray,
-                };
-
-                _hint = new MirLabel
-                {
-                    Parent = this,
-                    Location = new Point(8, 52),
-                    Size = new Size(56, 14),
-                    AutoSize = false,
+                    Parent = this, Location = new Point(230, 48), Size = new Size(44, 20),
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                    ForeColour = Color.Gold,
-                    Text = "快捷键",
+                    ForeColour = Color.FromArgb(255, 90, 200), NotControl = true,
                 };
 
-                BeforeDraw += (o, e) =>
+                // 未学灰罩（JS img_rect，半透明）
+                _dim = new MirImageControl
                 {
-                    _bg.ForeColour = MirControl.MouseControl == this || MirControl.MouseControl == _icon ? RowHover : RowFill;
+                    Parent = this, Location = new Point(0, 0), Size = new Size(RowW, RowH),
+                    Texture = KDefaultRes.DefaultTexture2D, ForeColour = Color.FromArgb(100, 0, 0, 0),
+                    NotControl = true, Visible = false,
                 };
+
+                Click += (o, e) => OnAssignKey?.Invoke(_magic);
             }
 
             public void Update(ClientMagic magic)
             {
                 _magic = magic;
-                if (magic == null)
+                string url = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                if (!string.IsNullOrEmpty(url))
                 {
-                    Visible = false;
-                    return;
-                }
-
-                bool learned = magic.Level > 0;
-                // 原始传奇技能图标：按 OriginIcon 从 CDN 加载；无图标号的技能回落本地 MagIcon2 帧。
-                string skillIconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                if (!string.IsNullOrEmpty(skillIconUrl))
-                {
-                    _icon.ImageUrl = skillIconUrl;
-                    _icon.ForeColour = Color.White;   // Texture 通道按 ForeColour 着色，白色=原色
+                    _icon.ImageUrl = url;
+                    _icon.ForeColour = Color.White;
                 }
                 else
                 {
                     _icon.ImageUrl = null;
                     _icon.Library = Libraries.MagIcon2;
                     _icon.Index = magic.Icon * 2;
-                    _icon.PressedIndex = magic.Icon * 2 + 1;
                 }
+
+                bool learned = magic.Level > 0;
                 _name.Text = magic.Name;
-                _name.ForeColour = learned ? Color.White : Color.Gray;
-                _level.Text = learned ? "Lv" + magic.Level : "未学";
-                _level.ForeColour = learned ? Color.Yellow : Color.Gray;
-                _hint.Text = learned ? "快捷键" : "未学";
-                _hint.ForeColour = learned ? Color.Gold : Color.Gray;
+                _name.ForeColour = learned ? LearnColour : UnlearnColour;
+                _level.Text = learned ? "Lv" + magic.Level : "";
+                _level.ForeColour = LearnColour;
+                _point.Text = learned ? ("技能点 " + magic.Level) : "未学习";
+                _point.ForeColour = learned ? Color.LightGray : UnlearnColour;
+                _expBar.Visible = learned;
+                _dim.Visible = !learned;
 
-                ushort need = magic.Level switch
-                {
-                    1 => magic.Need1,
-                    2 => magic.Need2,
-                    3 => magic.Need3,
-                    _ => magic.Need1,
-                };
-                float ratio = need > 0 ? Math.Min(1f, magic.Experience / (float)need) : 0f;
-                _expFill.Size = new Size(Math.Max(0, (int)((RowW - 84) * ratio)), 8);
-
-                _key.Text = magic.Key > 0
-                    ? "快捷键: " + KeyName(magic.Key)
-                    : "点击图标设置快捷键";
-            }
-
-            private static string KeyName(byte key)
-            {
-                if (key >= 1 && key <= 8) return "F" + key;
-                if (key >= 9 && key <= 16) return "Ctrl+F" + (key - 8);
-                return key.ToString();
+                // JS：该技能在 handyKeys 中 → "清空"，否则 → "设置"
+                bool assigned = GameScene.User != null && GameScene.User.Magics.Exists(m => m.Key > 0 && m.Spell == magic.Spell);
+                _state.Text = assigned ? "清空" : "设置";
+                _state.Visible = learned;
             }
         }
     }

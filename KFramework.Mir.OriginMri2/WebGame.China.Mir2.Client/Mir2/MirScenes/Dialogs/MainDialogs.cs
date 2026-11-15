@@ -1488,6 +1488,7 @@ namespace Client.MirScenes.Dialogs
                     Library = Libraries.MagIcon,
                     Parent = this,
                     Location = new Point(i * 25 + 15, 3),
+                    Size = new Size(24, 24),   // CDN Texture 通道按 Size 绘制
                 };
                 int j = i + 1;
                 Cells[i].Click += (o, e) =>
@@ -1602,6 +1603,7 @@ namespace Client.MirScenes.Dialogs
             for (var i = 1; i <= 8; i++)
             {
                 Cells[i - 1].Index = -1;
+                Cells[i - 1].ImageUrl = null;  // 清掉上一轮的 CDN 图标，避免换绑/解绑后残留
 
                 int offset = BarIndex * 8;
                 string key = GetKey(BarIndex, i);
@@ -1616,7 +1618,19 @@ namespace Client.MirScenes.Dialogs
 
                     //string key = m.Key > 8 ? string.Format("CTRL F{0}", i) : string.Format("F{0}", m.Key);
 
-                    Cells[i - 1].Index = magic.Icon * 2;
+                    // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png；无图标号回落本地图集。
+                    string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                    if (!string.IsNullOrEmpty(iconUrl))
+                    {
+                        Cells[i - 1].Library = null;
+                        Cells[i - 1].ImageUrl = iconUrl;
+                        Cells[i - 1].ForeColour = Color.White;
+                    }
+                    else
+                    {
+                        Cells[i - 1].Library = Libraries.MagIcon;
+                        Cells[i - 1].Index = magic.Icon * 2;
+                    }
                     Cells[i - 1].Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
                         (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
 
@@ -3220,6 +3234,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.MagIcon2,
                 Parent = this,
                 Location = new Point(36, 0),
+                Size = new Size(32, 32),   // CDN Texture 通道按 Size 绘制
                 Sound = SoundList.ButtonA,
             };
             SkillButton.Click += (o, e) =>
@@ -3682,8 +3697,20 @@ namespace Client.MirScenes.Dialogs
             }
 
 
-            SkillButton.Index = Magic.Icon * 2;
-            SkillButton.PressedIndex = Magic.Icon * 2 + 1;
+            // 原始传奇技能图标：按 OriginIcon 从 CDN 加载；无图标号回落本地图集帧。
+            string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(Magic.OriginIcon);
+            if (!string.IsNullOrEmpty(iconUrl))
+            {
+                SkillButton.Library = null;
+                SkillButton.ImageUrl = iconUrl;
+                SkillButton.ForeColour = Color.White;
+            }
+            else
+            {
+                SkillButton.Library = Libraries.MagIcon2;
+                SkillButton.Index = Magic.Icon * 2;
+                SkillButton.PressedIndex = Magic.Icon * 2 + 1;
+            }
 
             SetDelay();
         }
@@ -3712,13 +3739,24 @@ namespace Client.MirScenes.Dialogs
             }
         }
     }
+    /// <summary>
+    /// 技能数字键面板（主角/英雄通用）。按原始传奇 JS SkillHotKeySkin(516×217) 布局移植：
+    /// 技能图标 + "X快捷键设置为" 描述 + 16 个数字键网格(0~15) + 清空/确定按钮 + 双排技能栏勾选。
+    /// 图集全部走 CDN（y_skillhotkey-sheet），键号用 word_kjjsz_{n}，选中框 y_select。
+    /// 绑定沿用现有 C.MagicKey(Spell,Key) 协议，key = 键号 + KeyOffset（主角 offset=1 → F1..F16 槽位）。
+    /// </summary>
     public sealed class AssignKeyPanel : MirImageControl
     {
+        private const string Sheet = "y_skillhotkey-sheet";
+        private const string BgUrl = "resource/assets/gameui4/jpg/bg_kjjsz_01.png";
+        private const int PanelW = 516, PanelH = 217;
+
         public MirButton SaveButton, NoneButton;
         public UserObject Actor;
         public MirLabel TitleLabel;
         public MirImageControl MagicImage;
         public MirButton[] FKeys;
+        public MirImageControl[] SelectFrames;   // 每个数字键的选中框 y_select
 
         public ClientMagic Magic;
         public byte Key;
@@ -3731,105 +3769,155 @@ namespace Client.MirScenes.Dialogs
             KeyOffset = keyOffset;
 
             Modal = true;
-            Index = 710;
-            Library = Libraries.Prguse;
+            AutoSize = false;
+            Size = new Size(PanelW, PanelH);
             Location = Center;
             Parent = GameScene.Scene;
             Visible = true;
 
+            // 背景：bg_kjjsz_01.png（_Image1）+ 内框 bg_kjjsz_03（_Image3 @ 86,20）
+            var bg = new MirImageControl
+            {
+                Parent = this,
+                ImageKey = BgUrl,
+                Location = new Point(0, 0),
+                Size = new Size(PanelW, PanelH),
+                NotControl = true,
+            };
+            var inner = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = Sheet + "#bg_kjjsz_03",
+                Location = new Point(86, 20),
+                AutoSize = false,
+                Size = new Size(338, 90),
+                NotControl = true,
+            };
+
+            // 技能图标 38×38 @ (92,26)
             MagicImage = new MirImageControl
             {
-                Location = new Point(16, 16),
-                Index = magic.Icon * 2,
-                Library = Libraries.MagIcon2,
+                Location = new Point(92, 26),
                 Parent = this,
+                Size = new Size(38, 38),
+                NotControl = true,
             };
+            string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+            if (!string.IsNullOrEmpty(iconUrl))
+            {
+                MagicImage.ImageUrl = iconUrl;
+                MagicImage.ForeColour = Color.White;
+            }
+            else
+            {
+                MagicImage.Index = magic.Icon * 2;
+                MagicImage.Library = Libraries.MagIcon2;
+            }
 
+            // 描述文字 "X快捷键设置为" @ (150,38)
             TitleLabel = new MirLabel
             {
-                Location = new Point(49, 17),
+                Location = new Point(150, 38),
                 Parent = this,
                 Size = new Size(230, 32),
-                DrawFormat = new TextStyle(TextAnchor.UpperCenter, HorizontalWrapMode.Wrap),
-                Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SelectKey), magic.Name)
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
+                ForeColour = Color.White,
+                Text = magic.Name + "快捷键设置为"
             };
 
+            // 16 个数字键网格：8 列 × 2 行，起点 (33,91)，每格 44×42，横间距 0、纵间距 12（JS TileLayout）
+            FKeys = new MirButton[16];
+            SelectFrames = new MirImageControl[16];
+            for (byte i = 0; i < FKeys.Length; i++)
+            {
+                int col = i % 8, row = i / 8;
+                FKeys[i] = new MirButton
+                {
+                    Parent = this,
+                    AtlasNameKey = Sheet + "#btn_kjjsz_01",
+                    PressedAtlasFrame = "btn_kjjsz_02",
+                    Location = new Point(33 + 44 * col, 91 + (42 + 12) * row),
+                    Size = new Size(44, 42),
+                    Sound = SoundList.ButtonA,
+                };
+                // 数字图 word_kjjsz_{n}
+                var digit = new MirImageControl
+                {
+                    Parent = FKeys[i],
+                    AtlasNameKey = Sheet + "#word_kjjsz_" + i,
+                    Location = new Point(0, 0),
+                    Size = new Size(44, 42),
+                    NotControl = true,
+                };
+                // 选中框 y_select（来自 y_common-sheet）
+                SelectFrames[i] = new MirImageControl
+                {
+                    Parent = FKeys[i],
+                    AtlasNameKey = "y_common-sheet#y_select",
+                    Location = new Point(-4, -4),
+                    Size = new Size(52, 50),
+                    NotControl = true,
+                    Visible = false,
+                };
+                FKeys[i].Click += (o, e) => Key = (byte)(i + KeyOffset);
+            }
+
+            // 清空按钮 @ (397,86) / 确定按钮 @ (397,141)，各 85×46
             NoneButton = new MirButton
             {
-                Index = 287, //154
-                HoverIndex = 288,
-                PressedIndex = 289,
-                Library = Libraries.Title,
                 Parent = this,
-                Location = new Point(284, 64),
+                AtlasNameKey = Sheet + "#btn_kjjsz_01",
+                PressedAtlasFrame = "btn_kjjsz_02",
+                Location = new Point(397, 86),
+                Size = new Size(85, 46),
+                Sound = SoundList.ButtonA,
             };
-            NoneButton.Click += (o, e) => Key = 0;
+            var clearWord = new MirImageControl
+            {
+                Parent = NoneButton, AtlasNameKey = Sheet + "#word_kjjsz_18",
+                Location = new Point(0, 0), Size = new Size(85, 46), NotControl = true,
+            };
+            NoneButton.Click += (o, e) => { Key = 0; SaveAndClose(); };
 
             SaveButton = new MirButton
             {
-                Library = Libraries.Title,
                 Parent = this,
-                Location = new Point(284, 101),
-                Index = 156,
-                HoverIndex = 157,
-                PressedIndex = 158,
+                AtlasNameKey = Sheet + "#btn_kjjsz_01",
+                PressedAtlasFrame = "btn_kjjsz_02",
+                Location = new Point(397, 141),
+                Size = new Size(85, 46),
+                Sound = SoundList.ButtonA,
             };
-            SaveButton.Click += (o, e) =>
+            var okWord = new MirImageControl
+            {
+                Parent = SaveButton, AtlasNameKey = Sheet + "#word_kjjsz_17",
+                Location = new Point(0, 0), Size = new Size(85, 46), NotControl = true,
+            };
+            SaveButton.Click += (o, e) => SaveAndClose();
+
+            BeforeDraw += AssignKeyPanel_BeforeDraw;
+        }
+
+        private void SaveAndClose()
+        {
+            if (Actor != null)
             {
                 for (int i = 0; i < Actor.Magics.Count; i++)
-                {
-                    if (Actor.Magics[i].Key == Key)
-                        Actor.Magics[i].Key = 0;
-                }
+                    if (Actor.Magics[i].Key == Key) Actor.Magics[i].Key = 0;
 
                 Network.Enqueue(new C.MagicKey { Spell = Magic.Spell, Key = Key, OldKey = Magic.Key });
                 Magic.Key = Key;
                 foreach (SkillBarDialog Bar in GameScene.Scene.SkillBarDialogs)
                     Bar.Update();
-
-                Dispose();
-            };
-
-            FKeys = new MirButton[keyStrings.Length];
-
-            for (byte i = 0; i < FKeys.Length; i++)
-            {
-                FKeys[i] = new MirButton
-                {
-                    Index = 0,
-                    PressedIndex = 1,
-                    Library = Libraries.Prguse,
-                    Parent = this,
-                    Location = new Point(17 + 32 * (i % 8) + 5 * (i % 8 / 4), 58 + 37 * (i / 8)),
-                    Sound = SoundList.ButtonA,
-                    Text = keyStrings[i]
-                };
-                int num = i + keyOffset;
-                FKeys[i].Click += (o, e) =>
-                {
-                    Key = (byte)num;
-                };
             }
-
-            BeforeDraw += AssignKeyPanel_BeforeDraw;
+            Dispose();
         }
 
         private void AssignKeyPanel_BeforeDraw(object sender, EventArgs e)
         {
-            for (int i = 0; i < FKeys.Length; i++)
-            {
-                FKeys[i].Index = 1656;
-                FKeys[i].HoverIndex = 1657;
-                FKeys[i].PressedIndex = 1658;
-                FKeys[i].Visible = true;
-            }
-
             int key = Key - KeyOffset;
-            if (key < 0 || key > FKeys.Length) return;
-
-            FKeys[key].Index = 1658;
-            FKeys[key].HoverIndex = 1658;
-            FKeys[key].PressedIndex = 1658;
+            for (int i = 0; i < FKeys.Length; i++)
+                SelectFrames[i].Visible = (i == key);
         }
     }
     public sealed class DuraStatusDialog : MirImageControl
