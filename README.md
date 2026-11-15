@@ -4,7 +4,7 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
 一句话定位：**用纯 C# 编写浏览器 2D 游戏的一套引擎 / 框架**——把 .NET 编译为 WebAssembly，在浏览器里跑 C# 游戏逻辑，底层图形 / 输入 / 音频 / 内容管线由 `KFramework.MonoGame` 提供，浏览器能力通过 `KFramework.TSEngine`（TypeScript → JS）薄桥暴露。
 
-本仓库是 KCBWG 引擎本体与示例 / 测试 / 工具集；基于它复刻《原始传奇》页游的实际游戏工程在同级目录 `KFramework.Mir.OriginMri2/`。
+本仓库是 KCBWG 引擎本体与示例 / 测试 / 工具集。
 
 > ### ⚠️ 适用规模（选型前务必先看）
 >
@@ -17,7 +17,6 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
     ┌──────────────────────────────────────────────┐
     │  游戏业务（纯 C#，net10.0）                    │  ← 你写的代码
-    │  例：KFramework.Mir.OriginMri2 的 Mir2/ 业务   │
     └───────────────────┬──────────────────────────┘
                         │ 项目引用
     ┌───────────────────▼──────────────────────────┐
@@ -121,7 +120,7 @@ JS 是明文源码，打开浏览器开发者工具即可直接阅读、调试�
 
 AOT 发布后，`publish/wwwroot` 里每个文件会并存三套形态（原始 / `.gz` / `.br`，.NET 自动生成）。它们混在一起，看目录属性得到的是「三套之和」，**那不是客户端要下载的量**。按形态分开看：
 
-以传奇客户端（Mir2，Release + AOT + Trimmed）为例：
+以某个 Mir2传奇客户端（Release + AOT + Trimmed）为例：
 
 | 形态 | 文件数 | 体积 | 相对原始 |
 |---|---|---|---|
@@ -158,5 +157,4 @@ AOT 发布后，`publish/wwwroot` 里每个文件会并存三套形态（原始 
 | `KFramework.WebGame/KFramework.Test.*/` | Canvas2D / WebGL2 / WebGPU / Common 等渲染测试 |
 | `KFramework.WebGame/KFramework.Editor/` | 编辑器 |
 | `KFramework.WebGame/Need_DLL/`、`TestTool/` | 依赖 DLL 与测试工具 |
-| `KFramework.Mir.OriginMri2/` | 基于 KCBWG 复刻《原始传奇》页游的实际游戏工程（含服务端） |
 | `KFramework.Mir.Crystal/`、`KNI.Engine/`、`PixiJS.Engine/`、`WebAssemblyBrowserApp*/` | 其它技术路线 / 历史工程对照 |
