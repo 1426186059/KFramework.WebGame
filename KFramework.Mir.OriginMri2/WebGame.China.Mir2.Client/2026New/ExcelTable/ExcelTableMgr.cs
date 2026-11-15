@@ -78,7 +78,7 @@ public static partial class ExcelTableMgr
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ExcelTableMgr] 配置表加载失败：{ex}");
+            PrintTool.LogError($"[ExcelTableMgr] 配置表加载失败：{ex}");
         }
     }
 
@@ -110,7 +110,7 @@ public static partial class ExcelTableMgr
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[ExcelTableMgr] ItemInfo 加载失败：{ex}");
+            PrintTool.LogError($"[ExcelTableMgr] ItemInfo 加载失败：{ex}");
         }
     }
 

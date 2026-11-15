@@ -146,27 +146,6 @@ namespace WebGame.Mir2.MonoGame.Client
             // 默认 LocalMirrorUsesKeyPath=true 仅匹配「本地镜像按 key 原路径落盘」；默认 base 是 CDN，
             // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
             Mir2OriginResource.LocalMirrorUsesKeyPath = false;
-
-            // 资源（贴图库）是异步加载的，而场景离屏纹理只在首次绘制时烘焙一次。
-            // 若烘焙时库尚未就绪，场景会卡在默认背景色（整屏粉红）。因此每当有库加载完成，
-            // 就令当前活动场景递归失效、下一帧重新烘焙，纹理就绪后即可正常显示。
-            Libraries.LibraryLoaded += () =>
-            {
-                _libLoadedCount++;
-                // 每个库加载完都会整场景递归 Refresh → 下一帧全树重烘焙。
-                // 进 GameScene 时会首次触碰几十个库，这里计数以便确认“连续重烘焙”是不是卡顿来源。
-                //PrintTool.Log($"[Stall] LibraryLoaded #{_libLoadedCount} → 整场景 Refresh");
-                MirScene.ActiveScene?.Refresh();
-
-                // 地表（Floor）是单独烘焙到离屏 FloorTexture 的：CreateTexture 里只有
-                // "if (!FloorValid) DrawFloor();"，FloorValid 一旦为 true 就不再重烘焙。
-                // 而地图片库（尤其是几百 MB 的 Tiles）是异步加载的，首屏烘焙时它往往还没下载完，
-                // 那一版地板全是马赛克/空洞 —— 若不在这里让它失效，地板会永久停在那一版。
-                if (GameScene.Scene != null && GameScene.Scene.MapControl != null)
-                    GameScene.Scene.MapControl.FloorValid = false;
-            };
-
-
             setStatus?.Invoke("加载配置表…");
             await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
 
@@ -263,7 +242,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.Clean(); // Clean once a second.
             }
 
-            if (!(MirScene.ActiveScene is InitLoadingScene))
+            if (MirScene.ActiveScene != null && !(MirScene.ActiveScene is InitLoadingScene))
             {
                 Network.Process();
             }
