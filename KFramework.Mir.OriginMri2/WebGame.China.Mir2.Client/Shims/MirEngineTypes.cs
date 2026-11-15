@@ -1,8 +1,10 @@
 using System;
+using EngineSize = KFramework.MonoGame.Size;
 
 namespace MirEngine
 {
-    // ===== 几何值类型（MirEngine 的 Point/Size/Rectangle 系列，纯数学、无 Browser 依赖）=====
+    // ===== 几何值类型（MirEngine 的 Point/Rectangle 系列，纯数学、无 Browser 依赖）=====
+    // Size 已统一为引擎的 KFramework.MonoGame.Size（见全局 using 别名）；本文件只保留 Point/PointF/Rectangle/RectangleF/SizeF。
 
     public struct Point
     {
@@ -17,20 +19,20 @@ namespace MirEngine
         public int Y { get => y; set => y = value; }
 
         public Point(int x, int y) { this.x = x; this.y = y; }
-        public Point(Size sz) { x = sz.Width; y = sz.Height; }
+        public Point(EngineSize sz) { x = sz.Width; y = sz.Height; }
         public Point(int dw) { x = (short)LOWORD(dw); y = (short)HIWORD(dw); }
 
         public static implicit operator PointF(Point p) => new PointF(p.X, p.Y);
-        public static explicit operator Size(Point p) => new Size(p.X, p.Y);
+        public static explicit operator EngineSize(Point p) => new EngineSize(p.X, p.Y);
 
-        public static Point operator +(Point pt, Size sz) => Add(pt, sz);
-        public static Point operator -(Point pt, Size sz) => Subtract(pt, sz);
+        public static Point operator +(Point pt, EngineSize sz) => Add(pt, sz);
+        public static Point operator -(Point pt, EngineSize sz) => Subtract(pt, sz);
 
         public static bool operator ==(Point left, Point right) => left.X == right.X && left.Y == right.Y;
         public static bool operator !=(Point left, Point right) => !(left == right);
 
-        public static Point Add(Point pt, Size sz) => new Point(pt.X + sz.Width, pt.Y + sz.Height);
-        public static Point Subtract(Point pt, Size sz) => new Point(pt.X - sz.Width, pt.Y - sz.Height);
+        public static Point Add(Point pt, EngineSize sz) => new Point(pt.X + sz.Width, pt.Y + sz.Height);
+        public static Point Subtract(Point pt, EngineSize sz) => new Point(pt.X - sz.Width, pt.Y - sz.Height);
 
         public static Point Ceiling(PointF value) => new Point((int)Math.Ceiling(value.X), (int)Math.Ceiling(value.Y));
         public static Point Truncate(PointF value) => new Point((int)value.X, (int)value.Y);
@@ -77,16 +79,16 @@ namespace MirEngine
 
         public PointF(float x, float y) { this.x = x; this.y = y; }
 
-        public static PointF operator +(PointF pt, Size sz) => Add(pt, sz);
-        public static PointF operator -(PointF pt, Size sz) => Subtract(pt, sz);
+        public static PointF operator +(PointF pt, EngineSize sz) => Add(pt, sz);
+        public static PointF operator -(PointF pt, EngineSize sz) => Subtract(pt, sz);
         public static PointF operator +(PointF pt, SizeF sz) => Add(pt, sz);
         public static PointF operator -(PointF pt, SizeF sz) => Subtract(pt, sz);
 
         public static bool operator ==(PointF left, PointF right) => left.X == right.X && left.Y == right.Y;
         public static bool operator !=(PointF left, PointF right) => !(left == right);
 
-        public static PointF Add(PointF pt, Size sz) => new PointF(pt.X + (float)sz.Width, pt.Y + (float)sz.Height);
-        public static PointF Subtract(PointF pt, Size sz) => new PointF(pt.X - (float)sz.Width, pt.Y - (float)sz.Height);
+        public static PointF Add(PointF pt, EngineSize sz) => new PointF(pt.X + (float)sz.Width, pt.Y + (float)sz.Height);
+        public static PointF Subtract(PointF pt, EngineSize sz) => new PointF(pt.X - (float)sz.Width, pt.Y - (float)sz.Height);
         public static PointF Add(PointF pt, SizeF sz) => new PointF(pt.X + sz.Width, pt.Y + sz.Height);
         public static PointF Subtract(PointF pt, SizeF sz) => new PointF(pt.X - sz.Width, pt.Y - sz.Height);
 
@@ -99,58 +101,6 @@ namespace MirEngine
 
         public override int GetHashCode() => base.GetHashCode();
         public override string ToString() => $"({X}, {Y})";
-    }
-
-    public struct Size
-    {
-        public static readonly Size Empty;
-
-        private int width;
-        private int height;
-
-        public bool IsEmpty => width == 0 && height == 0;
-
-        public int Width { get => width; set => width = value; }
-        public int Height { get => height; set => height = value; }
-
-        public Size(Point pt) { width = pt.X; height = pt.Y; }
-        public Size(int width, int height) { this.width = width; this.height = height; }
-
-        public static implicit operator SizeF(Size p) => new SizeF(p.Width, p.Height);
-
-        // 引擎通用文本库（KFramework.MonoGame.TextRenderer）的度量结果可直接当作本工程的 Size 使用，
-        // 例如 Size s = TextRenderer.MeasureText(...)，避免调用处逐个字段转换。
-        public static implicit operator Size(KFramework.MonoGame.Size s)
-            => new Size(s.Width, s.Height);
-
-        // 引擎通用文本库（KFramework.MonoGame.TextBox）的 Size 可直接当作本工程的 Size 使用，
-        // 例如 TextBox.Size = this.Size，避免调用处逐个字段转换。
-        public static implicit operator KFramework.MonoGame.Size(Size s)
-            => new KFramework.MonoGame.Size(s.Width, s.Height);
-
-        public static Size operator +(Size sz1, Size sz2) => Add(sz1, sz2);
-        public static Size operator -(Size sz1, Size sz2) => Subtract(sz1, sz2);
-
-        public static bool operator ==(Size sz1, Size sz2) => sz1.Width == sz2.Width && sz1.Height == sz2.Height;
-        public static bool operator !=(Size sz1, Size sz2) => !(sz1 == sz2);
-
-        public static explicit operator Point(Size size) => new Point(size.Width, size.Height);
-
-        public static Size Add(Size sz1, Size sz2) => new Size(sz1.Width + sz2.Width, sz1.Height + sz2.Height);
-        public static Size Ceiling(SizeF value) => new Size((int)Math.Ceiling(value.Width), (int)Math.Ceiling(value.Height));
-        public static Size Subtract(Size sz1, Size sz2) => new Size(sz1.Width - sz2.Width, sz1.Height - sz2.Height);
-        public static Size Truncate(SizeF value) => new Size((int)value.Width, (int)value.Height);
-        public static Size Round(SizeF value) => new Size((int)Math.Round(value.Width), (int)Math.Round(value.Height));
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is Size)) return false;
-            Size size = (Size)obj;
-            return size.width == width && size.height == height;
-        }
-
-        public override int GetHashCode() => width ^ height;
-        public override string ToString() => $"{{Width={Width}, Height={Height}}}";
     }
 
     public struct SizeF
@@ -190,7 +140,7 @@ namespace MirEngine
         public override int GetHashCode() => base.GetHashCode();
 
         public PointF ToPointF() => (PointF)this;
-        public Size ToSize() => Size.Truncate(this);
+        public EngineSize ToSize() => new EngineSize((int)Width, (int)Height);
         public override string ToString() => $"{{Width={Width}, Height={Height}}}";
     }
 
@@ -204,7 +154,7 @@ namespace MirEngine
         private int height;
 
         public Point Location { get => new Point(X, Y); set { X = value.X; Y = value.Y; } }
-        public Size Size { get => new Size(Width, Height); set { Width = value.Width; Height = value.Height; } }
+        public EngineSize Size { get => new EngineSize(Width, Height); set { Width = value.Width; Height = value.Height; } }
 
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
@@ -219,7 +169,7 @@ namespace MirEngine
         public bool IsEmpty => height == 0 && width == 0 && x == 0 && y == 0;
 
         public Rectangle(int x, int y, int width, int height) { this.x = x; this.y = y; this.width = width; this.height = height; }
-        public Rectangle(Point location, Size size) { x = location.X; y = location.Y; width = size.Width; height = size.Height; }
+        public Rectangle(Point location, EngineSize size) { x = location.X; y = location.Y; width = size.Width; height = size.Height; }
 
         public static Rectangle FromLTRB(int left, int top, int right, int bottom) => new Rectangle(left, top, right - left, bottom - top);
 
@@ -244,7 +194,7 @@ namespace MirEngine
         public override int GetHashCode() => X ^ (Y << 13) ^ (Width << 26) ^ (Height << 7);
 
         public void Inflate(int width, int height) { X -= width; Y -= height; Width += 2 * width; Height += 2 * height; }
-        public void Inflate(Size size) => Inflate(size.Width, size.Height);
+        public void Inflate(EngineSize size) => Inflate(size.Width, size.Height);
         public static Rectangle Inflate(Rectangle rect, int x, int y) { Rectangle r = rect; r.Inflate(x, y); return r; }
 
         public void Intersect(Rectangle rect) { Rectangle r = Intersect(rect, this); X = r.X; Y = r.Y; Width = r.Width; Height = r.Height; }

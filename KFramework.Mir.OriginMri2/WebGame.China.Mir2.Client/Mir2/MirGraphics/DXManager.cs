@@ -30,14 +30,14 @@ namespace Client.MirGraphics
         public static int DPSCounter;
 
 
-        public static MirEngine.Size FullScreenSize
+        public static Size FullScreenSize
         {
             get
             {
                 var pp = GDevice?.PresentationParameters;
                 int w = pp != null && pp.BackBufferWidth > 0 ? pp.BackBufferWidth : GDevice.Viewport.Width;
                 int h = pp != null && pp.BackBufferHeight > 0 ? pp.BackBufferHeight : GDevice.Viewport.Height;
-                return new MirEngine.Size(w, h);
+                return new Size(w, h);
             }
         }
 
