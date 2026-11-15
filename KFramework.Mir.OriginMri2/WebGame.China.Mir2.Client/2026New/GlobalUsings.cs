@@ -5,3 +5,4 @@ global using TextStyle = KFramework.MonoGame.TextStyle;
 global using TextAnchor = KFramework.MonoGame.TextAnchor;
 global using HorizontalWrapMode = KFramework.MonoGame.HorizontalWrapMode;
 global using VerticalWrapMode = KFramework.MonoGame.VerticalWrapMode;
+global using PrintTool = KFramework.MonoGame.PrintTool;

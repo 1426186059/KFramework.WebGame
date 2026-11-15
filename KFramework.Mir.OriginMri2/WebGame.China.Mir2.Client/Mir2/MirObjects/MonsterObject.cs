@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirSounds;
@@ -472,9 +472,9 @@ namespace Client.MirObjects
                 {
                     CurrentAction = Stoned ? MirAction.Stoned : MirAction.Standing;
                     if (CurrentAction == MirAction.Standing) CurrentAction = SitDown ? MirAction.SitDown : MirAction.Standing;
-                    if (Dead && CurrentAction == MirAction.Standing) Console.WriteLine($"DBG:BUG-DeadToStanding id={ObjectID}");
+                    if (Dead && CurrentAction == MirAction.Standing) PrintTool.Log($"DBG:BUG-DeadToStanding id={ObjectID}");
                 }
-                if (Dead) Console.WriteLine($"DBG:SetAction-EmptyFeed-Dead id={ObjectID} -> {CurrentAction}");
+                if (Dead) PrintTool.Log($"DBG:SetAction-EmptyFeed-Dead id={ObjectID} -> {CurrentAction}");
 
                 Frames.TryGetValue(CurrentAction, out Frame);
 
@@ -506,7 +506,7 @@ namespace Client.MirObjects
                 CurrentActionLevel = 0;
                 CurrentAction = action.Action;
                 if (Dead && action.Action != MirAction.Dead && action.Action != MirAction.Skeleton && action.Action != MirAction.Revive)
-                    Console.WriteLine($"DBG:SetAction-Dead->{action.Action} id={ObjectID}");
+                    PrintTool.Log($"DBG:SetAction-Dead->{action.Action} id={ObjectID}");
                 CurrentLocation = action.Location;
                 Direction = action.Direction;
 
@@ -1147,7 +1147,7 @@ namespace Client.MirObjects
             {
                 if (Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Monster, _originModel, action, drawDir)
                     || Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Monster, _originModel, action, 0))
-                    Console.WriteLine($"DBG:EnsureCdnFrame-空动画 id={ObjectID} model={_originModel} 切到 [{Mir2OriginObjectLibrary.ActionName(action)}] 但图集已缺失");
+                    PrintTool.Log($"DBG:EnsureCdnFrame-空动画 id={ObjectID} model={_originModel} 切到 [{Mir2OriginObjectLibrary.ActionName(action)}] 但图集已缺失");
                 Frame = new Frame(0, 1, 0, 120);
             }
         }
@@ -3544,7 +3544,7 @@ namespace Client.MirObjects
                             FrameIndex = Frame.Count - 1;
                             ActionFeed.Clear();
                             ActionFeed.Add(new QueuedAction { Action = MirAction.Dead, Direction = Direction, Location = CurrentLocation });
-                            Console.WriteLine($"DBG:DIE-COMPLETE id={ObjectID} Dead={Dead}");
+                            PrintTool.Log($"DBG:DIE-COMPLETE id={ObjectID} Dead={Dead}");
                             SetAction();
                         }
                         else
