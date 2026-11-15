@@ -144,6 +144,7 @@ namespace Client.MirControls
         //加载非阻塞等待的资源
         private async Task PreLoad_NotNeedWaitRes()
         {
+            //选择 目标NPC/怪物 的选中特效动画
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, 15033, 1, 4, Mir2OriginObjectLibrary.PriorityVisible);
         }
 
