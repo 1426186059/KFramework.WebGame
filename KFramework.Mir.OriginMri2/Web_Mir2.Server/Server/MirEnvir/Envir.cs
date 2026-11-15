@@ -1124,6 +1124,42 @@ namespace Server.MirEnvir
         }
 
         /// <summary>
+        /// 原始传奇技能移植：玩家可见技能（IsShow=1）按职业（Cls：1战/2法/3道）在学习等级自动学会。
+        /// Condition = 10000 + 学习等级（如 10007 = 7 级）。普通攻击(Condition=10001,Spell=10101)不纳入，
+        /// 普攻走引擎 Spell.None=0，不需要作为技能学习。
+        /// </summary>
+        public List<MagicInfo> GetLearnableSkills(MirClass playerClass)
+        {
+            int cls = playerClass switch
+            {
+                MirClass.Warrior => 1,
+                MirClass.Wizard => 2,
+                MirClass.Taoist => 3,
+                _ => -1,
+            };
+            var result = new List<MagicInfo>();
+            if (cls < 0) return result;
+
+            for (int i = 0; i < MagicInfoList.Count; i++)
+            {
+                MagicInfo info = MagicInfoList[i];
+                if (info == null || info.IsShow != 1 || info.Cls != cls) continue;
+                // condition 10001 = 普通攻击等 1 级无门槛技能，跳过（普攻不占技能栏）。
+                if (info.Condition <= 10001) continue;
+                result.Add(info);
+            }
+            return result;
+        }
+
+        /// <summary>技能学习等级：Condition - 10000（如 10007 → 7），钳制到 [1,255]。</summary>
+        public static int GetLearnLevel(MagicInfo info)
+        {
+            if (info == null) return 0;
+            int level = info.Condition >= 10000 ? info.Condition - 10000 : info.Condition;
+            return Math.Max(1, Math.Min(byte.MaxValue, level));
+        }
+
+        /// <summary>
         /// 地图 NPC 摆放来自 NPCInfo.OriginSettings.Placements：构建期 Mir2NPCConverter 已把
         /// 5config.mapnpc 的摆放点内嵌到每条 NPC 定义，运行时不再读分片。
         /// MapInfo.CreateMap 会按 MapId 把每个摆放点挂到对应地图，一个 NPC 定义可生成多个实例。

@@ -267,6 +267,50 @@ namespace Server.MirObjects
             }
 
             Info.LastLoginDate = Envir.Now;
+
+            // 原始传奇技能移植：登录时按职业+等级补学技能（老角色存档技能为空也能补齐）。
+            LearnOriginSkills(false);
+        }
+
+        /// <summary>
+        /// 原始传奇技能移植：把本职业全部可学技能加入 Magics（对齐原版"未学也可见"机制，
+        /// 原版 MagicButton.Update 有 case 0，未学技能 Level=0 但仍在列表里）。
+        /// 已达学习等级(Condition-10000)的 Level=1，未达的 Level=0；升级时把刚达等级的 0 提升为 1 并下发。
+        /// notify 仅控制升级解锁时是否单独发包（登录包会统一下发全部，含 Level=0）。
+        /// </summary>
+        public void LearnOriginSkills(bool notify)
+        {
+            if (Info == null) return;
+            var learnable = Envir.GetLearnableSkills(Info.Class);
+
+            foreach (MagicInfo info in learnable)
+            {
+                UserMagic magic = null;
+                for (int i = 0; i < Info.Magics.Count; i++)
+                {
+                    if (Info.Magics[i] != null && Info.Magics[i].Spell == info.Spell)
+                    {
+                        magic = Info.Magics[i];
+                        break;
+                    }
+                }
+
+                bool reached = Envir.GetLearnLevel(info) <= Level;
+
+                if (magic == null)
+                {
+                    magic = new UserMagic(info.Spell);
+                    if (magic.Info == null) continue;
+                    magic.Level = reached ? (byte)1 : (byte)0;
+                    Info.Magics.Add(magic);
+                    if (reached && notify) SendMagicInfo(magic);
+                }
+                else if (reached && magic.Level == 0)
+                {
+                    magic.Level = 1;
+                    if (notify) SendMagicInfo(magic);
+                }
+            }
         }
 
         public void StopGame(byte reason)
@@ -940,6 +984,9 @@ namespace Server.MirObjects
             CallDefaultNPC(DefaultNPCType.LevelUp);
 
             base.LevelUp();
+
+            // 原始传奇技能移植：升级后按职业+等级解锁新技能并即时下发。
+            LearnOriginSkills(true);
 
             // 升级时由任务调度器接取因等级达成而新开放的任务（等级任务）。
             QuestScheduler.CheckLevelUp(Level);
@@ -3344,7 +3391,8 @@ namespace Server.MirObjects
                         player = this;
                         Spell skill;
 
-                        if (!Enum.TryParse(parts.Length > 3 ? parts[2] : parts[1], true, out skill) || !Enum.IsDefined(skill)) return;
+                        // 允许原始传奇技能 id（如 1000097，超出 Spell 枚举定义但 Enum.TryParse 数字串可解析）。
+                        if (!Enum.TryParse(parts.Length > 3 ? parts[2] : parts[1], true, out skill)) return;
 
                         if (skill == Spell.None) return;
 
@@ -3364,6 +3412,12 @@ namespace Server.MirObjects
                         }
 
                         var magic = new UserMagic(skill) { Level = spellLevel };
+
+                        if (magic.Info == null)  // 技能表里不存在该 Spell（非法 id）
+                        {
+                            ReceiveChat($"技能不存在: {parts[2]}", ChatType.System);
+                            return;
+                        }
 
                         if (player.Info.Magics.Any(e => e.Spell == skill))
                         {

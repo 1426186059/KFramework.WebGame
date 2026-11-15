@@ -3404,6 +3404,13 @@ namespace Server.MirObjects
                 return;
             }
 
+            // 未学技能（Level=0，仅用于面板展示）不允许释放。
+            if (magic.Level == 0)
+            {
+                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
+                return;
+            }
+
             if ((location.X != 0) && (location.Y != 0) && magic.Info.Range != 0 && Functions.InRange(CurrentLocation, location, magic.Info.Range) == false) return;
 
             if (Hidden)
@@ -3487,7 +3494,13 @@ namespace Server.MirObjects
 
             bool cast = true;
             byte level = magic.Level;
-            switch (spell)
+
+            // 原始传奇技能（Spell 超出引擎旧枚举值域）：走数据驱动通用施法，不进下面的硬编码 switch。
+            if ((int)spell > 218 && magic.Info != null)
+            {
+                if (!OriginMagicCast(magic, target, location)) targetID = 0;
+            }
+            else switch (spell)
             {
                 case Spell.FireBall:
                 case Spell.GreatFireBall:
@@ -3927,6 +3940,65 @@ namespace Server.MirObjects
         #endregion
 
         #region Wizard Skills
+        /// <summary>
+        /// 原始传奇技能通用施法：对 Spell 超出引擎旧枚举(&gt;218)的技能，按配置表的 Aoe/职业攻击属性结算伤害。
+        /// 战士用 DC、法师用 MC、道士用 SC；Aoe=1 走 3x3 群体，否则单体。伤害走 DelayedType.Damage 通用结算。
+        /// 治疗/增益类(TargetType=3，如无极真气)不造成伤害，作用于自身并标记施法成功。
+        /// </summary>
+        private bool OriginMagicCast(UserMagic magic, MapObject target, Point location)
+        {
+            if (magic == null || magic.Info == null) return false;
+
+            // 增益/自身类技能：有目标就指向目标，否则自身，不造成伤害。
+            if (magic.Info.TargetType == 3)
+                return true;
+
+            if (target == null || !target.IsAttackTarget(this))
+                return false;
+
+            Stat minStat, maxStat;
+            switch (Info == null ? MirClass.Warrior : Info.Class)
+            {
+                case MirClass.Wizard:
+                    minStat = Stat.MinMC; maxStat = Stat.MaxMC; break;
+                case MirClass.Taoist:
+                    minStat = Stat.MinSC; maxStat = Stat.MaxSC; break;
+                default:
+                    minStat = Stat.MinDC; maxStat = Stat.MaxDC; break;
+            }
+
+            int damage = magic.GetDamage(GetAttackPower(Stats[minStat], Stats[maxStat]));
+            long delay = Functions.MaxDistance(CurrentLocation, target.CurrentLocation) * 50 + 500;
+
+            if (magic.Info.Aoe == 1)
+            {
+                // 群体：以目标所在格为中心的 3x3，逐目标发射通用伤害。
+                Point center = target.CurrentLocation;
+                for (int y = center.Y - 1; y <= center.Y + 1; y++)
+                {
+                    if (y < 0 || y >= CurrentMap.Height) continue;
+                    for (int x = center.X - 1; x <= center.X + 1; x++)
+                    {
+                        if (x < 0 || x >= CurrentMap.Width) continue;
+                        Cell cell = CurrentMap.GetCell(x, y);
+                        if (!cell.Valid || cell.Objects == null) continue;
+                        foreach (MapObject ob in cell.Objects.ToArray())
+                        {
+                            if (ob == null || !ob.IsAttackTarget(this)) continue;
+                            ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, ob, damage, DefenceType.MAC, false));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, target, damage, DefenceType.MAC, false));
+            }
+
+            LevelMagic(magic);
+            return true;
+        }
+
         private bool Fireball(MapObject target, UserMagic magic)
         {
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;

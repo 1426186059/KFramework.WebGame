@@ -47,11 +47,12 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Text = "技能",
-                Location = new Point(16, 16),
-                Size = new Size(PanelW - 60, 24),
-                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                ForeColour = Color.BurlyWood,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Location = new Point(0, 20),
+                Size = new Size(PanelW, 30),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
+                ForeColour = Color.White,
+                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
+                NotControl = true
             };
 
             _scroll = new MirScrollView
@@ -67,7 +68,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = Sheet + "#com_btn_close0",
                 PressedAtlasFrame = "com_btn_close1",
                 Parent = this,
-                Location = new Point(Size.Width - 30, 10),
+                Location = new Point(Size.Width - 30, 60),
                 Size = new Size(26, 26),
                 Sound = SoundList.ButtonA,
             };
@@ -194,7 +195,7 @@ namespace Client.MirScenes.Dialogs
                 };
                 _icon.Click += (o, e) =>
                 {
-                    if (_magic == null || GameScene.User == null || GameScene.User.Dead)
+                    if (_magic == null || _magic.Level == 0 || GameScene.User == null || GameScene.User.Dead)
                         return;
                     new AssignKeyPanel(_magic, 1, new string[]
                     {
@@ -283,11 +284,16 @@ namespace Client.MirScenes.Dialogs
                     return;
                 }
 
+                bool learned = magic.Level > 0;
                 int iconIndex = magic.Icon * 2;
                 _icon.Index = iconIndex;
                 _icon.PressedIndex = iconIndex + 1;
                 _name.Text = magic.Name;
-                _level.Text = "Lv" + magic.Level;
+                _name.ForeColour = learned ? Color.White : Color.Gray;
+                _level.Text = learned ? "Lv" + magic.Level : "未学";
+                _level.ForeColour = learned ? Color.Yellow : Color.Gray;
+                _hint.Text = learned ? "快捷键" : "未学";
+                _hint.ForeColour = learned ? Color.Gold : Color.Gray;
 
                 ushort need = magic.Level switch
                 {
