@@ -35,12 +35,13 @@ namespace Client.MirScenes.Dialogs
         private static readonly Color ButtonBorder = new Color(120, 150, 200);
         private static readonly Color TabInactive = new Color(40, 46, 70);
         private static readonly Color TabActive = new Color(86, 116, 176);
-        private static readonly Color ItemRowFill = new Color(30, 36, 56);
+        private static readonly Color ItemRowFill = new Color(45, 54, 84);
         private static readonly Color ItemRowHover = new Color(70, 98, 152);
+        private static readonly Color RowFillA = new Color(45, 54, 84);
 
         // 窗口
         private MirButton CloseButton;
-        private MirButton GMCommandTab, ItemTab;
+        private MirButton GMCommandTab, ItemTab, DebugTab;
 
         // GM 命令面板（用 ScrollView 承载长列表，离屏烘焙天然裁掉溢出，自带竖直滚动条）
         private MirScrollView GMCommandScrollView;
@@ -48,6 +49,10 @@ namespace Client.MirScenes.Dialogs
 
         // 物品面板
         private MirImageControl ItemPanel;
+
+        // 调试开关面板（地图物体绘制区域 / MirControl 绘制区域）
+        private MirImageControl DebugPanel;
+        private MirButton MapRegionToggle, ControlRegionToggle;
 
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
@@ -179,6 +184,16 @@ namespace Client.MirScenes.Dialogs
             ItemTab.Label.ForeColour = Color.White;
             ItemTab.Click += (o, e) => ShowItemTab();
 
+            DebugTab = new MirButton
+            {
+                Parent = this, AutoSize = false, Size = new Size(120, 26),
+                Location = new Point(ContentX + 250, 14), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = TabInactive, Border = true, BorderColour = ButtonBorder,
+            };
+            DebugTab.Label.Text = "调试显示";
+            DebugTab.Label.ForeColour = Color.White;
+            DebugTab.Click += (o, e) => ShowDebugTab();
+
             // —— GM 命令面板（ScrollView 承载长列表）——
             GMCommandScrollView = new MirScrollView
             {
@@ -225,24 +240,84 @@ namespace Client.MirScenes.Dialogs
                 BackColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
+            // —— 调试显示面板 ——
+            DebugPanel = new MirImageControl
+            {
+                Parent = this, AutoSize = false, Visible = false,
+                Location = new Point(ContentX, ContentY),
+                Size = new Size(Size.Width - ContentX - 28, Size.Height - ContentY - 12),
+                Texture = DefTex, ForeColour = PanelFill, Border = true, BorderColour = PanelBorder,
+            };
+
+            BuildDebugRow("是否显示地图上物体的绘制区域", 30, out MapRegionToggle, () => Client.MirObjects.MapObject.DebugShowDrawLocation, v => Client.MirObjects.MapObject.DebugShowDrawLocation = v);
+            BuildDebugRow("是否显示 MirControl 的绘制区域", 74, out ControlRegionToggle, () => MirControl.DebugShowDrawRegion, v => MirControl.DebugShowDrawRegion = v);
+
             ShowGMCommandTab();
+        }
+
+        /// <summary>构建一行调试开关：左侧说明 + 右侧切换按钮（文字随当前值在"显示/不显示"间切换）。</summary>
+        private void BuildDebugRow(string text, int y, out MirButton button, Func<bool> get, Action<bool> set)
+        {
+            var rowBg = new MirImageControl
+            {
+                Parent = DebugPanel, AutoSize = false,
+                Location = new Point(4, y - 4),
+                Size = new Size(DebugPanel.Size.Width - 8, 34),
+                Texture = DefTex, ForeColour = RowFillA,
+            };
+
+            var label = new MirLabel
+            {
+                Parent = DebugPanel, Location = new Point(16, y), Size = new Size(440, 26),
+                Text = text, ForeColour = Color.White, AutoSize = false,
+            };
+            MirButton btn = new MirButton
+            {
+                Parent = DebugPanel, AutoSize = false, Size = new Size(72, 26),
+                Location = new Point(470, y), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
+            };
+            btn.Label.ForeColour = Color.White;
+            btn.Click += (o, e) =>
+            {
+                set(!get());
+                btn.Label.Text = get() ? "显示" : "不显示";
+            };
+            btn.Label.Text = get() ? "显示" : "不显示";
+            button = btn;
         }
 
         private void ShowGMCommandTab()
         {
             GMCommandScrollView.Visible = true;
             ItemPanel.Visible = false;
+            DebugPanel.Visible = false;
             GMCommandTab.ForeColour = TabActive;
             ItemTab.ForeColour = TabInactive;
+            DebugTab.ForeColour = TabInactive;
         }
 
         private void ShowItemTab()
         {
             GMCommandScrollView.Visible = false;
             ItemPanel.Visible = true;
+            DebugPanel.Visible = false;
             GMCommandTab.ForeColour = TabInactive;
             ItemTab.ForeColour = TabActive;
+            DebugTab.ForeColour = TabInactive;
             ApplyFilterAndRefresh();
+        }
+
+        private void ShowDebugTab()
+        {
+            GMCommandScrollView.Visible = false;
+            ItemPanel.Visible = false;
+            DebugPanel.Visible = true;
+            GMCommandTab.ForeColour = TabInactive;
+            ItemTab.ForeColour = TabInactive;
+            DebugTab.ForeColour = TabActive;
+            MapRegionToggle.Label.Text = Client.MirObjects.MapObject.DebugShowDrawLocation ? "显示" : "不显示";
+            ControlRegionToggle.Label.Text = MirControl.DebugShowDrawRegion ? "显示" : "不显示";
         }
 
         #region GM 命令行
@@ -254,6 +329,15 @@ namespace Client.MirScenes.Dialogs
                 string[] parts = GMCommands[i].Split(new[] { '|' }, 2);
                 string cmd = parts[0];
                 string hint = parts.Length > 1 ? parts[1] : string.Empty;
+
+                var rowBg = new MirImageControl
+                {
+                    AutoSize = false,
+                    Location = new Point(0, i * RowH + 2),
+                    Size = new Size(GMCommandScrollView.Size.Width - MirScrollView.ScrollBarWidth, RowH - 5),
+                    Texture = DefTex, ForeColour = RowFillA,
+                };
+                GMCommandScrollView.Add(rowBg);
 
                 var label = new MirLabel
                 {
@@ -327,6 +411,7 @@ namespace Client.MirScenes.Dialogs
         /// <summary>可复用的物品行控件：数据放在字段里，绑定时覆写；事件闭包读「当前绑定值」而不是创建时的快照。</summary>
         private sealed class ItemRow : MirImageControl
         {
+            public MirImageControl Bg;
             public MirImageControl Icon;
             public MirLabel NameLabel, GradeLabel, ReqLabel;
             public MirTextBox QtyBox;
@@ -343,6 +428,13 @@ namespace Client.MirScenes.Dialogs
             var row = new ItemRow
             {
                 AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, 0),
+            };
+
+            // 内缩背景块：上下左右各留缝，行与行之间露出面板底色便于区分；先加保证画在内容下层。
+            row.Bg = new MirImageControl
+            {
+                Parent = row, AutoSize = false, Size = new Size(rowW, RowH - 5),
+                Location = new Point(0, 2), NotControl = true,
                 Texture = DefTex, ForeColour = ItemRowFill,
             };
 
@@ -413,7 +505,7 @@ namespace Client.MirScenes.Dialogs
 
             row.BeforeDraw += (o, e) =>
             {
-                row.ForeColour = MirControl.MouseControl == row ? ItemRowHover : ItemRowFill;
+                row.Bg.ForeColour = MirControl.MouseControl == row ? ItemRowHover : ItemRowFill;
             };
 
             return row;

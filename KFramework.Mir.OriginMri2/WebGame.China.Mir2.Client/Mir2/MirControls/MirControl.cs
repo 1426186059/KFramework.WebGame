@@ -10,6 +10,9 @@ namespace Client.MirControls
     {
         public static MirControl ActiveControl, MouseControl;
 
+        // 调试可视化：显示每个 MirControl 的绘制区域（DisplayRectangle）轮廓线。
+        public static bool DebugShowDrawRegion = false;
+
         private Point _location;
 
         public Point Location
@@ -753,9 +756,30 @@ namespace Client.MirControls
             DrawBorder();
             AfterDrawControl();
 
+            if (DebugShowDrawRegion)
+                DrawDebugRegion();
+
             CleanTime = CMain.Time + Settings.CleanDelay;
 
             OnShown();
+        }
+
+        private void DrawDebugRegion()
+        {
+            Rectangle rect = DisplayRectangle;
+            if (rect.Width <= 0 || rect.Height <= 0)
+                return;
+
+            int x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
+            SlimDX.Vector2[] pts =
+            {
+                new SlimDX.Vector2(x, y),
+                new SlimDX.Vector2(x + w, y),
+                new SlimDX.Vector2(x + w, y + h),
+                new SlimDX.Vector2(x, y + h),
+                new SlimDX.Vector2(x, y),
+            };
+            DXManager.DrawLines(pts, 1f, Color.Cyan);
         }
 
         protected virtual void BeforeDrawControl()

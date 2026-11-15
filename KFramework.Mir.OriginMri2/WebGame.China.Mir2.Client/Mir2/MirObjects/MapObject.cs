@@ -456,7 +456,7 @@ namespace Client.MirObjects
 
         // 调试可视化：在对象的 DrawLocation（模型参考点/脚底基准）画一个红色圆圈，
         // 便于核对“模型实际画出来的位置”是否偏离了这个基准点（用来查模型画歪/偏移）。
-        public static bool DebugShowDrawLocation = true;
+        public static bool DebugShowDrawLocation = false;
         public static void DrawLocationMarker(Point p)
         {
             if (!DebugShowDrawLocation) return;
