@@ -76,7 +76,7 @@ namespace KFramework.MonoGame
         public float LineSpacing => LineHeight;
 
         /// <summary>用系统字体（浏览器已可用的 family）构造；<paramref name="bold"/> 为 true 时按粗体光栅化。</summary>
-        public SpriteFont(float size = 20f, string family = "system-ui, sans-serif", bool bold = false)
+        public SpriteFont(float size = 12f, string family = "system-ui, sans-serif", bool bold = false)
             : this(size, family, bold ? FontStyle.Bold : FontStyle.Regular)
         {
         }
