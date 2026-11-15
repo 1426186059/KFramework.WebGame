@@ -1,7 +1,6 @@
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
-using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using Color = MirEngine.Color;
 
@@ -21,10 +20,9 @@ namespace Client.MirScenes.Dialogs
         private const string NGridSheet = "y_ngrid-sheet";
         private const string RoleSheet = "y_role-sheet";
 
-        private const int PanelW = 286, PanelH = 396;
         private const int RowW = 275, RowH = 77;
-        private const int ListX = 3, ListY = 2;
-        private const int ViewW = 275, ViewH = 345;
+        private const int ListX = 9, ListY = 70;
+        private const int ViewW = 300, ViewH = 390;
         private const byte MainKeyOffset = 1;   // 主角快捷栏 F1..F16
 
         private static readonly Color LearnColour = new Color(235, 220, 170);
@@ -40,15 +38,30 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;
             AutoSize = false;
-            Size = new Size(PanelW, PanelH);
+            Size = new Size(350, 475);
 
             // 背景 bag_bg0.png（JS img_bg，y_common-sheet 帧）
-            new MirImageControl
+            var mBg = new MirImageControl
             {
-                Parent = this, AtlasNameKey = CommonSheet + "#bag_bg0",
-                Location = new Point(0, 0), Size = new Size(PanelW, PanelH), NotControl = true,
+                Parent = this,
+                ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
+                Location = new Point(0, 0),
+                Size = new Size(318, 475),
+                NotControl = true
             };
 
+            var mTitle = new MirLabel
+            {
+                Parent = this,
+                Text = "技能",
+                Location = new Point(0, 20),
+                Size = new Size(318, 30),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
+                ForeColour = Color.White,
+                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
+                NotControl = true
+            };
+            
             // 竖向滚动技能列表（JS s1 / skillList，itemRenderer=RolePop_jnRender）
             _scroll = new MirScrollView
             {
@@ -56,20 +69,21 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(ListX, ListY),
                 Size = new Size(ViewW, ViewH),
             };
-            _scroll.ShowScrollBar = false;
+            _scroll.ShowScrollBar = true;
 
             // 列表右侧滚动条（JS barGro/s_bar，用 y_common-sheet 帧做滑块）
             new MirImageControl
             {
                 Parent = this, AtlasNameKey = CommonSheet + "#com_line_v",
-                Location = new Point(PanelW - 12, 20), Size = new Size(2, 310), NotControl = true,
+                Location = new Point(318 - 12, 20), Size = new Size(2, 310), NotControl = true,
             };
 
             // 底部页码标签（原版此位置是"觉醒技能"/"技能配置"按钮，客户端无觉醒系统，仅显示提示）
             _pageLabel = new MirLabel
             {
                 Parent = this, Text = "技能 · 点击【设置】绑定快捷键",
-                Location = new Point(8, 352), Size = new Size(230, 28),
+                Location = new Point(8, 480), 
+                Size = new Size(230, 28),
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft), ForeColour = Color.FromArgb(255, 210, 180),
                 NotControl = true,
             };
@@ -80,7 +94,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = CommonSheet + "#com_btn_close0",
                 PressedAtlasFrame = "com_btn_close1",
                 Parent = this,
-                Location = new Point(PanelW - 26, 2),
+                Location = new Point(318, 50),
                 Size = new Size(24, 24),
                 Sound = SoundList.ButtonA,
             };
@@ -156,23 +170,23 @@ namespace Client.MirScenes.Dialogs
             public Action<ClientMagic> OnAssignKey;
             private readonly MirImageControl _icon;
             private readonly MirLabel _name, _level, _point, _state;
-            private readonly MirImageControl _expBar, _dim;
+            private readonly MirImageControl _expBar, _levelBar, _dim;
             private ClientMagic _magic;
 
             public SkillRow()
             {
-                // 行底 role_txtbg @79, verticalCenter（scale9）
                 new MirImageControl
                 {
-                    Parent = this, AtlasNameKey = RoleSheet + "#role_txtbg",
-                    Location = new Point(79, 7), Size = new Size(193, 63), NotControl = true,
+                    Parent = this,
+                    AtlasNameKey = RoleSheet + "#role_txtbg",
+                    Location = new Point(79, 7),
+                    AutoSize = false,
+                    Size = new Size(190, 70),
+                    NotControl = true,
+                    DrawMode = MirImageDrawMode.NineGrid,
+                    BorderTop = 10, BorderBottom = 10, BorderLeft = 10, BorderRight = 10,
                 };
-                // 图标边框 equip_grid @9
-                new MirImageControl
-                {
-                    Parent = this, AtlasNameKey = NGridSheet + "#equip_grid",
-                    Location = new Point(9, 10), Size = new Size(60, 57), NotControl = true,
-                };
+
                 _icon = new MirImageControl
                 {
                     Parent = this, Location = new Point(12, 11), Size = new Size(56, 56), NotControl = true,
@@ -182,35 +196,47 @@ namespace Client.MirScenes.Dialogs
                     Parent = this, Location = new Point(84, 8), Size = new Size(140, 30),
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft), NotControl = true,
                 };
-                _level = new MirLabel
-                {
-                    Parent = this, Location = new Point(228, 9), Size = new Size(42, 30),
-                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter), NotControl = true,
-                };
                 _expBar = new MirImageControl
                 {
-                    Parent = this, AtlasNameKey = RoleSheet + "#z_skill_exp",
-                    Location = new Point(84, 47), Size = new Size(50, 14), NotControl = true,
+                    Parent = this, 
+                    AtlasNameKey = RoleSheet + "#z_skill_exp",
+                    Location = new Point(84, 47),  
+                    NotControl = true,
+                };
+                _levelBar = new MirImageControl
+                {
+                    Parent = this,
+                    AtlasNameKey = RoleSheet + "#role_jn_img0",
+                    Location = new Point(200, 9),
+                    NotControl = true,
                 };
                 _point = new MirLabel
                 {
                     Parent = this, Location = new Point(139, 47), Size = new Size(90, 18),
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft), NotControl = true,
                 };
+
                 // "设置/清空"按钮（JS txt_state @234,50；点击弹数字键面板）
                 _state = new MirLabel
                 {
-                    Parent = this, Location = new Point(230, 48), Size = new Size(44, 20),
+                    Parent = this, 
+                    Location = new Point(250, 48), 
+                    Size = new Size(44, 20),
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                    ForeColour = Color.FromArgb(255, 90, 200), NotControl = true,
+                    ForeColour = Color.FromArgb(255, 90, 200),
+                    UnderLine = true,
                 };
 
                 // 未学灰罩（JS img_rect，半透明）
                 _dim = new MirImageControl
                 {
-                    Parent = this, Location = new Point(0, 0), Size = new Size(RowW, RowH),
-                    Texture = KDefaultRes.DefaultTexture2D, ForeColour = Color.FromArgb(100, 0, 0, 0),
-                    NotControl = true, Visible = false,
+                    Parent = this, 
+                    Location = new Point(0, 0), 
+                    Size = new Size(RowW, RowH),
+                    Texture = KDefaultRes.DefaultTexture2D, 
+                    ForeColour = Color.FromArgb(100, 0, 0, 0),
+                    NotControl = true, 
+                    Visible = false,
                 };
 
                 Click += (o, e) => OnAssignKey?.Invoke(_magic);
@@ -237,7 +263,7 @@ namespace Client.MirScenes.Dialogs
                 _name.ForeColour = learned ? LearnColour : UnlearnColour;
                 _level.Text = learned ? "Lv" + magic.Level : "";
                 _level.ForeColour = LearnColour;
-                _point.Text = learned ? ("技能点 " + magic.Level) : "未学习";
+                _point.Text = learned ? magic.Experience.ToString() : "未学习";
                 _point.ForeColour = learned ? Color.LightGray : UnlearnColour;
                 _expBar.Visible = learned;
                 _dim.Visible = !learned;
