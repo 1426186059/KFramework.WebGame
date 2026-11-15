@@ -71,7 +71,7 @@ namespace Client.MirControls
                 Parent = _panel,
                 Text = message,
                 ForeColour = Color.White,
-                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter, HorizontalWrapMode.Wrap),
             };
 
             // 按钮按 AlertDialogSkin（gameEui.json）还原：Button23Skin + y_common-sheet 的两态贴图，
@@ -228,8 +228,10 @@ namespace Client.MirControls
         {
 
             base.Dispose(disposing);
-
-            if (!disposing) return;
+            if (!disposing)
+            {
+                return;
+            }
 
             Label = null;
             OKButton = null;
@@ -242,8 +244,11 @@ namespace Client.MirControls
             {
                 TextBox T = (TextBox) CMain.Instance.Controls[i];
                 if (T != null && T.Tag != null)
-                    ((MirTextBox) T.Tag).DialogChanged();
+                {
+                    ((MirTextBox)T.Tag).DialogChanged();
+                }
             }
+
         }
 
     }

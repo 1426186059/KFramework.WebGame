@@ -90,7 +90,10 @@ namespace WebGame.Mir2.MonoGame.Client
         /// <summary>每帧推进加载蒙层进度；完成后取消后台资源任务并释放。</summary>
         private static void UpdateLoadingDialog()
         {
-            if (LoadingDialog == null || LoadingDialog.IsDisposed) return;
+            if (LoadingDialog == null || LoadingDialog.IsDisposed)
+            {
+                return;
+            }
             LoadingDialog.Tick();
             if (LoadingDialog.Done)
             {
