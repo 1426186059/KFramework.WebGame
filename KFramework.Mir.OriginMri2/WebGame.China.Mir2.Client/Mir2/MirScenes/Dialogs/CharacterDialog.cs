@@ -16,13 +16,11 @@ namespace Client.MirScenes.Dialogs
         private readonly MirButton[] _tabButtons = new MirButton[TabCount];
         private readonly MirButton[] _tabSelectButtons = new MirButton[TabCount];
 
-        public MirImageControl CharacterPage, StatusPage, SkillPage, ClassImage;
+        public MirImageControl CharacterPage, StatusPage, SkillPage;
         public MirImageControl FashionPage, SuitPage;
         private MirImageControl[] _pages;
 
-        public MirLabel NameLabel, GuildLabel, LoverLabel;
-        public MirLabel HeadingLabel, StatLabel;
-        public MirButton NextButton, BackButton;
+        public MirLabel NameLabel;
 
         // 状态与属性合并成一页：仿页游 NewheroPop_roleSkin 的 eui.Scroller + VerticalLayout，
         // 行由数据驱动生成，滚动/裁剪/滚轮交给 MirScrollView。
@@ -103,23 +101,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Parent = this,
                 Location = new Point(0, 12),
-                Size = new Size(264, 20),
-                NotControl = true,
-            };
-            GuildLabel = new MirLabel
-            {
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
-                Parent = this,
-                Location = new Point(0, 33),
-                Size = new Size(264, 30),
-                NotControl = true,
-            };
-            ClassImage = new MirImageControl
-            {
-                Index = 100,
-                Library = Libraries.Prguse,
-                Location = new Point(15, 33),
-                Parent = this,
+                Size = new Size(300, 30),
                 NotControl = true,
             };
         }
@@ -163,7 +145,10 @@ namespace Client.MirScenes.Dialogs
                 normal.Label.ForeColour = Color.Gray;
                 normal.Label.Location = new Point(0, 10);
                 _tabButtons[i] = normal;
+            }
 
+            for (int i = 0; i < TabCount; i++)
+            {
                 var selected = new MirButton
                 {
                     Location = new Point(tabX, firstY + i * stepY),
@@ -227,6 +212,7 @@ namespace Client.MirScenes.Dialogs
                 // 只取 302x461，避免盖住 x>=318 的右侧页签按钮与关闭按钮。
                 Size = new Size(302, 461),
                 DrawImage = false,
+                NotControl = true
             };
 
             // —— 人物立绘：对齐页游 UIStaticModel 的分层 uiModel 皮肤 ——
@@ -665,6 +651,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(8, 70),
                 Size = new Size(286, 396),
                 Visible = false,
+                NotControl = true
                 // 不能设 NotControl：MirControl.OnMouseMove 只遍历直接子控件，
                 // 父级 NotControl=true 会让整棵子树收不到鼠标，滚动视图的滚轮/滚动条就失效。
             };
@@ -738,7 +725,6 @@ namespace Client.MirScenes.Dialogs
             };
 
             Magics = new MagicButton[7];
-
             for (int i = 0; i < Magics.Length; i++)
                 Magics[i] = new MagicButton
                 {
@@ -747,40 +733,6 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(8, 8 + i * 33),
                     HeroMagic = gridType == MirGridType.HeroEquipment
                 };
-
-            NextButton = new MirButton
-            {
-                Index = 396,
-                Location = new Point(140, 250),
-                Library = Libraries.Prguse,
-                Parent = SkillPage,
-                PressedIndex = 397,
-                Sound = SoundList.ButtonA,
-            };
-            NextButton.Click += (o, e) =>
-            {
-                if (StartIndex + 7 >= actor.Magics.Count) return;
-
-                StartIndex += 7;
-                RefreshInterface();
-            };
-
-            BackButton = new MirButton
-            {
-                Index = 398,
-                Location = new Point(90, 250),
-                Library = Libraries.Prguse,
-                Parent = SkillPage,
-                PressedIndex = 399,
-                Sound = SoundList.ButtonA,
-            };
-            BackButton.Click += (o, e) =>
-            {
-                if (StartIndex - 7 < 0) return;
-
-                StartIndex -= 7;
-                RefreshInterface();
-            };
         }
 
 
@@ -838,32 +790,13 @@ namespace Client.MirScenes.Dialogs
 
         private void RefreshInterface()
         {
-            switch (Actor.Class)
-            {
-                case MirClass.Warrior:
-                    ClassImage.Index = 100;// + offSet * 5;
-                    break;
-                case MirClass.Wizard:
-                    ClassImage.Index = 101;// + offSet * 5;
-                    break;
-                case MirClass.Taoist:
-                    ClassImage.Index = 102;// + offSet * 5;
-                    break;
-                case MirClass.Assassin:
-                    ClassImage.Index = 103;// + offSet * 5;
-                    break;
-                case MirClass.Archer:
-                    ClassImage.Index = 104;// + offSet * 5;
-                    break;
-            }
-
             NameLabel.Text = Actor.Name;
-            GuildLabel.Text = Actor.GuildName + " " + Actor.GuildRankName;
 
-            // 同步装备槽：把 Actor.Equipment[slot] 喂给 Grid[slot].Item，DrawControl 才会画图标。
-            // （之前 RefreshInterface 漏了这一步，装备槽 Item 恒为 null，图标全不显示。）
             for (int i = 0; i < Grid.Length; i++)
-                Grid[i].Item = Actor.Equipment != null && i < Actor.Equipment.Length ? Actor.Equipment[i] : null;
+            {
+                Grid[i].Item = Actor.Equipment != null && i < Actor.Equipment.Length ?
+                    Actor.Equipment[i] : null;
+            }
 
             for (int i = 0; i < Magics.Length; i++)
             {
@@ -880,11 +813,12 @@ namespace Client.MirScenes.Dialogs
 
         public MirItemCell GetCell(ulong id)
         {
-
             for (int i = 0; i < Grid.Length; i++)
             {
-                if (Grid[i].Item == null || Grid[i].Item.UniqueID != id) continue;
-                return Grid[i];
+                if (Grid[i].Item != null && Grid[i].Item.UniqueID == id)
+                {
+                    return Grid[i];
+                }
             }
             return null;
         }

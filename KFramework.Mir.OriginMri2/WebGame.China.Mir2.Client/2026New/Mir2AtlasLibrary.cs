@@ -108,28 +108,10 @@ public static class Mir2AtlasLibrary
         }
     }
 
-    public static Task InitializeAsync(CancellationToken ct = default)
+    public static async Task InitializeAsync(CancellationToken ct = default)
     {
-        if (_initTask != null && !_initTask.IsFaulted && !_initTask.IsCanceled)
-        {
-            return _initTask;
-        }
-
-        _initTask = Task.Run(async () =>
-        {
-            try
-            {
-                await EnsureManifestAsync(ct).ConfigureAwait(false);
-                await EnsureResConfigAsync(ct).ConfigureAwait(false);
-                //PrintTool.Log("[Mir2Atlas] 初始化完成（manifest + RES 配置）。");
-            }
-            catch (Exception ex)
-            {
-                //PrintTool.LogError("[Mir2Atlas] 初始化失败（manifest/RES 配置）：" + ex);
-                _initTask = null;
-            }
-        }, ct);
-        return _initTask;
+        await EnsureManifestAsync(ct).ConfigureAwait(false);
+        await EnsureResConfigAsync(ct).ConfigureAwait(false);
     }
     
     internal static (string key, string frame) ResolveName(string nameOrKey)
