@@ -37,7 +37,6 @@ namespace Client.MirScenes.Dialogs
         private MirScrollView _scroll;
         private MirButton _closeButton;
         private readonly List<SkillRow> _rows = new List<SkillRow>();
-        private List<ClientMagic> _magics = new List<ClientMagic>();
 
         public CharacterSkillDialog()
         {
@@ -78,31 +77,37 @@ namespace Client.MirScenes.Dialogs
             _closeButton.Click += (o, e) => Hide();
             _closeButton.BringToFront();
 
-            BeforeDraw += (o, e) => Refresh();
+            BeforeDraw += (o, e) => RefreshUI();
         }
 
         /// <summary>显示主角技能面板（居中置顶）。</summary>
-        public void Open()
+        public override void Show()
         {
+            base.Show();
+            BringToFront();
             Location = new Point((Settings.ScreenWidth - Size.Width) / 2,
                                  (Settings.ScreenHeight - Size.Height) / 2);
-            Visible = true;
-            BringToFront();
         }
 
         public void Toggle()
         {
-            if (Visible) Hide();
-            else Open();
+            if (Visible)
+            {
+                Hide();
+            }
+            else
+            {
+                Show();
+            }
         }
 
-        private void Refresh()
+        public void RefreshUI()
         {
             var user = GameScene.User;
             var list = user == null ? null : user.Magics;
             int count = list == null ? 0 : list.Count;
 
-            if (count != _magics.Count)
+            if (count != _rows.Count)
             {
                 Rebuild(count);
             }
@@ -115,24 +120,25 @@ namespace Client.MirScenes.Dialogs
         private void Rebuild(int count)
         {
             foreach (var row in _rows)
+            {
+                _scroll.Remove(row);
                 row.Dispose();
+            }
             _rows.Clear();
-            _magics = new List<ClientMagic>();
 
             for (int i = 0; i < count; i++)
             {
                 SkillRow row = new SkillRow(i)
                 {
-                    Parent = _scroll,
                     Location = new Point(4, i * RowStep),
                     Size = new Size(RowW, RowH),
                     AutoSize = false,
                 };
                 _rows.Add(row);
+                _scroll.Add(row); // 必须走 Add 挂到 MirScrollView 的内容容器，Parent = _scroll 不会被烘焙渲染
             }
 
-            for (int i = 0; i < count; i++)
-                _rows[i].Update(GameScene.User.Magics[i]);
+            UpdateRows();
         }
 
         private void UpdateRows()
