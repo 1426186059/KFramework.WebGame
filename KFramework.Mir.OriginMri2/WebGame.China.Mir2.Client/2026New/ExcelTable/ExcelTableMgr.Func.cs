@@ -15,6 +15,14 @@ public static partial class ExcelTableMgr
         return byAction.TryGetValue(action, out info) && info != null;
     }
 
+    /// <summary>取某技能特效的定义（5config.effect：model/action/dir/intval/blendmode）。查不到返回 false。</summary>
+    public static bool TryGetEffect(int effectId, [NotNullWhen(true)] out EffectTable? effect)
+    {
+        effect = null;
+        if (_config5?.effect == null) return false;
+        return _config5.effect.TryGetValue(effectId, out effect) && effect != null;
+    }
+
     /// <summary>取某模型登记的动作号列表（用于预加载/遍历方向）。查不到或为空返回 false。</summary>
     public static bool TryGetModelActions(int model, [NotNullWhen(true)] out List<int>? actions)
     {

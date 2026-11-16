@@ -8,7 +8,7 @@ namespace Client.MirObjects
 {
     /// <summary>
     /// 原始传奇数据驱动特效：服务端通过 S.NewMagic 下发 ClientMagic.EffectIds，
-    /// 经 OriginEffectTable 查到 effect 对应的 CDN 模型帧，用 Mir2OriginObjectLibrary 渲染。
+    /// 经 ExcelTableMgr.TryGetEffect（5config.effect）查到 effect 对应的 CDN 模型帧，用 Mir2OriginObjectLibrary 渲染。
     /// 继承 Effect 以复用 MapControl 的 Process/Draw 生命周期，但不依赖已废弃的 .Lib 图集。
     /// </summary>
     public sealed class OriginEffect : Effect
@@ -22,17 +22,17 @@ namespace Client.MirObjects
         public OriginEffect(int effectId, MapObject owner, long starttime = 0)
             : base(null, 0, 1, 0, owner, starttime)
         {
-            if (!OriginEffectTable.TryGet(effectId, out var info))
+            if (!ExcelTableMgr.TryGetEffect(effectId, out var effect))
             {
                 _model = 0;
                 return;
             }
 
-            _model = info.Model;
-            _action = info.Action;
-            _direction = info.Dir;
-            _intval = info.Intval > 0 ? info.Intval : 50;
-            _addBlend = info.AddBlend;
+            _model = effect.model;
+            _action = effect.action > 0 ? effect.action : 1;
+            _direction = effect.dir;
+            _intval = effect.intval > 0 ? effect.intval : 50;
+            _addBlend = effect.blendmode == "add";
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
                                             Mir2OriginObjectLibrary.PriorityVisible);

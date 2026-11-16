@@ -17,6 +17,9 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(ModelInfoTable))]
 [JsonSerializable(typeof(OriginMir2Config2))]
 [JsonSerializable(typeof(OriginMir2Config0))]
+// 5config 分片（只取 effect 表）：数据驱动施法特效。
+[JsonSerializable(typeof(EffectTable))]
+[JsonSerializable(typeof(OriginMir2Config5))]
 // 物品表 ItemInfo（顶层数组）：GM 面板等需要全量物品时直接反序列化整张表。
 [JsonSerializable(typeof(ItemTableDTO))]
 [JsonSerializable(typeof(List<ItemTableDTO>), TypeInfoPropertyName = "ItemList")]

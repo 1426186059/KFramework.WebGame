@@ -3,9 +3,10 @@ using KFramework.MonoGame;
 public static partial class ExcelTableMgr
 {
     // ── 预加载的 config 分片 ──
-    // 0config / 2config：直接整文件反序列化为 DTO，避免逐条二次解析
+    // 0config / 2config / 5config：直接整文件反序列化为 DTO，避免逐条二次解析
     public static OriginMir2Config0 _config0;
     public static OriginMir2Config2 _config2;
+    public static OriginMir2Config5 _config5;   // 5config.effect：数据驱动施法特效
 
     // ── 已加载的表（直接从 config DTO 派生，无需在 InitializeAsync 里单独赋值）──
     // Maps 与 0config 的 map 表完全一致，直接返回。
@@ -55,8 +56,9 @@ public static partial class ExcelTableMgr
 
 
     /// <summary>
-    /// 1) 预加载所需 config 分片（0config=map，2config=modelInfo 等），整文件反序列化为 DTO；
-    /// 2) 再从 DTO 里取出特定表（map、modelInfo）。分片只下载一次。
+    /// 现阶段所有配置表统一在此串行加载完成，保证进游戏前全部就绪、结果确定。
+    /// 1) config 分片（0=map，2=modelInfo，5=effect），整文件反序列化为 DTO，分片只下载一次；
+    /// 2) 物品表 ItemInfo.json；
     /// 全程走源生成 + JsonTool，AOT 安全。失败仅记录日志，不抛出——配置表不是进游戏的硬前置。
     /// </summary>
     public static async Task InitializeAsync(CancellationToken ct = default)
@@ -66,8 +68,8 @@ public static partial class ExcelTableMgr
             if (!IsReady)
             {
                 PrintTool.Log("[ExcelTableMgr] Start initializing");
-                // 1) 预加载 config 分片
-                await PreloadShardsAsync(new[] { 0, 2 }, ct).ConfigureAwait(false);
+                // 1) 预加载 config 分片（0=map，2=modelInfo，5=effect 特效）
+                await PreloadShardsAsync(new[] { 0, 2, 5 }, ct).ConfigureAwait(false);
 
                 PrintTool.Log("[ExcelTableMgr] 配置表预加载完成");
 
@@ -137,6 +139,13 @@ public static partial class ExcelTableMgr
                 if (string.IsNullOrEmpty(text)) continue;
                 var info = AppJsonContext.Default.OriginMir2Config2;
                 _config2 = JsonTool.FromJson<OriginMir2Config2>(text, info);
+            }
+            else if (shard == 5)
+            {
+                if (_config5 != null) continue;
+                string text = await Mir2OriginResource.GetConfigShardTextAsync(shard, ct).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(text)) continue;
+                _config5 = JsonTool.FromJson<OriginMir2Config5>(text, AppJsonContext.Default.OriginMir2Config5);
             }
             else
             {
