@@ -179,18 +179,6 @@ namespace Client.MirControls
         {
             if (_captured)
             {
-                // 兜底：在滑块/控件外松手、浏览器失焦、或 mouseup 被内容拖拽抢走时，
-                // 派发不到本控件，_captured 会卡住（表现为松手后仍跟随、下次打开面板没按下就能拖）。
-                // 与 MirScrollView.UpdateDrag 同样读左键电平，一旦松开立即解除捕获。
-                if (KFramework.MonoGame.Input_Mouse.Active &&
-                    !KFramework.MonoGame.Input_Mouse.GetButton(KFramework.MonoGame.MouseButton.Left))
-                {
-                    _captured = false;
-                    _thumb.AtlasFrame = "bag_bar";
-                    base.OnMouseMove(e);
-                    return;
-                }
-
                 float p = _horizontal ? ThumbPercentFromMouseHorizontal(e) : ThumbPercentFromMouseVertical(e);
                 _percent = p < 0f ? 0f : (p > 1f ? 1f : p);
                 ApplyLayout();

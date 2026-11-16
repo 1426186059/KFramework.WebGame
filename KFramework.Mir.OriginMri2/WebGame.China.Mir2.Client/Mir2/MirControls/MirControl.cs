@@ -852,14 +852,19 @@ namespace Client.MirControls
         {
             if (MouseControl == this)
                 return;
+
+            // 拖拽/按下期间锁定 hover 目标：只要正按着别的控件，就不允许把 MouseControl
+            // 切到当前控件。必须在 Dehighlight 之前判断——否则会先把旧 MouseControl 清成 null，
+            // 再因本检查 return，导致鼠标抬起时 MouseControl 为 null、事件派发不到正在拖拽的控件，
+            // 拖拽状态（如滑块 _captured）卡死。
+            if (ActiveControl != null && ActiveControl != this) return;
+
             if (NotControl)
             {
 
             }
             if (MouseControl != null)
                 MouseControl.Dehighlight();
-
-            if (ActiveControl != null && ActiveControl != this) return;
 
             OnMouseEnter();
             MouseControl = this;
