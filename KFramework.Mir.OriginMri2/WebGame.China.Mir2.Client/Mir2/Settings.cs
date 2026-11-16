@@ -408,6 +408,14 @@ namespace Client
             await Reader.SaveAsync().ConfigureAwait(false);
         }
 
+        /// <summary>运行时切换技能栏双排开关并立即落库（AutoPersist=true 时 Reader.Write 内部自动 SaveAsync）。</summary>
+        public static void SetSkillBarTwoRows(bool value)
+        {
+            if (SkillBarTwoRows == value) return;
+            SkillBarTwoRows = value;
+            Reader.Write("Game", "SkillBarTwoRows", value);
+        }
+
         public static void LoadTrackedQuests(string charName)
         {
             //Quests

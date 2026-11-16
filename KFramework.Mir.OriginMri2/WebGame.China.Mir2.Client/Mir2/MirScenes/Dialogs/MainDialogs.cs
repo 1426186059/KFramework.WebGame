@@ -1618,30 +1618,33 @@ namespace Client.MirScenes.Dialogs
         public SkillBarColumn Column1, Column2;   // 主键列(左) / 副键列(右)
         public bool AltBind;
 
-        private bool _showSecondColumn = Settings.SkillBarTwoRows;
-        /// <summary>是否显示第二列（副键 F1..F8）。关闭时容器收窄为单列并重新锚定，并持久化到 Settings。</summary>
+        /// <summary>是否显示第二列（副键 F1..F8）。唯一数据源为 Settings.SkillBarTwoRows。</summary>
         public bool ShowSecondColumn
         {
-            get { return _showSecondColumn; }
+            get { return Settings.SkillBarTwoRows; }
             set
             {
-                if (_showSecondColumn == value) return;
-                _showSecondColumn = value;
-                Settings.SetSkillBarTwoRows(value);   // 写字段并落库，下次登录保留
-
-                if (value && Column2 == null)   // 从单列切回双列时补建
-                    Column2 = new SkillBarColumn(SkillBarColumn.SlotPerColumn) { Parent = this, Location = new Point(0, 0) };
-                if (Column2 != null) Column2.Visible = value;
-
-                // 双列：主键在右(x=ColumnWidth)、副键在左(x=0)；单列：主键在 x=0
-                Column1.Location = new Point(value ? SkillBarColumn.ColumnWidth : 0, 0);
-                Size = new Size(SkillBarColumn.ColumnWidth * (value ? 2 : 1), SkillBarColumn.ColumnHeight);
-                ApplyAnchor();
-                UpdateUI();
+                Settings.SetSkillBarTwoRows(value);   // 直接改本地持久化变量并落库
+                RefreshTwoRows();
             }
         }
 
-        private int ColumnCount => _showSecondColumn ? 2 : 1;
+        /// <summary>按 Settings.SkillBarTwoRows 当前值刷新列的显隐、位置、尺寸与锚点。</summary>
+        public void RefreshTwoRows()
+        {
+            bool value = Settings.SkillBarTwoRows;
+            if (value && Column2 == null)   // 从单列切回双列时补建
+                Column2 = new SkillBarColumn(SkillBarColumn.SlotPerColumn) { Parent = this, Location = new Point(0, 0) };
+            if (Column2 != null) Column2.Visible = value;
+
+            // 双列：主键在右(x=ColumnWidth)、副键在左(x=0)；单列：主键在 x=0
+            Column1.Location = new Point(value ? SkillBarColumn.ColumnWidth : 0, 0);
+            Size = new Size(SkillBarColumn.ColumnWidth * (value ? 2 : 1), SkillBarColumn.ColumnHeight);
+            ApplyAnchor();
+            UpdateUI();
+        }
+
+        private int ColumnCount => Settings.SkillBarTwoRows ? 2 : 1;
 
         public SkillBarDialog()
         {
@@ -1655,7 +1658,7 @@ namespace Client.MirScenes.Dialogs
             AnchorPos = new Point(0, 200);
             ApplyAnchor();
 
-            if (_showSecondColumn)
+            if (ShowSecondColumn)
             {
                 Column1 = new SkillBarColumn(0) { Parent = this, Location = new Point(SkillBarColumn.ColumnWidth, 0) };
                 Column2 = new SkillBarColumn(SkillBarColumn.SlotPerColumn) { Parent = this, Location = new Point(0, 0) };
@@ -1666,18 +1669,18 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        public bool HasSkill { get { return Column1.HasSkill || (_showSecondColumn && Column2.HasSkill); } }
+        public bool HasSkill { get { return Column1.HasSkill || (ShowSecondColumn && Column2.HasSkill); } }
 
         public void UpdateUI()
         {
             Column1.UpdateUI();
-            if (_showSecondColumn) Column2.UpdateUI();
+            if (ShowSecondColumn) Column2.UpdateUI();
         }
 
         public void Process()
         {
             Column1.ProcessSkillDelay();
-            if (_showSecondColumn) Column2.ProcessSkillDelay();
+            if (ShowSecondColumn) Column2.ProcessSkillDelay();
         }
 
         public override void Show()
@@ -3482,11 +3485,10 @@ namespace Client.MirScenes.Dialogs
 
             // 双排技能栏开关：两图同位置互斥显隐；图集帧用 AtlasNameKey（ImageKey 只支持单图），
             // 不能设 NotControl（否则点不到，Click 不触发）。
-            bool secondOn = GameScene.Scene != null && GameScene.Scene.SkillBarDialogs != null
-                && GameScene.Scene.SkillBarDialogs.ShowSecondColumn;
+            bool secondOn = Settings.SkillBarTwoRows;   // 从唯一数据源 Settings 读取当前开关状态
             var mUnSelectSecondBG = new MirImageControl
             {
-                Location = new Point(250, 31),
+                Location = new Point(350, 35),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(24, 24),
@@ -3496,7 +3498,7 @@ namespace Client.MirScenes.Dialogs
             };
             var mSelectSecondBG = new MirImageControl
             {
-                Location = new Point(250, 31),
+                Location = new Point(350, 35),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(24, 24),
@@ -3506,15 +3508,15 @@ namespace Client.MirScenes.Dialogs
             };
             mUnSelectSecondBG.Click += (object sender, EventArgs e) =>
             {
-                if (GameScene.Scene == null || GameScene.Scene.SkillBarDialogs == null) return;
-                GameScene.Scene.SkillBarDialogs.ShowSecondColumn = true;
+                Settings.SetSkillBarTwoRows(true);   // 直接改本地持久化变量并落库
+                GameScene.Scene?.SkillBarDialogs?.RefreshTwoRows();
                 mUnSelectSecondBG.Visible = false;
                 mSelectSecondBG.Visible = true;
             };
             mSelectSecondBG.Click += (object sender, EventArgs e) =>
             {
-                if (GameScene.Scene == null || GameScene.Scene.SkillBarDialogs == null) return;
-                GameScene.Scene.SkillBarDialogs.ShowSecondColumn = false;
+                Settings.SetSkillBarTwoRows(false);  // 直接改本地持久化变量并落库
+                GameScene.Scene?.SkillBarDialogs?.RefreshTwoRows();
                 mSelectSecondBG.Visible = false;
                 mUnSelectSecondBG.Visible = true;
             };
@@ -3522,10 +3524,10 @@ namespace Client.MirScenes.Dialogs
             // 描述文字 "X快捷键设置为" @ (150,38)
             var mDes = new MirLabel
             {
-                Location = new Point(300, 38),
+                Location = new Point(375, 35),
                 Parent = this,
-                Size = new Size(230, 32),
-                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
+                Size = new Size(100, 24),
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 ForeColour = Color.White,
                 Text = "双排技能栏"
             };
