@@ -3781,16 +3781,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 ImageKey = BgUrl,
                 Location = new Point(0, 0),
-                Size = new Size(PanelW, PanelH),
-                NotControl = true,
-            };
-            var inner = new MirImageControl
-            {
-                Parent = this,
-                AtlasNameKey = Sheet + "#bg_kjjsz_03",
-                Location = new Point(86, 20),
-                AutoSize = false,
-                Size = new Size(338, 90),
+                Size = new Size(489, 196),
                 NotControl = true,
             };
 
@@ -3802,6 +3793,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(38, 38),
                 NotControl = true,
             };
+
             string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
             if (!string.IsNullOrEmpty(iconUrl))
             {
