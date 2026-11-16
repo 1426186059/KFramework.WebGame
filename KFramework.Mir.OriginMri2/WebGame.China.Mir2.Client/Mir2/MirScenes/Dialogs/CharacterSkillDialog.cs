@@ -142,7 +142,7 @@ namespace Client.MirScenes.Dialogs
                 row.Location = new Point(0, i * RowH);
                 row.Size = new Size(RowW, RowH);
                 row.AutoSize = false;
-                // 点"设置/清空"→ 弹数字键面板（与 JS RolePop_jnRender.onTouch→uim.show(773) 一致）
+                // 点"设置"文字 → 弹数字键面板（与 JS RolePop_jnRender.onTouch→uim.show(773) 一致）
                 row.OnAssignKey += magic =>
                 {
                     if (magic == null || magic.Level == 0) return;
@@ -180,9 +180,10 @@ namespace Client.MirScenes.Dialogs
                     BorderTop = 10, BorderBottom = 10, BorderLeft = 10, BorderRight = 10,
                 };
 
+                // 技能图标：鼠标悬浮显示技能提示框（唯一可 hover 命中区），不响应点击。
                 _icon = new MirImageControl
                 {
-                    Parent = this, Location = new Point(12, 11), Size = new Size(56, 56), NotControl = true,
+                    Parent = this, Location = new Point(12, 11), Size = new Size(56, 56),
                 };
                 _name = new MirLabel
                 {
@@ -214,7 +215,7 @@ namespace Client.MirScenes.Dialogs
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft), NotControl = true,
                 };
 
-                // "设置/清空"按钮（JS txt_state @234,50；点击弹数字键面板）
+                // "设置"文字（JS txt_state @234,50，带下划线）：只有点它才弹技能快捷键面板。
                 _state = new MirLabel
                 {
                     Parent = this, 
@@ -223,6 +224,11 @@ namespace Client.MirScenes.Dialogs
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     ForeColour = Color.FromArgb(255, 90, 200),
                     UnderLine = true,
+                };
+                _state.Click += (o, e) =>
+                {
+                    if (_magic != null && !SkillDescriptionHelper.IsPassive(_magic.Spell))
+                        OnAssignKey?.Invoke(_magic);
                 };
 
                 // 未学灰罩（JS img_rect，半透明）
@@ -237,12 +243,13 @@ namespace Client.MirScenes.Dialogs
                     Visible = false,
                 };
 
-                Click += (o, e) => OnAssignKey?.Invoke(_magic);
             }
 
             public void Update(ClientMagic magic)
             {
                 _magic = magic;
+                // 技能提示框：悬浮技能图标显示技能描述（整行不响应点击，仅"设置"文字可点）。
+                _icon.Hint = SkillDescriptionHelper.Get(magic);
                 // 原始传奇技能图标：纯 CDN，无本地图集回落。
                 _icon.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
                 _icon.ForeColour = Color.White;
@@ -257,10 +264,14 @@ namespace Client.MirScenes.Dialogs
                 _expBar.Visible = learned;
                 _dim.Visible = !learned;
 
-                // JS：该技能在 handyKeys 中 → "清空"，否则 → "设置"
-                bool assigned = GameScene.User != null && GameScene.User.Magics.Exists(m => m.Key > 0 && m.Spell == magic.Spell);
-                _state.Text = assigned ? "清空" : "设置";
-                _state.Visible = learned;
+                // 被动技能不能绑定快捷键：不显示"设置/清空"，点击行也不弹 AssignKeyPanel。
+                bool passive = SkillDescriptionHelper.IsPassive(magic.Spell);
+                _state.Visible = learned && !passive;
+                if (_state.Visible)
+                {
+                    bool assigned = GameScene.User != null && GameScene.User.Magics.Exists(m => m.Key > 0 && m.Spell == magic.Spell);
+                    _state.Text = assigned ? "清空" : "设置";
+                }
             }
         }
     }
