@@ -939,9 +939,8 @@ public sealed class MapControl : MirControl
                 MapObject.TargetObject.DrawBlend();
         }
 
-        // 脚底环只跟随"当前选中对象"SelectionTarget（点击任意可交互实体即设为它，单一变量天然互斥），
-        // 走路/施法期间回落到 MagicObject，保证边走边打时环不丢。
-        var sel = MapObject.SelectionTarget ?? MapObject.MagicObject;
+        // 脚底环跟随"当前选中对象"SelectionTarget，走路/施法期间回落到可攻击对象，保证边走边打时环不丢。
+        var sel = MapObject.SelectionTarget ?? MapObject.CanAttackTargetObject;
         if (sel != null && !sel.Dead) DrawSelectionRing(sel);
 
         if (Settings.Effect)
@@ -1286,8 +1285,9 @@ public sealed class MapControl : MirControl
             switch (MapButtons)
             {
                 case MouseButtons.Left:
-                    if (MapObject.MouseObject is NPCObject || (MapObject.MouseObject is PlayerObject && MapObject.MouseObject != User)) break;
-                    if (MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI == 70) break;
+                    // Shift/普通攻击一律以"可攻击对象"为准，不看鼠标悬停（MouseObject）。
+                    if (MapObject.CanAttackTargetObject is NPCObject || (MapObject.CanAttackTargetObject is PlayerObject && MapObject.CanAttackTargetObject != User)) break;
+                    if (MapObject.CanAttackTargetObject is MonsterObject && MapObject.CanAttackTargetObject.AI == 70) break;
 
                     if (CMain.Alt && !User.RidingMount)
                     {
@@ -1300,13 +1300,13 @@ public sealed class MapControl : MirControl
                         if (CMain.Time > GameScene.AttackTime && CanRideAttack()) //ArcherTest - shift click
                         {
                             MapObject target = null;
-                            if (MapObject.MouseObject is MonsterObject || MapObject.MouseObject is PlayerObject) target = MapObject.MouseObject;
+                            if (MapObject.CanAttackTargetObject is MonsterObject || MapObject.CanAttackTargetObject is PlayerObject) target = MapObject.CanAttackTargetObject;
 
                             if (User.Class == MirClass.Archer && User.HasClassWeapon && !User.RidingMount && !User.Poison.HasFlag(PoisonType.Dazed))
                             {
                                 if (target != null)
                                 {
-                                    if (!Functions.InRange(MapObject.MouseObject.CurrentLocation, User.CurrentLocation, Globals.MaxAttackRange))
+                                    if (!Functions.InRange(target.CurrentLocation, User.CurrentLocation, Globals.MaxAttackRange))
                                     {
                                         if (CMain.Time >= OutputDelay)
                                         {
@@ -1332,15 +1332,15 @@ public sealed class MapControl : MirControl
                         return;
                     }
 
-                    if (MapObject.MouseObject is MonsterObject && User.Class == MirClass.Archer && MapObject.TargetObject != null && !MapObject.TargetObject.Dead && User.HasClassWeapon && !User.RidingMount) //ArcherTest - range attack
+                    if (MapObject.CanAttackTargetObject is MonsterObject && User.Class == MirClass.Archer && !MapObject.CanAttackTargetObject.Dead && User.HasClassWeapon && !User.RidingMount) //ArcherTest - range attack
                     {
-                        if (Functions.InRange(MapObject.MouseObject.CurrentLocation, User.CurrentLocation, Globals.MaxAttackRange))
+                        if (Functions.InRange(MapObject.CanAttackTargetObject.CurrentLocation, User.CurrentLocation, Globals.MaxAttackRange))
                         {
                             if (CMain.Time > GameScene.AttackTime)
                             {
                                 User.QueuedAction = new QueuedAction { Action = MirAction.AttackRange1, Direction = direction, Location = User.CurrentLocation, Params = new List<object>() };
-                                User.QueuedAction.Params.Add(MapObject.TargetObject.ObjectID);
-                                User.QueuedAction.Params.Add(MapObject.TargetObject.CurrentLocation);
+                                User.QueuedAction.Params.Add(MapObject.CanAttackTargetObject.ObjectID);
+                                User.QueuedAction.Params.Add(MapObject.CanAttackTargetObject.CurrentLocation);
                             }
                         }
                         else
@@ -1617,12 +1617,10 @@ public sealed class MapControl : MirControl
             case Spell.DarkBody:
             case Spell.FireBounce:
             case Spell.MeteorShower:
-                // 只认点击选中的目标，鼠标悬停（NextMagicObject）不再作为攻击目标。
-                if (MapObject.TargetObject != null && !MapObject.TargetObject.Dead &&
-                    MapObject.TargetObject.Race != ObjectType.Item && MapObject.TargetObject.Race != ObjectType.Merchant)
-                    target = MapObject.TargetObject;
-
-                if (target != null && target.Race == ObjectType.Monster) MapObject.MagicObjectID = target.ObjectID;
+                // 统一取"可攻击对象"：点怪物后持续保持，不受鼠标移到技能栏影响。
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.StraightShot:
             case Spell.DoubleShot:
@@ -1642,15 +1640,9 @@ public sealed class MapControl : MirControl
                     actor.ClearMagic();
                     return;
                 }
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
-
-                if (target == null) target = MapObject.MagicObject;
-
-                if (target != null && target.Race == ObjectType.Monster) MapObject.MagicObjectID = target.ObjectID;
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.Stonetrap:
                 if (!User.HasClassWeapon)
@@ -1659,11 +1651,9 @@ public sealed class MapControl : MirControl
                     User.ClearMagic();
                     return;
                 }
-                if (User.NextMagicObject != null)
-                {
-                    if (!User.NextMagicObject.Dead && User.NextMagicObject.Race != ObjectType.Item && User.NextMagicObject.Race != ObjectType.Merchant)
-                        target = User.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
 
                 //if(magic.Spell == Spell.ElementalShot)
                 //{
@@ -1685,11 +1675,10 @@ public sealed class MapControl : MirControl
             case Spell.UltimateEnhancer:
             case Spell.EnergyShield:
             case Spell.PetEnhancer:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant && !(actor.NextMagicObject is MonsterObject monster && monster.MasterObjectId == 0))
-                        target = actor.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant &&
+                    !(MapObject.CanAttackTargetObject is MonsterObject monster && monster.MasterObjectId == 0))
+                    target = MapObject.CanAttackTargetObject;
 
                 if (target == null) target = User;
                 break;
@@ -1699,42 +1688,34 @@ public sealed class MapControl : MirControl
             case Spell.TrapHexagon:
             case Spell.HealingCircle:
             case Spell.CatTongue:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.PoisonCloud:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.Blizzard:
             case Spell.MeteorStrike:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.Reincarnation:
-                if (actor == Hero && actor.NextMagicObject == null)
-                    actor.NextMagicObject = User;
-                if (actor.NextMagicObject != null)
+                // 复活是唯一的例外：目标是死亡玩家，无法被点击选中（选中排除 Dead），
+                // 只能取鼠标悬停的尸体。这里用 MouseObject 是复活专用，不是攻击目标。
                 {
-                    if (actor.NextMagicObject.Dead && actor.NextMagicObject.Race == ObjectType.Player)
-                        target = actor.NextMagicObject;
+                    MapObject reviveTarget = actor == Hero ? MapObject.MouseObject ?? User : MapObject.MouseObject;
+                    if (reviveTarget != null && reviveTarget.Dead && reviveTarget.Race == ObjectType.Player)
+                        target = reviveTarget;
                 }
                 break;
             case Spell.Trap:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && User.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
+                if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
             case Spell.FlashDash:
                 if (actor.GetMagic(Spell.FlashDash).Level <= 1 && actor.IsDashAttack() == false)
@@ -1745,10 +1726,10 @@ public sealed class MapControl : MirControl
                 //isTargetSpell = false;
                 break;
             default:
-                // 原始传奇技能（>218）：目标取点击选中的对象，TargetType=1 的技能未选中时下方统一拦截。
-                if ((int)magic.Spell > 218 && MapObject.TargetObject != null && !MapObject.TargetObject.Dead &&
-                    MapObject.TargetObject.Race != ObjectType.Item && MapObject.TargetObject.Race != ObjectType.Merchant)
-                    target = MapObject.TargetObject;
+                // 原始传奇技能（灵魂火符等）：统一取"可攻击对象"。
+                if ((int)magic.Spell > 218 && MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
+                    MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.CanAttackTargetObject;
                 break;
         }
 
@@ -1801,9 +1782,10 @@ public sealed class MapControl : MirControl
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
         }
 
-        // 数据驱动施法特效：服务端 S.NewMagic 下发的 EffectIds → 原始传奇 CDN 模型帧。
-        // 有目标时挂目标（命中特效），无目标时挂施法者（自身/增益特效）。
-        if (magic.EffectIds != null && magic.EffectIds.Length > 0)
+        // 数据驱动施法特效只给原始技能（>218）用——它们没有旧引擎 Missile/Effect 链路。
+        // 旧技能（灵魂火符/施毒术/火球等 <=218）走各自完整的旧特效链（起手音效 + 飞行道具 + 命中特效），
+        // 若再叠加 OriginEffect 会导致时机/位置错误、特效重复。
+        if ((int)magic.Spell > 218 && magic.EffectIds != null && magic.EffectIds.Length > 0)
         {
             MapObject effectOwner = target ?? actor;
             foreach (int effectId in magic.EffectIds)

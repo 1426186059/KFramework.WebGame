@@ -1136,7 +1136,6 @@ namespace Client.MirScenes
                 default:
                     actor.NextMagic = magic;
                     actor.NextMagicLocation = MapControl.MapLocation;
-                    actor.NextMagicObject = MapObject.MouseObject;
                     actor.NextMagicDirection = MapControl.MouseDirection();
 
                     if (actor == Hero)

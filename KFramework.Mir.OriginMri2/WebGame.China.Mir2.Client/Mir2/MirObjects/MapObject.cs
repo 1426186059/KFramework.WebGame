@@ -47,6 +47,17 @@ namespace Client.MirObjects
             }
         }
 
+        /// <summary>
+        /// 可攻击对象（语义别名）：点怪物/玩家时锁定的攻击目标，普通攻击和所有攻击法术统一用它。
+        /// 与 MouseObject（鼠标悬停、移到 UI 即为 null）不同，它一旦选中就持续保持。
+        /// 后端就是 TargetObject/TargetObjectID。
+        /// </summary>
+        public static MapObject CanAttackTargetObject
+        {
+            get => TargetObject;
+            set => TargetObjectID = value != null ? value.ObjectID : 0;
+        }
+
         private static uint magicObjectID;
         public static uint MagicObjectID
         {
@@ -165,9 +176,6 @@ namespace Client.MirObjects
             }
             if (MagicObject == this) MagicObjectID = 0;
             if (SelectionTarget == this) SelectionTarget = null;
-
-            if (this == User.NextMagicObject)
-                User.ClearMagic();
 
             MapControl.Objects.Remove(ObjectID);
             MapControl.ObjectsList.Remove(this);

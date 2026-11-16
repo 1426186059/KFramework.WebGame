@@ -61,7 +61,6 @@ namespace Client.MirObjects
         public bool Slaying, Thrusting, HalfMoon, CrossHalfMoon, DoubleSlash, TwinDrakeBlade, FlamingSword;
         public ClientMagic NextMagic;
         public Point NextMagicLocation;
-        public MapObject NextMagicObject;
         public MirDirection NextMagicDirection;
         public QueuedAction QueuedAction;
 
@@ -827,7 +826,6 @@ namespace Client.MirObjects
             NextMagic = null;
             NextMagicDirection = 0;
             NextMagicLocation = Point.Zero;
-            NextMagicObject = null;
         } 
     }
 }
