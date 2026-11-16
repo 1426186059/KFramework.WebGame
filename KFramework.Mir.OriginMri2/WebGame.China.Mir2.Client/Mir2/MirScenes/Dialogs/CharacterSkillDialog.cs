@@ -22,7 +22,7 @@ namespace Client.MirScenes.Dialogs
 
         private const int RowW = 275, RowH = 77;
         private const int ListX = 9, ListY = 70;
-        private const int ViewW = 300, ViewH = 390;
+        private const int ViewW = 285, ViewH = 390;
         private const byte MainKeyOffset = 1;   // 主角快捷栏 F1..F16
 
         private static readonly Color LearnColour = new Color(235, 220, 170);
@@ -200,12 +200,12 @@ namespace Client.MirScenes.Dialogs
                 {
                     Parent = this,
                     AtlasNameKey = RoleSheet + "#role_jn_img0",
-                    Location = new Point(200, 9),
+                    Location = new Point(200, 12),
                     NotControl = true,
                 };
                 _level = new MirLabel
                 {
-                    Parent = this, Location = new Point(200, 9), Size = new Size(42, 30),
+                    Parent = this, Location = new Point(230, 7), Size = new Size(42, 30),
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter), NotControl = true,
                 };
                 _point = new MirLabel
@@ -218,7 +218,7 @@ namespace Client.MirScenes.Dialogs
                 _state = new MirLabel
                 {
                     Parent = this, 
-                    Location = new Point(250, 48), 
+                    Location = new Point(220, 48), 
                     Size = new Size(44, 20),
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                     ForeColour = Color.FromArgb(255, 90, 200),
@@ -259,7 +259,7 @@ namespace Client.MirScenes.Dialogs
                 bool learned = magic.Level > 0;
                 _name.Text = magic.Name;
                 _name.ForeColour = learned ? LearnColour : UnlearnColour;
-                _level.Text = learned ? "Lv" + magic.Level : "";
+                _level.Text = learned ? magic.Level.ToString() : "";
                 _level.ForeColour = LearnColour;
                 _point.Text = learned ? magic.Experience.ToString() : "未学习";
                 _point.ForeColour = learned ? Color.LightGray : UnlearnColour;

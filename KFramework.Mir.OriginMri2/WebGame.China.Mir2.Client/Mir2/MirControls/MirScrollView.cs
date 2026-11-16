@@ -35,6 +35,7 @@ namespace Client.MirControls
 
             // 皮肤滚动条（挂在 ScrollView 下、不在 _content 内，故不被滚动/烘焙，固定显示在右缘）
             _skinSlider = new MirSlider();
+            _skinSlider.Horizontal = false;   // MirScrollView 是竖直滚动，显式设为纵向布局
             _skinSlider.ValueChanged += OnSkinSliderValueChanged;
             _skinSlider.PageRequested += OnSkinSliderPageRequested;
             InsertControl(Controls.Count, _skinSlider);
@@ -201,18 +202,18 @@ namespace Client.MirControls
             SetScrollOffset(ScrollOffset);   // 尺寸变了可能要回弹夹紧
         }
 
-        /// <summary>依据当前滚动量摆放皮肤滚动条（thumb 大小=可见占比，位置=滚动比例）。</summary>
+        /// <summary>依据当前滚动量摆放皮肤滚动条（thumb 用图集原始尺寸，位置=滚动比例）。</summary>
         private void UpdateScrollBar()
         {
             int maxY = Math.Max(0, _content.Size.Height - Size.Height);
-            bool scrollable = maxY > 0 && ShowScrollBar;
-
             int stripX = Size.Width - ScrollBarWidth;
             _skinSlider.Location = new Point(stripX, 0);
             _skinSlider.Size = new Size(ScrollBarWidth, Size.Height);
-            float visibleRatio = Size.Height / (float)Math.Max(1, _content.Size.Height);
+
+            // ShowScrollBar 控制整条显隐；内容是否溢出(maxY>0)只决定 thumb 显隐（轨道/箭头常驻）。
+            _skinSlider.Visible = ShowScrollBar;
             float percent = maxY > 0 ? ScrollOffset.Y / (float)maxY : 0f;
-            _skinSlider.SetState(scrollable, visibleRatio, percent);
+            _skinSlider.SetState(maxY > 0, percent);
         }
 
         /// <summary>
@@ -239,6 +240,9 @@ namespace Client.MirControls
                 return;
 
             BeforeDrawControl();
+            // 绘制前刷新滚动条：Size 由外部（对象初始化器/resize）设置，构造时拿不到最终尺寸；
+            // 且 MirSlider.Layout 在尺寸为 0 时会跳过布局。故每帧同步尺寸/位置/状态，确保首次显示与 resize 后都正确布局。
+            UpdateScrollBar();
             DrawControl();   // 烘焙子控件进 ControlTexture（见 CreateTexture 重写）+ 贴回屏幕；屏幕上不再单独画子控件
             if (_skinSlider.Visible) _skinSlider.Draw();
             DrawBorder();
