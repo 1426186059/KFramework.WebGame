@@ -1748,6 +1748,12 @@ public sealed class MapControl : MirControl
 
         GameScene.LogTime = CMain.Time + Globals.LogDelay;
 
+        // 本地即记 CD 起点：服务端只有 cast=true 才回 S.Magic{Cast=true}，瞬间技能(施毒术/灵魂火符)
+        // 无有效目标时服务端 cast=false，客户端收不到 CastTime 更新 → CD 不显示。
+        // 但服务端仍有 SpellTime=1800 全局施法锁，玩家不能连发，所以客户端在本地成功发起时同样记时。
+        magic.CastTime = CMain.Time;
+        if (magic.Delay <= 0) magic.Delay = 1800;   // Delay 未下发时用服务端全局 SpellTime 兜底
+
         if (actor == User)
         {
             User.QueuedAction = new QueuedAction { Action = MirAction.Spell, Direction = dir, Location = User.CurrentLocation, Params = new List<object>() };

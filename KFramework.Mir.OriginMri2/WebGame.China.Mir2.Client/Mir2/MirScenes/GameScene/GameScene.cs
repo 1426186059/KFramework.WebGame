@@ -4744,10 +4744,9 @@ namespace Client.MirScenes
             User.SpellLevel = p.Level;
             User.SecondaryTargetIDs = p.SecondaryTargetIDs;
 
+            // CD 起点已在 MapControl.UseMagic 本地发起时记录（覆盖服务端 cast=false 的瞬发技能），
+            // 此处不再改 CastTime，避免服务端成功包到达时把 CD 起点往后推。
             if (!p.Cast) return;
-
-            ClientMagic magic = User.GetMagic(p.Spell);
-            magic.CastTime = CMain.Time;
         }
 
         private void MagicDelay(S.MagicDelay p)
