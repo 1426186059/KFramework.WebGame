@@ -1484,6 +1484,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Parent = this,
                     Location = new Point(0, y),
+                    AutoSize = false,
                     Size = new Size(CellSize, CellSize),
                 };
                 Cells[row].Click += (o, e) => GameScene.Scene.UseSpell(spellSlot);
