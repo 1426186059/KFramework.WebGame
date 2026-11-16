@@ -193,7 +193,8 @@ namespace Client
 
         public const string Language = "Chinese";
 
-        public static int[,] SkillbarLocation = new int[2, 2] { { 0, 0 }, { 216, 0 } };
+        // PC 版技能栏：右侧竖排双栏（每组宽 53、高 464），默认锚在屏幕右缘；实际加载时按分辨率修正。
+        public static int[,] SkillbarLocation = new int[2, 2] { { -1, -1 }, { -1, -1 } };
 
         //Quests
         public static int[] TrackedQuests = new int[5];

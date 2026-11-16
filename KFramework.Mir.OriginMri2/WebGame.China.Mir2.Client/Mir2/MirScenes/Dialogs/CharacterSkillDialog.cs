@@ -243,18 +243,9 @@ namespace Client.MirScenes.Dialogs
             public void Update(ClientMagic magic)
             {
                 _magic = magic;
-                string url = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                if (!string.IsNullOrEmpty(url))
-                {
-                    _icon.ImageUrl = url;
-                    _icon.ForeColour = Color.White;
-                }
-                else
-                {
-                    _icon.ImageUrl = null;
-                    _icon.Library = Libraries.MagIcon2;
-                    _icon.Index = magic.Icon * 2;
-                }
+                // 原始传奇技能图标：纯 CDN，无本地图集回落。
+                _icon.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                _icon.ForeColour = Color.White;
 
                 bool learned = magic.Level > 0;
                 _name.Text = magic.Name;

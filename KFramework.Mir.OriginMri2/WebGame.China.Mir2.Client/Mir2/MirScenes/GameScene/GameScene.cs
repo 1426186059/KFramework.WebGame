@@ -1356,23 +1356,31 @@ namespace Client.MirScenes
 
         public void DialogProcess()
         {
-            if (Settings.SkillBar)
+            foreach (SkillBarDialog Bar in Scene.SkillBarDialogs)
             {
-                foreach (SkillBarDialog Bar in Scene.SkillBarDialogs)
-                    Bar.Show();
-            }
-            else
-            {
-                foreach (SkillBarDialog Bar in Scene.SkillBarDialogs)
-                    Bar.Hide();
+                Bar.Show();
             }
 
             for (int i = 0; i < Scene.SkillBarDialogs.Count; i++)
             {
-                if (i * 2 > Settings.SkillbarLocation.Length) break;
-                if ((Settings.SkillbarLocation[i, 0] > Settings.Resolution - 100) || (Settings.SkillbarLocation[i, 1] > 700))
-                    continue; //in theory you'd want the y coord to be validated based on resolution, but since client only allows for wider screens and not higher :(
-                Scene.SkillBarDialogs[i].Location = new Point(Settings.SkillbarLocation[i, 0], Settings.SkillbarLocation[i, 1]);
+                int sx = Settings.SkillbarLocation[i, 0], sy = Settings.SkillbarLocation[i, 1];
+                int defaultX = Settings.Resolution - 53 * (i + 1);
+                int defaultY = Math.Max(0, (Settings.ScreenHeight - 464) / 2);
+
+                if (sx < 0 || sy < 0)
+                {
+                    sx = defaultX;
+                    sy = defaultY;
+                    Settings.SkillbarLocation[i, 0] = sx;
+                    Settings.SkillbarLocation[i, 1] = sy;
+                }
+
+                if (sx < 0 || sx > Settings.Resolution - 53 || sy < 0 || sy > Settings.ScreenHeight - 464)
+                {
+                    sx = defaultX;
+                    sy = defaultY;
+                }
+                Scene.SkillBarDialogs[i].Location = new Point(sx, sy);
             }
 
             if (Settings.DuraView)

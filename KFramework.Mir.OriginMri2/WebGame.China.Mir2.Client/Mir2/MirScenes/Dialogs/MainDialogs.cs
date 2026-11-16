@@ -1438,57 +1438,57 @@ namespace Client.MirScenes.Dialogs
             public ChatType Type;
         }
     }
+    /// <summary>
+    /// PC 页游技能快捷栏：按原始传奇 HomeUIRightCtrlSkin（106×464）布局移植——
+    /// 屏幕右侧竖排，每组 8 格 52×52、格距 52，底图 y_h_grid(0.9)，图标 52×52 铺满；
+    /// 第一组(主键)标注 1..8，第二组(副键)标注 F1..F8，15 号白字描边，位于格子右侧。
+    /// 两条 SkillBarDialog（BarIndex 0/1）并排即对应 JS 的 grp_skill / grp_skill0。
+    /// </summary>
     public sealed class SkillBarDialog : MirImageControl
     {
-        private readonly MirButton _switchBindsButton;
+        private const string HomeSheet = "y_homeUI-sheet";
+        private const int CellSize = 52;
+        private const int CellStep = 52;
+        private const int BarWidth = 53;
+        private const int BarHeight = 464;
 
         public bool AltBind;
         public bool HasSkill = false;
         public byte BarIndex;
 
-        //public bool TopBind = !Settings.SkillMode;
         public MirImageControl[] Cells = new MirImageControl[8];
         public MirLabel[] KeyNameLabels = new MirLabel[8];
-        public MirLabel BindNumberLabel = new MirLabel();
 
         public MirImageControl[] CoolDowns = new MirImageControl[8];
 
         public SkillBarDialog()
         {
-            Index = 2190;
-            Library = Libraries.Prguse;
+            AutoSize = false;
+            Size = new Size(BarWidth, BarHeight);
             Movable = true;
             Sort = true;
             Location = new Point(0, BarIndex * 20);
             Visible = true;
 
-            BeforeDraw += MagicKeyDialog_BeforeDraw;
-
-            _switchBindsButton = new MirButton
-            {
-                Index = 2247,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Size = new Size(16, 28),
-                Location = new Point(0, 0)
-            };
-            _switchBindsButton.Click += (o, e) =>
-            {
-                //Settings.SkillSet = !Settings.SkillSet;
-
-                Update();
-            };
-
             for (var i = 0; i < Cells.Length; i++)
             {
+                int y = i * CellStep;
+
+                // 格子底图 y_h_grid（JS scale 0.9 → 47×47，在 52×52 内居中偏 2）
+                var grid = new MirImageControl
+                {
+                    Parent = this,
+                    AtlasNameKey = HomeSheet + "#y_h_grid",
+                    Location = new Point(2, y + 2),
+                    Size = new Size(47, 47),
+                    NotControl = true,
+                };
+
                 Cells[i] = new MirImageControl
                 {
-                    Index = -1,
-                    Library = Libraries.MagIcon,
                     Parent = this,
-                    Location = new Point(i * 25 + 15, 3),
-                    Size = new Size(24, 24),   // CDN Texture 通道按 Size 绘制
+                    Location = new Point(0, y),
+                    Size = new Size(CellSize, CellSize),   // CDN Texture 通道按 Size 绘制
                 };
                 int j = i + 1;
                 Cells[i].Click += (o, e) =>
@@ -1500,34 +1500,22 @@ namespace Client.MirScenes.Dialogs
                 {
                     Library = Libraries.Prguse2,
                     Parent = this,
-                    Location = new Point(i * 25 + 15, 3),
+                    Location = new Point(0, y),
+                    Size = new Size(CellSize, CellSize),   // 冷却遮罩随 52×52 格子铺满
                     NotControl = true,
                     UseOffSet = true,
                     Opacity = 0.6F
                 };
-            }
 
-            BindNumberLabel = new MirLabel
-            {
-                Text = "1",
-                Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
-                Parent = this,
-                Location = new Point(0, 1),
-                Size = new Size(10, 25),
-                NotControl = true
-            };
-
-            for (var i = 0; i < KeyNameLabels.Length; i++)
-            {
+                // 按键标注：主键组 1..8，副键组 F1..F8（JS hardy_0..15）
                 KeyNameLabels[i] = new MirLabel
                 {
-                    Text = "F" + (i + 1),
-                    Font = new Font(Settings.FontName, 8F),
+                    Text = BarIndex == 0 ? (i + 1).ToString() : ("F" + (i + 1)),
+                    Font = new Font(Settings.FontName, 15F),
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(i * 25 + 13, 0),
-                    Size = new Size(25, 25),
+                    Location = new Point(36, y + 2),
+                    Size = new Size(17, 20),
                     NotControl = true
                 };
             }
@@ -1580,11 +1568,6 @@ namespace Client.MirScenes.Dialogs
         }
 
 
-        void MagicKeyDialog_BeforeDraw(object sender, EventArgs e)
-        {
-            Libraries.Prguse.Draw(2193, new Point(DisplayLocation.X + 12, DisplayLocation.Y), Color.White, true, 0.5F);
-        }
-
         public void Update()
         {
             HasSkill = false;
@@ -1595,10 +1578,6 @@ namespace Client.MirScenes.Dialogs
             }
 
             if (!Visible) return;
-            Index = 2190;
-            _switchBindsButton.Index = 2247;
-            BindNumberLabel.Text = (BarIndex + 1).ToString();
-            BindNumberLabel.Location = new Point(0, 1);
 
             for (var i = 1; i <= 8; i++)
             {
@@ -1607,34 +1586,23 @@ namespace Client.MirScenes.Dialogs
 
                 int offset = BarIndex * 8;
                 string key = GetKey(BarIndex, i);
-                KeyNameLabels[i - 1].Text = key;
+                // 按键标注在构造函数里按 JS hardy_0..15 固定为 1..8 / F1..F8，不随绑定改写。
 
                 foreach (var m in GameScene.User.Magics)
                 {
                     if (m.Key != i + offset) continue;
                     HasSkill = true;
                     ClientMagic magic = MapObject.User.GetMagic(m.Spell);
-                    if (magic == null) continue;
-
-                    //string key = m.Key > 8 ? string.Format("CTRL F{0}", i) : string.Format("F{0}", m.Key);
-
-                    // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png；无图标号回落本地图集。
-                    string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                    if (!string.IsNullOrEmpty(iconUrl))
+                    if (magic == null)
                     {
-                        Cells[i - 1].Library = null;
-                        Cells[i - 1].ImageUrl = iconUrl;
-                        Cells[i - 1].ForeColour = Color.White;
+                        continue;
                     }
-                    else
-                    {
-                        Cells[i - 1].Library = Libraries.MagIcon;
-                        Cells[i - 1].Index = magic.Icon * 2;
-                    }
+
+                    // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png，纯 CDN 无本地回落。
+                    Cells[i - 1].ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                    Cells[i - 1].ForeColour = Color.White;
                     Cells[i - 1].Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
                         (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
-
-                    KeyNameLabels[i - 1].Text = "";
                 }
             }
         }
@@ -3229,9 +3197,6 @@ namespace Client.MirScenes.Dialogs
 
             SkillButton = new MirButton
             {
-                Index = 0,
-                PressedIndex = 1,
-                Library = Libraries.MagIcon2,
                 Parent = this,
                 Location = new Point(36, 0),
                 Size = new Size(32, 32),   // CDN Texture 通道按 Size 绘制
@@ -3697,20 +3662,9 @@ namespace Client.MirScenes.Dialogs
             }
 
 
-            // 原始传奇技能图标：按 OriginIcon 从 CDN 加载；无图标号回落本地图集帧。
-            string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(Magic.OriginIcon);
-            if (!string.IsNullOrEmpty(iconUrl))
-            {
-                SkillButton.Library = null;
-                SkillButton.ImageUrl = iconUrl;
-                SkillButton.ForeColour = Color.White;
-            }
-            else
-            {
-                SkillButton.Library = Libraries.MagIcon2;
-                SkillButton.Index = Magic.Icon * 2;
-                SkillButton.PressedIndex = Magic.Icon * 2 + 1;
-            }
+            // 原始传奇技能图标：按 OriginIcon 从 CDN 加载，纯 CDN 无本地回落。
+            SkillButton.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(Magic.OriginIcon);
+            SkillButton.ForeColour = Color.White;
 
             SetDelay();
         }
