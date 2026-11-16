@@ -1527,11 +1527,11 @@ namespace Client.MirScenes.Dialogs
                 KeyNameLabels[row] = new MirLabel
                 {
                     Text = keyOffset == 0 ? (row + 1).ToString() : ("F" + (row + 1)),
-                    Font = new Font(Settings.FontName, 8F),
+                    Font = new Font(Settings.FontName, 10F),
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(0, y),
-                    Size = new Size(CellBgSize, CellBgSize),
+                    Location = new Point(CellOffset, y + CellOffset),
+                    Size = new Size(CellSize, CellSize),
                     NotControl = true,
                     DrawFormat = new TextStyle(TextAnchor.LowerRight)
                 };
