@@ -1456,9 +1456,15 @@ namespace Client.MirScenes.Dialogs
 
         private readonly int _keyOffset;
 
+        // CDN SkillCdEff movieClip（36 帧半黑圆遮罩），两列共享一次加载。
+        private static Task<Mir2AtlasSheet> _cdSheetTask;
+        private static List<string> _cdFrames;   // SkillCdEff 时间线帧名
+        private const string CdJsonKey = "resource/assets/gameui4/movieClip/SkillCdEff.json";
+        private const string CdPngKey = "resource/assets/gameui4/movieClip/SkillCdEff.png";
+
         public MirImageControl[] Cells = new MirImageControl[SlotPerColumn];
         public MirLabel[] KeyNameLabels = new MirLabel[SlotPerColumn];
-        public MirImageControl[] CoolDowns = new MirImageControl[SlotPerColumn];
+        public MirAnimatedAtlasControl[] CoolDowns = new MirAnimatedAtlasControl[SlotPerColumn];
         public MirLabel[] CdTexts = new MirLabel[SlotPerColumn];   // JS 的 cdSkillTxt：居中剩余秒数
 
         public bool HasSkill = false;
@@ -1492,13 +1498,13 @@ namespace Client.MirScenes.Dialogs
                     Size = new Size(CellSize, CellSize),
                 };
                 Cells[row].Click += (o, e) => GameScene.Scene.UseSpell(spellSlot);
-                CoolDowns[row] = new MirImageControl
+                // CD 半黑圆遮罩：CDN movieClip SkillCdEff（36 帧），异步装配后按 CD 进度停帧。
+                CoolDowns[row] = new MirAnimatedAtlasControl
                 {
                     Parent = this,
-                    Location = new Point(CellOffset, y + CellOffset),
+                    Location = new Point(0, y + 1),
                     AutoSize = false,
                     Size = new Size(CellSize, CellSize),
-                    AtlasNameKey = HomeSheet + "#y_h_jncd_0",
                     NotControl = true,
                     Visible = false,
                 };
@@ -1506,7 +1512,7 @@ namespace Client.MirScenes.Dialogs
                 CdTexts[row] = new MirLabel
                 {
                     Text = "",
-                    Font = new Font(Settings.FontName, 15F),
+                    Font = new Font(Settings.FontName, 12F),
                     ForeColour = Color.White,
                     OutLine = true,
                     OutLineColour = Color.Black,
@@ -1515,7 +1521,7 @@ namespace Client.MirScenes.Dialogs
                     Size = new Size(CellBgSize, CellBgSize),
                     NotControl = true,
                     Visible = false,
-                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter)
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter),           
                 };
 
                 KeyNameLabels[row] = new MirLabel
@@ -1529,6 +1535,36 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true,
                     DrawFormat = new TextStyle(TextAnchor.LowerRight)
                 };
+            }
+
+            _ = LoadCdSheetAsync();
+        }
+
+        /// <summary>异步加载 CDN 的 SkillCdEff movieClip，装配到本列 8 个 CD 控件。两列共享同一片。</summary>
+        private async Task LoadCdSheetAsync()
+        {
+            try
+            {
+                if (_cdSheetTask == null)
+                {
+                    string jsonPath = Mir2OriginResource.ResolveManifestAssetPath(CdJsonKey);
+                    string pngPath = Mir2OriginResource.ResolveManifestAssetPath(CdPngKey);
+                    _cdSheetTask = Mir2AtlasLibrary.GetSheetByPathsAsync(jsonPath, pngPath);
+                }
+                Mir2AtlasSheet sheet = await _cdSheetTask;
+                if (sheet == null) return;
+
+                _cdFrames = sheet.MovieClip?.PlayOrder;
+                foreach (var cd in CoolDowns)
+                {
+                    if (cd == null || cd.IsDisposed) continue;
+                    cd.SetMovieClip(sheet);
+                }
+            }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError("[SkillBarColumn] SkillCdEff 加载失败：" + ex);
+                _cdSheetTask = null;   // 允许下次重试
             }
         }
 
@@ -1575,7 +1611,6 @@ namespace Client.MirScenes.Dialogs
                 {
                     if (magic.Key != slot) continue;
 
-                    const int totalFrames = 10;   // y_h_jncd_0..9
                     long timeLeft = magic.CastTime + magic.Delay - CMain.Time;
 
                     if (timeLeft <= 0)
@@ -1585,14 +1620,19 @@ namespace Client.MirScenes.Dialogs
                         continue;
                     }
 
-                    int delayPerFrame = (int)(magic.Delay / totalFrames);
-                    if (delayPerFrame <= 0) delayPerFrame = 1;
-                    int frame = totalFrames - 1 - (int)(timeLeft / delayPerFrame);
-                    if (frame < 0) frame = 0;
-                    if (frame > totalFrames - 1) frame = totalFrames - 1;
-
+                    // SkillCdEff 时间线：首帧=全黑、末帧=不黑。按已过去的时间比例取帧，
+                    // 使 CD 开始时全黑、结束时完全透出（此前用剩余比例，方向反了）。
+                    if (_cdFrames != null && _cdFrames.Count > 0)
+                    {
+                        double cdSeconds = magic.Delay / 1000.0;
+                        if (cdSeconds <= 0) cdSeconds = 1;
+                        double elapsedRatio = 1.0 - (timeLeft / 1000.0) / cdSeconds;
+                        int frame = (int)(_cdFrames.Count * elapsedRatio);
+                        if (frame < 0) frame = 0;
+                        if (frame >= _cdFrames.Count) frame = _cdFrames.Count - 1;
+                        CoolDowns[row].AtlasFrame = _cdFrames[frame];
+                    }
                     CoolDowns[row].Visible = true;
-                    CoolDowns[row].AtlasFrame = "y_h_jncd_" + frame;
 
                     // 居中剩余秒数（JS setCdTxt：toFixed(1)，15号白字黑描边）
                     CdTexts[row].Text = (timeLeft / 1000.0).ToString("0.0");
