@@ -3473,6 +3473,47 @@ namespace Client.MirScenes.Dialogs
                 Text = magic.Name + "快捷键设置为"
             };
 
+            var mUnSelectSecondBG = new MirImageControl
+            {
+                Location = new Point(250, 31),
+                Parent = this,
+                AutoSize = false,
+                Size = new Size(24, 24),
+                NotControl = true,
+                ImageKey = "y_common-sheet#hide_unselect",
+                ForeColour = Color.White,
+            };
+            mUnSelectSecondBG.Click += (object sender, EventArgs e) =>
+            {
+                throw new NotImplementedException();
+            };
+
+            var mSelectSecondBG = new MirImageControl
+            {
+                Location = new Point(250, 31),
+                Parent = this,
+                AutoSize = false,
+                Size = new Size(24, 24),
+                NotControl = true,
+                ImageKey = "y_common-sheet#hide_select",
+                ForeColour = Color.White,
+            };
+            mSelectSecondBG.Click += (object sender, EventArgs e) =>
+            {
+                throw new NotImplementedException();
+            };
+
+            // 描述文字 "X快捷键设置为" @ (150,38)
+            var mDes = new MirLabel
+            {
+                Location = new Point(300, 38),
+                Parent = this,
+                Size = new Size(230, 32),
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft),
+                ForeColour = Color.White,
+                Text = "双排技能栏"
+            };
+
             // 16 个数字键网格：8 列 × 2 行，起点 (33,91)，每格 44×42，横间距 0、纵间距 12（JS TileLayout）
             FKeys = new MirButton[16];
             SelectFrames = new MirImageControl[16];
