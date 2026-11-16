@@ -1439,42 +1439,38 @@ namespace Client.MirScenes.Dialogs
         }
     }
     /// <summary>
-    /// PC 页游技能快捷栏：按原始传奇 HomeUIRightCtrlSkin（106×464）布局移植——
-    /// 屏幕右侧竖排，每组 8 格 52×52、格距 52，底图 y_h_grid(0.9)，图标 52×52 铺满；
-    /// 第一组(主键)标注 1..8，第二组(副键)标注 F1..F8，15 号白字描边，位于格子右侧。
-    /// 两条 SkillBarDialog（BarIndex 0/1）并排即对应 JS 的 grp_skill / grp_skill0。
+    /// 技能栏单列（8 格）：封装一列的格子、按键标注、冷却与施法/刷新/冷却处理。
+    /// _keyOffset=0 → 主键 1..8（Bar1Skill1..8）；=8 → 副键 9..16（Bar2Skill1..8）。
+    /// 布局按原始传奇 HomeUIRightCtrlSkin：52×52 格、格距 52、底图 y_h_grid(0.9)、右侧按键文字。
     /// </summary>
-    public sealed class SkillBarDialog : MirImageControl
+    public sealed class SkillBarColumn : MirControl
     {
         private const string HomeSheet = "y_homeUI-sheet";
         private const int CellSize = 52;
         private const int CellStep = 52;
-        private const int BarWidth = 53;
-        private const int BarHeight = 464;
+        public const int ColumnWidth = 53;
+        public const int ColumnHeight = 464;
+        public const int SlotPerColumn = 8;
 
-        public bool AltBind;
+        private readonly int _keyOffset;
+
+        public MirImageControl[] Cells = new MirImageControl[SlotPerColumn];
+        public MirLabel[] KeyNameLabels = new MirLabel[SlotPerColumn];
+        public MirImageControl[] CoolDowns = new MirImageControl[SlotPerColumn];
+
         public bool HasSkill = false;
-        public byte BarIndex;
 
-        public MirImageControl[] Cells = new MirImageControl[8];
-        public MirLabel[] KeyNameLabels = new MirLabel[8];
-
-        public MirImageControl[] CoolDowns = new MirImageControl[8];
-
-        public SkillBarDialog()
+        public SkillBarColumn(int keyOffset)
         {
-            AutoSize = false;
-            Size = new Size(BarWidth, BarHeight);
-            Movable = true;
-            Sort = true;
-            Location = new Point(0, BarIndex * 20);
+            _keyOffset = keyOffset;
+            Size = new Size(ColumnWidth, ColumnHeight);
             Visible = true;
 
-            for (var i = 0; i < Cells.Length; i++)
+            for (int row = 0; row < SlotPerColumn; row++)
             {
-                int y = i * CellStep;
+                int y = row * CellStep;
+                int spellSlot = keyOffset + row + 1;   // 循环体内局部拷贝，闭包捕获每格自己的值
 
-                // 格子底图 y_h_grid（JS scale 0.9 → 47×47，在 52×52 内居中偏 2）
                 var grid = new MirImageControl
                 {
                     Parent = this,
@@ -1484,33 +1480,28 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true,
                 };
 
-                Cells[i] = new MirImageControl
+                Cells[row] = new MirImageControl
                 {
                     Parent = this,
                     Location = new Point(0, y),
-                    Size = new Size(CellSize, CellSize),   // CDN Texture 通道按 Size 绘制
+                    Size = new Size(CellSize, CellSize),
                 };
-                int j = i + 1;
-                Cells[i].Click += (o, e) =>
-                    {
-                        GameScene.Scene.UseSpell(j + (8 * BarIndex));
-                    };
+                Cells[row].Click += (o, e) => GameScene.Scene.UseSpell(spellSlot);
 
-                CoolDowns[i] = new MirImageControl
+                CoolDowns[row] = new MirImageControl
                 {
                     Library = Libraries.Prguse2,
                     Parent = this,
                     Location = new Point(0, y),
-                    Size = new Size(CellSize, CellSize),   // 冷却遮罩随 52×52 格子铺满
+                    Size = new Size(CellSize, CellSize),
                     NotControl = true,
                     UseOffSet = true,
                     Opacity = 0.6F
                 };
 
-                // 按键标注：主键组 1..8，副键组 F1..F8（JS hardy_0..15）
-                KeyNameLabels[i] = new MirLabel
+                KeyNameLabels[row] = new MirLabel
                 {
-                    Text = BarIndex == 0 ? (i + 1).ToString() : ("F" + (i + 1)),
+                    Text = keyOffset == 0 ? (row + 1).ToString() : ("F" + (row + 1)),
                     Font = new Font(Settings.FontName, 15F),
                     ForeColour = Color.White,
                     Parent = this,
@@ -1519,111 +1510,50 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true
                 };
             }
-            OnMoving += SkillBar_OnMoving;
         }
 
-        private void SkillBar_OnMoving(object sender, MouseEventArgs e)
-        {
-            if (BarIndex * 2 >= Settings.SkillbarLocation.Length) return;
-            Settings.SkillbarLocation[BarIndex, 0] = this.Location.X;
-            Settings.SkillbarLocation[BarIndex, 1] = this.Location.Y;
-        }
-
-        private string GetKey(int barindex, int i)
-        {
-            //KeybindOptions Type = KeybindOptions.Bar1Skill1;
-            if ((barindex == 0) && (i == 1))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill1);
-            if ((barindex == 0) && (i == 2))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill2);
-            if ((barindex == 0) && (i == 3))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill3);
-            if ((barindex == 0) && (i == 4))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill4);
-            if ((barindex == 0) && (i == 5))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill5);
-            if ((barindex == 0) && (i == 6))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill6);
-            if ((barindex == 0) && (i == 7))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill7);
-            if ((barindex == 0) && (i == 8))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar1Skill8);
-            if ((barindex == 1) && (i == 1))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill1);
-            if ((barindex == 1) && (i == 2))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill2);
-            if ((barindex == 1) && (i == 3))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill3);
-            if ((barindex == 1) && (i == 4))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill4);
-            if ((barindex == 1) && (i == 5))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill5);
-            if ((barindex == 1) && (i == 6))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill6);
-            if ((barindex == 1) && (i == 7))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill7);
-            if ((barindex == 1) && (i == 8))
-                return CMain.InputKeys.GetKey(KeybindOptions.Bar2Skill8);
-            return "";
-        }
-
-
-        public void Update()
+        public void UpdateUI()
         {
             HasSkill = false;
             foreach (var m in GameScene.User.Magics)
             {
-                if ((m.Key < (BarIndex * 8)+1) || (m.Key > ((BarIndex + 1) * 8)+1)) continue;
-                HasSkill = true;
+                if (m.Key >= _keyOffset + 1 && m.Key <= _keyOffset + SlotPerColumn)
+                    HasSkill = true;
             }
 
-            if (!Visible) return;
-
-            for (var i = 1; i <= 8; i++)
+            for (int row = 0; row < SlotPerColumn; row++)
             {
-                Cells[i - 1].Index = -1;
-                Cells[i - 1].ImageUrl = null;  // 清掉上一轮的 CDN 图标，避免换绑/解绑后残留
+                int slot = _keyOffset + row + 1;
+                Cells[row].Index = -1;
+                Cells[row].ImageUrl = null;   // 清掉上一轮 CDN 图标，避免换绑/解绑后残留
 
-                int offset = BarIndex * 8;
-                string key = GetKey(BarIndex, i);
-                // 按键标注在构造函数里按 JS hardy_0..15 固定为 1..8 / F1..F8，不随绑定改写。
+                var keybind = (KeybindOptions)((int)KeybindOptions.Bar1Skill1 + (slot - 1));
+                string key = CMain.InputKeys.GetKey(keybind);
 
                 foreach (var m in GameScene.User.Magics)
                 {
-                    if (m.Key != i + offset) continue;
+                    if (m.Key != slot) continue;
                     HasSkill = true;
                     ClientMagic magic = MapObject.User.GetMagic(m.Spell);
-                    if (magic == null)
-                    {
-                        continue;
-                    }
+                    if (magic == null) continue;
 
                     // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png，纯 CDN 无本地回落。
-                    Cells[i - 1].ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                    Cells[i - 1].ForeColour = Color.White;
-                    Cells[i - 1].Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
+                    Cells[row].ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
+                    Cells[row].ForeColour = Color.White;
+                    Cells[row].Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
                         (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
                 }
             }
         }
 
-
-        public void Process()
+        public void ProcessSkillDelay()
         {
-            ProcessSkillDelay();
-        }
-
-        private void ProcessSkillDelay()
-        {
-            if (!Visible) return;
-
-            int offset = BarIndex * 8;
-
-            for (int i = 0; i < Cells.Length; i++)
+            for (int row = 0; row < SlotPerColumn; row++)
             {
+                int slot = _keyOffset + row + 1;
                 foreach (var magic in GameScene.User.Magics)
                 {
-                    if (magic.Key != i + offset + 1) continue;
+                    if (magic.Key != slot) continue;
 
                     int totalFrames = 22;
                     long timeLeft = magic.CastTime + magic.Delay - CMain.Time;
@@ -1631,10 +1561,7 @@ namespace Client.MirScenes.Dialogs
                     if (timeLeft < 100)
                     {
                         if (timeLeft > 0)
-                        {
-                            CoolDowns[i].Visible = false;
-                            // CoolDowns[i].Dispose();
-                        }
+                            CoolDowns[row].Visible = false;
                         else
                             continue;
                     }
@@ -1642,13 +1569,78 @@ namespace Client.MirScenes.Dialogs
                     int delayPerFrame = (int)(magic.Delay / totalFrames);
                     int startFrame = totalFrames - (int)(timeLeft / delayPerFrame);
 
-                    if ((CMain.Time <= magic.CastTime + magic.Delay))
+                    if (CMain.Time <= magic.CastTime + magic.Delay)
                     {
-                        CoolDowns[i].Visible = true;
-                        CoolDowns[i].Index = 1260 + startFrame;
+                        CoolDowns[row].Visible = true;
+                        CoolDowns[row].Index = 1260 + startFrame;
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// PC 页游技能快捷栏：右上角锚定，内含两列 SkillBarColumn（主键 1..8 / 副键 F1..F8）。
+    /// 按原始传奇 HomeUIRightCtrlSkin（106×464）布局移植。
+    /// </summary>
+    public sealed class SkillBarDialog : MirImageControl
+    {
+        public SkillBarColumn Column1, Column2;   // 主键列(左) / 副键列(右)
+        public bool AltBind;
+
+        private bool _showSecondColumn = true;
+        /// <summary>是否显示第二列（副键 F1..F8）。关闭时容器收窄为单列并重新锚定。</summary>
+        public bool ShowSecondColumn
+        {
+            get { return _showSecondColumn; }
+            set
+            {
+                if (_showSecondColumn == value) return;
+                _showSecondColumn = value;
+                Column2.Visible = value;
+                Size = new Size(SkillBarColumn.ColumnWidth * (value ? 2 : 1), SkillBarColumn.ColumnHeight);
+                ApplyAnchor();
+                UpdateUI();
+            }
+        }
+
+        private int ColumnCount => _showSecondColumn ? 2 : 1;
+
+        public SkillBarDialog()
+        {
+            AutoSize = false;
+            Size = new Size(SkillBarColumn.ColumnWidth * ColumnCount, SkillBarColumn.ColumnHeight);
+            Sort = true;
+            Visible = true;
+            Movable = false;
+
+            Anchor = EAnchorType.TopRight;
+            AnchorPos = new Point(0, 200);
+            ApplyAnchor();
+
+            if (_showSecondColumn)
+            {
+                Column1 = new SkillBarColumn(0) { Parent = this, Location = new Point(SkillBarColumn.ColumnWidth, 0) };
+                Column2 = new SkillBarColumn(SkillBarColumn.SlotPerColumn) { Parent = this, Location = new Point(0, 0) };
+            }
+            else
+            {
+                Column1 = new SkillBarColumn(0) { Parent = this, Location = new Point(0, 0) };
+            }
+        }
+
+        public bool HasSkill { get { return Column1.HasSkill || (_showSecondColumn && Column2.HasSkill); } }
+
+        public void UpdateUI()
+        {
+            Column1.UpdateUI();
+            if (_showSecondColumn) Column2.UpdateUI();
+        }
+
+        public void Process()
+        {
+            Column1.ProcessSkillDelay();
+            if (_showSecondColumn) Column2.ProcessSkillDelay();
         }
 
         public override void Show()
@@ -1657,7 +1649,7 @@ namespace Client.MirScenes.Dialogs
             if (!HasSkill) return;
             Settings.SkillBar = true;
             Visible = true;
-            Update();
+            UpdateUI();
         }
 
         public override void Hide()
@@ -3882,10 +3874,7 @@ namespace Client.MirScenes.Dialogs
 
                 Network.Enqueue(new C.MagicKey { Spell = Magic.Spell, Key = Key, OldKey = Magic.Key });
                 Magic.Key = Key;
-                foreach (SkillBarDialog Bar in GameScene.Scene.SkillBarDialogs)
-                {
-                    Bar.Update();
-                }
+                GameScene.Scene.SkillBarDialogs.UpdateUI();
             }
             Dispose();
         }

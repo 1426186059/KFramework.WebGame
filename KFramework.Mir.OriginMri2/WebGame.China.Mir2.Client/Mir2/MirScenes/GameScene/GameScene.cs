@@ -101,7 +101,7 @@ namespace Client.MirScenes
         public HeroBehaviourPanel HeroBehaviourPanel;
         public SocketDialog SocketDialog;
 
-        public List<SkillBarDialog> SkillBarDialogs = new List<SkillBarDialog>();
+        public SkillBarDialog SkillBarDialogs;
         public ChatOptionDialog ChatOptionDialog;
         public ChatNoticeDialog ChatNoticeDialog;
 
@@ -368,10 +368,7 @@ namespace Client.MirScenes
 
             SocketDialog = new SocketDialog { Parent = this, Visible = false };
 
-            SkillBarDialog Bar1 = new SkillBarDialog { Parent = this, Visible = false, BarIndex = 0 };
-            SkillBarDialogs.Add(Bar1);
-            SkillBarDialog Bar2 = new SkillBarDialog { Parent = this, Visible = false, BarIndex = 1 };
-            SkillBarDialogs.Add(Bar2);
+            SkillBarDialogs = new SkillBarDialog { Parent = this, Visible = false };
             ChatOptionDialog = new ChatOptionDialog { Parent = this, Visible = false };
             ChatNoticeDialog = new ChatNoticeDialog { Parent = this, Visible = false };
 
@@ -652,11 +649,9 @@ namespace Client.MirScenes
                         break;
                     case KeybindOptions.Skillbar:
                         if (!Settings.SkillBar)
-                            foreach (SkillBarDialog Bar in SkillBarDialogs)
-                                Bar.Show();
+                            SkillBarDialogs.Show();
                         else
-                            foreach (SkillBarDialog Bar in SkillBarDialogs)
-                                Bar.Hide();
+                            SkillBarDialogs.Hide();
                         break;
                     case KeybindOptions.Mount:
                         if (GameScene.Scene.MountDialog.CanRide())
@@ -1342,8 +1337,7 @@ namespace Client.MirScenes
             GameShopDialog.Process();
             MiniMapDialog.Process();
 
-            foreach (SkillBarDialog Bar in Scene.SkillBarDialogs)
-                Bar.Process();
+            Scene.SkillBarDialogs.Process();
 
             DialogProcess();
 
@@ -1356,32 +1350,7 @@ namespace Client.MirScenes
 
         public void DialogProcess()
         {
-            foreach (SkillBarDialog Bar in Scene.SkillBarDialogs)
-            {
-                Bar.Show();
-            }
-
-            for (int i = 0; i < Scene.SkillBarDialogs.Count; i++)
-            {
-                int sx = Settings.SkillbarLocation[i, 0], sy = Settings.SkillbarLocation[i, 1];
-                int defaultX = Settings.Resolution - 53 * (i + 1);
-                int defaultY = Math.Max(0, (Settings.ScreenHeight - 464) / 2);
-
-                if (sx < 0 || sy < 0)
-                {
-                    sx = defaultX;
-                    sy = defaultY;
-                    Settings.SkillbarLocation[i, 0] = sx;
-                    Settings.SkillbarLocation[i, 1] = sy;
-                }
-
-                if (sx < 0 || sx > Settings.Resolution - 53 || sy < 0 || sy > Settings.ScreenHeight - 464)
-                {
-                    sx = defaultX;
-                    sy = defaultY;
-                }
-                Scene.SkillBarDialogs[i].Location = new Point(sx, sy);
-            }
+            Scene.SkillBarDialogs.Show();
 
             if (Settings.DuraView)
                 CharacterDuraPanel.Show();
@@ -2257,8 +2226,7 @@ namespace Client.MirScenes
             CharacterDialog = new CharacterDialog(MirGridType.Equipment, User) { Parent = this, Visible = false };
             CharacterSkillDialog = new CharacterSkillDialog { Parent = this, Visible = false };
             InventoryDialog.RefreshInventory();
-            foreach (SkillBarDialog Bar in SkillBarDialogs)
-                Bar.Update();
+            SkillBarDialogs.UpdateUI();
             AllowObserve = p.AllowObserve;
             Observing = p.Observer;
         }
@@ -4728,20 +4696,14 @@ namespace Client.MirScenes
                 actor.Magics.Add(magic);
 
             actor.RefreshStats();
-            foreach (SkillBarDialog Bar in SkillBarDialogs)
-            {
-                Bar.Update();
-            }
+            SkillBarDialogs.UpdateUI();
         }
 
         private void RemoveMagic(S.RemoveMagic p)
         {
             User.Magics.RemoveAt(p.PlaceId);
             User.RefreshStats();
-            foreach (SkillBarDialog Bar in SkillBarDialogs)
-            {
-                Bar.Update();
-            }
+            SkillBarDialogs.UpdateUI();
         }
 
         private void MagicLeveled(S.MagicLeveled p)

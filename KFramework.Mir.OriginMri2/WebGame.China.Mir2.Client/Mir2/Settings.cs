@@ -193,9 +193,6 @@ namespace Client
 
         public const string Language = "Chinese";
 
-        // PC 版技能栏：右侧竖排双栏（每组宽 53、高 464），默认锚在屏幕右缘；实际加载时按分辨率修正。
-        public static int[,] SkillbarLocation = new int[2, 2] { { -1, -1 }, { -1, -1 } };
-
         //Quests
         public static int[] TrackedQuests = new int[5];
 
@@ -290,12 +287,6 @@ namespace Client
             NewMove = Reader.ReadBoolean("Game", "NewMove", NewMove);
             //Language = Reader.ReadString("Game", "Language", Language); //我们只使用中文啊
 
-            for (int i = 0; i < SkillbarLocation.Length / 2; i++)
-            {
-                SkillbarLocation[i, 0] = Reader.ReadInt32("Game", "Skillbar" + i.ToString() + "X", SkillbarLocation[i, 0]);
-                SkillbarLocation[i, 1] = Reader.ReadInt32("Game", "Skillbar" + i.ToString() + "Y", SkillbarLocation[i, 1]);
-            }
-
             //Chat
             ShowNormalChat = Reader.ReadBoolean("Chat", "ShowNormalChat", ShowNormalChat);
             ShowYellChat = Reader.ReadBoolean("Chat", "ShowYellChat", ShowYellChat);
@@ -383,13 +374,6 @@ namespace Client
             Reader.Write("Game", "DisplayBodyName", DisplayBodyName);
             Reader.Write("Game", "NewMove", NewMove);
             //Reader.Write("Game", "Language", Language);
-
-            for (int i = 0; i < SkillbarLocation.Length / 2; i++)
-            {
-
-                Reader.Write("Game", "Skillbar" + i.ToString() + "X", SkillbarLocation[i, 0]);
-                Reader.Write("Game", "Skillbar" + i.ToString() + "Y", SkillbarLocation[i, 1]);
-            }
 
             //Chat
             Reader.Write("Chat", "ShowNormalChat", ShowNormalChat);
