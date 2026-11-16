@@ -1512,7 +1512,7 @@ namespace Client.MirScenes.Dialogs
                     OutLineColour = Color.Black,
                     Parent = this,
                     Location = new Point(0, y),
-                    Size = new Size(CellSize, CellSize),
+                    Size = new Size(CellBgSize, CellBgSize),
                     NotControl = true,
                     Visible = false,
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter)
@@ -1524,10 +1524,10 @@ namespace Client.MirScenes.Dialogs
                     Font = new Font(Settings.FontName, 8F),
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(30, y + 30),
-                    Size = new Size(10, 20),
+                    Location = new Point(0, y),
+                    Size = new Size(CellBgSize, CellBgSize),
                     NotControl = true,
-                    //DrawFormat = new TextStyle(TextAnchor.LowerRight)
+                    DrawFormat = new TextStyle(TextAnchor.LowerRight)
                 };
             }
         }
