@@ -1618,8 +1618,8 @@ namespace Client.MirScenes.Dialogs
         public SkillBarColumn Column1, Column2;   // 主键列(左) / 副键列(右)
         public bool AltBind;
 
-        private bool _showSecondColumn = true;
-        /// <summary>是否显示第二列（副键 F1..F8）。关闭时容器收窄为单列并重新锚定。</summary>
+        private bool _showSecondColumn = Settings.SkillBarTwoRows;
+        /// <summary>是否显示第二列（副键 F1..F8）。关闭时容器收窄为单列并重新锚定，并持久化到 Settings。</summary>
         public bool ShowSecondColumn
         {
             get { return _showSecondColumn; }
@@ -1627,7 +1627,14 @@ namespace Client.MirScenes.Dialogs
             {
                 if (_showSecondColumn == value) return;
                 _showSecondColumn = value;
-                Column2.Visible = value;
+                Settings.SetSkillBarTwoRows(value);   // 写字段并落库，下次登录保留
+
+                if (value && Column2 == null)   // 从单列切回双列时补建
+                    Column2 = new SkillBarColumn(SkillBarColumn.SlotPerColumn) { Parent = this, Location = new Point(0, 0) };
+                if (Column2 != null) Column2.Visible = value;
+
+                // 双列：主键在右(x=ColumnWidth)、副键在左(x=0)；单列：主键在 x=0
+                Column1.Location = new Point(value ? SkillBarColumn.ColumnWidth : 0, 0);
                 Size = new Size(SkillBarColumn.ColumnWidth * (value ? 2 : 1), SkillBarColumn.ColumnHeight);
                 ApplyAnchor();
                 UpdateUI();
@@ -3473,34 +3480,43 @@ namespace Client.MirScenes.Dialogs
                 Text = magic.Name + "快捷键设置为"
             };
 
+            // 双排技能栏开关：两图同位置互斥显隐；图集帧用 AtlasNameKey（ImageKey 只支持单图），
+            // 不能设 NotControl（否则点不到，Click 不触发）。
+            bool secondOn = GameScene.Scene != null && GameScene.Scene.SkillBarDialogs != null
+                && GameScene.Scene.SkillBarDialogs.ShowSecondColumn;
             var mUnSelectSecondBG = new MirImageControl
             {
                 Location = new Point(250, 31),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(24, 24),
-                NotControl = true,
-                ImageKey = "y_common-sheet#hide_unselect",
+                AtlasNameKey = "y_common-sheet#hide_unselect",
                 ForeColour = Color.White,
+                Visible = !secondOn,
             };
-            mUnSelectSecondBG.Click += (object sender, EventArgs e) =>
-            {
-                throw new NotImplementedException();
-            };
-
             var mSelectSecondBG = new MirImageControl
             {
                 Location = new Point(250, 31),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(24, 24),
-                NotControl = true,
-                ImageKey = "y_common-sheet#hide_select",
+                AtlasNameKey = "y_common-sheet#hide_select",
                 ForeColour = Color.White,
+                Visible = secondOn,
+            };
+            mUnSelectSecondBG.Click += (object sender, EventArgs e) =>
+            {
+                if (GameScene.Scene == null || GameScene.Scene.SkillBarDialogs == null) return;
+                GameScene.Scene.SkillBarDialogs.ShowSecondColumn = true;
+                mUnSelectSecondBG.Visible = false;
+                mSelectSecondBG.Visible = true;
             };
             mSelectSecondBG.Click += (object sender, EventArgs e) =>
             {
-                throw new NotImplementedException();
+                if (GameScene.Scene == null || GameScene.Scene.SkillBarDialogs == null) return;
+                GameScene.Scene.SkillBarDialogs.ShowSecondColumn = false;
+                mSelectSecondBG.Visible = false;
+                mUnSelectSecondBG.Visible = true;
             };
 
             // 描述文字 "X快捷键设置为" @ (150,38)
