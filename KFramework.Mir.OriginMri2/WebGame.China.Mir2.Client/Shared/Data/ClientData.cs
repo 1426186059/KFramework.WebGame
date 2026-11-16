@@ -17,6 +17,10 @@ public class ClientMagic
     // 原始传奇技能图标号（如 "11021"），客户端据此从 CDN 加载 assets/resource/icon/skills/{号}.png
     public string OriginIcon = "";
 
+    // 原始传奇技能：目标类型（1=需敌方目标，3=自身/增益）与特效 id 列表，由服务端 S.NewMagic 下发。
+    public byte TargetType;
+    public int[] EffectIds = new int[0];
+
     public ClientMagic() { }
 
     public ClientMagic(BinaryReader reader)
@@ -44,6 +48,11 @@ public class ClientMagic
         CastTime = reader.ReadInt64();
 
         OriginIcon = reader.ReadString();
+
+        TargetType = reader.ReadByte();
+        int effectCount = reader.ReadInt32();
+        EffectIds = new int[effectCount];
+        for (int i = 0; i < effectCount; i++) EffectIds[i] = reader.ReadInt32();
     }
 
     public void Save(BinaryWriter writer)
@@ -71,6 +80,10 @@ public class ClientMagic
         writer.Write(CastTime);
 
         writer.Write(OriginIcon ?? string.Empty);
+
+        writer.Write(TargetType);
+        writer.Write(EffectIds.Length);
+        for (int i = 0; i < EffectIds.Length; i++) writer.Write(EffectIds[i]);
     }
 
 }

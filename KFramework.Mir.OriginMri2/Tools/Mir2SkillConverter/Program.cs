@@ -24,6 +24,8 @@ public class MagicInfoOut
     public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
     public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex, Piaozi;
     public int[] EffectIds = Array.Empty<int>();
+    // 1=需技能书激活（skills_condition[id][1].cost 有值）；0=达等级自动学会。
+    public int NeedBook;
 }
 
 public static class Program
@@ -75,7 +77,9 @@ public static class Program
             using JsonDocument condDoc = JsonDocument.Parse(File.ReadAllText(opt.Condition));
             JsonElement skills = doc.RootElement.GetProperty("skill");
             JsonElement effects = doc.RootElement.GetProperty("skillEffects");
+            JsonElement effectTable = doc.RootElement.GetProperty("effect");
             Dictionary<int, List<int>> effectBySkill = BuildEffectIndex(effects);
+            Dictionary<int, List<int>> effectByModel = BuildEffectByModel(effectTable);
             Dictionary<int, Dictionary<int, JsonElement>> conditions = BuildConditionIndex(condDoc.RootElement);
 
             var rows = new List<(int Id, JsonElement Raw)>();
@@ -112,6 +116,16 @@ public static class Program
 
                 int[] effectIds = effectBySkill.TryGetValue(id, out var list)
                     ? list.Distinct().ToArray() : Array.Empty<int>();
+
+                // 常规技能没有 skillEffects 条目，但 5config.effect 里 model == 技能号/图标号的
+                // 就是它的施法特效（如施毒术 13031 → effect 759、灵魂火符 13041 → effect 769）。
+                if (effectIds.Length == 0 && Int(rec, "isshow") == 1)
+                {
+                    if (effectByModel.TryGetValue(id, out var byId))
+                        effectIds = byId.Distinct().ToArray();
+                    else if (int.TryParse(icon, out int iconId) && effectByModel.TryGetValue(iconId, out var byIcon))
+                        effectIds = byIcon.Distinct().ToArray();
+                }
                 if (effectIds.Length > 0) effectsAttached++;
 
                 FillOriginFields(dto, rec, id, icon, effectIds);
@@ -274,6 +288,10 @@ public static class Program
         dto.Level2 = canUp ? LearnLevel(l2) : dto.Level1;
         dto.Level3 = canUp ? LearnLevel(l3) : dto.Level1;
 
+        // NeedBook：原版 skills_condition[id][1].cost 有值（如 "13031#1"）表示 Lv1 需消耗 1 级技能书激活；
+        // 无 cost 的技能（普通攻击/倚天/神龙/内功）到 condition 等级自动学会。
+        dto.NeedBook = string.IsNullOrEmpty(Str(l1, "cost")) ? 0 : 1;
+
         ushort n1 = Skilled(l1), n2 = Skilled(l2), n3 = Skilled(l3);
         // 内功类技能（1001/2001/3001/4001）canup=1 但整张等级表没有 skilled，
         // JS checkUpLevel 走的是 condition + cost(道具消耗) 通道，服务器没有对应机制。
@@ -345,6 +363,21 @@ public static class Program
                     ids.Add(effId);
             }
             if (ids.Count > 0) map[skillId] = ids;
+        }
+        return map;
+    }
+
+    /// <summary>5config.effect：model → effect id 列表，用于给没有 skillEffects 条目的常规技能补特效。</summary>
+    private static Dictionary<int, List<int>> BuildEffectByModel(JsonElement effects)
+    {
+        var map = new Dictionary<int, List<int>>();
+        foreach (var kv in effects.EnumerateObject())
+        {
+            if (!int.TryParse(kv.Name, out int effectId)) continue;
+            int model = Int(kv.Value, "model");
+            if (model <= 0) continue;
+            if (!map.TryGetValue(model, out var list)) map[model] = list = new List<int>();
+            list.Add(effectId);
         }
         return map;
     }

@@ -3388,6 +3388,33 @@ namespace Server.MirObjects
             return cost;
         }
         public virtual MapObject DefaultMagicTarget => this;
+
+        /// <summary>需要敌方目标的技能：未选中目标时客户端会传 TargetID=0，服务端直接拒绝施法。</summary>
+        private static bool RequiresMagicTarget(UserMagic magic)
+        {
+            if (magic == null) return false;
+            if (magic.Info != null && magic.Info.TargetType == 1) return true;
+
+            switch (magic.Spell)
+            {
+                case Spell.FireBall:
+                case Spell.GreatFireBall:
+                case Spell.ElectricShock:
+                case Spell.Poisoning:
+                case Spell.ThunderBolt:
+                case Spell.FlameDisruptor:
+                case Spell.SoulFireBall:
+                case Spell.TurnUndead:
+                case Spell.FrostCrunch:
+                case Spell.Vampirism:
+                case Spell.FireBounce:
+                case Spell.MeteorShower:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public void Magic(Spell spell, MirDirection dir, uint targetID, Point location, bool spellTargetLock = false)
         {
             if (!CanCast)
@@ -3440,6 +3467,13 @@ namespace Server.MirObjects
             int cost = MagicCost(magic);
 
             if (cost > MP)
+            {
+                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
+                return;
+            }
+
+            // 必须选中目标的技能：未传目标时直接拒绝，不扣蓝、不进 CD、不广播施法。
+            if (targetID == 0 && RequiresMagicTarget(magic))
             {
                 Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
                 return;
@@ -3498,7 +3532,7 @@ namespace Server.MirObjects
             // 原始传奇技能（Spell 超出引擎旧枚举值域）：走数据驱动通用施法，不进下面的硬编码 switch。
             if ((int)spell > 218 && magic.Info != null)
             {
-                if (!OriginMagicCast(magic, target, location)) targetID = 0;
+                if (!OriginMagicCast(magic, target, location)) { targetID = 0; cast = false; }
             }
             else switch (spell)
             {
@@ -4442,11 +4476,11 @@ namespace Server.MirObjects
         private bool SoulFireball(MapObject target, UserMagic magic, out bool cast)
         {
             cast = false;
+            if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
+
             UserItem item = GetAmulet(1);
             if (item == null) return false;
             cast = true;
-
-            if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
 

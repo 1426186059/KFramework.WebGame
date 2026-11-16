@@ -1091,6 +1091,8 @@ namespace Server.MirEnvir
                 foreach (var quest in QuestInfoList) quest.LoadInfo();
                 DragonInfo = LoadConfig<DragonInfo>(baseDir, "DragonInfo.json");
                 MagicInfoList = LoadConfigList<MagicInfo>(baseDir, "MagicInfo.json");
+                // 原始传奇技能书映射：物品 id → 技能/目标等级（构建期从 1config.item 导出）。
+                SkillBookInfo.BuildIndex(LoadConfigList<SkillBookInfo>(baseDir, "SkillBookInfo.json"));
                 if (LoadVersion >= 63)
                     GameShopList = LoadConfigList<GameShopItem>(baseDir, "GameShopItem.json");
                 if (LoadVersion >= 66)

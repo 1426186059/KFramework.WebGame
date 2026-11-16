@@ -1521,6 +1521,32 @@ public sealed class MapControl : MirControl
         User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = direction, Location = Functions.PointMove(User.CurrentLocation, direction, 1) };
     }
 
+    /// <summary>攻击类技能必须点击选中目标：TargetType=1（原始技能）或旧引擎单体攻击技能。</summary>
+    private static bool RequiresSelectedTarget(ClientMagic magic)
+    {
+        if (magic == null) return false;
+        if (magic.TargetType == 1) return true;
+
+        switch (magic.Spell)
+        {
+            case Spell.FireBall:
+            case Spell.GreatFireBall:
+            case Spell.ElectricShock:
+            case Spell.Poisoning:
+            case Spell.ThunderBolt:
+            case Spell.FlameDisruptor:
+            case Spell.SoulFireBall:
+            case Spell.TurnUndead:
+            case Spell.FrostCrunch:
+            case Spell.Vampirism:
+            case Spell.FireBounce:
+            case Spell.MeteorShower:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public void UseMagic(ClientMagic magic, UserObject actor)
     {
         if (CMain.Time < GameScene.SpellTime || actor.Poison.HasFlag(PoisonType.Stun))
@@ -1591,13 +1617,10 @@ public sealed class MapControl : MirControl
             case Spell.DarkBody:
             case Spell.FireBounce:
             case Spell.MeteorShower:
-                if (actor.NextMagicObject != null)
-                {
-                    if (!actor.NextMagicObject.Dead && actor.NextMagicObject.Race != ObjectType.Item && actor.NextMagicObject.Race != ObjectType.Merchant)
-                        target = actor.NextMagicObject;
-                }
-
-                if (target == null) target = MapObject.MagicObject;
+                // 只认点击选中的目标，鼠标悬停（NextMagicObject）不再作为攻击目标。
+                if (MapObject.TargetObject != null && !MapObject.TargetObject.Dead &&
+                    MapObject.TargetObject.Race != ObjectType.Item && MapObject.TargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.TargetObject;
 
                 if (target != null && target.Race == ObjectType.Monster) MapObject.MagicObjectID = target.ObjectID;
                 break;
@@ -1722,8 +1745,19 @@ public sealed class MapControl : MirControl
                 //isTargetSpell = false;
                 break;
             default:
-                //isTargetSpell = false;
+                // 原始传奇技能（>218）：目标取点击选中的对象，TargetType=1 的技能未选中时下方统一拦截。
+                if ((int)magic.Spell > 218 && MapObject.TargetObject != null && !MapObject.TargetObject.Dead &&
+                    MapObject.TargetObject.Race != ObjectType.Item && MapObject.TargetObject.Race != ObjectType.Merchant)
+                    target = MapObject.TargetObject;
                 break;
+        }
+
+        // 攻击类技能必须先点击选中目标：未选中则提示并取消，不发包、不记 CD。
+        if (RequiresSelectedTarget(magic) && target == null)
+        {
+            GameScene.Scene.OutputMessage("请先选中目标");
+            actor.ClearMagic();
+            return;
         }
 
         MirDirection dir = (target == null || target == User) ? actor.NextMagicDirection : Functions.DirectionFromPoint(actor.CurrentLocation, target.CurrentLocation);
@@ -1765,6 +1799,15 @@ public sealed class MapControl : MirControl
         else
         {
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
+        }
+
+        // 数据驱动施法特效：服务端 S.NewMagic 下发的 EffectIds → 原始传奇 CDN 模型帧。
+        // 有目标时挂目标（命中特效），无目标时挂施法者（自身/增益特效）。
+        if (magic.EffectIds != null && magic.EffectIds.Length > 0)
+        {
+            MapObject effectOwner = target ?? actor;
+            foreach (int effectId in magic.EffectIds)
+                effectOwner.Effects.Add(new OriginEffect(effectId, effectOwner));
         }
     }
 

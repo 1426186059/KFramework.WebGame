@@ -1,0 +1,2171 @@
+[
+  {
+    "Index": 11011,
+    "Name": "基本剑术",
+    "SkillId": 11011,
+    "TargetLevel": 1,
+    "NeedLevel": 7,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11012,
+    "Name": "4级基本剑术",
+    "SkillId": 11011,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11013,
+    "Name": "5级基本剑术",
+    "SkillId": 11011,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11014,
+    "Name": "6级基本剑术",
+    "SkillId": 11011,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11021,
+    "Name": "攻杀剑术",
+    "SkillId": 11021,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11022,
+    "Name": "4级攻杀剑术",
+    "SkillId": 11021,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11023,
+    "Name": "5级攻杀剑术",
+    "SkillId": 11021,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11024,
+    "Name": "6级攻杀剑术",
+    "SkillId": 11021,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11025,
+    "Name": "7级攻杀剑术",
+    "SkillId": 11021,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11031,
+    "Name": "刺杀剑术",
+    "SkillId": 11031,
+    "TargetLevel": 1,
+    "NeedLevel": 25,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11032,
+    "Name": "4级刺杀剑术",
+    "SkillId": 11031,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11033,
+    "Name": "5级刺杀剑术",
+    "SkillId": 11031,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11034,
+    "Name": "6级刺杀剑术",
+    "SkillId": 11031,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11035,
+    "Name": "7级刺杀剑术",
+    "SkillId": 11031,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11041,
+    "Name": "半月弯刀",
+    "SkillId": 11041,
+    "TargetLevel": 1,
+    "NeedLevel": 28,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11042,
+    "Name": "4级半月弯刀",
+    "SkillId": 11041,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11043,
+    "Name": "5级半月弯刀",
+    "SkillId": 11041,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11044,
+    "Name": "6级半月弯刀",
+    "SkillId": 11041,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11045,
+    "Name": "7级半月弯刀",
+    "SkillId": 11041,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11051,
+    "Name": "野蛮冲撞",
+    "SkillId": 11051,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 15201,
+    "Name": "野蛮冲撞",
+    "SkillId": 11051,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11052,
+    "Name": "4级野蛮冲撞",
+    "SkillId": 11051,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11053,
+    "Name": "5级野蛮冲撞",
+    "SkillId": 11051,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11054,
+    "Name": "6级野蛮冲撞",
+    "SkillId": 11051,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11061,
+    "Name": "烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 15202,
+    "Name": "烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11062,
+    "Name": "4级烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11063,
+    "Name": "5级烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11064,
+    "Name": "6级烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11065,
+    "Name": "7级烈火剑法",
+    "SkillId": 11061,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11071,
+    "Name": "开天斩",
+    "SkillId": 11071,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11072,
+    "Name": "4级开天斩",
+    "SkillId": 11071,
+    "TargetLevel": 5,
+    "NeedLevel": 107,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11073,
+    "Name": "5级开天斩",
+    "SkillId": 11071,
+    "TargetLevel": 6,
+    "NeedLevel": 110,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11074,
+    "Name": "6级开天斩",
+    "SkillId": 11071,
+    "TargetLevel": 7,
+    "NeedLevel": 113,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11081,
+    "Name": "逐日剑法",
+    "SkillId": 11081,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11082,
+    "Name": "4级逐日剑法",
+    "SkillId": 11081,
+    "TargetLevel": 5,
+    "NeedLevel": 109,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11083,
+    "Name": "5级逐日剑法",
+    "SkillId": 11081,
+    "TargetLevel": 6,
+    "NeedLevel": 112,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11084,
+    "Name": "6级逐日剑法",
+    "SkillId": 11081,
+    "TargetLevel": 7,
+    "NeedLevel": 115,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11091,
+    "Name": "困龙诀",
+    "SkillId": 11091,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11092,
+    "Name": "4级困龙诀",
+    "SkillId": 11091,
+    "TargetLevel": 5,
+    "NeedLevel": 120,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11093,
+    "Name": "5级困龙诀",
+    "SkillId": 11091,
+    "TargetLevel": 6,
+    "NeedLevel": 125,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11094,
+    "Name": "6级困龙诀",
+    "SkillId": 11091,
+    "TargetLevel": 7,
+    "NeedLevel": 130,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11101,
+    "Name": "狮子吼",
+    "SkillId": 11101,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11102,
+    "Name": "4级狮子吼",
+    "SkillId": 11101,
+    "TargetLevel": 5,
+    "NeedLevel": 120,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11103,
+    "Name": "5级狮子吼",
+    "SkillId": 11101,
+    "TargetLevel": 6,
+    "NeedLevel": 125,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11104,
+    "Name": "6级狮子吼",
+    "SkillId": 11101,
+    "TargetLevel": 7,
+    "NeedLevel": 130,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11201,
+    "Name": "十步一杀",
+    "SkillId": 11201,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11202,
+    "Name": "4级十步一杀",
+    "SkillId": 11201,
+    "TargetLevel": 5,
+    "NeedLevel": 120,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11203,
+    "Name": "5级十步一杀",
+    "SkillId": 11201,
+    "TargetLevel": 6,
+    "NeedLevel": 125,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11204,
+    "Name": "6级十步一杀",
+    "SkillId": 11201,
+    "TargetLevel": 7,
+    "NeedLevel": 130,
+    "Career": 1,
+    "SubType": 216
+  },
+  {
+    "Index": 11301,
+    "Name": "旋风斩",
+    "SkillId": 11301,
+    "TargetLevel": 1,
+    "NeedLevel": 1,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 12011,
+    "Name": "火球术",
+    "SkillId": 12011,
+    "TargetLevel": 1,
+    "NeedLevel": 7,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12012,
+    "Name": "4级火球术",
+    "SkillId": 12011,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12013,
+    "Name": "5级火球术",
+    "SkillId": 12011,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12014,
+    "Name": "6级火球术",
+    "SkillId": 12011,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12021,
+    "Name": "抗拒火环",
+    "SkillId": 12021,
+    "TargetLevel": 1,
+    "NeedLevel": 12,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12022,
+    "Name": "4级抗拒火环",
+    "SkillId": 12021,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12023,
+    "Name": "5级抗拒火环",
+    "SkillId": 12021,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12024,
+    "Name": "6级抗拒火环",
+    "SkillId": 12021,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12031,
+    "Name": "诱惑之光",
+    "SkillId": 12031,
+    "TargetLevel": 1,
+    "NeedLevel": 13,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12032,
+    "Name": "4级诱惑之光",
+    "SkillId": 12031,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12033,
+    "Name": "5级诱惑之光",
+    "SkillId": 12031,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12034,
+    "Name": "6级诱惑之光",
+    "SkillId": 12031,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12041,
+    "Name": "地狱火",
+    "SkillId": 12041,
+    "TargetLevel": 1,
+    "NeedLevel": 16,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12042,
+    "Name": "4级地狱火",
+    "SkillId": 12041,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12043,
+    "Name": "5级地狱火",
+    "SkillId": 12041,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12044,
+    "Name": "6级地狱火",
+    "SkillId": 12041,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12051,
+    "Name": "雷电术",
+    "SkillId": 12051,
+    "TargetLevel": 1,
+    "NeedLevel": 17,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12052,
+    "Name": "4级雷电术",
+    "SkillId": 12051,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12053,
+    "Name": "5级雷电术",
+    "SkillId": 12051,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12054,
+    "Name": "6级雷电术",
+    "SkillId": 12051,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12055,
+    "Name": "7级雷电术",
+    "SkillId": 12051,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12061,
+    "Name": "大火球",
+    "SkillId": 12061,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12062,
+    "Name": "4级大火球",
+    "SkillId": 12061,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12063,
+    "Name": "5级大火球",
+    "SkillId": 12061,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12064,
+    "Name": "6级大火球",
+    "SkillId": 12061,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12071,
+    "Name": "瞬间移动",
+    "SkillId": 12071,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12072,
+    "Name": "4级瞬间移动",
+    "SkillId": 12071,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12073,
+    "Name": "5级瞬间移动",
+    "SkillId": 12071,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12074,
+    "Name": "6级瞬间移动",
+    "SkillId": 12071,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12081,
+    "Name": "爆裂火焰",
+    "SkillId": 12081,
+    "TargetLevel": 1,
+    "NeedLevel": 22,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12082,
+    "Name": "4级爆裂火焰",
+    "SkillId": 12081,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12083,
+    "Name": "5级爆裂火焰",
+    "SkillId": 12081,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12084,
+    "Name": "6级爆裂火焰",
+    "SkillId": 12081,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12091,
+    "Name": "火墙",
+    "SkillId": 12091,
+    "TargetLevel": 1,
+    "NeedLevel": 24,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12092,
+    "Name": "4级火墙",
+    "SkillId": 12091,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12093,
+    "Name": "5级火墙",
+    "SkillId": 12091,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12094,
+    "Name": "6级火墙",
+    "SkillId": 12091,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12101,
+    "Name": "疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 1,
+    "NeedLevel": 26,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 15203,
+    "Name": "疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 1,
+    "NeedLevel": 26,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12102,
+    "Name": "4级疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12103,
+    "Name": "5级疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12104,
+    "Name": "6级疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12105,
+    "Name": "7级疾光电影",
+    "SkillId": 12101,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12111,
+    "Name": "地狱雷光",
+    "SkillId": 12111,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 15204,
+    "Name": "地狱雷光",
+    "SkillId": 12111,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12112,
+    "Name": "4级地狱雷光",
+    "SkillId": 12111,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12113,
+    "Name": "5级地狱雷光",
+    "SkillId": 12111,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12114,
+    "Name": "6级地狱雷光",
+    "SkillId": 12111,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12121,
+    "Name": "魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 1,
+    "NeedLevel": 31,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 15205,
+    "Name": "魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 1,
+    "NeedLevel": 31,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12122,
+    "Name": "4级魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12123,
+    "Name": "5级魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12124,
+    "Name": "6级魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12125,
+    "Name": "7级魔法盾",
+    "SkillId": 12121,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12131,
+    "Name": "冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 15206,
+    "Name": "冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12132,
+    "Name": "4级冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12133,
+    "Name": "5级冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12134,
+    "Name": "6级冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12135,
+    "Name": "7级冰咆哮",
+    "SkillId": 12131,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12141,
+    "Name": "灭天火",
+    "SkillId": 12141,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12142,
+    "Name": "4级灭天火",
+    "SkillId": 12141,
+    "TargetLevel": 5,
+    "NeedLevel": 107,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12143,
+    "Name": "5级灭天火",
+    "SkillId": 12141,
+    "TargetLevel": 6,
+    "NeedLevel": 110,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12144,
+    "Name": "6级灭天火",
+    "SkillId": 12141,
+    "TargetLevel": 7,
+    "NeedLevel": 113,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12151,
+    "Name": "流星火雨",
+    "SkillId": 12151,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12152,
+    "Name": "4级流星火雨",
+    "SkillId": 12151,
+    "TargetLevel": 5,
+    "NeedLevel": 109,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12153,
+    "Name": "5级流星火雨",
+    "SkillId": 12151,
+    "TargetLevel": 6,
+    "NeedLevel": 112,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12154,
+    "Name": "6级流星火雨",
+    "SkillId": 12151,
+    "TargetLevel": 7,
+    "NeedLevel": 115,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12161,
+    "Name": "狂雷紫电",
+    "SkillId": 12161,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12171,
+    "Name": "寒冰掌",
+    "SkillId": 12171,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12172,
+    "Name": "4级寒冰掌",
+    "SkillId": 12171,
+    "TargetLevel": 5,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12173,
+    "Name": "5级寒冰掌",
+    "SkillId": 12171,
+    "TargetLevel": 6,
+    "NeedLevel": 180,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12174,
+    "Name": "6级寒冰掌",
+    "SkillId": 12171,
+    "TargetLevel": 7,
+    "NeedLevel": 190,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12181,
+    "Name": "分身术",
+    "SkillId": 12181,
+    "TargetLevel": 1,
+    "NeedLevel": 1,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12182,
+    "Name": "4级分身术",
+    "SkillId": 12181,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12183,
+    "Name": "5级分身术",
+    "SkillId": 12181,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 12184,
+    "Name": "6级分身术",
+    "SkillId": 12181,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 2,
+    "SubType": 216
+  },
+  {
+    "Index": 13011,
+    "Name": "治愈术",
+    "SkillId": 13011,
+    "TargetLevel": 1,
+    "NeedLevel": 7,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13012,
+    "Name": "4级治愈术",
+    "SkillId": 13011,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13013,
+    "Name": "5级治愈术",
+    "SkillId": 13011,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13014,
+    "Name": "6级治愈术",
+    "SkillId": 13011,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13021,
+    "Name": "精神力战法",
+    "SkillId": 13021,
+    "TargetLevel": 1,
+    "NeedLevel": 9,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13022,
+    "Name": "4级精神力战法",
+    "SkillId": 13021,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13023,
+    "Name": "5级精神力战法",
+    "SkillId": 13021,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13024,
+    "Name": "6级精神力战法",
+    "SkillId": 13021,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13031,
+    "Name": "施毒术",
+    "SkillId": 13031,
+    "TargetLevel": 1,
+    "NeedLevel": 14,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13032,
+    "Name": "4级施毒术",
+    "SkillId": 13031,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13033,
+    "Name": "5级施毒术",
+    "SkillId": 13031,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13034,
+    "Name": "6级施毒术",
+    "SkillId": 13031,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13035,
+    "Name": "7级施毒术",
+    "SkillId": 13031,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13041,
+    "Name": "灵魂火符",
+    "SkillId": 13041,
+    "TargetLevel": 1,
+    "NeedLevel": 18,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13042,
+    "Name": "4级灵魂火符",
+    "SkillId": 13041,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13043,
+    "Name": "5级灵魂火符",
+    "SkillId": 13041,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13044,
+    "Name": "6级灵魂火符",
+    "SkillId": 13041,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13045,
+    "Name": "7级灵魂火符",
+    "SkillId": 13041,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13051,
+    "Name": "召唤骷髅",
+    "SkillId": 13051,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13052,
+    "Name": "4级召唤骷髅",
+    "SkillId": 13051,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13053,
+    "Name": "5级召唤骷髅",
+    "SkillId": 13051,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13054,
+    "Name": "6级召唤骷髅",
+    "SkillId": 13051,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13061,
+    "Name": "隐身术",
+    "SkillId": 13061,
+    "TargetLevel": 1,
+    "NeedLevel": 20,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13062,
+    "Name": "4级隐身术",
+    "SkillId": 13061,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13063,
+    "Name": "5级隐身术",
+    "SkillId": 13061,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13064,
+    "Name": "6级隐身术",
+    "SkillId": 13061,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13071,
+    "Name": "集体隐身术",
+    "SkillId": 13071,
+    "TargetLevel": 1,
+    "NeedLevel": 21,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13072,
+    "Name": "4级集体隐身术",
+    "SkillId": 13071,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13073,
+    "Name": "5级集体隐身术",
+    "SkillId": 13071,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13074,
+    "Name": "6级集体隐身术",
+    "SkillId": 13071,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13081,
+    "Name": "幽灵盾",
+    "SkillId": 13081,
+    "TargetLevel": 1,
+    "NeedLevel": 22,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13082,
+    "Name": "4级幽灵盾",
+    "SkillId": 13081,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13083,
+    "Name": "5级幽灵盾",
+    "SkillId": 13081,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13084,
+    "Name": "6级幽灵盾",
+    "SkillId": 13081,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13091,
+    "Name": "神圣战甲术",
+    "SkillId": 13091,
+    "TargetLevel": 1,
+    "NeedLevel": 25,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13092,
+    "Name": "4级神圣战甲术",
+    "SkillId": 13091,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13093,
+    "Name": "5级神圣战甲术",
+    "SkillId": 13091,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13094,
+    "Name": "6级神圣战甲术",
+    "SkillId": 13091,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13101,
+    "Name": "心灵启示",
+    "SkillId": 13101,
+    "TargetLevel": 1,
+    "NeedLevel": 26,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13102,
+    "Name": "4级心灵启示",
+    "SkillId": 13101,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13103,
+    "Name": "5级心灵启示",
+    "SkillId": 13101,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13104,
+    "Name": "6级心灵启示",
+    "SkillId": 13101,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13111,
+    "Name": "困魔咒",
+    "SkillId": 13111,
+    "TargetLevel": 1,
+    "NeedLevel": 28,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13112,
+    "Name": "4级困魔咒",
+    "SkillId": 13111,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13113,
+    "Name": "5级困魔咒",
+    "SkillId": 13111,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13114,
+    "Name": "6级困魔咒",
+    "SkillId": 13111,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13121,
+    "Name": "群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 1,
+    "NeedLevel": 32,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 15207,
+    "Name": "群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 1,
+    "NeedLevel": 32,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13122,
+    "Name": "4级群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13123,
+    "Name": "5级群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13124,
+    "Name": "6级群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13125,
+    "Name": "7级群体治愈术",
+    "SkillId": 13121,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13131,
+    "Name": "召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 15208,
+    "Name": "召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13132,
+    "Name": "4级召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 5,
+    "NeedLevel": 50,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13133,
+    "Name": "5级召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 6,
+    "NeedLevel": 60,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13134,
+    "Name": "6级召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 7,
+    "NeedLevel": 70,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13135,
+    "Name": "7级召唤神兽",
+    "SkillId": 13131,
+    "TargetLevel": 8,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13141,
+    "Name": "噬血术",
+    "SkillId": 13141,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13142,
+    "Name": "4级噬血术",
+    "SkillId": 13141,
+    "TargetLevel": 5,
+    "NeedLevel": 107,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13143,
+    "Name": "5级噬血术",
+    "SkillId": 13141,
+    "TargetLevel": 6,
+    "NeedLevel": 110,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13144,
+    "Name": "6级噬血术",
+    "SkillId": 13141,
+    "TargetLevel": 7,
+    "NeedLevel": 113,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13151,
+    "Name": "无极真气",
+    "SkillId": 13151,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13152,
+    "Name": "4级无极真气",
+    "SkillId": 13151,
+    "TargetLevel": 5,
+    "NeedLevel": 109,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13153,
+    "Name": "5级无极真气",
+    "SkillId": 13151,
+    "TargetLevel": 6,
+    "NeedLevel": 112,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13154,
+    "Name": "6级无极真气",
+    "SkillId": 13151,
+    "TargetLevel": 7,
+    "NeedLevel": 115,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13161,
+    "Name": "召唤月灵",
+    "SkillId": 13161,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13162,
+    "Name": "4级召唤月灵",
+    "SkillId": 13161,
+    "TargetLevel": 5,
+    "NeedLevel": 120,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13163,
+    "Name": "5级召唤月灵",
+    "SkillId": 13161,
+    "TargetLevel": 6,
+    "NeedLevel": 125,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13164,
+    "Name": "6级召唤月灵",
+    "SkillId": 13161,
+    "TargetLevel": 7,
+    "NeedLevel": 130,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13171,
+    "Name": "飓风破",
+    "SkillId": 13171,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13181,
+    "Name": "召唤骨龙",
+    "SkillId": 13181,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13182,
+    "Name": "4级召唤骨龙",
+    "SkillId": 13181,
+    "TargetLevel": 5,
+    "NeedLevel": 120,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13183,
+    "Name": "5级召唤骨龙",
+    "SkillId": 13181,
+    "TargetLevel": 6,
+    "NeedLevel": 125,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 13184,
+    "Name": "6级召唤骨龙",
+    "SkillId": 13181,
+    "TargetLevel": 7,
+    "NeedLevel": 130,
+    "Career": 3,
+    "SubType": 216
+  },
+  {
+    "Index": 14011,
+    "Name": "护体神盾",
+    "SkillId": 14011,
+    "TargetLevel": 1,
+    "NeedLevel": 80,
+    "Career": 0,
+    "SubType": 64
+  },
+  {
+    "Index": 14012,
+    "Name": "4级护体神盾",
+    "SkillId": 14011,
+    "TargetLevel": 5,
+    "NeedLevel": 107,
+    "Career": 0,
+    "SubType": 216
+  },
+  {
+    "Index": 14013,
+    "Name": "5级护体神盾",
+    "SkillId": 14011,
+    "TargetLevel": 6,
+    "NeedLevel": 110,
+    "Career": 0,
+    "SubType": 216
+  },
+  {
+    "Index": 14014,
+    "Name": "6级护体神盾",
+    "SkillId": 14011,
+    "TargetLevel": 7,
+    "NeedLevel": 113,
+    "Career": 0,
+    "SubType": 216
+  },
+  {
+    "Index": 11002,
+    "Name": "没用",
+    "SkillId": 102000,
+    "TargetLevel": 1,
+    "NeedLevel": 28,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11003,
+    "Name": "没用",
+    "SkillId": 103000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 17002,
+    "Name": "烈焰斩",
+    "SkillId": 103000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11004,
+    "Name": "没用",
+    "SkillId": 104000,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11005,
+    "Name": "没用",
+    "SkillId": 105000,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11006,
+    "Name": "没用",
+    "SkillId": 106000,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11007,
+    "Name": "没用",
+    "SkillId": 107000,
+    "TargetLevel": 1,
+    "NeedLevel": 85,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11008,
+    "Name": "没用",
+    "SkillId": 108000,
+    "TargetLevel": 1,
+    "NeedLevel": 7,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11009,
+    "Name": "没用",
+    "SkillId": 109000,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 11999,
+    "Name": "没用",
+    "SkillId": 199000,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 17001,
+    "Name": "铁山靠",
+    "SkillId": 199000,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 1,
+    "SubType": 64
+  },
+  {
+    "Index": 12001,
+    "Name": "没用",
+    "SkillId": 201000,
+    "TargetLevel": 1,
+    "NeedLevel": 1,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12002,
+    "Name": "没用",
+    "SkillId": 202000,
+    "TargetLevel": 1,
+    "NeedLevel": 22,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12003,
+    "Name": "没用",
+    "SkillId": 203000,
+    "TargetLevel": 1,
+    "NeedLevel": 12,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12004,
+    "Name": "没用",
+    "SkillId": 204000,
+    "TargetLevel": 1,
+    "NeedLevel": 24,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12005,
+    "Name": "没用",
+    "SkillId": 205000,
+    "TargetLevel": 1,
+    "NeedLevel": 26,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12006,
+    "Name": "没用",
+    "SkillId": 206000,
+    "TargetLevel": 1,
+    "NeedLevel": 30,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12007,
+    "Name": "没用",
+    "SkillId": 207000,
+    "TargetLevel": 1,
+    "NeedLevel": 31,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 17003,
+    "Name": "魔法师盾",
+    "SkillId": 207000,
+    "TargetLevel": 1,
+    "NeedLevel": 31,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12008,
+    "Name": "没用",
+    "SkillId": 208000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 17004,
+    "Name": "冰旋风",
+    "SkillId": 208000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12009,
+    "Name": "没用",
+    "SkillId": 209000,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 12010,
+    "Name": "没用",
+    "SkillId": 210000,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 2,
+    "SubType": 64
+  },
+  {
+    "Index": 13001,
+    "Name": "没用",
+    "SkillId": 301000,
+    "TargetLevel": 1,
+    "NeedLevel": 1,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13002,
+    "Name": "没用",
+    "SkillId": 302000,
+    "TargetLevel": 1,
+    "NeedLevel": 14,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13003,
+    "Name": "没用",
+    "SkillId": 303000,
+    "TargetLevel": 1,
+    "NeedLevel": 19,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13004,
+    "Name": "没用",
+    "SkillId": 304000,
+    "TargetLevel": 1,
+    "NeedLevel": 25,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13005,
+    "Name": "没用",
+    "SkillId": 305000,
+    "TargetLevel": 1,
+    "NeedLevel": 32,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 17005,
+    "Name": "集体疗伤术",
+    "SkillId": 305000,
+    "TargetLevel": 1,
+    "NeedLevel": 32,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13006,
+    "Name": "没用",
+    "SkillId": 306000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 17006,
+    "Name": "白虎降临",
+    "SkillId": 306000,
+    "TargetLevel": 1,
+    "NeedLevel": 35,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13007,
+    "Name": "没用",
+    "SkillId": 307000,
+    "TargetLevel": 1,
+    "NeedLevel": 75,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13008,
+    "Name": "没用",
+    "SkillId": 308000,
+    "TargetLevel": 1,
+    "NeedLevel": 85,
+    "Career": 3,
+    "SubType": 64
+  },
+  {
+    "Index": 13009,
+    "Name": "没用",
+    "SkillId": 309000,
+    "TargetLevel": 1,
+    "NeedLevel": 100,
+    "Career": 3,
+    "SubType": 64
+  }
+]

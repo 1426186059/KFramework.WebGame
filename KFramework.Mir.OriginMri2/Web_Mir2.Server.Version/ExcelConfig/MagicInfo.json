@@ -49,7 +49,8 @@
     "Piaozi": 0,
     "EffectIds": [
       59701
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "玄冰刃",
@@ -101,7 +102,8 @@
     "Piaozi": 0,
     "EffectIds": [
       59801
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "噬魂毒",
@@ -153,7 +155,8 @@
     "Piaozi": 0,
     "EffectIds": [
       59901
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "内功护体",
@@ -205,7 +208,8 @@
     "Piaozi": 0,
     "EffectIds": [
       193
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "内功疗伤",
@@ -257,7 +261,8 @@
     "Piaozi": 0,
     "EffectIds": [
       219
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "内功强身",
@@ -307,7 +312,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "内功爆发",
@@ -357,7 +363,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "普通攻击",
@@ -407,7 +414,10 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      498
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "怪物普通攻击",
@@ -457,7 +467,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物远程普攻",
@@ -507,7 +518,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "幻兽分裂LV0",
@@ -557,7 +569,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "幻兽分裂LV1",
@@ -607,7 +620,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "幻兽分裂LV2",
@@ -657,7 +671,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "幻兽分裂LV3",
@@ -707,7 +722,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "幻兽分裂LV4",
@@ -757,7 +773,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物群雷",
@@ -807,7 +824,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物冰咆哮",
@@ -857,7 +875,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物雷电",
@@ -907,7 +926,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物地钉",
@@ -957,7 +977,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物法咒",
@@ -1007,7 +1028,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物群毒",
@@ -1057,7 +1079,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "洞蛆",
@@ -1107,7 +1130,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "暗黑战士",
@@ -1157,7 +1181,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "火焰沃玛",
@@ -1207,7 +1232,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "沃玛教主",
@@ -1257,7 +1283,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "楔蛾",
@@ -1307,7 +1334,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "僵尸1",
@@ -1357,7 +1385,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "祖玛弓箭手",
@@ -1407,7 +1436,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "祖玛教主",
@@ -1457,7 +1487,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "弓箭护卫",
@@ -1507,7 +1538,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "赤月恶魔",
@@ -1557,7 +1589,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "触龙神",
@@ -1607,7 +1640,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "虹魔蝎卫",
@@ -1657,7 +1691,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "虹魔猪卫",
@@ -1707,7 +1742,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "虹魔教主",
@@ -1757,7 +1793,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "恶灵尸王",
@@ -1807,7 +1844,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "黄泉教主",
@@ -1857,7 +1895,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "牛魔法师",
@@ -1907,7 +1946,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "牛魔祭司",
@@ -1957,7 +1997,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "牛魔王",
@@ -2007,7 +2048,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "魔龙射手",
@@ -2057,7 +2099,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "魔龙教主",
@@ -2107,7 +2150,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "火尾黑狐王",
@@ -2157,7 +2201,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "金爪赤狐王",
@@ -2207,7 +2252,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "玉面素狐王",
@@ -2257,7 +2303,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "巨型沙虫",
@@ -2307,7 +2354,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人巡逻兵",
@@ -2357,7 +2405,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人矿工",
@@ -2407,7 +2456,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人长矛兵",
@@ -2457,7 +2507,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人狂战士",
@@ -2507,7 +2558,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人驯兽师",
@@ -2557,7 +2609,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人骑兵",
@@ -2607,7 +2660,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人巫医",
@@ -2657,7 +2711,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人战将",
@@ -2707,7 +2762,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人统帅",
@@ -2757,7 +2813,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "半兽人首领",
@@ -2807,7 +2864,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "怪物火符",
@@ -2857,7 +2915,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "骨龙技能",
@@ -2907,7 +2966,8 @@
     "IsAuto": 1,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神宠普通攻击",
@@ -2957,7 +3017,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "普通全体雷电术快",
@@ -3007,7 +3068,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "世界BOSS战士",
@@ -3057,7 +3119,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "世界BOSS法师",
@@ -3107,7 +3170,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "世界BOSS道士",
@@ -3157,7 +3221,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "基本剑术",
@@ -3207,7 +3272,10 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      710
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "攻杀剑术",
@@ -3257,7 +3325,10 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      720
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "刺杀剑术",
@@ -3307,7 +3378,11 @@
     "IsAuto": 1,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      555,
+      895
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "半月弯刀",
@@ -3357,7 +3432,8 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "野蛮冲撞",
@@ -3407,7 +3483,8 @@
     "IsAuto": 0,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "烈火剑法",
@@ -3457,7 +3534,8 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "开天斩",
@@ -3507,7 +3585,8 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "逐日剑法",
@@ -3557,7 +3636,10 @@
     "IsAuto": 1,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      261
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "困龙诀",
@@ -3607,7 +3689,8 @@
     "IsAuto": 0,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "狮子吼",
@@ -3657,7 +3740,8 @@
     "IsAuto": 0,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "十步一杀",
@@ -3707,7 +3791,8 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "旋风斩",
@@ -3757,7 +3842,8 @@
     "IsAuto": 1,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "火球术",
@@ -3807,7 +3893,10 @@
     "IsAuto": 1,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      621
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "抗拒火环",
@@ -3857,7 +3946,10 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      631
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "诱惑之光",
@@ -3907,7 +3999,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "地狱火",
@@ -3957,7 +4050,10 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      726
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "雷电术",
@@ -4007,7 +4103,10 @@
     "IsAuto": 1,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      736
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "大火球",
@@ -4057,7 +4156,10 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      746
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "瞬间移动",
@@ -4107,7 +4209,8 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "爆裂火焰",
@@ -4157,7 +4260,8 @@
     "IsAuto": 1,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "火墙",
@@ -4207,7 +4311,8 @@
     "IsAuto": 0,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "疾光电影",
@@ -4257,7 +4362,8 @@
     "IsAuto": 1,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "地狱雷光",
@@ -4307,7 +4413,8 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "魔法盾",
@@ -4357,7 +4464,8 @@
     "IsAuto": 1,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "冰咆哮",
@@ -4407,7 +4515,8 @@
     "IsAuto": 1,
     "OriginIndex": 13,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "灭天火",
@@ -4457,7 +4566,8 @@
     "IsAuto": 1,
     "OriginIndex": 14,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "流星火雨",
@@ -4507,7 +4617,8 @@
     "IsAuto": 1,
     "OriginIndex": 15,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "狂雷紫电",
@@ -4557,7 +4668,8 @@
     "IsAuto": 0,
     "OriginIndex": 16,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "寒冰掌",
@@ -4607,7 +4719,8 @@
     "IsAuto": 0,
     "OriginIndex": 17,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "分身术",
@@ -4657,7 +4770,8 @@
     "IsAuto": 1,
     "OriginIndex": 18,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "治愈术",
@@ -4707,7 +4821,10 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      661
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "精神力战法",
@@ -4757,7 +4874,10 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      671
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "施毒术",
@@ -4807,7 +4927,10 @@
     "IsAuto": 1,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      759
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "灵魂火符",
@@ -4857,7 +4980,10 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      769
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "召唤骷髅",
@@ -4907,7 +5033,8 @@
     "IsAuto": 1,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "隐身术",
@@ -4957,7 +5084,8 @@
     "IsAuto": 0,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "集体隐身术",
@@ -5007,7 +5135,8 @@
     "IsAuto": 0,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "幽灵盾",
@@ -5057,7 +5186,8 @@
     "IsAuto": 1,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "神圣战甲术",
@@ -5107,7 +5237,8 @@
     "IsAuto": 1,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "心灵启示",
@@ -5157,7 +5288,8 @@
     "IsAuto": 0,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "困魔咒",
@@ -5207,7 +5339,8 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "群体治愈术",
@@ -5257,7 +5390,8 @@
     "IsAuto": 0,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "召唤神兽",
@@ -5307,7 +5441,8 @@
     "IsAuto": 1,
     "OriginIndex": 13,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "噬血术",
@@ -5357,7 +5492,8 @@
     "IsAuto": 1,
     "OriginIndex": 14,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "无极真气",
@@ -5407,7 +5543,8 @@
     "IsAuto": 1,
     "OriginIndex": 15,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "召唤月灵",
@@ -5457,7 +5594,8 @@
     "IsAuto": 1,
     "OriginIndex": 16,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "飓风破",
@@ -5507,7 +5645,8 @@
     "IsAuto": 0,
     "OriginIndex": 17,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "召唤骨龙",
@@ -5557,7 +5696,8 @@
     "IsAuto": 1,
     "OriginIndex": 18,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "护体神盾",
@@ -5607,7 +5747,10 @@
     "IsAuto": 0,
     "OriginIndex": 50,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [
+      510
+    ],
+    "NeedBook": 1
   },
   {
     "Name": "一式-惊雷爆",
@@ -5657,7 +5800,8 @@
     "IsAuto": 0,
     "OriginIndex": 19,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "二式-双龙破",
@@ -5707,7 +5851,8 @@
     "IsAuto": 0,
     "OriginIndex": 22,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "三式-冰天雪地",
@@ -5757,7 +5902,8 @@
     "IsAuto": 0,
     "OriginIndex": 23,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "四式-万剑归宗",
@@ -5807,7 +5953,8 @@
     "IsAuto": 0,
     "OriginIndex": 24,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "白虎攻击",
@@ -5857,7 +6004,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神龙之怒",
@@ -5907,7 +6055,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神龙之怒",
@@ -5957,7 +6106,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神龙护体",
@@ -6007,7 +6157,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神龙吐息",
@@ -6057,7 +6208,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "冰爆",
@@ -6107,7 +6259,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "致命一击",
@@ -6157,7 +6310,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷霆之怒lv1",
@@ -6207,7 +6361,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷霆之怒lv2",
@@ -6257,7 +6412,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷霆之怒lv3",
@@ -6307,7 +6463,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷霆之怒lv4",
@@ -6357,7 +6514,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷霆之怒lv5",
@@ -6407,7 +6565,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "朱雀之殇",
@@ -6457,7 +6616,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "朱雀之殇",
@@ -6507,7 +6667,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "朱雀之殇",
@@ -6557,7 +6718,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "青龙之握",
@@ -6607,7 +6769,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "青龙之握",
@@ -6657,7 +6820,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "青龙之握",
@@ -6707,7 +6871,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "战士群攻",
@@ -6757,7 +6922,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "法师群攻",
@@ -6807,7 +6973,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "道士",
@@ -6857,7 +7024,8 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "神宠",
@@ -6907,7 +7075,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "金爪赤狐王火焰冲击",
@@ -6957,7 +7126,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "禁地魔王群雷术",
@@ -7007,7 +7177,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "雷炎蜘蛛雷光",
@@ -7057,7 +7228,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "蛇妖皇群攻",
@@ -7107,7 +7279,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "玉面素狐王群攻",
@@ -7157,7 +7330,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本二沃玛勇士",
@@ -7207,7 +7381,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本二沃玛战士",
@@ -7257,7 +7432,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本二沃玛护卫",
@@ -7307,7 +7483,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本三群攻技能1",
@@ -7357,7 +7534,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本三群攻技能2",
@@ -7407,7 +7585,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "多人副本三群攻技能3",
@@ -7457,7 +7636,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "尸王普攻",
@@ -7507,7 +7687,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "尸王降攻",
@@ -7557,7 +7738,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "白猪高攻",
@@ -7607,7 +7789,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "白猪低攻",
@@ -7657,7 +7840,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "沃玛平砍",
@@ -7707,7 +7891,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "沃玛群攻",
@@ -7757,7 +7942,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "青龙技能",
@@ -7807,7 +7993,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "阿修罗群攻",
@@ -7857,7 +8044,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "黑翼风魔技能",
@@ -7907,7 +8095,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "禁地魔王技能",
@@ -7957,7 +8146,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "混沌技能",
@@ -8007,7 +8197,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "穷奇技能",
@@ -8057,7 +8248,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "饕餮技能",
@@ -8107,7 +8299,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "狂血战魔技能",
@@ -8157,7 +8350,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "炼狱巨魔技能",
@@ -8207,7 +8401,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "凛冬教主技能",
@@ -8257,7 +8452,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "魔化巫妖王技能",
@@ -8307,7 +8503,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "深海巨魔技能",
@@ -8357,7 +8554,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "巫妖王技能",
@@ -8407,7 +8605,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "镇魔妖王技能",
@@ -8457,7 +8656,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "断岳斩",
@@ -8507,7 +8707,8 @@
     "IsAuto": 0,
     "OriginIndex": 999,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "修罗之炎",
@@ -8557,7 +8758,8 @@
     "IsAuto": 0,
     "OriginIndex": 999,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "召唤白虎",
@@ -8607,7 +8809,8 @@
     "IsAuto": 0,
     "OriginIndex": 999,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "朱雀技能",
@@ -8657,7 +8860,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "四海剑灵技能",
@@ -8709,7 +8913,8 @@
     "Piaozi": 0,
     "EffectIds": [
       452
-    ]
+    ],
+    "NeedBook": 0
   },
   {
     "Name": "遗迹怪物暴击",
@@ -8759,7 +8964,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "刺杀剑术",
@@ -8809,7 +9015,8 @@
     "IsAuto": 1,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "半月弯刀",
@@ -8859,7 +9066,8 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "烈火剑法",
@@ -8909,7 +9117,8 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "铁布衫",
@@ -8959,7 +9168,8 @@
     "IsAuto": 0,
     "OriginIndex": 21,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "开天斩",
@@ -9009,7 +9219,8 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "逐日剑法",
@@ -9059,7 +9270,8 @@
     "IsAuto": 1,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "十步一杀",
@@ -9109,7 +9321,8 @@
     "IsAuto": 0,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "普通刀法",
@@ -9159,7 +9372,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "铜皮铁骨",
@@ -9209,7 +9423,8 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "野蛮冲撞",
@@ -9259,7 +9474,8 @@
     "IsAuto": 0,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "雷电术",
@@ -9309,7 +9525,8 @@
     "IsAuto": 1,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "爆裂火焰",
@@ -9359,7 +9576,8 @@
     "IsAuto": 1,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "抗拒火环",
@@ -9409,7 +9627,8 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "火墙",
@@ -9459,7 +9678,8 @@
     "IsAuto": 0,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "疾光电影",
@@ -9509,7 +9729,8 @@
     "IsAuto": 1,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "地狱雷光",
@@ -9559,7 +9780,8 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "魔法盾",
@@ -9609,7 +9831,8 @@
     "IsAuto": 1,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "冰咆哮",
@@ -9659,7 +9882,8 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "灭天火",
@@ -9709,7 +9933,8 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "流星火雨",
@@ -9759,7 +9984,8 @@
     "IsAuto": 1,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "寒冰掌",
@@ -9809,7 +10035,8 @@
     "IsAuto": 0,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "灵魂火符",
@@ -9859,7 +10086,8 @@
     "IsAuto": 1,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "施毒术",
@@ -9909,7 +10137,8 @@
     "IsAuto": 1,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "召唤神兽",
@@ -9959,7 +10188,8 @@
     "IsAuto": 1,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "神圣战甲术",
@@ -10009,7 +10239,8 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "群体治愈术",
@@ -10059,7 +10290,8 @@
     "IsAuto": 0,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "白虎降临",
@@ -10109,7 +10341,8 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "噬血术",
@@ -10159,7 +10392,8 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "气功波",
@@ -10209,7 +10443,8 @@
     "IsAuto": 0,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "无极真气",
@@ -10259,7 +10494,8 @@
     "IsAuto": 1,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "护体神盾",
@@ -10309,7 +10545,8 @@
     "IsAuto": 0,
     "OriginIndex": 20,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 1
   },
   {
     "Name": "神兽攻击",
@@ -10359,7 +10596,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "白虎攻击",
@@ -10409,7 +10647,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "护卫攻击",
@@ -10459,7 +10698,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "大刀攻击",
@@ -10509,7 +10749,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "白虎攻击2",
@@ -10559,7 +10800,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "4级神兽攻击",
@@ -10609,7 +10851,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "5级神兽攻击",
@@ -10659,7 +10902,8 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   },
   {
     "Name": "6级神兽攻击",
@@ -10709,6 +10953,7 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": []
+    "EffectIds": [],
+    "NeedBook": 0
   }
 ]

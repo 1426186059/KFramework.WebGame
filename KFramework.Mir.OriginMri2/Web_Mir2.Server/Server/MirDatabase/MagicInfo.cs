@@ -36,6 +36,8 @@ namespace Server.MirDatabase
         public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
         public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex, Piaozi;
         public int[] EffectIds = Array.Empty<int>();
+        // 1=需技能书激活（config cost），0=达等级自动学会。
+        public int NeedBook;
 
         public override string ToString()
         {
@@ -190,7 +192,9 @@ namespace Server.MirDatabase
                     Delay = GetDelay(),
                     Range = Info.Range,
                     CastTime = CastTime - Envir.Time,
-                    OriginIcon = Info.OriginIcon
+                    OriginIcon = Info.OriginIcon,
+                    TargetType = (byte)Info.TargetType,
+                    EffectIds = Info.EffectIds ?? new int[0]
             };
         }
 

@@ -268,15 +268,15 @@ namespace Server.MirObjects
 
             Info.LastLoginDate = Envir.Now;
 
-            // 原始传奇技能移植：登录时按职业+等级补学技能（老角色存档技能为空也能补齐）。
+            // 原始传奇技能：登录时补齐占位/自动学会（需书技能保持 0 级待书）。
             LearnOriginSkills(false);
         }
 
         /// <summary>
-        /// 原始传奇技能移植：把本职业全部可学技能加入 Magics（对齐原版"未学也可见"机制，
-        /// 原版 MagicButton.Update 有 case 0，未学技能 Level=0 但仍在列表里）。
-        /// 已达学习等级(Condition-10000)的 Level=1，未达的 Level=0；升级时把刚达等级的 0 提升为 1 并下发。
-        /// notify 仅控制升级解锁时是否单独发包（登录包会统一下发全部，含 Level=0）。
+        /// 原始传奇技能初始化（原版"未学也可见"：所有技能都进 Magics，Level=0 为未学占位）。
+        /// NeedBook=1 的技能（config 有 cost）必须用 1 级技能书激活；
+        /// NeedBook=0 的技能（普通攻击/倚天/神龙/内功等）达到 condition 学习等级自动置 1。
+        /// notify=true 时升级新学会的自动技能单独发包（登录包会统一下发全部）。
         /// </summary>
         public void LearnOriginSkills(bool notify)
         {
@@ -295,17 +295,18 @@ namespace Server.MirObjects
                     }
                 }
 
-                bool reached = Envir.GetLearnLevel(info) <= Level;
+                // 达学习等级 + 无需技能书 → 自动学会 1 级。
+                bool autoLearn = info.NeedBook == 0 && Envir.GetLearnLevel(info) <= Level;
 
                 if (magic == null)
                 {
                     magic = new UserMagic(info.Spell);
                     if (magic.Info == null) continue;
-                    magic.Level = reached ? (byte)1 : (byte)0;
+                    magic.Level = autoLearn ? (byte)1 : (byte)0;
                     Info.Magics.Add(magic);
-                    if (reached && notify) SendMagicInfo(magic);
+                    if (autoLearn && notify) SendMagicInfo(magic);
                 }
-                else if (reached && magic.Level == 0)
+                else if (autoLearn && magic.Level == 0)
                 {
                     magic.Level = 1;
                     if (notify) SendMagicInfo(magic);
@@ -985,7 +986,7 @@ namespace Server.MirObjects
 
             base.LevelUp();
 
-            // 原始传奇技能移植：升级后按职业+等级解锁新技能并即时下发。
+            // 原始传奇技能：无需书的技能到 level 自动置 1；需书技能仍由技能书激活。
             LearnOriginSkills(true);
 
             // 升级时由任务调度器接取因等级达成而新开放的任务（等级任务）。
@@ -6148,6 +6149,93 @@ namespace Server.MirObjects
 
             if (Dead && !(item.Info.Type == ItemType.Scroll && item.Info.Shape == 6))
             {
+                Enqueue(p);
+                return;
+            }
+
+            // 原始传奇技能书：SkillBookInfo 映射（物品 id → 技能/目标等级），转换器产出 Type=0 不走 ItemType.Book。
+            SkillBookInfo book = SkillBookInfo.Find(item.Info.Index);
+            if (book != null)
+            {
+                MagicInfo learned = null;
+                for (int i = 0; i < Envir.MagicInfoList.Count; i++)
+                {
+                    MagicInfo info = Envir.MagicInfoList[i];
+                    if (info != null && info.OriginId == book.SkillId) { learned = info; break; }
+                }
+
+                if (learned == null)
+                {
+                    Enqueue(p);
+                    return;
+                }
+
+                if (Level < book.NeedLevel)
+                {
+                    ReceiveChat("使用等级不足", ChatType.System);
+                    Enqueue(p);
+                    return;
+                }
+
+                UserMagic existing = GetMagic(learned.Spell);
+                if (existing == null)
+                {
+                    existing = new UserMagic(learned.Spell);
+                    if (existing.Info == null) { Enqueue(p); return; }
+                    Info.Magics.Add(existing);
+                }
+
+                // 原版 TargetLevel=1 是 1 级书（激活）；4/5/6/7 是升级书。
+                // 服务端技能等级 0=未学、1~3=1~3 级，升级书统一映射到当前引擎上限 3。
+                byte targetLevel = book.TargetLevel <= 1 ? (byte)1 : (byte)Math.Min(book.TargetLevel - 2, 3);
+
+                if (book.TargetLevel <= 1)
+                {
+                    if (existing.Level > 0)
+                    {
+                        ReceiveChat("已经学会该技能", ChatType.System);
+                        Enqueue(p);
+                        return;
+                    }
+                    existing.Level = 1;
+                    existing.Experience = 0;
+                }
+                else
+                {
+                    if (existing.Level <= 0)
+                    {
+                        ReceiveChat("请先用低级技能书激活技能", ChatType.System);
+                        Enqueue(p);
+                        return;
+                    }
+                    if (existing.Level >= targetLevel)
+                    {
+                        ReceiveChat("技能等级已达标", ChatType.System);
+                        Enqueue(p);
+                        return;
+                    }
+                    // 升级书要求熟练度攒满当前等级（Need1/2），对齐原版 skilled + cost 双条件。
+                    ushort need = existing.Level == 1 ? learned.Need1 : learned.Need2;
+                    if (existing.Experience < need)
+                    {
+                        ReceiveChat("技能熟练度不足", ChatType.System);
+                        Enqueue(p);
+                        return;
+                    }
+                    existing.Level = targetLevel;
+                    existing.Experience = 0;
+                }
+
+                SendMagicInfo(existing);
+                Enqueue(new S.MagicDelay { ObjectID = ObjectID, Spell = existing.Spell, Delay = existing.GetDelay() });
+                RefreshStats();
+
+                if (item.Count > 1) item.Count--;
+                else Info.Inventory[index] = null;
+                RefreshBagWeight();
+                Report.ItemChanged(item, 1, 1);
+
+                p.Success = true;
                 Enqueue(p);
                 return;
             }
