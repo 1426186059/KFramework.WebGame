@@ -1446,17 +1446,20 @@ namespace Client.MirScenes.Dialogs
     public sealed class SkillBarColumn : MirControl
     {
         private const string HomeSheet = "y_homeUI-sheet";
-        private const int CellSize = 52;
-        private const int CellStep = 52;
-        public const int ColumnWidth = 53;
-        public const int ColumnHeight = 464;
+
+        private const int CellBgSize = 50;
+        private const int CellSize = 44;
+        public const int ColumnWidth = CellBgSize;
+        public const int ColumnHeight = CellBgSize * 8;
         public const int SlotPerColumn = 8;
+        private const int CellOffset = (CellBgSize - CellSize) / 2;
 
         private readonly int _keyOffset;
 
         public MirImageControl[] Cells = new MirImageControl[SlotPerColumn];
         public MirLabel[] KeyNameLabels = new MirLabel[SlotPerColumn];
         public MirImageControl[] CoolDowns = new MirImageControl[SlotPerColumn];
+        public MirLabel[] CdTexts = new MirLabel[SlotPerColumn];   // JS 的 cdSkillTxt：居中剩余秒数
 
         public bool HasSkill = false;
 
@@ -1468,47 +1471,63 @@ namespace Client.MirScenes.Dialogs
 
             for (int row = 0; row < SlotPerColumn; row++)
             {
-                int y = row * CellStep;
+                int y = row * CellBgSize;
                 int spellSlot = keyOffset + row + 1;   // 循环体内局部拷贝，闭包捕获每格自己的值
 
                 var grid = new MirImageControl
                 {
                     Parent = this,
                     AtlasNameKey = HomeSheet + "#y_h_grid",
-                    Location = new Point(2, y + 2),
-                    Size = new Size(47, 47),
+                    Location = new Point(0, y),
+                    AutoSize = false,
+                    Size = new Size(CellBgSize, CellBgSize),
                     NotControl = true,
                 };
 
                 Cells[row] = new MirImageControl
                 {
                     Parent = this,
-                    Location = new Point(0, y),
+                    Location = new Point(CellOffset, y + CellOffset),
                     AutoSize = false,
                     Size = new Size(CellSize, CellSize),
                 };
                 Cells[row].Click += (o, e) => GameScene.Scene.UseSpell(spellSlot);
-
                 CoolDowns[row] = new MirImageControl
                 {
-                    Library = Libraries.Prguse2,
+                    Parent = this,
+                    Location = new Point(CellOffset, y + CellOffset),
+                    AutoSize = false,
+                    Size = new Size(CellSize, CellSize),
+                    AtlasNameKey = HomeSheet + "#y_h_jncd_0",
+                    NotControl = true,
+                    Visible = false,
+                };
+
+                CdTexts[row] = new MirLabel
+                {
+                    Text = "",
+                    Font = new Font(Settings.FontName, 15F),
+                    ForeColour = Color.White,
+                    OutLine = true,
+                    OutLineColour = Color.Black,
                     Parent = this,
                     Location = new Point(0, y),
                     Size = new Size(CellSize, CellSize),
                     NotControl = true,
-                    UseOffSet = true,
-                    Opacity = 0.6F
+                    Visible = false,
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter)
                 };
 
                 KeyNameLabels[row] = new MirLabel
                 {
                     Text = keyOffset == 0 ? (row + 1).ToString() : ("F" + (row + 1)),
-                    Font = new Font(Settings.FontName, 15F),
+                    Font = new Font(Settings.FontName, 8F),
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(36, y + 2),
-                    Size = new Size(17, 20),
-                    NotControl = true
+                    Location = new Point(30, y + 30),
+                    Size = new Size(10, 20),
+                    NotControl = true,
+                    //DrawFormat = new TextStyle(TextAnchor.LowerRight)
                 };
             }
         }
@@ -1556,25 +1575,28 @@ namespace Client.MirScenes.Dialogs
                 {
                     if (magic.Key != slot) continue;
 
-                    int totalFrames = 22;
+                    const int totalFrames = 10;   // y_h_jncd_0..9
                     long timeLeft = magic.CastTime + magic.Delay - CMain.Time;
 
-                    if (timeLeft < 100)
+                    if (timeLeft <= 0)
                     {
-                        if (timeLeft > 0)
-                            CoolDowns[row].Visible = false;
-                        else
-                            continue;
+                        CoolDowns[row].Visible = false;
+                        CdTexts[row].Visible = false;
+                        continue;
                     }
 
                     int delayPerFrame = (int)(magic.Delay / totalFrames);
-                    int startFrame = totalFrames - (int)(timeLeft / delayPerFrame);
+                    if (delayPerFrame <= 0) delayPerFrame = 1;
+                    int frame = totalFrames - 1 - (int)(timeLeft / delayPerFrame);
+                    if (frame < 0) frame = 0;
+                    if (frame > totalFrames - 1) frame = totalFrames - 1;
 
-                    if (CMain.Time <= magic.CastTime + magic.Delay)
-                    {
-                        CoolDowns[row].Visible = true;
-                        CoolDowns[row].Index = 1260 + startFrame;
-                    }
+                    CoolDowns[row].Visible = true;
+                    CoolDowns[row].AtlasFrame = "y_h_jncd_" + frame;
+
+                    // 居中剩余秒数（JS setCdTxt：toFixed(1)，15号白字黑描边）
+                    CdTexts[row].Text = (timeLeft / 1000.0).ToString("0.0");
+                    CdTexts[row].Visible = true;
                 }
             }
         }
