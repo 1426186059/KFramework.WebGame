@@ -535,8 +535,19 @@ namespace WebGame.Mir2.MonoGame.Client
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
 
+        // 技能快捷键在 KeyDown 已消费时置位，令紧随其后的 KeyPress 不落到聊天输入框。
+        // Input_KeyBoard 的 KeyDown/KeyPress 是两条独立事件，KeyDown 的 Handled 无法阻止 KeyPress。
+        public static bool SuppressNextKeyPress;
+
         public static void CMain_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (SuppressNextKeyPress)
+            {
+                SuppressNextKeyPress = false;
+                e.Handled = true;
+                return;
+            }
+
             try
             {
                 if (MirScene.ActiveScene != null)

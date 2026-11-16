@@ -547,6 +547,11 @@ namespace Client.MirScenes
                 return;
             }
 
+            // 聊天输入框聚焦时不处理技能快捷键，数字键用于正常打字。
+            if (ChatDialog != null && ChatDialog.ChatTextBox != null &&
+                ChatDialog.ChatTextBox.TextBox != null && ChatDialog.ChatTextBox.TextBox.IsFocused)
+                return;
+
             foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
             {
                 if (KeyCheck.Key == Keys.None)
@@ -566,6 +571,11 @@ namespace Client.MirScenes
                     continue;
                 if ((KeyCheck.RequireTilde != 2) && (KeyCheck.RequireTilde != (CMain.Tilde ? 1 : 0)))
                     continue;
+                // 技能快捷键(数字1-8 / F1-F8 等)：KeyDown 已消费，抑制紧随的 KeyPress，
+                // 否则数字键的字符会落到聊天输入框（表现为按技能键激活了聊天）。
+                if (KeyCheck.function >= KeybindOptions.Bar1Skill1 && KeyCheck.function <= KeybindOptions.HeroSkill8)
+                    CMain.SuppressNextKeyPress = true;
+
                 //now run the real code
                 switch (KeyCheck.function)
                 {

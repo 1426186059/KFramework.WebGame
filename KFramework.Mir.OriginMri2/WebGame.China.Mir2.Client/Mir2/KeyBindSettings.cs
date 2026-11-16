@@ -147,7 +147,35 @@ namespace Client
             }
             Reader.AutoPersist = false;
             Load();                  // 从已加载内容填充 Keylist
+            MigrateSkillbarKeys();   // 旧存档把第一列绑成 F1..F8，迁移为 数字1..8 / F1..F8
             Reader.AutoPersist = true;
+        }
+
+        /// <summary>
+        /// 旧版默认把第一列(Bar1Skill1..8)绑成 F1..F8、第二列(Bar2Skill1..8)绑成 Ctrl+F1..F8，
+        /// 与现在的第一列=数字1..8、第二列=F1..F8 冲突。存档里仍是旧值时重置这两组并落库。
+        /// 只在明确识别到旧默认时迁移，不覆盖玩家的其它自定义绑定。
+        /// </summary>
+        private void MigrateSkillbarKeys()
+        {
+            KeyBind b1 = Keylist.SingleOrDefault(x => x.function == KeybindOptions.Bar1Skill1);
+            KeyBind b2 = Keylist.SingleOrDefault(x => x.function == KeybindOptions.Bar2Skill1);
+            bool oldLayout = b1 != null && b2 != null && b1.Key == Keys.F1 && b2.Key == Keys.F1 && b2.RequireCtrl == 1;
+            if (!oldLayout) return;
+
+            KeyBind[] defaults = DefaultKeylist.Where(x =>
+                x.function >= KeybindOptions.Bar1Skill1 && x.function <= KeybindOptions.Bar2Skill8).ToArray();
+            foreach (KeyBind def in defaults)
+            {
+                KeyBind cur = Keylist.SingleOrDefault(x => x.function == def.function);
+                if (cur == null) continue;
+                cur.Key = def.Key;
+                cur.RequireAlt = def.RequireAlt;
+                cur.RequireShift = def.RequireShift;
+                cur.RequireCtrl = def.RequireCtrl;
+                cur.RequireTilde = def.RequireTilde;
+            }
+            Save(Keylist);   // 持久化迁移结果
         }
 
         public void Load()
@@ -253,38 +281,39 @@ namespace Client
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CloseAllWindows), function = KeybindOptions.Closeall, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Escape };
             list.Add(InputKey);
 
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 1", function = KeybindOptions.Bar1Skill1, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F1 };
+            // 第一列（标注 1..8）= 数字键 1..8；第二列（标注 F1..F8）= F1..F8。
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 1", function = KeybindOptions.Bar1Skill1, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit1 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 2", function = KeybindOptions.Bar1Skill2, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F2 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 2", function = KeybindOptions.Bar1Skill2, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit2 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 3", function = KeybindOptions.Bar1Skill3, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F3 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 3", function = KeybindOptions.Bar1Skill3, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit3 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 4", function = KeybindOptions.Bar1Skill4, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F4 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 4", function = KeybindOptions.Bar1Skill4, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit4 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 5", function = KeybindOptions.Bar1Skill5, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F5 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 5", function = KeybindOptions.Bar1Skill5, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit5 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 6", function = KeybindOptions.Bar1Skill6, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F6 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 6", function = KeybindOptions.Bar1Skill6, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit6 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 7", function = KeybindOptions.Bar1Skill7, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F7 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 7", function = KeybindOptions.Bar1Skill7, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit7 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 8", function = KeybindOptions.Bar1Skill8, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F8 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarSlot)+" 8", function = KeybindOptions.Bar1Skill8, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 0, Key = Keys.Digit8 };
             list.Add(InputKey);
 
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 1", function = KeybindOptions.Bar2Skill1, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F1 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 1", function = KeybindOptions.Bar2Skill1, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F1 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 2", function = KeybindOptions.Bar2Skill2, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F2 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 2", function = KeybindOptions.Bar2Skill2, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F2 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 3", function = KeybindOptions.Bar2Skill3, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F3 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 3", function = KeybindOptions.Bar2Skill3, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F3 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 4", function = KeybindOptions.Bar2Skill4, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F4 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 4", function = KeybindOptions.Bar2Skill4, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F4 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 5", function = KeybindOptions.Bar2Skill5, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F5 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 5", function = KeybindOptions.Bar2Skill5, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F5 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 6", function = KeybindOptions.Bar2Skill6, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F6 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 6", function = KeybindOptions.Bar2Skill6, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F6 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 7", function = KeybindOptions.Bar2Skill7, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F7 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 7", function = KeybindOptions.Bar2Skill7, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F7 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 8", function = KeybindOptions.Bar2Skill8, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 1, Key = Keys.F8 };
+            InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarAltSlot)+" 8", function = KeybindOptions.Bar2Skill8, RequireAlt = 2, RequireShift = 0, RequireTilde = 0, RequireCtrl = 2, Key = Keys.F8 };
             list.Add(InputKey);
 
             InputKey = new KeyBind { Group = "Skillbar", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HeroSkillbarSlot)+" 1", function = KeybindOptions.HeroSkill1, RequireAlt = 2, RequireShift = 1, RequireTilde = 0, RequireCtrl = 0, Key = Keys.F1 };

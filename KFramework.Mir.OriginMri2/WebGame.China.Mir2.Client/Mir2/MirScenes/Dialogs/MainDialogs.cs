@@ -629,7 +629,6 @@ namespace Client.MirScenes.Dialogs
         public MirTextBox ChatTextBox;
         public MirButton ChatInputBtn;
         public Font ChatFont = new Font(Settings.FontName, 8F);
-        public string LastPM = string.Empty;
 
         public int StartIndex, LineCount = 7, WindowSize;
         // 私聊目标角色ID:由好友/伴侣等入口设置;非私聊为 0。取代原先把名字塞进消息文本的做法。
@@ -677,7 +676,6 @@ namespace Client.MirScenes.Dialogs
             AnchorPos = new Point(0, -6);
             ApplyAnchor();
 
-            KeyPress += ChatPanel_KeyPress;
             KeyDown += ChatPanel_KeyDown;
             MouseWheel += ChatPanel_MouseWheel;
 
@@ -1324,39 +1322,6 @@ namespace Client.MirScenes.Dialogs
             }
             Update();
             e.Handled = true;
-        }
-        private void ChatPanel_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //KFramework.MonoGame.PrintTool.Log($"[Chat] ChatPanel_KeyPress KeyCode={e.KeyCode} Visible={ChatTextBox.Visible} Active={CMain.Instance?.ActiveControl?.GetType().Name}");
-            // KeyPress 现在给的是键码：'@' / '!' 是上档字符，靠 Shift 位与 '2' / '1' 区分；'/' 是 Oem 键(191)。
-            switch (e.KeyCode)
-            {
-                case Keys.Digit2:               // '@' = Shift + 2：命令前缀,保留原样写入输入框
-                    ChatTextBox.SetFocus();
-                    ChatTextBox.Text = "@";
-                    ChatTextBox.Visible = true;
-                    ChatTextBox.TextBox.SelectionLength = 0;
-                    ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
-                    e.Handled = true;
-                    break;
-                case Keys.Digit1:               // '!' = Shift + 1：世界频道(仅设发送频道,不改视图过滤)
-                    ChatTextBox.SetFocus();
-                    CurrentSendChannel = ChatChannelFilter.World;
-                    ChatTextBox.Visible = true;
-                    ChatTextBox.TextBox.SelectionLength = 0;
-                    ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
-                    e.Handled = true;
-                    break;
-                case Keys.Slash:                // '/'：私聊发送频道 + 预填上次私聊对象名
-                    ChatTextBox.SetFocus();
-                    CurrentSendChannel = ChatChannelFilter.PrivateChat;
-                    ChatTextBox.Text = (LastPM != "" ? LastPM + " " : "");
-                    ChatTextBox.Visible = true;
-                    ChatTextBox.TextBox.SelectionLength = 0;
-                    ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
-                    e.Handled = true;
-                    break;
-            }
         }
         private void ChatPanel_MouseWheel(object sender, MouseEventArgs e)
         {
