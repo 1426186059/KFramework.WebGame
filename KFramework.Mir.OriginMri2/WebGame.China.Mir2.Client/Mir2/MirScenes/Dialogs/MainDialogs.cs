@@ -3749,7 +3749,7 @@ namespace Client.MirScenes.Dialogs
     {
         private const string Sheet = "y_skillhotkey-sheet";
         private const string BgUrl = "resource/assets/gameui4/jpg/bg_kjjsz_01.png";
-        private const int PanelW = 516, PanelH = 217;
+        private const int PanelW = 520, PanelH = 210;
 
         public MirButton SaveButton, NoneButton;
         public UserObject Actor;
@@ -3781,30 +3781,34 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 ImageKey = BgUrl,
                 Location = new Point(0, 0),
-                Size = new Size(489, 196),
+                AutoSize = false,
+                Size = new Size(PanelW, PanelH),
                 NotControl = true,
+                DrawMode = MirImageDrawMode.NineGrid,
+                BorderTop = 20, BorderBottom = 20, BorderLeft = 20, BorderRight = 20,
+            };
+
+            var MagicImageBg = new MirImageControl
+            {
+                Location = new Point(92, 26),
+                Parent = this,
+                Size = new Size(50, 50),
+                NotControl = true,
+                AtlasNameKey = "y_skillhotkey-sheet#bg_kjjsz_03",
+                ForeColour = Color.White,
             };
 
             // 技能图标 38×38 @ (92,26)
             MagicImage = new MirImageControl
             {
-                Location = new Point(92, 26),
+                Location = new Point(97, 31),
                 Parent = this,
-                Size = new Size(38, 38),
+                AutoSize = false,
+                Size = new Size(40, 40),
                 NotControl = true,
+                ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon),
+                ForeColour = Color.White,
             };
-
-            string iconUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-            if (!string.IsNullOrEmpty(iconUrl))
-            {
-                MagicImage.ImageUrl = iconUrl;
-                MagicImage.ForeColour = Color.White;
-            }
-            else
-            {
-                MagicImage.Index = magic.Icon * 2;
-                MagicImage.Library = Libraries.MagIcon2;
-            }
 
             // 描述文字 "X快捷键设置为" @ (150,38)
             TitleLabel = new MirLabel
@@ -3829,7 +3833,7 @@ namespace Client.MirScenes.Dialogs
                     AtlasNameKey = Sheet + "#btn_kjjsz_01",
                     PressedAtlasFrame = "btn_kjjsz_02",
                     Location = new Point(33 + 44 * col, 91 + (42 + 12) * row),
-                    Size = new Size(44, 42),
+                    Size = new Size(50, 50),
                     Sound = SoundList.ButtonA,
                 };
                 // 数字图 word_kjjsz_{n}
@@ -3837,21 +3841,30 @@ namespace Client.MirScenes.Dialogs
                 {
                     Parent = FKeys[i],
                     AtlasNameKey = Sheet + "#word_kjjsz_" + i,
-                    Location = new Point(0, 0),
                     Size = new Size(44, 42),
                     NotControl = true,
+                    Anchor =  EAnchorType.MiddleCenter,
+                    AnchorPos = new Point(0, 0)
                 };
+                digit.ApplyAnchor();
+
                 // 选中框 y_select（来自 y_common-sheet）
                 SelectFrames[i] = new MirImageControl
                 {
                     Parent = FKeys[i],
                     AtlasNameKey = "y_common-sheet#y_select",
-                    Location = new Point(-4, -4),
-                    Size = new Size(52, 50),
+                    Location = new Point(2, 2),
+                    AutoSize = false,
+                    Size = new Size(45, 45),
                     NotControl = true,
-                    Visible = false,
+                    Visible = true,
                 };
-                FKeys[i].Click += (o, e) => Key = (byte)(i + KeyOffset);
+
+                int ii = i;
+                FKeys[i].Click += (o, e) =>
+                {
+                    Key = (byte)(ii + KeyOffset);
+                };
             }
 
             // 清空按钮 @ (397,86) / 确定按钮 @ (397,141)，各 85×46
@@ -3888,6 +3901,17 @@ namespace Client.MirScenes.Dialogs
             SaveButton.Click += (o, e) => SaveAndClose();
 
             BeforeDraw += AssignKeyPanel_BeforeDraw;
+
+            // 透明关闭：本面板 Modal=true，点击面板矩形外（被模态拦截的区域）也会派发到本控件。
+            // 判定点击落在面板之外即关闭；面板内（含背景空白）不关，避免误触 UI。
+            Click += (o, e) =>
+            {
+                if (!DisplayRectangle.Contains(CMain.MPoint))
+                {
+                    Dispose();
+                }
+            };
+
         }
 
         private void SaveAndClose()
@@ -3895,12 +3919,19 @@ namespace Client.MirScenes.Dialogs
             if (Actor != null)
             {
                 for (int i = 0; i < Actor.Magics.Count; i++)
-                    if (Actor.Magics[i].Key == Key) Actor.Magics[i].Key = 0;
+                {
+                    if (Actor.Magics[i].Key == Key)
+                    {
+                        Actor.Magics[i].Key = 0;
+                    }
+                }
 
                 Network.Enqueue(new C.MagicKey { Spell = Magic.Spell, Key = Key, OldKey = Magic.Key });
                 Magic.Key = Key;
                 foreach (SkillBarDialog Bar in GameScene.Scene.SkillBarDialogs)
+                {
                     Bar.Update();
+                }
             }
             Dispose();
         }
@@ -3909,9 +3940,13 @@ namespace Client.MirScenes.Dialogs
         {
             int key = Key - KeyOffset;
             for (int i = 0; i < FKeys.Length; i++)
+            {
                 SelectFrames[i].Visible = (i == key);
+            }
         }
+
     }
+
     public sealed class DuraStatusDialog : MirImageControl
     {
         public MirButton Character;
