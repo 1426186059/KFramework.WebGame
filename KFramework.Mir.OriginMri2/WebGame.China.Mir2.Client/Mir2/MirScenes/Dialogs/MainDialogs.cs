@@ -1463,7 +1463,6 @@ namespace Client.MirScenes.Dialogs
                     Size = new Size(CellSize, CellSize),
                 };
                 Cells[row].Click += (o, e) => GameScene.Scene.UseSpell(spellSlot);
-                // CD 半黑圆遮罩：CDN movieClip SkillCdEff（36 帧），异步装配后按 CD 进度停帧。
                 CoolDowns[row] = new MirAnimatedAtlasControl
                 {
                     Parent = this,

@@ -21,7 +21,7 @@ namespace Client.MirControls
         private const string SheetJsonPath = "qufu_resource1/assets/sheet/preload-sheet.json?qufu_version=229"; // 进度条图集 JSON（preload-sheet）
         private const string BarTrackFrame = "qufu_ProgressBg4";   // preload-sheet 里的进度条底槽帧（AtlasNameKey 让组件内部下载/管理图集）
         private const string BarFillFrame = "qufu_ProgressBg5";   // preload-sheet 里的进度条填充帧
-        private const string HomeUiSheetKey = "y_homeUI-sheet";   // 主界面 UI 图集（正式 RES 资源，预加载进缓存，进主界面不卡）
+        // GameScene 主界面/各对话框 UI 用到的全部 CDN 图集，进游戏立即要用，阻塞等待预下载避免卡顿。
 
         // 背景图用 MirImageControl（ImageKey 经 manifest 解析，等价于原 GetImageTextureAsync）；
         // 进度条用现成的 MirProgressBar 组件（自身=轨道、内嵌 Fill=填充，进度由 Value/Maximum 驱动）。
@@ -120,12 +120,24 @@ namespace Client.MirControls
         {
             try
             {
-                // 预加载主界面 UI 图集（y_homeUI-sheet）：进主界面后立即要用，属 UI 资源，按最高优先级（PriorityUI）。
-
+                string[] UiSheetKeys =
                 {
-                    _status = "预加载主界面 UI…";
-                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
-                    _loaded = 1;
+                    "y_homeUI-sheet",       // 主界面按钮/技能栏底图/进度条
+                    "y_common-sheet",       // 通用按钮/关闭/选中框
+                    "y_bag-sheet",          // 背包
+                    "y_ngrid-sheet",        // 装备格子
+                    "y_role-sheet",         // 角色/技能面板
+                    "y_lefttop-sheet",      // 左上任务追踪
+                    "y_skillhotkey-sheet",  // 技能快捷键设置面板
+                };
+
+                _total = UiSheetKeys.Length;
+                for (int i = 0; i < UiSheetKeys.Length; i++)
+                {
+                    string sheet = UiSheetKeys[i];
+                    _status = "预加载界面资源 (" + (i + 1) + "/" + _total + ")…";
+                    await Mir2AtlasLibrary.GetSheetAsync(sheet, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
+                    _loaded = i + 1;
                 }
 
                 _status = "加载完成，正在进入游戏…";
@@ -133,8 +145,9 @@ namespace Client.MirControls
             }
             catch (System.Exception ex)
             {
-                PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
+                PrintTool.LogError("[LoadingDialog] UI 图集预加载失败（不影响进入游戏）：" + ex);
                 _status = "部分资源加载失败：" + ex.Message;
+                _finished = true;   // 失败也要放行，否则加载蒙层永不消失
             }
         }
 
