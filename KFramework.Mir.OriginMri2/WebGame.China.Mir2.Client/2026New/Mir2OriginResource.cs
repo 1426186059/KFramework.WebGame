@@ -75,6 +75,36 @@ public static class Mir2OriginResource
         return GetTextAsync(relativePath, 0, ct);
     }
 
+    // ===================== 原始传奇音效 =====================
+
+    /// <summary>
+    /// 原始传奇音效相对路径。JS ResUrl.url(id+"",15) → AudioIcon("audio/")+id+mp3Ext(".mp3")，
+    /// 即 assets/resource/audio/{soundId}.mp3。技能音效 id 来自 5config.skillEffects[].sound。
+    /// </summary>
+    public static string OriginAudioPath(int soundId)
+    {
+        return $"assets/resource/audio/{soundId}.mp3?ver={ResourceVersion}";
+    }
+
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, byte[]> _originAudioCache = new();
+
+    /// <summary>取原始传奇音效字节（内存缓存：同一 id 只下载一次）。缺失返回 null。</summary>
+    public static async Task<byte[]> GetOriginAudioBytesAsync(int soundId)
+    {
+        if (_originAudioCache.TryGetValue(soundId, out var cached)) return cached;
+        try
+        {
+            byte[] bytes = await _dataContent.LoadBytesAsync(OriginAudioPath(soundId), Cache, priority: 0).ConfigureAwait(false);
+            if (bytes == null || bytes.Length == 0) return null;
+            _originAudioCache[soundId] = bytes;
+            return bytes;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     /// <summary>按相对路径取纹理（浏览器原生解码 jpg/png → RGBA Texture2D）。
     /// 走 _texCache：同一 URL 只在首次下载+解码，之后 GetOrAdd 复用同一份，所有调用方共享；
     /// 引用计数 +1（上层不再需要时调 ReleaseTexture）；超预算且引用归零的纹理由 TrimTextureCache 释放。</summary>

@@ -473,3 +473,31 @@ public class AnimProgress
     public string? Current { get; set; }
     public List<string> Messages { get; set; } = new();
 }
+
+
+/// <summary>/audio/extract 请求：提取原始传奇所有音频（audio/{id}.mp3）。</summary>
+public class AudioExtractRequest
+{
+    /// <summary>音频 id 列表；留空则从已加载配置表自动收集所有 sound/file id。</summary>
+    public List<int> Ids { get; set; } = new();
+    /// <summary>输出目录；留空则默认系统下载目录下的 Mir2Audio 子目录。</summary>
+    public string? OutDir { get; set; }
+    /// <summary>是否从配置表收集 id（默认 true）。</summary>
+    public bool FromConfig { get; set; } = true;
+}
+
+/// <summary>/audio/ids 与 /audio/extract 的返回。</summary>
+public class AudioResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    /// <summary>收集到的音频 id 数。</summary>
+    public int Total { get; set; }
+    public int Downloaded { get; set; }
+    public int Skipped { get; set; }
+    public int Failed { get; set; }
+    public long Bytes { get; set; }
+    /// <summary>收集到的 id（用于页面展示）。</summary>
+    public List<int> Ids { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}

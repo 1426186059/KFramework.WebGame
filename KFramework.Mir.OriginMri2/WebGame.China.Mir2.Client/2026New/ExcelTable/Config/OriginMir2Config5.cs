@@ -29,9 +29,35 @@ public class EffectTable
     public string blendmode { get; set; } = "";
 }
 
+/// <summary>5config.soundnormal 单条记录（地图/场景音效配置）。</summary>
+public class SoundNormalTable
+{
+    [JsonPropertyName("id")]
+    public int id { get; set; }
+
+    [JsonPropertyName("type")]
+    public int type { get; set; }
+
+    [JsonPropertyName("index")]
+    public int index { get; set; }
+
+    [JsonPropertyName("mode")]
+    public int mode { get; set; }
+
+    [JsonPropertyName("file")]
+    public int file { get; set; }
+
+    [JsonPropertyName("level")]
+    public int level { get; set; }
+}
+
 /// <summary>整个 5config 分片 JSON 的 DTO。effect 键为数字字符串，System.Text.Json 自动转 int 字典键。</summary>
 public class OriginMir2Config5
 {
     [JsonPropertyName("effect")]
     public Dictionary<int, EffectTable> effect { get; set; } = new();
+
+    // soundnormal 按 type 分桶（"1"/"3"/"4"/"5"），每桶是 index → 记录；type=3 即地图 BGM。
+    [JsonPropertyName("soundnormal")]
+    public Dictionary<string, Dictionary<string, SoundNormalTable>> soundnormal { get; set; } = new();
 }

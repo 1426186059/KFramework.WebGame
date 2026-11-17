@@ -6,6 +6,7 @@ builder.Services.AddSingleton<GameConfigService>();
 builder.Services.AddSingleton<MapTileService>();
 builder.Services.AddSingleton<MapMinimapService>();
 builder.Services.AddSingleton<AnimExportService>();
+builder.Services.AddSingleton<AudioExportService>();
 
 var app = builder.Build();
 
@@ -23,7 +24,10 @@ api.MapGet("/info", () => Results.Ok(new
     os = Environment.OSVersion.ToString(),
     framework = Environment.Version.ToString(),
     cwd = Directory.GetCurrentDirectory(),
-    downloadDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
+    downloadDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
+    // 本地资源根 Mir2Res（将来远程资源根：相对路径同原始传奇、去掉版本号）及其 audio 落地目录
+    localResourceRoot = Mir2ReverseWeb.Mir2Config.LocalResourceRoot,
+    localAudioDir = Mir2ReverseWeb.Mir2Config.LocalAudioDir
 }));
 
 // 文件系统浏览（替代 Unity 的 OpenFolderPanel / OpenFilePanel）
@@ -116,6 +120,12 @@ api.MapPost("/map/previewMinimap", (MapMinimapPreviewRequest req, MapMinimapServ
         source = r.Source
     });
 });
+
+// ---- 原始传奇音频资源（audio/{id}.mp3，id 从配置分片递归收集）----
+api.MapPost("/audio/ids", async (ConfigLoadRequest req, AudioExportService s) =>
+    Results.Ok(await s.CollectFromConfigAsync(req?.BaseUrl, req?.Version)));
+api.MapPost("/audio/extract", async (AudioExtractRequest req, AudioExportService s) =>
+    Results.Ok(await s.ExtractAsync(req)));
 
 // ---- 图集 WIL/WIX ----
 api.MapPost("/atlas/scan", (PathReq req, GameConfigService s) =>

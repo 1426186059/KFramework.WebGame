@@ -15,6 +15,7 @@ namespace Client.MirSounds.Libraries
 
         private readonly string _fileName;
         private readonly bool _loop;
+        private readonly int _originSoundId;   // >0 表示走原始传奇 CDN 音效（audio/{id}.mp3）
 
         private SoundEffect _se;
         private SoundEffectInstance _inst;
@@ -28,14 +29,25 @@ namespace Client.MirSounds.Libraries
         {
             if (string.IsNullOrWhiteSpace(fileName)) return null;
 
-            return new LoopProvider(index, fileName, volume, loop);
+            return new LoopProvider(index, fileName, volume, loop, 0);
         }
 
-        private LoopProvider(int index, string fileName, int volume, bool loop)
+        /// <summary>
+        /// 原始传奇背景音乐：fileId 来自 5config.soundnormal[type3][地图id].file，
+        /// 通过 CDN audio/{fileId}.mp3 加载并循环。
+        /// </summary>
+        public static LoopProvider TryCreateOrigin(int fileId, int volume, bool loop)
+        {
+            if (fileId <= 0) return null;
+            return new LoopProvider(fileId, null, volume, loop, fileId);
+        }
+
+        private LoopProvider(int index, string fileName, int volume, bool loop, int originSoundId)
         {
             Index = index;
             _fileName = fileName;
             _loop = loop;
+            _originSoundId = originSoundId;
 
             _ = PlayAsync(volume);
         }
@@ -49,8 +61,10 @@ namespace Client.MirSounds.Libraries
 
                 if (_se != null) return;
 
-                // 复用 SoundManager 的内存缓存：同一音效不重复走网络 / Cache Storage
-                byte[] bytes = await SoundManager.GetSoundBytesAsync(_fileName);
+                // 原始传奇 CDN 音效，或经典本地音效（复用 SoundManager 内存缓存）
+                byte[] bytes = _originSoundId > 0
+                    ? await Mir2OriginResource.GetOriginAudioBytesAsync(_originSoundId).ConfigureAwait(false)
+                    : await SoundManager.GetSoundBytesAsync(_fileName).ConfigureAwait(false);
                 if (bytes == null || bytes.Length == 0) return;
 
                 _se = await SoundEffect.LoadAsync(bytes);

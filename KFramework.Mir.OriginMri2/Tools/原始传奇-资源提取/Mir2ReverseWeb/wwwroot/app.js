@@ -158,6 +158,11 @@ $('#btnClearLog').addEventListener('click', () => { const l = $('#log'); if (l) 
     try {
         const info = await api('GET', '/api/info');
         const dl = info.downloadDir || '';
+        // 音频落地到本地资源根 Mir2Res/assets/resource/audio（将来远程资源目录，相对路径同原版、无版本号）
+        if (info.localAudioDir) {
+            const ae = $('#audioOutDir');
+            if (ae && !ae.value.trim()) ae.value = info.localAudioDir;
+        }
         if (dl) {
             const setIfEmpty = (id, val) => { const el = $('#' + id); if (el && !el.value.trim()) el.value = val; };
             setIfEmpty('mapDest', dl);

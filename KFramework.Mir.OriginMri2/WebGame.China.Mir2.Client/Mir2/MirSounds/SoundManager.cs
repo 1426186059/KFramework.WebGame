@@ -1,4 +1,5 @@
-﻿using Client.MirSounds.Libraries;
+﻿using System.Collections.Generic;
+using Client.MirSounds.Libraries;
 using KFramework.MonoGame;
 using WebGame.Mir2.MonoGame.Client;
 
@@ -109,6 +110,43 @@ namespace Client.MirSounds
             }
         }
 
+        /// <summary>
+        /// 播放原始传奇音效（CDN：assets/resource/audio/{soundId}.mp3）。
+        /// soundId 来自 5config.skillEffects[].sound（如灵魂火符=20025），与经典 Mir2 的索引体系无关，
+        /// 不要走 ResolveSoundFile（那会把 id 解析成本地 wav 文件名导致无声）。
+        /// </summary>
+        public static void PlayOriginSound(int soundId, bool loop = false)
+        {
+            if (soundId <= 0) return;
+            _ = PlayOriginFileAsync(soundId, loop);
+        }
+
+        private static async Task PlayOriginFileAsync(int soundId, bool loop)
+        {
+            try
+            {
+                byte[] bytes = await Mir2OriginResource.GetOriginAudioBytesAsync(soundId).ConfigureAwait(false);
+                if (bytes == null || bytes.Length == 0) return;
+                var se = await SoundEffect.LoadAsync(bytes).ConfigureAwait(false);
+                if (se == null) return;
+                if (loop)
+                {
+                    var inst = se.CreateInstance();
+                    inst.IsLooped = true;
+                    inst.Volume = Vol / 100f;
+                    inst.Play();
+                }
+                else
+                {
+                    se.Play(Vol / 100f, 1f, 0f);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Settings.LogErrors) CMain.SaveError(ex.ToString());
+            }
+        }
+
         public static void StopSound(int index)
         {
             if (_loopingSounds.TryGetValue(index, out LoopProvider sound))
@@ -123,6 +161,27 @@ namespace Client.MirSounds
             StopMusic();
 
             _music = LoopProvider.TryCreate(index, ResolveSoundFile(index), MusicVol, loop);
+        }
+
+        /// <summary>
+        /// 按地图 id 取原始传奇 BGM 的 fileId。
+        /// 直接读 5config.soundnormal[type=3][地图id].file（配置驱动，不再硬编码）。
+        /// 配置未加载 / 该地图无 BGM 返回 0（不播）。
+        /// </summary>
+        public static int GetOriginMapBgm(int mapIndex)
+        {
+            return ExcelTableMgr.TryGetMapBgm(mapIndex, out int fileId) ? fileId : 0;
+        }
+
+        /// <summary>
+        /// 播放原始传奇背景音乐：fileId 来自 5config.soundnormal[type3][地图id].file，
+        /// 走 CDN audio/{fileId}.mp3。若 fileId<=0（该地图无 BGM 配置）则停止当前音乐。
+        /// </summary>
+        public static void PlayOriginMusic(int fileId, bool loop = true)
+        {
+            StopMusic();
+            if (fileId <= 0) return;
+            _music = LoopProvider.TryCreateOrigin(fileId, MusicVol, loop);
         }
 
         public static void StopMusic()

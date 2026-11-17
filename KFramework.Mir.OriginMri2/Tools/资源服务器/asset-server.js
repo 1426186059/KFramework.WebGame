@@ -9,7 +9,9 @@
 //   /MyRes/Sound/...        -> MyRes/Sound/         音效 wav + SoundList.lst
 //   /MyRes/Login/...        -> MyRes/Login/         登录 UI 美术 PNG
 //   /resource/...           -> resource/            图集 png / json / fnt 与 default.res.json
-//   /assets/...             -> assets/              地图瓦片 jpg
+//   /assets/...             -> assets/              地图瓦片 jpg、音频 assets/resource/audio/{id}.mp3
+//                                                   （Mir2Res 相对路径与原始传奇一致、仅去掉版本号段；
+//                                                     本目录即逆向工坊「提取所有音频」的默认落地处）
 //   旧 /Localization/、/Sound/ 前缀自动回落到 /MyRes/ 同名目录（兼容历史写法）
 //   其余路径原样相对 root 解析（/MyRes/ 不再重写到 /hot_update_res/）
 // 特性：CORS（跨域必需）、Range（为按需分段加载预留）、防目录穿越。

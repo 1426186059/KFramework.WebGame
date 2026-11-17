@@ -1787,7 +1787,8 @@ namespace Client.MirObjects
 
 
                             case Spell.SoulFireBall:
-                                SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                // 起手帧静默：原始传奇 5config.skillEffects[1304101] 只有 type=2 子弹带 sound=20025，
+                                // 起手/命中帧都无独立音效。该音效统一在下方符纸飞出帧播放，避免同一技能响两遍。
                                 break;
 
 
@@ -1796,7 +1797,8 @@ namespace Client.MirObjects
                                 // 起手特效改走原始传奇 CDN（5config：召唤骷髅 skill 13051 → effect 655/model13005），
                                 // 替代已移除的经典 .Lib（Libraries.Magic/1500）。
                                 Effects.Add(new OriginEffect(655, this));
-                                SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                // 原始传奇音效：5config.skillEffects[1305101].sound=200171
+                                SoundManager.PlayOriginSound(200171);
                                 break;
 
                             case Spell.StormEscape:
@@ -1909,7 +1911,8 @@ namespace Client.MirObjects
                                     int shinsuEffect = SpellLevel >= 7 ? 771 : SpellLevel >= 6 ? 765 : SpellLevel >= 5 ? 759 : 652;
                                     Effects.Add(new OriginEffect(shinsuEffect, this));
                                 }
-                                SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                // 原始传奇音效：5config.skillEffects[1313101..1313107].sound=20031（全等级同款）
+                                SoundManager.PlayOriginSound(20031);
                                 break;
 
 
@@ -2920,7 +2923,8 @@ namespace Client.MirObjects
 
 
                                     case Spell.SoulFireBall:
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                        // 符纸飞出瞬间播原始传奇音效：5config.skillEffects[1304101].sound=20025
+                                        SoundManager.PlayOriginSound(20025);
                                         // 原始传奇 5config.effect 核对过 CDN 实际画面：
                                         //   653/model13003 = 符纸（多张小符），752/model13024 = Lv5 符纸  → 飞行道具
                                         //   654/model13023 = 火焰爆炸，754/model13026 = Lv5 火焰      → 抵达目标后的爆炸
@@ -2944,7 +2948,7 @@ namespace Client.MirObjects
                                             {
                                                 if (hitTarget == null || hitTarget.CurrentAction == MirAction.Dead) return;
                                                 hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.SoulFireBall * 10 + 2);
+                                                // 原始传奇命中特效(effect654/754)配置无独立 sound，命中不再叠加经典音效。
                                             };
                                             Effects.Add(originMissile);
                                         }

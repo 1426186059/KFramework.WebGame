@@ -15,6 +15,21 @@ public static partial class ExcelTableMgr
         return byAction.TryGetValue(action, out info) && info != null;
     }
 
+    /// <summary>
+    /// 取某地图的背景音乐 fileId（5config.soundnormal[type=3][地图id].file）。
+    /// 原始传奇 JS：AudioManager.playNormal(3, gd.map.curMapId) → soundnormal["3"][地图id].file，
+    /// 再由 ResUrl.url(file,15) 得到 audio/{file}.mp3。无配置返回 false。
+    /// </summary>
+    public static bool TryGetMapBgm(int mapIndex, out int fileId)
+    {
+        fileId = 0;
+        if (_config5?.soundnormal == null) return false;
+        if (!_config5.soundnormal.TryGetValue("3", out var byIndex) || byIndex == null) return false;
+        if (!byIndex.TryGetValue(mapIndex.ToString(), out var rec) || rec == null || rec.file <= 0) return false;
+        fileId = rec.file;
+        return true;
+    }
+
     /// <summary>取某技能特效的定义（5config.effect：model/action/dir/intval/blendmode）。查不到返回 false。</summary>
     public static bool TryGetEffect(int effectId, [NotNullWhen(true)] out EffectTable? effect)
     {

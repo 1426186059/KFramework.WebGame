@@ -476,11 +476,12 @@ public sealed class MapControl : MirControl
 
         try
         {
-            if (SetMusic != Music)
-            {
-                SoundManager.Music?.Dispose();
-                SoundManager.PlayMusic(Music, true);
-            }
+            // 背景音乐走原始传奇：按地图 id 查 5config.soundnormal[type=3] 的 BGM（CDN audio/{file}.mp3），
+            // 替代经典 Mir2 的本地 MapMusic（服务端下发的 Music 字段换表后已全为 0，不可用）。
+            // 地图 id 取文件名（如 "103.map" → 103）；未配 BGM 的地图会停止当前音乐。
+            string mapStem = Path.GetFileNameWithoutExtension(fileName);
+            int mapBgmId = int.TryParse(mapStem, out int mid) ? SoundManager.GetOriginMapBgm(mid) : 0;
+            SoundManager.PlayOriginMusic(mapBgmId, true);
         }
         catch (Exception)
         {

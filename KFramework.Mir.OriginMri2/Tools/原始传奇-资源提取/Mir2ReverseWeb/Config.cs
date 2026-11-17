@@ -86,6 +86,38 @@ public static class Mir2Config
     public const string DownloadDir = "downloads";
 
     /// <summary>
+    /// 本地资源根 Mir2Res —— 它就是我们将来要部署的【远程资源目录】，不再依赖线上 CDN。
+    /// 约定：目录结构与《原始传奇》CDN 的【相对路径完全一致】，唯一区别是【去掉版本号那一段】。
+    ///   原始传奇 CDN： assets/resource/{版本号}/model/{id}/{sourceId}.png?ver=...
+    ///   我们的 Mir2Res： assets/resource/model/{id}/{sourceId}.png        （少了 {版本号} 目录，也不带 ?ver 查询串）
+    ///   音频同理：      CDN assets/resource/audio/{id}.mp3  →  Mir2Res/assets/resource/audio/{id}.mp3（本就没有版本号段）
+    /// 本地资源服务器（Tools/资源服务器/asset-server.js，:5080）以 Mir2Res 为 root：
+    ///   /assets/...  →  Mir2Res/assets/...，/resource/...  →  Mir2Res/resource/...
+    /// 因此从本工坊提取的资源直接落到 Mir2Res 对应相对路径，即可被游戏客户端按同相对路径加载。
+    /// </summary>
+    public static readonly string LocalResourceRoot = FindLocalResourceRoot();
+
+    private static string FindLocalResourceRoot()
+    {
+        // 从程序目录 / 工作目录向上逐级找含 Mir2Res 子目录的祖先，避免依赖固定的 bin/Debug/netX 层数。
+        foreach (var start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory(), Environment.CurrentDirectory })
+        {
+            var dir = new DirectoryInfo(start);
+            while (dir != null)
+            {
+                var candidate = Path.Combine(dir.FullName, "Mir2Res");
+                if (Directory.Exists(candidate)) return candidate;
+                dir = dir.Parent;
+            }
+        }
+        // 兜底：仓库根固定相对路径（本工坊在 <仓库根>/Tools/原始传奇-资源提取/Mir2ReverseWeb）。
+        return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "Mir2Res"));
+    }
+
+    /// <summary>音频提取落地目录：Mir2Res/assets/resource/audio/（将来远程资源根下的 audio 相对路径，无版本号）。</summary>
+    public static string LocalAudioDir => Path.Combine(LocalResourceRoot, "assets", "resource", "audio");
+
+    /// <summary>
     /// 模型帧资源基址（客户端运行时由 js_gameVars.resUrl / cdnServer 注入，并非 resourceVersion.json 所在主机）。
     /// 逆向自 main10.25341.1.min.js：帧 URL = resUrl + 版本号 + "/model/{模型号}/{sourceId}.png"，其中 resUrl 以
     /// "/resource/"（或 MiniGame/H5 构建含 "/assets/resource/"）结尾，defaultVersion 为空（无 ?ver 参数）。
