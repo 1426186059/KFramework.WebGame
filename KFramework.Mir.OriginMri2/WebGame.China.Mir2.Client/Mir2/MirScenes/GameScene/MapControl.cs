@@ -1173,7 +1173,11 @@ public sealed class MapControl : MirControl
         {
             MapObject.SelectTarget(MapObject.MouseObject); // 统一入口：脚底环/攻击目标/法术目标一次设齐（互斥）
         }
-        // 点地面不清空目标：保留已选中的 NPC/怪物/玩家，只有点中新的可攻击对象或目标死亡时才切换/清空。
+        else
+        {
+            // 点地面：不清空已选目标（保留脚底环/攻击对象），但停止自动攻击与追击它。
+            MapObject.bAutoAttackSelectTarget = false;
+        }
     }
 
     private void CheckInput()
@@ -1193,7 +1197,8 @@ public sealed class MapControl : MirControl
 
         if (CMain.Time < User.BlizzardStopTime || CMain.Time < User.ReincarnationStopTime) return;
 
-        if (MapObject.TargetObject != null && !MapObject.TargetObject.Dead)
+        // 点地面后 bAutoAttackSelectTarget=false：保留目标选中，但不再自动攻击它（要再打需重新点怪）。
+        if (MapObject.bAutoAttackSelectTarget && MapObject.TargetObject != null && !MapObject.TargetObject.Dead)
         {
             if (((MapObject.TargetObject.Name.EndsWith(")") || MapObject.TargetObject is PlayerObject) && CMain.Shift) ||
                 (!MapObject.TargetObject.Name.EndsWith(")") && MapObject.TargetObject is MonsterObject))
@@ -1505,6 +1510,8 @@ public sealed class MapControl : MirControl
             }
         }
 
+        // 点地面后 bAutoAttackSelectTarget=false：保留目标但不再自动走向它。
+        if (!MapObject.bAutoAttackSelectTarget) return;
         if (MapObject.TargetObject == null || MapObject.TargetObject.Dead) return;
         if (((!MapObject.TargetObject.Name.EndsWith(")") && !(MapObject.TargetObject is PlayerObject)) || !CMain.Shift) &&
             (MapObject.TargetObject.Name.EndsWith(")") || !(MapObject.TargetObject is MonsterObject))) return;

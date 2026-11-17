@@ -61,6 +61,15 @@ namespace Client.MirObjects
         }
 
         /// <summary>
+        /// 是否攻击/追击当前选中的目标（b=bool 前缀，遵循项目命名习惯）。
+        /// 点中可攻击对象时由 SelectTarget 置 true；点地面时置 false（仅停止自动攻击与追击，不清空 CanAttackTargetObject）。
+        /// 与"是否选中目标"解耦：目标可以一直保持选中，但玩家点地面后不再自动打它/走向它。
+        /// 【只管自动普攻/追击】施法（雷电术/灵魂火符等）不受此开关影响：UseMagic 只读 CanAttackTargetObject，
+        /// 所以点地面后仍可手动施法攻击选中的目标。
+        /// </summary>
+        public static bool bAutoAttackSelectTarget;
+
+        /// <summary>
         /// 统一"选中"入口（脚底环 SelectionTarget + 攻击目标 CanAttackTargetObject + 法术目标 MagicObjectID）。
         /// 【参数 target 只是"被点选的对象"，不要求可攻击】——NPC、物品也会传进来。
         /// 只有可攻击对象（怪物/玩家，排除 NPC/物品/死亡）才写入 CanAttackTargetObject；
@@ -75,6 +84,7 @@ namespace Client.MirObjects
                 SelectionTarget = null;
                 CanAttackTargetObject = null;
                 MagicObjectID = 0;
+                bAutoAttackSelectTarget = false;
                 return;
             }
 
@@ -84,10 +94,12 @@ namespace Client.MirObjects
             {
                 CanAttackTargetObject = null;
                 MagicObjectID = 0;
+                bAutoAttackSelectTarget = false;
                 return;
             }
 
             CanAttackTargetObject = target;
+            bAutoAttackSelectTarget = true; // 点中可攻击对象 → 允许自动攻击/追击它
 
             if (target is MonsterObject monster && monster.AI != 6)
                 MagicObjectID = target.ObjectID;
