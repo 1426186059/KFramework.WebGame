@@ -28,6 +28,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Links = 1,
             Assert = 2,
             Random = 3,
+            Wrap = 4,
         }
 
         private Page _page = Page.Tags;
@@ -41,6 +42,10 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private string _randomSample = string.Empty;
         private int _randomLineCount = 1;
         private readonly Random _random = new();
+
+        // 页⑤：自动换行测试（标签内容被折行拆开时，颜色/链接/下划线是否延续到下一行）。
+        private string _wrapSample = string.Empty;
+        private int _wrapWidth = 420;
 
         // ── 样本串（同时用于展示与断言）────────────────────────────────────
 
@@ -57,6 +62,15 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             "官网 <link=\"https://www.example.com/\">https://www.example.com/</link>，" +
             "文档 <a href=\"https://docs.example.com/guide\">https://docs.example.com/guide</a>。";
 
+        /// <summary>自动换行样本：故意写成一整句长文本，让折行点落在标签内容中间，
+        /// 检验颜色/超链接/下划线/<size> 跨行后是否延续（解析阶段已剥离成逐字符样式，理论上应正确）。</summary>
+        private const string WrapSample =
+            "开头普通文字，接着是<color=#FF4040>一段很长的红色文字它会被自动折行打断成两行甚至三行" +
+            "并且颜色应该一直保持到这段结束为止</color>，然后普通，再是<u>一段很长的下划线文字也会被折行打断" +
+            "下划线应当出现在折行后的每一行下面</u>，再普通，最后是<size=26>一段放大字号的长文字被折行打断" +
+            "放大效果跨行保持</size>收尾。中间夹一个<link=\"https://wrap.example/long\">很长的超链接文字" +
+            "被折行拆成两段时两段都应命中同一个网址</link>结束。";
+
         private void Layout()
         {
             BeginButtons(68);
@@ -64,6 +78,18 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             AddUiButton("② 超链接命中", () => { _page = Page.Links; }, _page == Page.Links);
             AddUiButton("③ 自动断言", () => { _page = Page.Assert; }, _page == Page.Assert);
             AddUiButton("④ 随机样本对照", () => { _page = Page.Random; }, _page == Page.Random);
+            AddUiButton("⑤ 自动换行", () => { _page = Page.Wrap; }, _page == Page.Wrap);
+
+            if (_page == Page.Wrap)
+            {
+                if (_wrapSample.Length == 0)
+                {
+                    _wrapSample = WrapSample;
+                }
+                AddUiButton("窄框 220px", () => { _wrapWidth = 220; });
+                AddUiButton("中框 420px", () => { _wrapWidth = 420; });
+                AddUiButton("宽框 700px", () => { _wrapWidth = 700; });
+            }
 
             if (_page == Page.Random)
             {
@@ -127,8 +153,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                 case Page.Assert:
                     DrawAssertPage(batch, origin);
                     break;
-                default:
+                case Page.Random:
                     DrawRandomPage(batch, origin);
+                    break;
+                default:
+                    DrawWrapPage(batch, origin);
                     break;
             }
             DrawButtons(batch);
@@ -389,6 +418,84 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             DrawRect(batch, richRect, new Color(18, 23, 36));
             TextRenderer.DrawText(batch, _randomSample, Font, richRect, Color.White,
                                   TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+        }
+
+        // ── 页⑤：自动换行（标签内容被折行拆开）─────────────────────────────
+
+        private void DrawWrapPage(SpriteBatch batch, Vector2 origin)
+        {
+            float x = origin.X;
+            float y = ContentTop;
+            float fullW = Device.Viewport.Width - x * 2f;
+
+            y += DrawSection(batch, "⑤ 自动换行：折行点落在标签内容中间时，颜色 / 下划线 / 字号 / 超链接是否延续到下一行",
+                             new Vector2(x, y));
+            y += DrawLine(batch, Font, "标签在解析阶段已剥离成逐字符样式，折行按纯文本做，再按样式切段——理论上跨行应正确。",
+                          new Vector2(x, y), new Color(190, 205, 230));
+            y += DrawLine(batch, Font, "当前框宽 " + _wrapWidth + "px（用上方按钮切换，越窄折行越多）。",
+                          new Vector2(x, y), new Color(190, 205, 230));
+
+            // 上：原始串（标签当字符，同样折行，作对照）
+            Size rawSize = TextRenderer.MeasureText(_wrapSample, Font, new Size(_wrapWidth, int.MaxValue),
+                                                    HorizontalWrapMode.Wrap, false);
+            int rawH = Math.Max(40, rawSize.Height + 12);
+            DrawSection(batch, "原始文本（标签原样，richText=false）", new Vector2(x, y));
+            y += Font.LineSpacing + 6f;
+            Rectangle rawRect = new((int)x, (int)y, _wrapWidth, rawH);
+            DrawRect(batch, rawRect, new Color(36, 28, 20));
+            TextRenderer.DrawText(batch, _wrapSample, Font, rawRect, new Color(255, 215, 170),
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, false);
+            y += rawH + 16f;
+
+            // 下：富文本渲染（标签生效），并画每行高度辅助线
+            Size richSize = TextRenderer.MeasureText(_wrapSample, Font, new Size(_wrapWidth, int.MaxValue),
+                                                     HorizontalWrapMode.Wrap, true);
+            int richH = Math.Max(40, richSize.Height + 12);
+            DrawSection(batch, "富文本渲染（richText=true，横线=每行基线辅助，观察折行点）", new Vector2(x, y));
+            y += Font.LineSpacing + 6f;
+            Rectangle richRect = new((int)x, (int)y, _wrapWidth, richH);
+            DrawRect(batch, richRect, new Color(18, 23, 36));
+            TextRenderer.DrawText(batch, _wrapSample, Font, richRect, Color.White,
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+            int lineCount = Math.Max(1, (int)MathF.Ceiling(richSize.Height / Font.LineSpacing));
+            for (int i = 1; i < lineCount; i++)
+            {
+                int ly = richRect.Y + (int)(i * Font.LineSpacing);
+                DrawRect(batch, new Rectangle(richRect.X, ly, richRect.Width, 1), new Color(45, 60, 90));
+            }
+            y += richH + 14f;
+
+            // 链接跨行命中验证：在富文本块上按网格采样 GetLinkAt，统计唯一 URL 与命中行数。
+            int hitRows = 0;
+            string hitUrl = null;
+            for (int py = richRect.Y + 2; py < richRect.Bottom - 2; py += 4)
+            {
+                bool rowHit = false;
+                for (int px = richRect.X + 2; px < richRect.Right - 2; px += 6)
+                {
+                    string url = TextRenderer.GetLinkAt(_wrapSample, Font, richRect,
+                                      TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, px, py);
+                    if (url != null)
+                    {
+                        hitUrl = url;
+                        rowHit = true;
+                        break;
+                    }
+                }
+                if (rowHit)
+                {
+                    hitRows++;
+                }
+            }
+            y += DrawLine(batch, Font, "链接跨行命中：URL=" + (hitUrl ?? "（未命中）") + "  命中扫描行数≈" + hitRows,
+                          new Vector2(x, y), hitUrl != null ? new Color(160, 220, 255) : new Color(235, 90, 90));
+            y += DrawLine(batch, Font, "（命中行数>1 说明链接被折行拆到多行，且各行都能取回同一 URL，属正确）",
+                          new Vector2(x, y), new Color(150, 170, 200));
+
+            // 顺带列出 MeasureText（Wrap）量出的行数，核对高度是否随折行增长。
+            y += DrawLine(batch, Font, "度量：原始 " + rawSize.Height + "px / 富文本 " + richSize.Height +
+                                       "px，约 " + lineCount + " 行（字号放大行会更高）",
+                          new Vector2(x, y), new Color(150, 200, 255));
         }
 
         private Size Measure(string text, bool richText)
