@@ -1786,6 +1786,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 ForeColour = Color.White,
                 OutLineColour = Color.Black,
+                Font = new Font(Settings.FontName, 8F),
             };
 
             // 点击整块小地图 → 打开大地图（对应 gjs img_0 clickHandler → uim.showOrHide(547)）

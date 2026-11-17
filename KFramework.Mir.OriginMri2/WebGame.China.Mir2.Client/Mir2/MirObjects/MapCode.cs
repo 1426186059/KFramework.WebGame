@@ -6,6 +6,8 @@ namespace Client.MirObjects
 {
     public class CellInfo
     {
+        // 原始传奇 CDN 地图下，瓦片视觉走 zipmap jpg，这些经典 .map 瓦片字段已不再被赋值；
+        // 保留 Back*/Middle*/Front* 仅因脚步声、阻挡等旧逻辑仍引用（值为默认），DoorIndex/FishingCell 同理。
         public short BackIndex;
         public int BackImage;
         public short MiddleIndex;
@@ -14,20 +16,7 @@ namespace Client.MirObjects
         public int FrontImage;
 
         public byte DoorIndex;
-        public byte DoorOffset;
 
-        public byte FrontAnimationFrame;
-        public byte FrontAnimationTick;
-
-        public byte MiddleAnimationFrame;
-        public byte MiddleAnimationTick;
-
-        public short TileAnimationImage;
-        public short TileAnimationOffset;
-        public byte  TileAnimationFrames;
-
-        public byte Light;
-        public byte Unknown;
         public List<MapObject> CellObjects;
 
         public bool FishingCell;
