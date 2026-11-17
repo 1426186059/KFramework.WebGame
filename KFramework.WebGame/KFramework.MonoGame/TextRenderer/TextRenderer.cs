@@ -182,35 +182,44 @@ namespace KFramework.MonoGame
             bool wrap = hWrap == HorizontalWrapMode.Wrap && bounds.Width > 0;
             float lineH = font.LineSpacing;
 
-            // 1) 逐字符折行，记录每行的 [start,end)
-            var spans = new List<(int start, int end, float width)>();
+            // 1) 逐字符折行，记录每行的 [start,end)、宽度与该行最大缩放
+            // 行高按最大 Scale 撑开，避免放大的字（<size> / 粗体）压到下一行。
+            var spans = new List<(int start, int end, float width, float maxScale)>();
             int lineStart = 0;
             float lineW = 0;
+            float lineMaxScale = 1f;
             for (int i = 0; i < text.Length; i++)
             {
                 char ch = text[i];
                 if (ch == '\n')
                 {
-                    spans.Add((lineStart, i, lineW));
+                    spans.Add((lineStart, i, lineW, lineMaxScale));
                     lineStart = i + 1;
                     lineW = 0;
+                    lineMaxScale = 1f;
                     continue;
                 }
                 float cw = font.MeasureString(ch.ToString()).X * styles[i].Scale;
                 if (wrap && lineW + cw > bounds.Width && i > lineStart)
                 {
-                    spans.Add((lineStart, i, lineW));
+                    spans.Add((lineStart, i, lineW, lineMaxScale));
                     lineStart = i;
                     lineW = 0;
+                    lineMaxScale = 1f;
                 }
                 lineW += cw;
+                lineMaxScale = Math.Max(lineMaxScale, styles[i].Scale);
             }
-            spans.Add((lineStart, text.Length, lineW));
+            spans.Add((lineStart, text.Length, lineW, lineMaxScale));
 
-            // 2) 对齐
+            // 2) 对齐：每行行高 = 基础行高 * 该行最大缩放，累加得到总高
             int row = (int)anchor / 3;
             int col = (int)anchor % 3;
-            float totalH = lineH * spans.Count;
+            float totalH = 0f;
+            foreach (var span in spans)
+            {
+                totalH += lineH * span.maxScale;
+            }
             float startY = bounds.Y;
             if (row == 1)
             {
@@ -226,7 +235,8 @@ namespace KFramework.MonoGame
             var runs = new List<RichTextRun>();
             foreach (var span in spans)
             {
-                if (startY + lineH > clipBottom)
+                float rowH = lineH * span.maxScale;
+                if (startY + rowH > clipBottom)
                 {
                     break;
                 }
@@ -256,11 +266,13 @@ namespace KFramework.MonoGame
                     }
                     string seg = text.Substring(i, j - i);
                     float segW = font.MeasureString(seg).X * st.Scale;
-                    runs.Add(new RichTextRun(seg, st, tx, startY, segW, lineH));
+                    // Height 存该段自身缩放后的高度：下划线与命中区都按各自字号贴字。
+                    // 行与行的间距另用 rowH（该行最大缩放）控制，互不干扰。
+                    runs.Add(new RichTextRun(seg, st, tx, startY, segW, lineH * st.Scale));
                     tx += segW;
                     i = j;
                 }
-                startY += lineH;
+                startY += rowH;
             }
             return runs;
         }

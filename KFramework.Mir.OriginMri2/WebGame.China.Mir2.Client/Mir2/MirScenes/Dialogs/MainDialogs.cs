@@ -1787,6 +1787,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.White,
                 OutLineColour = Color.Black,
                 Font = new Font(Settings.FontName, 8F),
+                RichText = true,
             };
 
             // 点击整块小地图 → 打开大地图（对应 gjs img_0 clickHandler → uim.showOrHide(547)）
@@ -1962,7 +1963,7 @@ namespace Client.MirScenes.Dialogs
             }
 
             LocationLabel.ForeColour = safe ? Color.FromArgb(255, 50, 220, 80) : Color.FromArgb(255, 240, 70, 70);
-            return safe ? "安全区域" : "危险区域";
+            return safe ? "安全区域" : "<color=red>危险区域</color>";
         }
     }
 
