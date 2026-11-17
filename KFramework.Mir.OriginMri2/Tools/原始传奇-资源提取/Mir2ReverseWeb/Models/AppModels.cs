@@ -188,7 +188,7 @@ public class ManifestResult
 public class AtlasDownloadRequest
 {
     public string Key { get; set; } = "";
-    /// <summary>输出目录；留空则默认系统下载目录</summary>
+    /// <summary>输出目录；留空则默认 Mir2Res 根（资源按 manifest key 的 assets/resource/... 相对路径落地）</summary>
     public string? OutDir { get; set; }
 }
 
@@ -220,7 +220,7 @@ public class MapResourceRequest
 {
     /// <summary>地图 ID（对应配置表 map 的键）</summary>
     public int MapId { get; set; }
-    /// <summary>输出根目录；留空则默认系统下载目录。文件按 CDN 相对路径平铺（assets/resource/zipmap/...）</summary>
+    /// <summary>输出根目录；留空则默认 Mir2Res 根。文件按 CDN 相对路径平铺（assets/resource/zipmap/...）</summary>
     public string? OutDir { get; set; }
     /// <summary>逻辑地图数据服务器根（.bin/.dat/.csv 所在）；留空默认 CdnBase（与图片 CDN 同根）。</summary>
     public string? DataUrl { get; set; }
@@ -267,7 +267,7 @@ public class MapTileDownloadRequest
 {
     /// <summary>要下载的地图（含 Id/Img/Name/Width/Height）</summary>
     public List<MapEntry> Maps { get; set; } = new();
-    /// <summary>输出根目录；留空则默认系统下载目录</summary>
+    /// <summary>输出根目录；留空则默认 Mir2Res/map</summary>
     public string Destination { get; set; } = "";
     /// <summary>下载完成后是否拼接一张 ≤4096 的总览 PNG（瓦片过多时自动跳过）</summary>
     public bool Stitch { get; set; } = true;
@@ -278,7 +278,7 @@ public class MapMinimapRequest
 {
     /// <summary>要提取小地图的地图（含 Id/Img/Name）</summary>
     public List<MapEntry> Maps { get; set; } = new();
-    /// <summary>输出根目录；留空则默认系统下载目录</summary>
+    /// <summary>输出根目录；留空则默认 Mir2Res/map</summary>
     public string Destination { get; set; } = "";
 }
 
@@ -384,7 +384,7 @@ public class ConfigExtractRequest
 {
     /// <summary>要提取的表名；空或仅含 "*" 表示全部。</summary>
     public List<string> Tables { get; set; } = new();
-    /// <summary>输出目录；留空则默认系统下载目录下的 Mir2Config 子目录。</summary>
+    /// <summary>输出目录；留空则默认 Mir2/config。</summary>
     public string? OutDir { get; set; }
     /// <summary>写出 C# 类（默认 true）。</summary>
     public bool WriteClass { get; set; } = true;
@@ -442,7 +442,7 @@ public class AnimExportRequest
 {
     /// <summary>要导出的模型号列表（逗号/空格分隔，如 "9001,9002,9027"）；为空或仅含 "*" 表示全部模型。</summary>
     public string? Models { get; set; }
-    /// <summary>输出根目录；留空则默认系统下载目录下的 Mir2Anim 子目录。文件按 model/{模型号}/{sourceId}.png 平铺。</summary>
+    /// <summary>输出资源根（默认 Mir2Res/）；帧在其下按 assets/resource/model/{模型号}/{sourceId}.png 真实相对路径落地（无版本号段）。</summary>
     public string? OutDir { get; set; }
     /// <summary>是否同时下载 .json 帧描述（默认 true，缺它无法还原每帧矩形）。</summary>
     public bool WithJson { get; set; } = true;
@@ -475,12 +475,27 @@ public class AnimProgress
 }
 
 
+/// <summary>/unified/extract 请求：一次性扫描所有配置表，导出 model 帧 + 物品图标 + 技能图标。</summary>
+public class UnifiedExtractRequest
+{
+    /// <summary>model 帧输出目录（默认 Mir2Res/assets/resource/model），帧落 {目录}/{模型号}/{sourceId}.png。</summary>
+    public string? ModelOutDir { get; set; }
+    /// <summary>物品图标输出目录（默认 Mir2Res/assets/resource/icon/tool），图标落 {目录}/{iconId}.png。</summary>
+    public string? ItemIconOutDir { get; set; }
+    /// <summary>技能图标输出目录（默认 Mir2Res/assets/resource/icon/skills），图标落 {目录}/{iconId}.png。</summary>
+    public string? SkillIconOutDir { get; set; }
+    /// <summary>是否同时下载 .json 帧描述（默认 true）。</summary>
+    public bool WithJson { get; set; } = true;
+    /// <summary>动作枚举上界（modelInfo 无登记的模型兜底用，默认 60）。</summary>
+    public int MaxAction { get; set; } = 60;
+}
+
 /// <summary>/audio/extract 请求：提取原始传奇所有音频（audio/{id}.mp3）。</summary>
 public class AudioExtractRequest
 {
     /// <summary>音频 id 列表；留空则从已加载配置表自动收集所有 sound/file id。</summary>
     public List<int> Ids { get; set; } = new();
-    /// <summary>输出目录；留空则默认系统下载目录下的 Mir2Audio 子目录。</summary>
+    /// <summary>输出目录；留空则默认 Mir2Res/assets/resource/audio。</summary>
     public string? OutDir { get; set; }
     /// <summary>是否从配置表收集 id（默认 true）。</summary>
     public bool FromConfig { get; set; } = true;

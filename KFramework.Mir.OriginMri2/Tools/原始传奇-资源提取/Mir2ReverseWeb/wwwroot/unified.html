@@ -26,45 +26,32 @@
             <section class="view" id="view-unified">
                 <div class="card">
                     <div class="card-title">按配置表提取资源（统一模式）</div>
-                    <p class="muted small">不再依赖 resourceVersion 清单：直接从原版配置表（怪物 / NPC / 称号 / 技能特效 / 物品…）解析出资源条目（模型号 + 名字），选中即可导出。技能特效已按 type 标注施法 / 命中 / 飞弹；物品外观为实验性（按 Looks 列）。首次使用会自动加载配置表（6 个分片，约数 MB）。</p>
-                    <div class="field">
-                        <label>资源分类</label>
-                        <select id="resCat" class="select"></select>
-                        <input id="resSearch" type="text" placeholder="搜索 名字 / 模型号" style="width:220px" />
-                        <button id="btnResLoad" class="btn btn-primary">加载条目</button>
-                        <span id="resLoadInfo" class="muted"></span>
-                    </div>
-                    <div id="resListWrap" class="list-wrap hidden">
-                        <div class="list-toolbar">
-                            <span class="search"><input id="resFilter" type="text" placeholder="在结果中搜索 名字 / 模型号" /></span>
-                            <button id="btnResSelAll" class="btn btn-ghost">全选</button>
-                            <button id="btnResClearAll" class="btn btn-ghost">取消全选</button>
-                            <span id="resSelInfo" class="sel-info"></span>
-                        </div>
-                        <div class="table-scroll">
-                            <table class="map-table">
-                                <thead><tr>
-                                    <th class="col-check"><input id="resChkAll" type="checkbox" /></th>
-                                    <th class="col-idx">序号</th>
-                                    <th>模型号</th>
-                                    <th>名字</th>
-                                    <th>关联模型</th>
-                                    <th class="col-act">操作</th>
-                                </tr></thead>
-                                <tbody id="resTbody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                    <p class="muted small">一次扫描全部 0~5 配置表：所有 <code>model</code> 字段（怪物 / NPC / 称号 / 特效 / 物品外观…）导为 model 帧，物品表第 19 列导为物品图标，技能表 icon 导为技能图标。三类资源分别落到下方各自目录，点一个按钮全部提取。首次会自动加载配置表（6 个分片）。</p>
 
-                <div class="card">
-                    <div class="card-title">导出范围与输出</div>
                     <div class="field">
-                        <label>输出目录</label>
-                        <input id="uniOutDir" type="text" placeholder="默认 下载目录/Mir2Anim，文件按 model/{模型号}/{sourceId}.png 平铺" />
-                        <button class="btn btn-ghost" data-browse="uniOutDir">浏览</button>
-                        <span id="dot-uniOutDir" class="dot"></span>
+                        <label>model 输出目录</label>
+                        <input id="uniModelDir" type="text" value="D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Mir2Res\assets\resource\model" />
+                        <button class="btn btn-ghost" data-browse="uniModelDir">浏览</button>
+                        <span id="dot-uniModelDir" class="dot"></span>
                     </div>
+                    <p class="muted small">所有 model 帧落这里：{目录}\{模型号}\{sourceId}.png|json（去版本号，与客户端同相对路径）。</p>
+
+                    <div class="field">
+                        <label>物品 Icon 输出目录</label>
+                        <input id="uniItemIconDir" type="text" value="D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Mir2Res\assets\resource\icon\tool" />
+                        <button class="btn btn-ghost" data-browse="uniItemIconDir">浏览</button>
+                        <span id="dot-uniItemIconDir" class="dot"></span>
+                    </div>
+                    <p class="muted small">item 表第 19 列图标 ID → {目录}\{iconId}.png（相对路径 assets/resource/icon/tool，无 model 段）。</p>
+
+                    <div class="field">
+                        <label>技能图标输出目录</label>
+                        <input id="uniSkillIconDir" type="text" value="D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Mir2Res\assets\resource\icon\skills" />
+                        <button class="btn btn-ghost" data-browse="uniSkillIconDir">浏览</button>
+                        <span id="dot-uniSkillIconDir" class="dot"></span>
+                    </div>
+                    <p class="muted small">skill 表 icon 字段 → {目录}\{iconId}.png（相对路径 assets/resource/icon/skills）。</p>
+
                     <div class="row-actions">
                         <label class="chk"><input type="checkbox" id="uniWithJson" checked /> 含 .json 帧描述（还原每帧矩形必需）</label>
                     </div>
@@ -74,21 +61,23 @@
                             <label>动作枚举上界</label>
                             <input id="uniMaxAction" type="number" value="60" min="1" max="200" style="width:90px" />
                         </div>
-                        <p class="muted small">默认 60（动作号超过此值不再尝试；按需下调可减少请求量）。帧按 sourceId=1000×模型号+10×动作+方向 枚举，命中才下载、404 自动跳过。</p>
+                        <p class="muted small">默认 60：modelInfo 未登记动作的模型才用它兜底枚举，按需下调减少请求量。</p>
                     </details>
+
                     <div class="row-actions">
-                        <button id="btnResExport" class="btn btn-success" disabled>导出选中 资源</button>
+                        <button id="btnUniExtract" class="btn btn-success">统一提取全部资源</button>
                         <span id="resStatus" class="dl-status"></span>
                     </div>
                     <div id="uniProgressWrap" class="progress-wrap hidden">
                         <div class="progress-track"><div id="uniProgressBar" class="progress-fill"></div></div>
                     </div>
 
-                    <pre class="help">动画 URL 拼装（逆向自 ResUrl / ActionLoader）：
-  {CdnBase}/assets/resource/{版本号}/model/{模型号}/{sourceId}.png?ver={ResourceVersion}
-  sourceId = 1000×模型号 + 10×动作 + 方向（0~7，5~7 为镜像）
-每个 (模型号, 动作, 方向) → 一张精灵表 png + 一份帧描述 json（frames[a]={x,y,w,h}，同 UI 图集结构）。
-导出走有/无版本号双路径：在 resourceVersion 里的模型用版本段，不在的（如多数技能特效 L1）走无版本号路径，文件均在 CDN 上。</pre>
+                    <pre class="help">相对路径规则（逆向自 ResUrl / ItemIconPath / SkillIconPath，均去版本号段）：
+  model 帧：   assets/resource/model/{模型号}/{sourceId}.png
+  sourceId = 1000×模型号 + 10×动作 + 方向（0~7，5~7 为镜像，按 modelInfo.totaldir 只取真实朝向）
+  物品图标：   assets/resource/icon/tool/{iconId}.png
+  技能图标：   assets/resource/icon/skills/{iconId}.png
+落地到 Mir2Res 对应相对路径后，即可被本地资源服务器(:5080)按同相对路径加载。</pre>
                 </div>
             </section>
         </main>

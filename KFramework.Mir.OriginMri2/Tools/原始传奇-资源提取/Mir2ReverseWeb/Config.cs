@@ -82,7 +82,7 @@ public static class Mir2Config
     /// </summary>
     public static string ResourceVersionManifestUrl => $"{CdnBase}/resourceVersion.json";
 
-    /// <summary>动画精灵表下载落地根目录（默认系统下载目录下的 Mir2Anim 子目录）</summary>
+    /// <summary>历史遗留常量（已无引用）。动画精灵表默认落地目录现统一走 LocalModelDir（Mir2Res/assets/resource/model）。</summary>
     public const string DownloadDir = "downloads";
 
     /// <summary>
@@ -116,6 +116,16 @@ public static class Mir2Config
 
     /// <summary>音频提取落地目录：Mir2Res/assets/resource/audio/（将来远程资源根下的 audio 相对路径，无版本号）。</summary>
     public static string LocalAudioDir => Path.Combine(LocalResourceRoot, "assets", "resource", "audio");
+
+    /// <summary>
+    /// 工坊所有“默认输出目录”的统一基准：一律落在 Mir2Res 下，相对路径与原始传奇 CDN 一致（去掉版本号段）。
+    /// 这样各提取页留空时，产物直接落到将来要部署的远程资源根，游戏客户端可按同相对路径加载。
+    /// </summary>
+    public static string LocalModelDir => Path.Combine(LocalResourceRoot, "assets", "resource", "model");
+    public static string LocalResourceDir => Path.Combine(LocalResourceRoot, "assets", "resource");
+    public static string LocalConfigDir => Path.Combine(LocalResourceRoot, "config");
+    public static string LocalMapDir => Path.Combine(LocalResourceRoot, "map");
+    public static string LocalMapExportDir => Path.Combine(LocalResourceRoot, "maps", "export");
 
     /// <summary>
     /// 模型帧资源基址（客户端运行时由 js_gameVars.resUrl / cdnServer 注入，并非 resourceVersion.json 所在主机）。

@@ -399,7 +399,7 @@ public class GameConfigService
 
     /// <summary>
     /// 提取配置表：为每张表写出「C# 类（描述字段 schema）」与「JSON 数据（保持原始 object/array 形态）」。
-    /// 输出目录默认系统下载目录下的 Mir2Config 子目录。
+    /// 输出目录默认 Mir2Res/config（远程资源根下，与其它提取产物统一基准）。
     /// </summary>
     public ConfigExtractResult ExtractConfigTables(ConfigExtractRequest req)
     {
@@ -408,7 +408,7 @@ public class GameConfigService
         {
             if (!_configLoaded) { res.Error = "请先加载配置表（点“加载配置表”按钮）"; return res; }
             var baseDir = string.IsNullOrWhiteSpace(req.OutDir)
-                ? Path.Combine(OsDownloadDir(), "Mir2Config")
+                ? Mir2Config.LocalConfigDir
                 : req.OutDir!;
             // C# 类与 JSON 数据分到不同目录，避免混在一起
             var csDir = Path.Combine(baseDir, "CSharp");
@@ -649,8 +649,8 @@ public class GameConfigService
             var entry = _manifestEntries?.FirstOrDefault(e => e.Key == key);
             if (entry == null) { res.Error = "清单未加载或无此条目"; return res; }
             res.Url = entry.Url;
-            var baseDir = string.IsNullOrWhiteSpace(outDir) ? OsDownloadDir() : outDir!;
-            // 原始路径模式：直接用 manifest 的 key（如 resource/assets/qianghua.png）作为相对路径落地
+            var baseDir = string.IsNullOrWhiteSpace(outDir) ? Mir2Config.LocalResourceRoot : outDir!;
+            // 原始路径模式：直接用 manifest 的 key（如 resource/assets/qianghua.png）作为相对路径落地到 Mir2Res 根
             var rel = entry.Key.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar);
             var file = Path.Combine(baseDir, rel);
             Directory.CreateDirectory(Path.GetDirectoryName(file)!);
@@ -721,7 +721,7 @@ public class GameConfigService
             var rows = (int)Math.Ceiling(h / 256.0);
             var n = cols * rows;
             res.Cols = cols; res.Rows = rows; res.TileCount = n;
-            var baseDir = string.IsNullOrWhiteSpace(req.OutDir) ? OsDownloadDir() : req.OutDir!;
+            var baseDir = string.IsNullOrWhiteSpace(req.OutDir) ? Mir2Config.LocalResourceRoot : req.OutDir!;
             var dataRoot = (string.IsNullOrWhiteSpace(req.DataUrl) ? Mir2Config.CdnBase : req.DataUrl.TrimEnd('/')) + "/";
 
             // ① 下载 zipmap 瓦片（相对路径），有界并发

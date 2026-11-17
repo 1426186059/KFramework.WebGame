@@ -6,6 +6,7 @@ builder.Services.AddSingleton<GameConfigService>();
 builder.Services.AddSingleton<MapTileService>();
 builder.Services.AddSingleton<MapMinimapService>();
 builder.Services.AddSingleton<AnimExportService>();
+builder.Services.AddSingleton<UnifiedExtractService>();
 builder.Services.AddSingleton<AudioExportService>();
 
 var app = builder.Build();
@@ -24,10 +25,15 @@ api.MapGet("/info", () => Results.Ok(new
     os = Environment.OSVersion.ToString(),
     framework = Environment.Version.ToString(),
     cwd = Directory.GetCurrentDirectory(),
-    downloadDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
-    // 本地资源根 Mir2Res（将来远程资源根：相对路径同原始传奇、去掉版本号）及其 audio 落地目录
+    // 所有默认输出目录统一落在 Mir2Res（将来远程资源根：相对路径同原始传奇、去掉版本号）。
+    // 前端各页 outDir 输入框留空时使用这些值；不再用系统下载目录。
+    downloadDir = Mir2ReverseWeb.Mir2Config.LocalResourceRoot,
     localResourceRoot = Mir2ReverseWeb.Mir2Config.LocalResourceRoot,
-    localAudioDir = Mir2ReverseWeb.Mir2Config.LocalAudioDir
+    localAudioDir = Mir2ReverseWeb.Mir2Config.LocalAudioDir,
+    localModelDir = Mir2ReverseWeb.Mir2Config.LocalModelDir,
+    localConfigDir = Mir2ReverseWeb.Mir2Config.LocalConfigDir,
+    localMapDir = Mir2ReverseWeb.Mir2Config.LocalMapDir,
+    localMapExportDir = Mir2ReverseWeb.Mir2Config.LocalMapExportDir
 }));
 
 // 文件系统浏览（替代 Unity 的 OpenFolderPanel / OpenFilePanel）
@@ -58,7 +64,7 @@ api.MapPost("/map/downloadTiles", (MapTileDownloadRequest req, MapTileService s)
 {
     if (req.Maps == null || req.Maps.Count == 0)
         return Results.Ok(new MapTileJobResult { Ok = false, Error = "未选择地图" });
-    var dest = string.IsNullOrWhiteSpace(req.Destination) ? GameConfigService.OsDownloadDir() : req.Destination;
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? Mir2ReverseWeb.Mir2Config.LocalMapDir : req.Destination;
     var id = s.Start(req.Maps, dest, req.Stitch);
     return Results.Ok(new MapTileJobResult { Ok = true, JobId = id.ToString(), TotalMaps = req.Maps.Count });
 });
@@ -75,7 +81,7 @@ api.MapGet("/map/tilesProgress", (string? job, MapTileService s) =>
 // 预览真实地图（基于已下载的 zipmap 瓦片拼接缩略 PNG）
 api.MapPost("/map/previewReal", (MapRealPreviewRequest req, MapTileService s) =>
 {
-    var dest = string.IsNullOrWhiteSpace(req.Destination) ? GameConfigService.OsDownloadDir() : req.Destination;
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? Mir2ReverseWeb.Mir2Config.LocalMapDir : req.Destination;
     var m = new MapEntry { Id = req.Id, Img = req.Img, Name = req.Name, Width = req.Width, Height = req.Height };
     var r = s.PreviewReal(m, dest);
     return Results.Ok(new
@@ -94,7 +100,7 @@ api.MapPost("/map/minimap", (MapMinimapRequest req, MapMinimapService s) =>
 {
     if (req.Maps == null || req.Maps.Count == 0)
         return Results.Ok(new { ok = false, error = "未选择地图" });
-    var dest = string.IsNullOrWhiteSpace(req.Destination) ? GameConfigService.OsDownloadDir() : req.Destination;
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? Mir2ReverseWeb.Mir2Config.LocalMapDir : req.Destination;
     int ok = 0;
     var results = new List<object>();
     foreach (var m in req.Maps)
@@ -187,5 +193,19 @@ api.MapPost("/anim/refresh-names", async (AnimExportService s) =>
 api.MapGet("/anim/categories", (AnimExportService s) => Results.Ok(s.GetResourceCategories()));
 api.MapGet("/anim/category-entries", async (string cat, string? q, AnimExportService s) =>
     Results.Ok(await s.GetResourceEntriesAsync(cat, q)));
+
+// ---- 统一资源提取（按配置表全量扫描：model 帧 + 物品图标 + 技能图标） ----
+api.MapPost("/unified/extract", async (UnifiedExtractRequest req, UnifiedExtractService s) =>
+{
+    var (jobId, total) = await s.StartAsync(req);
+    return Results.Ok(new AnimJobResult { Ok = true, JobId = jobId.ToString(), TotalFiles = total });
+});
+api.MapGet("/unified/progress", (string? job, UnifiedExtractService s) =>
+{
+    if (string.IsNullOrWhiteSpace(job) || !Guid.TryParse(job, out var gid))
+        return Results.Ok(new { ok = false, error = "bad job" });
+    var p = s.GetProgress(gid);
+    return p == null ? Results.Ok(new { ok = false, error = "unknown job" }) : Results.Ok(p);
+});
 
 app.Run();

@@ -385,7 +385,9 @@ public class AnimExportService
     /// <summary>一个资源分类：id/显示名/后端配置表名/名字取法/模型取法。</summary>
     public record ResourceCategory(string Id, string Label, string Table, string NameRule, string ModelRule);
 
-    /// <summary>下拉分类。怪物/NPC/称号/特效 直接取 model 字段；技能特效 经 skillEffects→effect→model；物品 为数组按列取外观。</summary>
+    /// <summary>下拉分类。怪物/NPC/称号/特效 直接取 model 字段；技能特效 经 skillEffects→effect→model；物品 为数组按列取外观。
+    /// 帧输出目录按原版真实相对路径统一为 Mir2Res/assets/resource/model——所有分类的帧都走 model/{模型号}，
+    /// 特效也无独立目录（见客户端 Mir2OriginObjectLibrary.ModelFramePath 与 resourceVersion.json），不按分类分子目录。</summary>
     private static readonly ResourceCategory[] _resourceCategories =
     {
         new("monster", "怪物", "monster", "name", "model"),
@@ -397,7 +399,13 @@ public class AnimExportService
     };
 
     public object GetResourceCategories()
-        => _resourceCategories.Select(c => new { id = c.Id, label = c.Label }).ToArray();
+        => _resourceCategories.Select(c => new
+        {
+            id = c.Id,
+            label = c.Label,
+            // 输出目录填完整落地全路径 ...\Mir2Res\assets\resource\model（镜像原版相对路径、去版本号）。
+            outDir = Mir2Config.LocalModelDir
+        }).ToArray();
 
     /// <summary>返回某分类下的条目（模型号 + 名字），可按关键字过滤。配置表未加载时自动尝试加载。</summary>
     public async Task<object> GetResourceEntriesAsync(string catId, string? q)
@@ -566,8 +574,10 @@ public class AnimExportService
     {
         try
         {
+            // outDir 是【完整落地全路径】，默认 D:\...\Mir2Res\assets\resource\model（镜像原版相对路径、去版本号）。
+            // 帧直接落在 {outDir}/{模型号}/{sourceId}.png，DownloadOne 不再重复拼 assets/resource/model 前缀。
             var baseDir = string.IsNullOrWhiteSpace(outDir)
-                ? Path.Combine(GameConfigService.OsDownloadDir(), "Mir2Anim")
+                ? Mir2Config.LocalModelDir
                 : outDir!;
             Directory.CreateDirectory(baseDir);
             // 帧资源基址：默认 CdnBase+"/assets/resource"（旧行为），但真实帧主机是游戏运行时注入的
@@ -610,14 +620,17 @@ public class AnimExportService
     {
         long srcId = 1000L * r + 10L * action + dir;
         var ext = json ? "json" : "png";
-        // 相对路径：version 为空（无版本段模型，如 14031）时走 assets/resource/model/{模型号}/...，
-        // 否则 {版本}/model/{模型号}/{sourceId}.{ext}；frameBase 已包含 /resource 或 /assets/resource 段
-        var relPath = string.IsNullOrEmpty(ver)
+        // 下载 URL 仍按 CDN 原样（带版本号段）；frameBase 已含 /resource 或 /assets/resource。
+        var urlRelPath = string.IsNullOrEmpty(ver)
             ? $"model/{r}/{srcId}.{ext}"
             : $"{ver}/model/{r}/{srcId}.{ext}";
-        var url = $"{frameBase}/{relPath}{verParam}";
-        var local = Path.Combine(baseDir, relPath.Replace('/', Path.DirectorySeparatorChar));
-        job.Current = relPath;
+        var url = $"{frameBase}/{urlRelPath}{verParam}";
+        // 本地落地：baseDir 已是完整落地全路径（...\Mir2Res\assets\resource\model），
+        // 帧直接落在 {baseDir}/{模型号}/{sourceId}.png。URL 仍按 CDN 带版本号段，两者解耦。
+        // 落地相对路径仍是 assets/resource/model/{模型号}/{sourceId}.png（去版本号），与客户端一致。
+        var localRelPath = $"{r}/{srcId}.{ext}";
+        var local = Path.Combine(baseDir, r.ToString(), srcId + "." + ext);
+        job.Current = localRelPath;
         if (File.Exists(local) && new FileInfo(local).Length > 0) { Interlocked.Increment(ref job.Skipped); return true; }
         byte[] bytes;
         try { bytes = await _http.GetByteArrayAsync(url); }
