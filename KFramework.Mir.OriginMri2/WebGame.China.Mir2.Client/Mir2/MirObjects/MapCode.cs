@@ -32,6 +32,17 @@ namespace Client.MirObjects
 
         public bool FishingCell;
 
+        /// <summary>
+        /// 原始传奇 map.dat 每格 4-bit 标志（见 Mir2MapDecoder.Decode）：
+        ///   bit3(0x08)=不可走(墙)、bit2(0x04)=遮挡(Cover)、bit1(0x02)=安全区、bit0(0x01)=保留。
+        /// 存原始字节，下面的属性按位判断，供阻挡、小地图安全区等共用。
+        /// </summary>
+        public byte Flags;
+
+        public bool IsSafe    => (Flags & 0x02) != 0;   // 安全区
+        public bool IsBlocked => (Flags & 0x08) != 0;   // 不可走(墙)
+        public bool IsCover   => (Flags & 0x04) != 0;   // 遮挡
+
         public void AddObject(MapObject ob)
         {
             if (CellObjects == null) CellObjects = new List<MapObject>();
@@ -186,9 +197,9 @@ namespace Client.MirObjects
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
                 {
-                    var c = new CellInfo();
-                    // 与服务端一致：bit3(0x08)=1 表示不可走(墙) → 标记 FrontImage 0x8000（客户端 EmptyCell 据此判阻挡）
-                    if ((data.CellFlags[idx++] & 8) != 0) c.FrontImage = 0x8000;
+                    var c = new CellInfo { Flags = data.CellFlags[idx++] };
+                    // 与服务端一致：不可走(墙) → 标记 FrontImage 0x8000（客户端 EmptyCell 据此判阻挡）
+                    if (c.IsBlocked) c.FrontImage = 0x8000;
                     MapCells[x, y] = c;
                 }
 

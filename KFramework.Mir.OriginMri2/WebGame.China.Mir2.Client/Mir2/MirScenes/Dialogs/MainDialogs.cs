@@ -1934,7 +1934,34 @@ namespace Client.MirScenes.Dialogs
             if (map == null) return;
 
             MapNameLabel.Text = map.Title;
-            LocationLabel.Text = $"{MapObject.User.CurrentLocation.X}, {MapObject.User.CurrentLocation.Y}";
+            LocationLabel.Text = $"{SafeStatus(map)}  {MapObject.User.CurrentLocation.X}, {MapObject.User.CurrentLocation.Y}";
+        }
+
+        /// <summary>
+        /// 原始传奇 HomeSmallMapCtrl.updateMyPosTxt 的判定：
+        ///   safe = (mapCfg.safe == 1) || map.isSafe(gridX, gridY)
+        /// 整图安全来自 0config.map.safe；逐格安全来自进图时 MapReader 已解码进 M2CellInfo 的 Flags bit1
+        /// （见 MapCode.cs CellInfo.IsSafe）——复用现成数据，零额外异步加载。
+        /// 显示 "安全区域"/"危险区域" 并配绿/红（对应原版 Logic.getCol(50)/(49)）。
+        /// </summary>
+        private string SafeStatus(MapControl map)
+        {
+            bool safe = false;
+
+            // 条件1：整图安全（0config.map.safe == 1）
+            if (ExcelTableMgr.Maps.TryGetValue(map.Index, out var cfg) && cfg.safe == 1)
+                safe = true;
+
+            // 条件2：当前格子安全（进图时已从 map.dat bit1 解码到 M2CellInfo[x,y].Safe）
+            if (!safe && map.M2CellInfo != null)
+            {
+                Point p = MapObject.User.CurrentLocation;
+                if (p.X >= 0 && p.Y >= 0 && p.X < map.Width && p.Y < map.Height)
+                    safe = map.M2CellInfo[p.X, p.Y].IsSafe;
+            }
+
+            LocationLabel.ForeColour = safe ? Color.FromArgb(255, 50, 220, 80) : Color.FromArgb(255, 240, 70, 70);
+            return safe ? "安全区域" : "危险区域";
         }
     }
 
