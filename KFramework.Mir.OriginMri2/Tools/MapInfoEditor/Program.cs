@@ -43,6 +43,28 @@ app.MapGet("/api/monsters", () =>
     return Results.Ok(new { monsters = list });
 });
 
+// ---------- 地图背景音乐（原始传奇 5config.soundnormal[type3]，供常规页 Music 下拉）----------
+app.MapGet("/api/bgms", () =>
+{
+    // 按 fileId 去重，每个音乐带上来源地图（取第一个）+ 该音乐适用的全部地图 id
+    var groups = store.MapBgm
+        .GroupBy(kv => kv.Value)
+        .OrderBy(g => g.Key)
+        .Select(g => new
+        {
+            file = g.Key,
+            mapIds = g.Select(x => x.Key).OrderBy(x => x).ToList(),
+            source = string.Join("、", g.Select(x => store.NameById.TryGetValue(x.Key, out var nm) && !string.IsNullOrEmpty(nm) ? nm : "地图" + x.Key).Distinct())
+        })
+        .ToList();
+    return Results.Ok(new
+    {
+        count = groups.Count,
+        bgms = groups,
+        mapBgm = store.MapBgm.OrderBy(k => k.Key).ToDictionary(k => k.Key, v => v.Value)
+    });
+});
+
 // ---------- 数据源路径（供前端展示“数据从哪来”） ----------
 app.MapGet("/api/info", () => Results.Ok(new
 {

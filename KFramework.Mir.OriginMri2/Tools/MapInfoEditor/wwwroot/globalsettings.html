@@ -41,9 +41,9 @@
   </div>
 
   <div class="panel">
-    <div class="gs-title">安全区修正</div>
-    <p class="gs-desc">从原始地图 .dat（权威源）重新生成全部地图的安全区：取每个格的“安全区”标记，聚成连通分量后求最小朝向矩形，覆盖写入 MapInfo_Fix 的 SafeZones（写前自动备份为 MapInfo_Fix.json.bak）。无法解码（无 .dat 块或无配置宽高）的地图保持原样。</p>
-    <button id="fixSafeBtn" class="action">🛡 修正所有地图安全区（从 .dat 重算）</button>
+    <div class="gs-title">地图 MapInfo 修正</div>
+    <p class="gs-desc">从原始地图 .dat（权威源）重新生成全部地图的安全区：取每个格的“安全区”标记，聚成连通分量后求最小朝向矩形，覆盖写入 MapInfo_Fix 的 SafeZones；同时按原始传奇 5config.soundnormal[type3] 填充每张地图的 Music 背景音乐字段（数值不变的部分仍是安全区重算）。写前自动备份为 MapInfo_Fix.json.bak。无法解码（无 .dat 块或无配置宽高）的地图安全区保持原样，但 Music 仍按配置填充。</p>
+    <button id="fixSafeBtn" class="action">🛡 修正所有地图 MapInfo（安全区 + 背景音乐）</button>
     <div id="safeResult" class="gs-result"></div>
   </div>
 </div>
@@ -82,6 +82,7 @@ $('fixSafeBtn').onclick = async () => {
     if (!res.ok) { $('safeResult').textContent = '失败: ' + (j.error || res.status); }
     else {
       let html = `处理 ${j.mapsProcessed} 张地图（跳过 ${j.skippedNoData} 张无数据），改写 ${j.mapsChanged} 张，生成 ${j.zonesCreated} 个安全区矩形。`;
+      if (j.musicFilled !== undefined) html += `<br/>按原始传奇配置填充 Music 背景音乐：${j.musicFilled} 张地图。`;
       if (j.backup) html += `<br/>原文件已备份：${esc(j.backup)}`;
       $('safeResult').innerHTML = html;
     }

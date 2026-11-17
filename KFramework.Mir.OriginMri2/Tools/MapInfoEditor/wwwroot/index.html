@@ -116,7 +116,7 @@
       <div class="gfield"><label>FileName</label><input type="text" id="g_fileName" /></div>
       <div class="gfield"><label>MiniMap</label><input type="number" id="g_miniMap" /></div>
       <div class="gfield"><label>BigMap</label><input type="number" id="g_bigMap" /></div>
-      <div class="gfield"><label>Music</label><input type="number" id="g_music" /></div>
+      <div class="gfield"><label>Music</label><select id="g_music"></select><span class="hint">原始传奇配置表 soundnormal 中的地图背景音乐</span></div>
       <div class="gfield"><label>Light</label><input type="number" id="g_light" /></div>
       <div class="gfield"><label>NoReconnectMap</label><input type="text" id="g_noReconnectMap" /></div>
       <div id="g_bools" style="margin-top:10px"></div>
@@ -235,10 +235,32 @@ async function init() {
   $('srcBtn').onclick = () => window.open('/sources.html', '_blank');
 
   buildBoolFields();
+  await loadBgmOptions();
   renderList('');
   wireTabs();
   wireTables();
-  setTb(`已加载 ${maps.length} 张地图 / ${monsters.length} 个怪物`);
+  setTb(`已加载 ${maps.length} 张地图 / ${monsters.length} 个怪物 / ${bgmOptions.length} 首地图音乐`);
+}
+
+// 原始传奇 5config.soundnormal[type3] 的地图背景音乐，填到常规页 Music 下拉
+let bgmOptions = []; // [{ file, source, mapIds }]
+async function loadBgmOptions() {
+  const sel = $('g_music');
+  try {
+    const res = await fetch('/api/bgms');
+    const j = await res.json();
+    bgmOptions = j.bgms || [];
+  } catch (e) { bgmOptions = []; }
+  sel.innerHTML = '';
+  const none = document.createElement('option');
+  none.value = '0'; none.textContent = '0 - 无背景音乐';
+  sel.appendChild(none);
+  for (const b of bgmOptions) {
+    const o = document.createElement('option');
+    o.value = String(b.file);
+    o.textContent = `${b.file} - ${b.source}`;
+    sel.appendChild(o);
+  }
 }
 
 function buildBoolFields() {
@@ -299,7 +321,17 @@ function renderGeneral() {
   $('g_fileName').value = g.fileName || '';
   $('g_miniMap').value = g.miniMap || 0;
   $('g_bigMap').value = g.bigMap || 0;
-  $('g_music').value = g.music || 0;
+  // Music 下拉：若当前值不在原始 BGM 列表里（历史/自定义值），临时加一个选项以保留原值
+  {
+    const sel = $('g_music');
+    const val = String(g.music || 0);
+    if (![...sel.options].some(o => o.value === val)) {
+      const o = document.createElement('option');
+      o.value = val; o.textContent = `${val} - 自定义（非原始传奇 BGM）`;
+      sel.appendChild(o);
+    }
+    sel.value = val;
+  }
   $('g_light').value = g.light || 0;
   $('g_noReconnectMap').value = g.noReconnectMap || '';
   BOOL_FIELDS.forEach(([k]) => { $('g_' + k).checked = !!g[k]; });

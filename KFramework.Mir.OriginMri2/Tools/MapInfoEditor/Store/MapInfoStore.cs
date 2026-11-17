@@ -56,6 +56,12 @@ namespace MapInfoEditor
         public const string VersionRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version";
         public string MapInfoPath = Path.Combine(VersionRoot, "Maps", "MapInfo_Fix.json");
         public Dictionary<int, string> NameById = new();
+
+        /// <summary>
+        /// 原始传奇地图背景音乐表：mapId → audio fileId，来自 5config.soundnormal["3"][mapId].file。
+        /// 供 MapInfoEditor 常规页 Music 下拉，以及"地图 MapInfo 修正"批量填充 Music 字段。
+        /// </summary>
+        public Dictionary<int, int> MapBgm = new();
         // dat 与 MapInfo_Fix 同目录（Maps/），编辑器按 id 解码网格。切勿指向 ExcelConfig（那里没有 dat）。
         // 文件名带版本号（如 map10.25487.1.dat），会随资源更新漂移，故不再写死：在 Maps 目录动态找第一个 .dat，
         // 找不到再回退到历史默认名，避免“文件不存在 → _datBytes 为 null → 全部地图预览不显示”。
@@ -129,6 +135,16 @@ namespace MapInfoEditor
                                 string nm = vo["name"]?.GetValue<string>() ?? "";
                                 if (w > 0 && h > 0 && !ConfigDims.ContainsKey(id)) ConfigDims[id] = (w, h);
                                 if (!string.IsNullOrEmpty(nm) && !NameById.ContainsKey(id)) NameById[id] = nm;
+                            }
+                        }
+                        // 地图背景音乐：5config.soundnormal["3"][mapId].file → mapId→fileId
+                        if (cj["soundnormal"]?["3"] is JsonObject bgmObj)
+                        {
+                            foreach (var kv in bgmObj)
+                            {
+                                if (!int.TryParse(kv.Key, out int mapId)) continue;
+                                int file = kv.Value?["file"]?.GetValue<int>() ?? 0;
+                                if (file > 0 && !MapBgm.ContainsKey(mapId)) MapBgm[mapId] = file;
                             }
                         }
                     }
@@ -543,11 +559,23 @@ namespace MapInfoEditor
             try { if (File.Exists(MapInfoPath)) File.Copy(MapInfoPath, backup, true); }
             catch { backup = ""; }
 
-            int mapsProcessed = 0, skippedNoData = 0, mapsChanged = 0, zonesCreated = 0;
+            int mapsProcessed = 0, skippedNoData = 0, mapsChanged = 0, zonesCreated = 0, musicFilled = 0;
             var details = new List<object>();
 
             foreach (var e in Maps)
             {
+                // 地图 MapInfo 修正：按原始传奇 5config.soundnormal[type3] 同步填充 Music 字段。
+                // 有 BGM 配置的地图写入对应 audio fileId；无配置的保持原值（原始传奇本就无 BGM）。
+                if (MapBgm.TryGetValue(e.Index, out int bgmFile) && bgmFile > 0)
+                {
+                    int oldMusic = e.Node["Music"]?.GetValue<int>() ?? 0;
+                    if (oldMusic != bgmFile)
+                    {
+                        e.Node["Music"] = JsonValue.Create(bgmFile);
+                        musicFilled++;
+                    }
+                }
+
                 var data = DecodeMap(e.Index);
                 if (data == null) { skippedNoData++; continue; }
                 // 仅在能用配置宽高精确解码时才重算（否则网格为估算，坐标不可信，保持原 SafeZones 不动）
@@ -623,7 +651,7 @@ namespace MapInfoEditor
             }
 
             Save();
-            return new { ok = true, mapsProcessed, skippedNoData, mapsChanged, zonesCreated, backup, details };
+            return new { ok = true, mapsProcessed, skippedNoData, mapsChanged, zonesCreated, musicFilled, backup, details };
         }
 
         // 8 邻接连通分量聚类
