@@ -352,7 +352,7 @@ function wireTables() {
   // 安全区
   $('addSZ').onclick = () => { current.safeZones.push({ x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), size: 10, sizeY: 10, rotation: 0, start: false }); renderSZ(); drawMap(); };
   // 怪物
-  $('addMon').onclick = () => { const mi = monsters.length ? monsters[0].index : 0; current.respawns.push({ monsterIndex: mi, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0 }); renderMon(); drawMap(); };
+  $('addMon').onclick = () => { const mi = monsters.length ? monsters[0].index : 0; current.respawns.push({ monsterIndex: mi, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0, respawnIndex: 0, saveRespawnTime: false, respawnTicks: 0 }); renderMon(); drawMap(); };
   // 传送点
   $('addMv').onclick = () => { current.movements.push({ destMapIndex: current.index, sourceX: Math.floor(current.map.cols/2), sourceY: Math.floor(current.map.rows/2), destX: 0, destY: 0, needHole: false, needMove: false }); renderMv(); drawMap(); };
   // 委托编辑（安全区/怪物/传送点：本地修改，保存时随地图一起写入 MapInfo_Fix）
@@ -698,7 +698,7 @@ async function save() {
   const payload = {
     general: g,
     safeZones: current.safeZones,
-    respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction })),
+    respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction, respawnIndex: r.respawnIndex || 0, saveRespawnTime: !!r.saveRespawnTime, respawnTicks: r.respawnTicks || 0 })),
     movements: current.movements.map(m => ({ destMapIndex: m.destMapIndex, sourceX: m.sourceX, sourceY: m.sourceY, destX: m.destX, destY: m.destY, needHole: m.needHole, needMove: m.needMove })),
     npcs: current.npcs.map(n => ({ index: n.index, fileName: n.fileName, name: n.name, nameUI: n.nameUI || '', x: n.x, y: n.y, rate: n.rate, image: n.image }))
   };

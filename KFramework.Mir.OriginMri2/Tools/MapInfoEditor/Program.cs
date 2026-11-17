@@ -130,6 +130,9 @@ app.MapGet("/api/maps/{id:int}", (int id) =>
         {
             monsterIndex = r.MonsterIndex,
             x = r.X, y = r.Y, count = r.Count, spread = r.Spread, delay = r.Delay, direction = r.Direction,
+            respawnIndex = r.RespawnIndex, // 带回给前端，保存时原样写回，避免重编破坏存档刷怪计时
+            saveRespawnTime = r.SaveRespawnTime,
+            respawnTicks = r.RespawnTicks,
             isBoss = store.IsBoss(r.MonsterIndex, mname)
         };
     }).ToList();
@@ -206,8 +209,13 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
     });
 
     // 怪物刷新
+    // RespawnIndex 是服务端关联刷怪计时的稳定 id：前端编辑时原样带回（respawnIndex>0）就沿用，
+    // 只有真正新增、尚无 id 的刷新点（<=0）才分配新值。禁止无条件 NextId() 重编整组。
     ReplaceArray(e, "Respawns", body.GetProperty("respawns"), (arr, it) =>
     {
+        int keptId = it.TryGetProperty("respawnIndex", out var idEl) ? idEl.GetInt32() : 0;
+        bool keptSaveTime = it.TryGetProperty("saveRespawnTime", out var stEl) && stEl.GetBoolean();
+        int keptTicks = it.TryGetProperty("respawnTicks", out var tkEl) ? tkEl.GetInt32() : 0;
         arr.Add(new JsonObject
         {
             ["MonsterIndex"] = JsonValue.Create(it.GetProperty("monsterIndex").GetInt32()),
@@ -218,9 +226,9 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
             ["RandomDelay"] = JsonValue.Create(0),
             ["Direction"] = JsonValue.Create(it.GetProperty("direction").GetInt32()),
             ["RoutePath"] = JsonValue.Create(""),
-            ["RespawnIndex"] = JsonValue.Create(store.NextId()),
-            ["SaveRespawnTime"] = JsonValue.Create(false),
-            ["RespawnTicks"] = JsonValue.Create(0)
+            ["RespawnIndex"] = JsonValue.Create(keptId > 0 ? keptId : store.NextId()),
+            ["SaveRespawnTime"] = JsonValue.Create(keptSaveTime),
+            ["RespawnTicks"] = JsonValue.Create(keptTicks)
         });
     });
 

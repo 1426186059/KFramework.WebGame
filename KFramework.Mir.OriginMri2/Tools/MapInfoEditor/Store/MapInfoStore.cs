@@ -33,6 +33,9 @@ namespace MapInfoEditor
     {
         public JsonObject Node;
         public int MonsterIndex, X, Y, Count, Spread, Delay, Direction;
+        public int RespawnIndex; // 服务端用来关联刷怪计时的稳定 id，保存时必须原样保留，不可重编
+        public bool SaveRespawnTime;
+        public int RespawnTicks;
     }
 
     /// <summary>NPC 视图（来自全局 NPCInfo.json，按 MapIndex 关联）。</summary>
@@ -324,9 +327,22 @@ namespace MapInfoEditor
         }
 
         private int _maxIdCache = -1;
+        /// <summary>分配新的 RespawnIndex：扫描全表已有 RespawnIndex 取最大值 +1。
+        /// 原实现依赖 $id，但 Save 已用 NormalizeNode 剥掉 $id，导致每次重开编辑器都从 1 开始，
+        /// 保存地图时把旧刷新点的稳定 id 覆盖成 1,2,3...（破坏存档刷怪计时关联）。</summary>
         public int NextId()
         {
-            if (_maxIdCache < 0) _maxIdCache = Root != null ? MaxId(Root) : 0;
+            if (_maxIdCache < 0)
+            {
+                int max = 0;
+                foreach (var m in Maps)
+                    foreach (JsonObject r in GetValues(m, "Respawns"))
+                    {
+                        int v = r["RespawnIndex"]?.GetValue<int>() ?? 0;
+                        if (v > max) max = v;
+                    }
+                _maxIdCache = max;
+            }
             _maxIdCache++;
             return _maxIdCache;
         }
@@ -375,7 +391,10 @@ namespace MapInfoEditor
                     Count = r["Count"]?.GetValue<int>() ?? 0,
                     Spread = r["Spread"]?.GetValue<int>() ?? 0,
                     Delay = r["Delay"]?.GetValue<int>() ?? 0,
-                    Direction = r["Direction"]?.GetValue<int>() ?? 0
+                    Direction = r["Direction"]?.GetValue<int>() ?? 0,
+                    RespawnIndex = r["RespawnIndex"]?.GetValue<int>() ?? 0,
+                    SaveRespawnTime = r["SaveRespawnTime"]?.GetValue<bool>() ?? false,
+                    RespawnTicks = r["RespawnTicks"]?.GetValue<int>() ?? 0
                 });
             }
             return list;
@@ -589,9 +608,16 @@ namespace MapInfoEditor
 
                 mapsProcessed++;
 
+                // 出生点（StartPoint）是权威语义数据，绝不能被 .dat 重算改动，也不能重复生成：
+                // 重算前把所有 StartPoint=true 的安全区节点深拷贝（可能多个，如比奇省有 2 个）。
+                // 重算每个簇时：若该簇包含某个原始出生点坐标，则直接写回该原始出生点（保留其矩形与标记，
+                // 不额外生成重算矩形），这样总数不变、出生点原样；否则才写普通重算簇（StartPoint=false）。
+                // 只有未被任何簇包含的出生点，才在末尾兜底追加，避免丢失出生点。
                 var oldZones = GetSafeZones(e);
-                bool hadStart = oldZones.Any(z => z.Start);
-                var oldStartCenters = oldZones.Where(z => z.Start).Select(z => (z.X, z.Y)).ToList();
+                var keptStarts = oldZones.Where(z => z.Start)
+                                         .Select(z => new { Node = (JsonObject)z.Node.DeepClone(), z.X, z.Y })
+                                         .ToList();
+                var usedStarts = new bool[keptStarts.Count];
 
                 var arr = GetValues(e, "SafeZones");
                 bool hadZones = arr.Count > 0;
@@ -599,36 +625,19 @@ namespace MapInfoEditor
 
                 if (safe.Count == 0)
                 {
+                    foreach (var ks in keptStarts) arr.Add(ks.Node);
                     if (hadZones) mapsChanged++;
                     continue;
                 }
 
                 var clusters = ClusterSafeCells(safe);
 
-                // 若原图标记过 StartPoint，挑离旧 StartPoint 中心最近的簇继承该标记（保持“城镇/出生点”语义）
-                int startClusterIdx = -1;
-                if (hadStart && clusters.Count > 0)
+                foreach (var comp in clusters)
                 {
-                    double best = double.MaxValue;
-                    for (int ci = 0; ci < clusters.Count; ci++)
-                    {
-                        var rect = MinAreaRect(clusters[ci]);
-                        foreach (var sc in oldStartCenters)
-                        {
-                            double d = (rect.cx - sc.X) * (rect.cx - sc.X) + (rect.cy - sc.Y) * (rect.cy - sc.Y);
-                            if (d < best) { best = d; startClusterIdx = ci; }
-                        }
-                    }
-                }
-
-                for (int ci = 0; ci < clusters.Count; ci++)
-                {
-                    var comp = clusters[ci];
                     var rect = MinAreaRect(comp);
                     double rot = rect.rot;
                     int cx = (int)Math.Round(rect.cx);
                     int cy = (int)Math.Round(rect.cy);
-                    // 用整数中心重算半轴，确保整数坐标下仍完整包含该簇（ceil 防止边界差 0.5 漏格）
                     double ux = Math.Cos(rot * Math.PI / 180.0);
                     double uy = Math.Sin(rot * Math.PI / 180.0);
                     double vx = -uy, vy = ux;
@@ -642,10 +651,32 @@ namespace MapInfoEditor
                     }
                     int hx = (int)Math.Ceiling(maxU);
                     int hy = (int)Math.Ceiling(maxV);
-                    bool start = (ci == startClusterIdx);
-                    AddSafeZone(e, cx, cy, hx, start, hy, (float)rot);
+
+                    // 该簇是否命中某个尚未使用的原始出生点（出生点中心落在此矩形内）
+                    int hit = -1;
+                    for (int si = 0; si < keptStarts.Count; si++)
+                    {
+                        if (usedStarts[si]) continue;
+                        var ks = keptStarts[si];
+                        double dx = ks.X - cx, dy = ks.Y - cy;
+                        double u = dx * ux + dy * uy;
+                        double v = dx * vx + dy * vy;
+                        if (Math.Abs(u) <= hx + 1 && Math.Abs(v) <= hy + 1) { hit = si; break; }
+                    }
+                    if (hit >= 0)
+                    {
+                        // 用原始出生点替换该簇：矩形与 StartPoint 全部原样，不生成重算矩形
+                        arr.Add(keptStarts[hit].Node);
+                        usedStarts[hit] = true;
+                    }
+                    else
+                        AddSafeZone(e, cx, cy, hx, false, hy, (float)rot);
                     zonesCreated++;
                 }
+
+                // 未被任何 dat 簇覆盖的出生点兜底追加（正常情况不会有）
+                for (int si = 0; si < keptStarts.Count; si++)
+                    if (!usedStarts[si]) arr.Add(keptStarts[si].Node);
                 mapsChanged++;
                 details.Add(new { index = e.Index, title = e.Title, safeCells = safe.Count, clusters = clusters.Count });
             }
