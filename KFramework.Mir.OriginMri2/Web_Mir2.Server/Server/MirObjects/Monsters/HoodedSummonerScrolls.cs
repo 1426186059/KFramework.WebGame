@@ -14,6 +14,9 @@ namespace Server.MirObjects.Monsters
     /// 
     /// </summary>
 
+    /// <summary>
+    /// 兜帽召唤师之卷轴，AI=210（经典 Mir2 怪物类HoodedSummonerScrolls）
+    /// </summary>
     class HoodedSummonerScrolls : ZumaMonster
     {
         public long FearTime;

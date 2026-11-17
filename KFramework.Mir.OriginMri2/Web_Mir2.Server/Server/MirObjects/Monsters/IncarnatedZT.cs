@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 化身僵尸，AI=22（经典 Mir2 怪物类IncarnatedZT）
+    /// </summary>
     public class IncarnatedZT : ZumaMonster
     {
         protected internal IncarnatedZT(MonsterInfo info) : base(info)

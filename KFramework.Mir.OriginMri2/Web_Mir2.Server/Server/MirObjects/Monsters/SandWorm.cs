@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沙虫，AI=35（经典 Mir2 怪物类SandWorm）
+    /// </summary>
     public class SandWorm : SpittingSpider
     {
         protected internal SandWorm(MonsterInfo info)

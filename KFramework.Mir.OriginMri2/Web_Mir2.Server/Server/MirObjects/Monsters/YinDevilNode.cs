@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 阴魔节点，AI=41,42（经典 Mir2 怪物类YinDevilNode）
+    /// </summary>
     public class YinDevilNode : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

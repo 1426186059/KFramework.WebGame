@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 纳兹，AI=154（经典 Mir2 怪物类Nadz）：法师系 Boss
+    /// </summary>
     public class Nadz : MonsterObject
     {
         protected internal Nadz(MonsterInfo info)

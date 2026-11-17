@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 红月恶魔，AI=13（经典 Mir2 怪物类RedMoonEvil）
+    /// </summary>
     public class RedMoonEvil : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -6,6 +6,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 祖玛雕像，AI=15（经典 Mir2 怪物类ZumaMonster）
+    /// </summary>
     public class ZumaMonster : MonsterObject
     {
         public bool Stoned = true;

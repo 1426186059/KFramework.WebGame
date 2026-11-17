@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱领主，AI=98（经典 Mir2 怪物类HellLord）
+    /// </summary>
     public class HellLord : MonsterObject
     {   
         protected override bool CanMove { get { return false; } }

@@ -98,8 +98,8 @@ namespace Client.MirObjects
         private readonly int _intval;
         private readonly bool _addBlend;
         private readonly Point _source;
-        private readonly Point _destination;
         private int _totalFrames;
+        private long _readyAt;   // CDN 帧首次就绪时刻；飞行计时以它为准，避免资源异步加载期间就被判定飞完
 
         public MapObject Target;
         public Point Destination;
@@ -128,11 +128,24 @@ namespace Client.MirObjects
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
                                             Mir2OriginObjectLibrary.PriorityVisible);
+
+            // 基类把 NextFrame 初始化为 Start + Duration(默认500)，而飞行时长通常只有几十~几百毫秒，
+            // 导致第一次 Process 就被判定飞完并 Remove，飞行帧从未绘制。这里让它立刻进入推进。
+            NextFrame = Start;
         }
 
         public override void Process()
         {
             if (_model <= 0) { Remove(); return; }
+
+            // 资源异步加载：没帧时只延后重试，不推进也不移除，否则首帧资源未到就被销毁。
+            if (!Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _model, _action, _direction, out _totalFrames) || _totalFrames <= 0)
+            {
+                NextFrame = CMain.Time + 100;
+                return;
+            }
+            if (_readyAt == 0) _readyAt = CMain.Time;
+
             if (CMain.Time < NextFrame) return;
 
             if (Target != null) Destination = Target.CurrentLocation;
@@ -142,16 +155,16 @@ namespace Client.MirObjects
             GameScene.Scene.MapControl.TextureValid = false;
 
             int travel = Math.Max(1, Functions.MaxDistance(_source, Destination) * 50);
-            if (CMain.Time >= Start + travel)
+            if (CMain.Time >= _readyAt + travel)
                 Remove();
         }
 
         public override void Draw()
         {
-            if (_model <= 0 || CMain.Time < Start) return;
+            if (_model <= 0 || _readyAt == 0) return;
 
             int travel = Math.Max(1, Functions.MaxDistance(_source, Destination) * 50);
-            long elapsed = CMain.Time - Start;
+            long elapsed = CMain.Time - _readyAt;
             float t = Math.Min(1f, elapsed / (float)travel);
 
             int cellX = _source.X + (int)((Destination.X - _source.X) * t);

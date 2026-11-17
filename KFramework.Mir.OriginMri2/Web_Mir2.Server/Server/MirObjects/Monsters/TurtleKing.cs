@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 龟王，AI=73（经典 Mir2 怪物类TurtleKing）
+    /// </summary>
     public class TurtleKing : MonsterObject
     {
         public byte AttackRange = 7;

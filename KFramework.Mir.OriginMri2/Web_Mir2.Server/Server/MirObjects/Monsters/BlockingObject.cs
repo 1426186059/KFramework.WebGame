@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 阻挡物（经典 Mir2 怪物类BlockingObject）：特殊对象：碰撞代理，不可见不可攻击
+    /// </summary>
     public class BlockingObject : MonsterObject
     {
         public MonsterObject Parent;

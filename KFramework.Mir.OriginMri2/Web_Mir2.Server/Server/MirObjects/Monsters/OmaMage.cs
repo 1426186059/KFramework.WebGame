@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沃玛法师，AI=147（经典 Mir2 怪物类OmaMage）
+    /// </summary>
     public class OmaMage : MonsterObject
     {
         protected internal OmaMage(MonsterInfo info)

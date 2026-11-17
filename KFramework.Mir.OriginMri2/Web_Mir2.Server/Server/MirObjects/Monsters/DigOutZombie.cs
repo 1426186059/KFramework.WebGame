@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 掘地僵尸，AI=24（经典 Mir2 怪物类DigOutZombie）
+    /// </summary>
     public class DigOutZombie : MonsterObject
     {
         public bool Visible, DoneDigOut;

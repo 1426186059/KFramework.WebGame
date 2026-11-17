@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱看守，AI=79（经典 Mir2 怪物类HellKeeper）
+    /// </summary>
     class HellKeeper : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

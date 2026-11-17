@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 复仇之魂，AI=155（经典 Mir2 怪物类AvengingSpirit）
+    /// </summary>
     public class AvengingSpirit : AxeSkeleton
     {
         protected internal AvengingSpirit(MonsterInfo info)

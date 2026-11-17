@@ -5,6 +5,9 @@ using S = ServerPackets;
 namespace Server.MirObjects.Monsters
 {
     //TODO - Teleport
+    /// <summary>
+    /// 雪狼王，AI=180（经典 Mir2 怪物类SnowWolfKing）
+    /// </summary>
     public class SnowWolfKing : MonsterObject
     {
         private bool _SpawnedSlaves;

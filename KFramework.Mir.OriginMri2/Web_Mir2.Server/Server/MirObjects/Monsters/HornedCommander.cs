@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -17,6 +17,9 @@ namespace Server.MirObjects.Monsters
     /// Summons Rock Slaves
     /// </summary>
 
+    /// <summary>
+    /// 角魔统领，AI=171（经典 Mir2 怪物类HornedCommander）
+    /// </summary>
     public class HornedCommander : MonsterObject
     {
         private bool _StartAdvanced;

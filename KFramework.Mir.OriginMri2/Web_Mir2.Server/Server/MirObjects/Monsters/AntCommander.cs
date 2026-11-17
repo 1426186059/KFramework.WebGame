@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 蚂蚁统帅/蚁王，AI=196（经典 Mir2 怪物类AntCommander）
+    /// </summary>
     public class AntCommander : MonsterObject
     {
         protected internal AntCommander(MonsterInfo info)

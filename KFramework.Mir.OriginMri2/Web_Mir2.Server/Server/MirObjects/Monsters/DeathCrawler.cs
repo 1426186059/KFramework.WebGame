@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 死亡爬行者，AI=106（经典 Mir2 怪物类DeathCrawler）
+    /// </summary>
     public class DeathCrawler : MonsterObject
     {
         protected internal DeathCrawler(MonsterInfo info)

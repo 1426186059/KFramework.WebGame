@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 木箱，AI=158（经典 Mir2 怪物类WoodBox）：特殊对象：死亡掉物
+    /// </summary>
     public class WoodBox : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 蚁魔，AI=36（经典 Mir2 怪物类Yimoogi）
+    /// </summary>
     public class Yimoogi : MonsterObject
     {
         protected byte AttackRange = 7;

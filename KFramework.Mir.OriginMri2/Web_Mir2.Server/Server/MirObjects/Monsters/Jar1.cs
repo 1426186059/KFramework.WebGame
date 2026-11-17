@@ -3,6 +3,9 @@ using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 罐子怪 1，AI=119（经典 Mir2 怪物类Jar1）
+    /// </summary>
     public class Jar1 : MonsterObject
     {
         protected virtual byte AttackRange

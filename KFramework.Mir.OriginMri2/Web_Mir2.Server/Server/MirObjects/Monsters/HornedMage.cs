@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 角魔法师，AI=163（经典 Mir2 怪物类HornedMage）
+    /// </summary>
     public class HornedMage : AxeSkeleton
     {
         protected internal HornedMage(MonsterInfo info)

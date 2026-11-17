@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 城门，AI=81（经典 Mir2 怪物类Gate）：攻城建筑
+    /// </summary>
     public class Gate : CastleGate
     {
         protected internal Gate(MonsterInfo info) : base(info)

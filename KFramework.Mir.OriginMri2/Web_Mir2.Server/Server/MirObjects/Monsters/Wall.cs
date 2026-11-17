@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 城墙，AI=82（经典 Mir2 怪物类Wall）：攻城建筑
+    /// </summary>
     public class Wall : MonsterObject
     {
         public ConquestObject Conquest;

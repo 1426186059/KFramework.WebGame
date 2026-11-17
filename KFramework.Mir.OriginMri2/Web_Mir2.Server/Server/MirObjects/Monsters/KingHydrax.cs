@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 水怪王/海德拉王，AI=162（经典 Mir2 怪物类KingHydrax）
+    /// </summary>
     public class KingHydrax : MonsterObject
     {
         protected internal KingHydrax(MonsterInfo info)

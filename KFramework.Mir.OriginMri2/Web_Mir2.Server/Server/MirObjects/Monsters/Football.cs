@@ -1,8 +1,11 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 足球，AI=68（经典 Mir2 怪物类Football）：特殊对象：不可攻击/被攻击
+    /// </summary>
     public class Football : MonsterObject
     {
         protected override bool CanAttack { get { return false; }}

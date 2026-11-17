@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑暗队长，AI=159（经典 Mir2 怪物类DarkCaptain）
+    /// </summary>
     public class DarkCaptain : MonsterObject
     {
         protected long _ThunderTime;

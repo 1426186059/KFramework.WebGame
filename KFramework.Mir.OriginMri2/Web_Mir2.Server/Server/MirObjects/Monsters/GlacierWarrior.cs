@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰川战士，AI=203（经典 Mir2 怪物类GlacierWarrior）
+    /// </summary>
     public class GlacierWarrior : MonsterObject
     {
         public virtual byte TeleportEffect { get { return 4; } }

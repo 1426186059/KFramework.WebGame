@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// Furbolg 弓手，AI=199（经典 Mir2 怪物类FurbolgArcher）
+    /// </summary>
     public class FurbolgArcher : MonsterObject
     {
         public long FearTime;

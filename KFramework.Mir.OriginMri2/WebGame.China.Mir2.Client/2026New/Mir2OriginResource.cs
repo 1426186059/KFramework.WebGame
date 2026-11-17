@@ -83,14 +83,27 @@ public static class Mir2OriginResource
         string key = Norm(relativePath);
         var entry = _texCache.GetOrAdd(key, k => new TexEntry
         {
-            Task = _imageContent.LoadTexture2DAsync(k, Cache, priority, ct),
+            // 缓存的 Task 绝不能绑定某一次调用的 ct：技能栏多个 MirImageControl 共享同一 URL 的缓存项，
+            // 任一控件 RefreshUI / 换绑时 Cancel 自己的 _remoteCts，若 ct 传进这里，这个被取消的 Task
+            // 就被永久缓存在 _texCache，之后所有取该图标的地方 await 都抛 OperationCanceledException，
+            // 图标再也出不来（日志里 icon/skills/*.png 的 TaskCanceledException 正是此因）。
+            // 下载本身不被单个控件取消；ct 只用于“本次等待是否提前返回”，见下方 AwaitWithCancellation。
+            Task = _imageContent.LoadTexture2DAsync(k, Cache, priority),
             LastAccess = Environment.TickCount64,
             RefCount = 0,
         });
         Interlocked.Increment(ref entry.RefCount);
         entry.LastAccess = Environment.TickCount64;
         TrimTextureCache();
+
+        if (ct.CanBeCanceled)
+            return AwaitWithCancellation(entry.Task, ct);
         return entry.Task;
+    }
+
+    private static async Task<Texture2D> AwaitWithCancellation(Task<Texture2D> task, CancellationToken ct)
+    {
+        return await task.WaitAsync(ct).ConfigureAwait(false);
     }
     /// <summary>便捷重载：直接以 ct 作为第三参数（避免把 ct 误传给 priority）。</summary>
     public static Task<Texture2D> GetTextureAsync(string relativePath, CancellationToken ct)

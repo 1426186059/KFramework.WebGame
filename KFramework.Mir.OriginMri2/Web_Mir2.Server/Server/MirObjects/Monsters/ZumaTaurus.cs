@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 祖玛教主，AI=17（经典 Mir2 怪物类ZumaTaurus）：祖玛系 Boss
+    /// </summary>
     public class ZumaTaurus : ZumaMonster
     {
         private byte _stage = 7;

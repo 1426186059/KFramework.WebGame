@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 石化石像，AI=135（经典 Mir2 怪物类StoningStatue）：石像类特殊对象
+    /// </summary>
     public class StoningStatue : MonsterObject
     {
         private long _areaTime = long.MaxValue;

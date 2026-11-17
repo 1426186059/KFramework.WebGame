@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 左守卫，AI=32（经典 Mir2 怪物类LeftGuard）
+    /// </summary>
     public class LeftGuard : RightGuard
     {
         protected internal LeftGuard(MonsterInfo info)

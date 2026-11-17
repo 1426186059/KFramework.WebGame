@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰霜虎，AI=34（经典 Mir2 怪物类FrostTiger）
+    /// </summary>
     public class FrostTiger : MonsterObject
     {
         protected byte AttackRange = 6;

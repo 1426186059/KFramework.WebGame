@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 城堡大门（经典 Mir2 怪物类CastleGate）：攻城建筑（abstract），含城门索引与阻挡物
+    /// </summary>
     public abstract class CastleGate : MonsterObject
     {
         public ConquestObject Conquest;

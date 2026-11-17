@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱骑士，AI=97（经典 Mir2 怪物类HellKnight）
+    /// </summary>
     public class HellKnight : MonsterObject
     {
         public bool Summoned;

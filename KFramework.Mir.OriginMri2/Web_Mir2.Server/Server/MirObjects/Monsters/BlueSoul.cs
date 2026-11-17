@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 幽蓝之魂，AI=160（经典 Mir2 怪物类BlueSoul）
+    /// </summary>
     public class BlueSoul : AxeSkeleton
     {
         protected internal BlueSoul(MonsterInfo info)

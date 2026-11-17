@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 电魔王，AI=88（经典 Mir2 怪物类ManectricKing）
+    /// </summary>
     public class ManectricKing : MonsterObject
     {
         public long FearTime;

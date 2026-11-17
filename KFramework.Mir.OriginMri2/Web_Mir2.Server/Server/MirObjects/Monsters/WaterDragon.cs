@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 水龙，AI=181（经典 Mir2 怪物类WaterDragon）
+    /// </summary>
     public class WaterDragon : EvilCentipede
     {
         protected internal WaterDragon(MonsterInfo info)

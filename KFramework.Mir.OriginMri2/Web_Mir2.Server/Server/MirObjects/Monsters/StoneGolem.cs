@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 石头巨人，AI=139（经典 Mir2 怪物类StoneGolem）
+    /// </summary>
     public class StoneGolem : MonsterObject
     {
         protected virtual byte AttackRange

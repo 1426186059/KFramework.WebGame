@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 龙卷风，AI=83（经典 Mir2 怪物类Tornado）：特殊对象
+    /// </summary>
     public class Tornado : MonsterObject
     {
         private const byte AttackRange = 5;

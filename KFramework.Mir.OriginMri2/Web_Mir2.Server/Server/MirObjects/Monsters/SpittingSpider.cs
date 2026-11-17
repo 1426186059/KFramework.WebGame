@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 吐毒蜘蛛，AI=4（经典 Mir2 怪物类SpittingSpider）：直线毒攻
+    /// </summary>
     public class SpittingSpider : HarvestMonster
     {
         protected internal SpittingSpider(MonsterInfo info)

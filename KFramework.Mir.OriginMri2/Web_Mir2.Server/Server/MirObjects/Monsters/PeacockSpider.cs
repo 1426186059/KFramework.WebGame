@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 孔雀蜘蛛，AI=143（经典 Mir2 怪物类PeacockSpider）
+    /// </summary>
     public class PeacockSpider : MonsterObject
     {
         private long _PoisonTime;

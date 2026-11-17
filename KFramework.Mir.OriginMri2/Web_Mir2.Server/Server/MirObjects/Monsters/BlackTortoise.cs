@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑龟/玄龟，AI=182（经典 Mir2 怪物类BlackTortoise）
+    /// </summary>
     public class BlackTortoise : MonsterObject
     {
         protected virtual byte AttackRange

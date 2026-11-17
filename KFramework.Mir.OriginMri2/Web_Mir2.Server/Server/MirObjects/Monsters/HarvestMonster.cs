@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 收割怪，AI=9（经典 Mir2 怪物类HarvestMonster）：鹿/鸡/牛等产肉类怪的基类
+    /// </summary>
     public class HarvestMonster : MonsterObject
     {
         protected short Quality;

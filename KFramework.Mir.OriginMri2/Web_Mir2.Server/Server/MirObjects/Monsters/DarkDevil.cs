@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 暗黑恶魔，AI=20（经典 Mir2 怪物类DarkDevil）
+    /// </summary>
     public class DarkDevil : MonsterObject
     {
         private long _areaTime;

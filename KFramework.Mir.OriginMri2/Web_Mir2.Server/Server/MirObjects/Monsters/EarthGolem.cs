@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 岩石巨怪/土巨人，AI=140（经典 Mir2 怪物类EarthGolem）
+    /// </summary>
     public class EarthGolem : ZumaMonster
     {
         public long FearTime;

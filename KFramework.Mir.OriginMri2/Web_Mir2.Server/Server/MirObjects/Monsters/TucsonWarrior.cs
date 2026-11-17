@@ -5,6 +5,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 图腾战士，AI=127（经典 Mir2 怪物类TucsonWarrior）
+    /// </summary>
     public class TucsonWarrior : MonsterObject
     {
         protected internal TucsonWarrior(MonsterInfo info)

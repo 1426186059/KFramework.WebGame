@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰柱，AI=89（经典 Mir2 怪物类IcePillar）：特殊对象
+    /// </summary>
     public class IcePillar : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

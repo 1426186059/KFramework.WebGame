@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 白猛犸，AI=111（经典 Mir2 怪物类WhiteMammoth）
+    /// </summary>
     public class WhiteMammoth : MonsterObject
     {
         protected internal WhiteMammoth(MonsterInfo info)

@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 巨魔炸弹手，AI=90（经典 Mir2 怪物类TrollBomber）
+    /// </summary>
     public class TrollBomber : AxeSkeleton
     {
         protected internal TrollBomber(MonsterInfo info)

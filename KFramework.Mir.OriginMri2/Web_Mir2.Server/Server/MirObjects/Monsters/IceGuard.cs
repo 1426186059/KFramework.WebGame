@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 寒冰守卫，AI=102（经典 Mir2 怪物类IceGuard）
+    /// </summary>
     public class IceGuard : MonsterObject
     {
         protected virtual byte AttackRange

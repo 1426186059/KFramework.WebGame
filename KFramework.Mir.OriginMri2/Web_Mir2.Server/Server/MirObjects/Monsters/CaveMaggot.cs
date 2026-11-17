@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 洞穴蛆，AI=7（经典 Mir2 怪物类CaveMaggot）
+    /// </summary>
     public class CaveMaggot : HarvestMonster
     {
         protected internal CaveMaggot(MonsterInfo info)

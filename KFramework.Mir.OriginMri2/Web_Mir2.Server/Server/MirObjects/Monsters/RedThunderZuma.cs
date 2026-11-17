@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 红雷祖玛，AI=16（经典 Mir2 怪物类RedThunderZuma）
+    /// </summary>
     public class RedThunderZuma : ZumaMonster
     {
         private const byte AttackRange = 9;

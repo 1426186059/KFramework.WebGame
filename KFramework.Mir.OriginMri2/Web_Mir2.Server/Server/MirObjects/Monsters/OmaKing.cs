@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沃玛王，AI=43（经典 Mir2 怪物类OmaKing）
+    /// </summary>
     public class OmaKing : MonsterObject
     {
         public byte AttackRange = 7;

@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 疯狂人虫，AI=66（经典 Mir2 怪物类CrazyManworm）
+    /// </summary>
     public class CrazyManworm : MonsterObject
     {
         protected internal CrazyManworm(MonsterInfo info)

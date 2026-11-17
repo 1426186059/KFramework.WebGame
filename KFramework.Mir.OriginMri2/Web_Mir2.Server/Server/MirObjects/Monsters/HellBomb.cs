@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱炸弹，AI=99（经典 Mir2 怪物类HellBomb）
+    /// </summary>
     public class HellBomb : MonsterObject
     {
         public long ExplosionTime;

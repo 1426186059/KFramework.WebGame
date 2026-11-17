@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 躁动罐子怪，AI=122（经典 Mir2 怪物类RestlessJar）
+    /// </summary>
     public class RestlessJar : MonsterObject
     {
         protected virtual byte AttackRange

@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沃玛教主，AI=11（经典 Mir2 怪物类WoomaTaurus）：沃玛系 Boss
+    /// </summary>
     public class WoomaTaurus : FlamingWooma
     {
         private long _teleTime, _madTime;

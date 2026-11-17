@@ -1,9 +1,12 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 剧毒蜘蛛，AI=100（经典 Mir2 怪物类VenomSpider）：直线毒攻
+    /// </summary>
     public class VenomSpider : MonsterObject
     {
         protected internal VenomSpider(MonsterInfo info)

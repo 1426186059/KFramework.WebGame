@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 光壳龟，AI=74（经典 Mir2 怪物类LightTurtle）
+    /// </summary>
     public class LightTurtle : MonsterObject
     {
         protected internal LightTurtle(MonsterInfo info)

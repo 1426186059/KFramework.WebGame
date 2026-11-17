@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 硬皮犀牛，AI=109（经典 Mir2 怪物类HardenRhino）
+    /// </summary>
     public class HardenRhino : MonsterObject
     {
         protected internal HardenRhino(MonsterInfo info)

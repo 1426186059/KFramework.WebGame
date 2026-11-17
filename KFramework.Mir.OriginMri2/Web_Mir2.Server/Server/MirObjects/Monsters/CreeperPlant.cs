@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 蔓生植物，AI=153（经典 Mir2 怪物类CreeperPlant）
+    /// </summary>
     public class CreeperPlant : CannibalPlant
     {
         protected virtual byte AttackRange

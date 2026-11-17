@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 巨兽/比蒙，AI=71（经典 Mir2 怪物类Behemoth）
+    /// </summary>
     public class Behemoth : MonsterObject
     {
         public byte AttackRange = 10;

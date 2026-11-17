@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 图腾蛋，AI=128（经典 Mir2 怪物类TucsonEgg）
+    /// </summary>
     public class TucsonEgg : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 邪恶幻影之躯，AI=53（经典 Mir2 怪物类EvilMirBody）
+    /// </summary>
     public class EvilMirBody : MonsterObject
     {
         private bool _dragonlink;

@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 攻城器械/攻城车，AI=213（经典 Mir2 怪物类Siege）：特殊对象
+    /// </summary>
     public class Siege : MonsterObject
     {
         public long FearTime;

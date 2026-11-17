@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 年长犰狳，AI=125（经典 Mir2 怪物类ArmadilloElder）
+    /// </summary>
     public class ArmadilloElder : Armadillo
     {
         protected internal ArmadilloElder(MonsterInfo info)

@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 剧毒抱尸虫，AI=69（经典 Mir2 怪物类PoisonHugger）
+    /// </summary>
     public class PoisonHugger : MonsterObject
     {
         public byte AttackRange = 5;

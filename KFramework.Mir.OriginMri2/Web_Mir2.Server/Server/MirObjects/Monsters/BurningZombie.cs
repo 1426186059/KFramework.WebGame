@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 燃烧僵尸，AI=107（经典 Mir2 怪物类BurningZombie）
+    /// </summary>
     public class BurningZombie : MonsterObject
     {
         protected internal BurningZombie(MonsterInfo info)

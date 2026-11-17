@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// Furbolg 守卫，AI=201（经典 Mir2 怪物类FurbolgGuard）
+    /// </summary>
     public class FurbolgGuard : MonsterObject
     {
         protected virtual byte AttackRange

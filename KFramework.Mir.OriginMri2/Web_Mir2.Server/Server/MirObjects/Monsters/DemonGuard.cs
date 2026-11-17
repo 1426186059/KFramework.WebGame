@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 恶魔守卫，AI=104（经典 Mir2 怪物类DemonGuard）
+    /// </summary>
     public class DemonGuard : ZumaMonster
     {
         public uint RevivalCount;

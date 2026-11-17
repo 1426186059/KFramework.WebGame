@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 翼虎领主，AI=84（经典 Mir2 怪物类WingedTigerLord）
+    /// </summary>
     public class WingedTigerLord : MonsterObject
     {
         enum AttackType

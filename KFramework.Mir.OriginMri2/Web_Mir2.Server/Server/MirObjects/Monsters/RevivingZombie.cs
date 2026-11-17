@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 复活僵尸，AI=25（经典 Mir2 怪物类RevivingZombie）
+    /// </summary>
     public class RevivingZombie : MonsterObject
     {
         public byte RevivalCount;

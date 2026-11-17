@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 树妖/人形树，AI=174（经典 Mir2 怪物类ManTree）
+    /// </summary>
     public class ManTree : ZumaMonster
     {
         protected internal ManTree(MonsterInfo info)

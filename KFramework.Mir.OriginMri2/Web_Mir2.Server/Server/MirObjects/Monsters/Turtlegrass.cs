@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 龟背草，AI=173（经典 Mir2 怪物类TurtleGrass）
+    /// </summary>
     public class TurtleGrass : ZumaMonster
     {
         protected internal TurtleGrass(MonsterInfo info)

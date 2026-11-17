@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -11,6 +11,9 @@ namespace Server.MirObjects.Monsters
     /// AttackRange2 - Blizzard (big range)
     /// </summary>
 
+    /// <summary>
+    /// 飞行石像，AI=136（经典 Mir2 怪物类FlyingStatue）：石像类特殊对象
+    /// </summary>
     public class FlyingStatue : MonsterObject
     {
         public long _BlizzardCooldown;

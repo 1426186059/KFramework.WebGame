@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 洞穴石像，AI=151（经典 Mir2 怪物类CaveStatue）：石像类特殊对象
+    /// </summary>
     public class CaveStatue : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑暗沃玛王，AI=150（经典 Mir2 怪物类DarkOmaKing）
+    /// </summary>
     public class DarkOmaKing : MonsterObject
     {
         private long _OrbTime;

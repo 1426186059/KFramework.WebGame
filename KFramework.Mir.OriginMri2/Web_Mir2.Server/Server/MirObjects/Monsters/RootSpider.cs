@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 根须蜘蛛，AI=39（经典 Mir2 怪物类RootSpider）
+    /// </summary>
     public class RootSpider : BugBagMaggot
     {
         protected internal RootSpider(MonsterInfo info) 

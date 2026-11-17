@@ -1,9 +1,12 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱砍刀手，AI=76（经典 Mir2 怪物类HellSlasher）
+    /// </summary>
     public class HellSlasher : MonsterObject
     {
         protected internal HellSlasher(MonsterInfo info)

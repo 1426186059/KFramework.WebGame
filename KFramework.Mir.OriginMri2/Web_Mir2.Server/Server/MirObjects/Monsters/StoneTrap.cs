@@ -9,6 +9,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 石陷阱，AI=255（经典 Mir2 怪物类StoneTrap）：技能生成物
+    /// </summary>
     public class StoneTrap : MonsterObject
     {
         public bool Summoned;
@@ -132,7 +135,7 @@ namespace Server.MirObjects.Monsters
         public override Packet GetInfo()
         {
             var packet = (S.ObjectMonster)base.GetInfo();
-            packet.Image = Monster.StoningSpider;
+            // 用正式表的 CDN model 号，不用经典 Mir2 枚举号（base.GetInfo 已填 Info.Image）。
             packet.Extra = Summoned;
             return packet;
         }

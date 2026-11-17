@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 角魔战士，AI=165（经典 Mir2 怪物类HornedWarrior）
+    /// </summary>
     public class HornedWarrior : MonsterObject
     {
         private long _ShieldTime;

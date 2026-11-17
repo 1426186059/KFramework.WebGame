@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰冻斧手，AI=188（经典 Mir2 怪物类FrozenAxeman）
+    /// </summary>
     public class FrozenAxeman : MonsterObject
     {
         public long PullTime;

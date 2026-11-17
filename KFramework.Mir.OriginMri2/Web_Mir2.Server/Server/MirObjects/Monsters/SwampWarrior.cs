@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沼泽战士，AI=129（经典 Mir2 怪物类SwampWarrior）
+    /// </summary>
     public class SwampWarrior : MonsterObject
     {
         protected virtual byte AttackRange

@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑暗幽灵，AI=192（经典 Mir2 怪物类DarkWraith）
+    /// </summary>
     public class DarkWraith : MonsterObject
     {
         private const byte AttackRange = 4;

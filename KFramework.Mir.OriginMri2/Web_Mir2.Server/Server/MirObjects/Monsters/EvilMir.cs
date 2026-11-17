@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 邪恶幻影/赤月恶魔本体，AI=52（经典 Mir2 怪物类EvilMir）
+    /// </summary>
     public class EvilMir : MonsterObject
     {
         public bool Sleeping;

@@ -1,7 +1,10 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰川野兽，AI=202（经典 Mir2 怪物类GlacierBeast）
+    /// </summary>
     public class GlacierBeast : CrazyManworm
     {
         protected internal GlacierBeast(MonsterInfo info)

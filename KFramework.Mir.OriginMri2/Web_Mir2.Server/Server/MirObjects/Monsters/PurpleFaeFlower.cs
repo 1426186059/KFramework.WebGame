@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 紫妖花，AI=212（经典 Mir2 怪物类PurpleFaeFlower）
+    /// </summary>
     class PurpleFaeFlower : ZumaMonster
     {
         protected override bool CanMove { get { return false; } }

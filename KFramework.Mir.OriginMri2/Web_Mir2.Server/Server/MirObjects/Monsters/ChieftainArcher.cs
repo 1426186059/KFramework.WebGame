@@ -6,6 +6,9 @@ namespace Server.MirObjects.Monsters
 {
     //TODO - Has a retreat Animation, can't get motion accurate
 
+    /// <summary>
+    /// 首领弓箭手，AI=175（经典 Mir2 怪物类ChieftainArcher）
+    /// </summary>
     public class ChieftainArcher : MonsterObject
     {
         public long FearTime;

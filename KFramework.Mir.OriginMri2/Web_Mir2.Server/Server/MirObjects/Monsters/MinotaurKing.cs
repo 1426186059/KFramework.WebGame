@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 牛魔王/牛头王，AI=33（经典 Mir2 怪物类MinotaurKing）
+    /// </summary>
     public class MinotaurKing : RightGuard
     {
         protected override byte AttackRange

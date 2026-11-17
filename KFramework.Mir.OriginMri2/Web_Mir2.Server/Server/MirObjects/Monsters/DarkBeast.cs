@@ -1,10 +1,13 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
     //Use Effect 1 if bleeding on secondary attack
+    /// <summary>
+    /// 暗黑野兽，AI=112（经典 Mir2 怪物类DarkBeast）
+    /// </summary>
     public class DarkBeast : MonsterObject
     {
         protected internal DarkBeast(MonsterInfo info)

@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 兜帽召唤师，AI=211（经典 Mir2 怪物类HoodedSummoner）
+    /// </summary>
     public class HoodedSummoner : MonsterObject
     {
         public long SlaveSpawnTime;

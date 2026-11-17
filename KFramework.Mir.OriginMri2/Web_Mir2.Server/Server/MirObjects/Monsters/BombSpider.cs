@@ -3,6 +3,9 @@ using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 爆裂蜘蛛，AI=40（经典 Mir2 怪物类BombSpider）
+    /// </summary>
     public class BombSpider : MonsterObject
     {
         public long ExplosionTime;

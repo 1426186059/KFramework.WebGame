@@ -5,6 +5,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 三剑系·战士，AI=214（经典 Mir2 怪物类SepWarrior）
+    /// </summary>
     public class SepWarrior : MonsterObject
     {
         public long FearTime, DecreaseMPTime;

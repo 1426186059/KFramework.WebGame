@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 变异人虫，AI=65（经典 Mir2 怪物类MutatedManworm）
+    /// </summary>
     public class MutatedManworm : CrazyManworm
     {
         public virtual byte TeleportEffect { get { return 4; } }

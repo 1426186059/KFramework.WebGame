@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 大狐妖/狐仙，AI=50（经典 Mir2 怪物类GreatFoxSpirit）
+    /// </summary>
     public class GreatFoxSpirit : MonsterObject
     {
         private byte _stage;

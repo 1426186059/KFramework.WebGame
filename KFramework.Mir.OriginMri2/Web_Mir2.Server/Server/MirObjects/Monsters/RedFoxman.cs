@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 红狐妖，AI=45（经典 Mir2 怪物类RedFoxman）
+    /// </summary>
     public class RedFoxman : MonsterObject
     {
         public long FearTime, TeleportTime;

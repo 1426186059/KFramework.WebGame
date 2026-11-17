@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 电魔祝福者，AI=87（经典 Mir2 怪物类ManectricBlest）
+    /// </summary>
     public class ManectricBlest : MonsterObject
     {
         private int _attackCount = 0;

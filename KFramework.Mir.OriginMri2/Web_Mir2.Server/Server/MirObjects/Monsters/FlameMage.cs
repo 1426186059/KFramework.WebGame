@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 火焰法师，AI=93（经典 Mir2 怪物类FlameMage）
+    /// </summary>
     public class FlameMage : RightGuard
     {
         public long FearTime;

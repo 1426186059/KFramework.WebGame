@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 角魔弓手，AI=164（经典 Mir2 怪物类HornedArcher）
+    /// </summary>
     public class HornedArcher : AxeSkeleton
     {
         public long BuffTime;

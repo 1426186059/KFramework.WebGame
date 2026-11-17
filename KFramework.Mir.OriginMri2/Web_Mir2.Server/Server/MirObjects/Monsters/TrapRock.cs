@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 陷阱石，AI=47（经典 Mir2 怪物类TrapRock）
+    /// </summary>
     public class TrapRock : MonsterObject
     {
         public bool Visible, ChildRock, FirstAttack;

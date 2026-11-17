@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 吐毒蛤蟆，AI=61（经典 Mir2 怪物类SpittingToad）
+    /// </summary>
     public class SpittingToad : MonsterObject
     {
         public bool Summoned;
@@ -133,7 +136,7 @@ namespace Server.MirObjects.Monsters
         public override Packet GetInfo()
         {
             var packet = (S.ObjectMonster)base.GetInfo();
-            packet.Image = Monster.SpittingToad;
+            // 用正式表的 CDN model 号，不用经典 Mir2 枚举号（base.GetInfo 已填 Info.Image）。
             packet.Extra = Summoned;
             return packet;
         }

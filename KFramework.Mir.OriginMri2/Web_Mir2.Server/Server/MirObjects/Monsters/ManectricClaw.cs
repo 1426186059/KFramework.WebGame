@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 电魔利爪，AI=86（经典 Mir2 怪物类ManectricClaw）
+    /// </summary>
     public class ManectricClaw : MonsterObject
     {
         private const byte AttackRange = 3;

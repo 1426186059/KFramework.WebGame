@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 图腾法师，AI=126（经典 Mir2 怪物类TucsonMage）
+    /// </summary>
     public class TucsonMage : MonsterObject
     {
         protected internal TucsonMage(MonsterInfo info)

@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 犰狳/穿山甲，AI=124（经典 Mir2 怪物类Armadillo）
+    /// </summary>
     public class Armadillo : DigOutZombie
     {
         protected bool _runAway;

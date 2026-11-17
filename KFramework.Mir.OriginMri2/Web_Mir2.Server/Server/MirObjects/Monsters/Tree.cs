@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 树，AI=3（经典 Mir2 怪物类Tree）：特殊对象
+    /// </summary>
     public class Tree : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 罐子怪 2，AI=120（经典 Mir2 怪物类Jar2）
+    /// </summary>
     public class Jar2 : Jar1
     {
         protected override byte AttackRange

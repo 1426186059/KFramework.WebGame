@@ -4516,14 +4516,13 @@ namespace Server.MirObjects
 
             if (Pets.Count(x => x.Race == ObjectType.Monster) >= 2) return;
 
-            UserItem item = GetAmulet(1);
-            if (item == null) return;
-
+            // 原始传奇召唤技能（5config.skill handlerType=3）没有任何消耗品字段，本就不吃护身符；
+            // 换表后的 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
+            // （有施法动作但骷髅不出现）。因此去掉符的检查与消耗。
             MonsterInfo info = Envir.GetMonsterInfo(Settings.SkeletonName);
             if (info == null) return;
 
             LevelMagic(magic);
-            ConsumeItem(item, 1);
 
             monster = MonsterObject.GetMonster(info);
             monster.PetLevel = magic.Level;
@@ -4565,14 +4564,13 @@ namespace Server.MirObjects
 
             if (Pets.Count(x => x.Race == ObjectType.Monster) >= 2) return;
 
-            UserItem item = GetAmulet(5);
-            if (item == null) return;
-
+            // 原始传奇召唤技能（5config.skill handlerType=3）没有任何消耗品字段，本就不吃护身符；
+            // 换表后的 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
+            // （有施法动作但神兽不出现）。因此去掉符的检查与消耗。
             MonsterInfo info = Envir.GetMonsterInfo(Settings.ShinsuName);
             if (info == null) return;
 
             LevelMagic(magic);
-            ConsumeItem(item, 5);
 
             monster = MonsterObject.GetMonster(info);
             monster.PetLevel = magic.Level;

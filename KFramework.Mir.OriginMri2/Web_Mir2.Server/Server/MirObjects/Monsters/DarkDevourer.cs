@@ -1,8 +1,11 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑暗吞噬者，AI=67（经典 Mir2 怪物类DarkDevourer）
+    /// </summary>
     public class DarkDevourer : MonsterObject
     {
         protected internal DarkDevourer(MonsterInfo info)

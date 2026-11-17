@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沃玛巫医，AI=148（经典 Mir2 怪物类OmaWitchDoctor）
+    /// </summary>
     public class OmaWitchDoctor : MonsterObject
     {
         protected internal OmaWitchDoctor(MonsterInfo info)

@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 角魔巫师，AI=169（经典 Mir2 怪物类HornedSorceror）
+    /// </summary>
     public class HornedSorceror : MonsterObject
     {
         private long _TornadoTime;

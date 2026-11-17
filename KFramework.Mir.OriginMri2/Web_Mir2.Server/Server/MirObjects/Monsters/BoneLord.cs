@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 骷髅领主，AI=30（经典 Mir2 怪物类BoneLord）
+    /// </summary>
     public class BoneLord : MonsterObject
     {
         public byte AttackRange = 7;

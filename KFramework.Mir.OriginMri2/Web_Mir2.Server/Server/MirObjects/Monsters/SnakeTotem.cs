@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 蛇图腾，AI=62（经典 Mir2 怪物类SnakeTotem）
+    /// </summary>
     public class SnakeTotem : MonsterObject
     {
         public bool Summoned;
@@ -175,7 +178,7 @@ namespace Server.MirObjects.Monsters
         public override Packet GetInfo()
         {
             var packet = (S.ObjectMonster)base.GetInfo();
-            packet.Image = Monster.SnakeTotem;
+            // 用正式表的 CDN model 号，不用经典 Mir2 枚举号（base.GetInfo 已填 Info.Image）。
             packet.Extra = Summoned;
             return packet;
         }

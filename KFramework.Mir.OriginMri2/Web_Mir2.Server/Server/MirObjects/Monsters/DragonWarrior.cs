@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 龙战士，AI=184（经典 Mir2 怪物类DragonWarrior）：源码标 TODO
+    /// </summary>
     public class DragonWarrior : MonsterObject
     {
         protected internal DragonWarrior(MonsterInfo info)

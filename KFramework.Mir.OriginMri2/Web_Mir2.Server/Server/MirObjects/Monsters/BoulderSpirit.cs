@@ -3,6 +3,9 @@ using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 巨石精灵，AI=170（经典 Mir2 怪物类BoulderSpirit）
+    /// </summary>
     public class BoulderSpirit : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

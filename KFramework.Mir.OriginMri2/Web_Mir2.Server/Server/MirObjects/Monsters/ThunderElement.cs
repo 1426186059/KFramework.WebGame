@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 雷电元素，AI=49（经典 Mir2 怪物类ThunderElement）
+    /// </summary>
     public class ThunderElement : MonsterObject
     {
         protected internal ThunderElement(MonsterInfo info)

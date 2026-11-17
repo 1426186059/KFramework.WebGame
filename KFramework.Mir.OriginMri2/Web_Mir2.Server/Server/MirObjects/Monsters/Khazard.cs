@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 卡哈德，AI=27（经典 Mir2 怪物类Khazard）：牛魔系 Boss
+    /// </summary>
     public class Khazard : MonsterObject
     {
         public long PullTime;

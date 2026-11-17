@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰霜法师，AI=189（经典 Mir2 怪物类FrozenMagician）
+    /// </summary>
     public class FrozenMagician : MonsterObject
     {
         private const byte AttackRange = 9;

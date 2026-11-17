@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 食人花，AI=5（经典 Mir2 怪物类CannibalPlant）
+    /// </summary>
     public class CannibalPlant : HarvestMonster
     {
         public bool Visible;

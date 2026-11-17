@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 骷髅/骨之使魔，AI=23（经典 Mir2 怪物类BoneFamiliar）：召唤兽
+    /// </summary>
     public class BoneFamiliar : MonsterObject
     {
         public bool Summoned;

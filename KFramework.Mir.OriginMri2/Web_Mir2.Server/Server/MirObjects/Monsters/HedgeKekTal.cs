@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 刺猬 KekTal，AI=51（经典 Mir2 怪物类HedgeKekTal）
+    /// </summary>
     public class HedgeKekTal : RightGuard
     {
         protected internal HedgeKekTal(MonsterInfo info)

@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 雪野人，AI=190（经典 Mir2 怪物类SnowYeti）
+    /// </summary>
     public class SnowYeti : MonsterObject
     {
         private const byte AttackRange = 9;

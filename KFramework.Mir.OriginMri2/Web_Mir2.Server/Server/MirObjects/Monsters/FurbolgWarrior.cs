@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -6,6 +6,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// Furbolg 战士，AI=198（经典 Mir2 怪物类FurbolgWarrior）
+    /// </summary>
     public class FurbolgWarrior : MonsterObject
     {
 

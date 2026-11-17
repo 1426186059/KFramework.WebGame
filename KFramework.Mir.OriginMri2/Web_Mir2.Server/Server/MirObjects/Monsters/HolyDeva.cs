@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 神圣天使/神使，AI=38（经典 Mir2 怪物类HolyDeva）：召唤兽
+    /// </summary>
     public class HolyDeva : MonsterObject
     {
         public long FearTime;
@@ -106,7 +109,7 @@ namespace Server.MirObjects.Monsters
         public override Packet GetInfo()
         {
             var packet = (S.ObjectMonster)base.GetInfo();
-            packet.Image = Monster.HolyDeva;
+            // 用正式表的 CDN model 号，不用经典 Mir2 枚举号（base.GetInfo 已填 Info.Image）。
             packet.Extra = Summoned;
             return packet;
         }

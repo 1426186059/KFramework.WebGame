@@ -1,9 +1,12 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 黑锤猫，AI=116（经典 Mir2 怪物类BlackHammerCat）
+    /// </summary>
     public class BlackHammerCat : MonsterObject
     {
         protected internal BlackHammerCat(MonsterInfo info)

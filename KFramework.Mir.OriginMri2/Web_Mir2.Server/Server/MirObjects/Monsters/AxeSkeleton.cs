@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {    
+    /// <summary>
+    /// 掷斧骷髅，AI=8（经典 Mir2 怪物类AxeSkeleton）：远程毒攻/恐惧攻击
+    /// </summary>
     public class AxeSkeleton : MonsterObject
     {
         public long FearTime;

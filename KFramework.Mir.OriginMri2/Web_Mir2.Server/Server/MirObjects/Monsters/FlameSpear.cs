@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 火焰长枪，AI=92（经典 Mir2 怪物类FlameSpear）
+    /// </summary>
     public class FlameSpear : MonsterObject
     {
         public long FearTime;

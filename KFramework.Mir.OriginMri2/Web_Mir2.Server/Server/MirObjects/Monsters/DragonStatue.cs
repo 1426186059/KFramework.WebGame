@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 龙雕像，AI=54（经典 Mir2 怪物类DragonStatue）：石像类特殊对象
+    /// </summary>
     public class DragonStatue : MonsterObject
     {
         private bool Sleeping;

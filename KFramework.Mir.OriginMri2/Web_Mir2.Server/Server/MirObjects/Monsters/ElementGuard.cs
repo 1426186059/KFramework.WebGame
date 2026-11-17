@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 元素守卫，AI=103（经典 Mir2 怪物类ElementGuard）
+    /// </summary>
     public class ElementGuard : MonsterObject
     {
         protected internal ElementGuard(MonsterInfo info)

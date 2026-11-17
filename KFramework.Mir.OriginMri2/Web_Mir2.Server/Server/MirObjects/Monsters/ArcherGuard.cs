@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 弓箭守卫，AI=113（经典 Mir2 怪物类ArcherGuard）
+    /// </summary>
     public class ArcherGuard : Guard
     {
         protected internal ArcherGuard(MonsterInfo info)

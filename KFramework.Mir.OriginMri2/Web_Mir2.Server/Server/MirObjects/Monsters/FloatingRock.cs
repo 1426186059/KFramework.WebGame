@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -6,6 +6,9 @@ using Shared.Extensions;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 浮石，AI=166（经典 Mir2 怪物类FloatingRock）
+    /// </summary>
     public class FloatingRock : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

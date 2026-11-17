@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// Furbolg 统领，AI=200（经典 Mir2 怪物类FurbolgCommander）
+    /// </summary>
     public class FurbolgCommander : MonsterObject
     {
         protected virtual byte AttackRange

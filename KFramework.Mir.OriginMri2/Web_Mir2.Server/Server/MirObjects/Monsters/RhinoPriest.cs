@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 犀牛祭司，AI=137（经典 Mir2 怪物类RhinoPriest）
+    /// </summary>
     public class RhinoPriest : AxeSkeleton
     {
         protected internal RhinoPriest(MonsterInfo info)

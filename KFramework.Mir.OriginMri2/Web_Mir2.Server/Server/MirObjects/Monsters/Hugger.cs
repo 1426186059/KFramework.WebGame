@@ -3,6 +3,9 @@ using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 抱尸虫，AI=70（经典 Mir2 怪物类Hugger）
+    /// </summary>
     public class Hugger : MonsterObject
     {
         public long ExplosionTime;

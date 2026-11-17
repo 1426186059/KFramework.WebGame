@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 山魈，AI=114（经典 Mir2 怪物类Mandrill）
+    /// </summary>
     public class Mandrill : MutatedManworm
     {
         public override byte TeleportEffect { get { return 7; } }

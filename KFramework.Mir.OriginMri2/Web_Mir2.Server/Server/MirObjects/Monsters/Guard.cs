@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 守卫/弓卫，AI=6,58（经典 Mir2 怪物类Guard）
+    /// </summary>
     public class Guard : MonsterObject
     {
         public override bool Blocking

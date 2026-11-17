@@ -1,9 +1,12 @@
-using Server.MirDatabase;
+﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 地狱食人者，AI=78（经典 Mir2 怪物类HellCannibal）
+    /// </summary>
     public class HellCannibal : MonsterObject
     {
         protected internal HellCannibal(MonsterInfo info)

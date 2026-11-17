@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 火焰刺客，AI=95（经典 Mir2 怪物类FlameAssassin）
+    /// </summary>
     public class FlameAssassin : RightGuard
     {
         public long FearTime;

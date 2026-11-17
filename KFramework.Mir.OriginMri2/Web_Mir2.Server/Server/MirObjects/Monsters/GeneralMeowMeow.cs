@@ -13,6 +13,9 @@ namespace Server.MirObjects.Monsters
     /// Summons Slaves periodically
     /// </summary>
 
+    /// <summary>
+    /// 喵喵将军，AI=123（经典 Mir2 怪物类GeneralMeowMeow）
+    /// </summary>
     public class GeneralMeowMeow : MonsterObject
     {
         public long SlaveSpawnTime;        

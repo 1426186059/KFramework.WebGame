@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 远古使者，AI=101（经典 Mir2 怪物类AncientBringer）：赤月系 Boss
+    /// </summary>
     public class AncientBringer : MonsterObject
     {
         protected virtual byte AttackRange

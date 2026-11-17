@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 鹿，AI=1,2（经典 Mir2 怪物类Deer）：可收割怪（掉鹿肉/皮）
+    /// </summary>
     public class Deer : HarvestMonster
     {
         private bool _runAway;

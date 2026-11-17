@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 食人触手，AI=130（经典 Mir2 怪物类CannibalTentacles）
+    /// </summary>
     public class CannibalTentacles : MonsterObject
     {
         protected internal CannibalTentacles(MonsterInfo info)

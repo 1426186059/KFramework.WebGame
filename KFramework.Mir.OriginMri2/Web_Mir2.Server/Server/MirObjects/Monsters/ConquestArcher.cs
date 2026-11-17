@@ -3,6 +3,9 @@ using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 攻城弓箭手，AI=80（经典 Mir2 怪物类ConquestArcher）
+    /// </summary>
     public class ConquestArcher : TownArcher
     {
         public ConquestObject Conquest;

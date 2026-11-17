@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 树守卫，AI=141（经典 Mir2 怪物类TreeGuardian）
+    /// </summary>
     public class TreeGuardian : MonsterObject
     {
         protected virtual int AttackRange

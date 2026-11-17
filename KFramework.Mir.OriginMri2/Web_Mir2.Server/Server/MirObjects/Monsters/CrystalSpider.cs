@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 水晶蜘蛛，AI=37（经典 Mir2 怪物类CrystalSpider）
+    /// </summary>
     public class CrystalSpider : MonsterObject
     {
         protected internal CrystalSpider(MonsterInfo info)

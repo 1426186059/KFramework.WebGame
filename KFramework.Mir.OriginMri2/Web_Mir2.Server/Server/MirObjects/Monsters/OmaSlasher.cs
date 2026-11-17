@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 沃玛刀斧手，AI=146（经典 Mir2 怪物类OmaSlasher）
+    /// </summary>
     public class OmaSlasher : MonsterObject
     {
         protected internal OmaSlasher(MonsterInfo info)

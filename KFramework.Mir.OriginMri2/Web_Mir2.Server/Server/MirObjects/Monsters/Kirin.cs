@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 麒麟，AI=186（经典 Mir2 怪物类Kirin）
+    /// </summary>
     class Kirin : MonsterObject
     {
 

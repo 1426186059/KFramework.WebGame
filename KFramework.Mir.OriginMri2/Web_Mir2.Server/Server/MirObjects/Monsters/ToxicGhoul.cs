@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 剧毒食尸鬼，AI=28（经典 Mir2 怪物类ToxicGhoul）
+    /// </summary>
     public class ToxicGhoul : HarvestMonster
     {
         protected internal ToxicGhoul(MonsterInfo info)

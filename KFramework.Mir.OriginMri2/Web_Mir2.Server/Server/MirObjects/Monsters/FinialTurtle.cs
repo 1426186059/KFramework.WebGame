@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 尖顶龟，AI=72（经典 Mir2 怪物类FinialTurtle）
+    /// </summary>
     public class FinialTurtle : MonsterObject
     {
         private const byte AttackRange = 6;

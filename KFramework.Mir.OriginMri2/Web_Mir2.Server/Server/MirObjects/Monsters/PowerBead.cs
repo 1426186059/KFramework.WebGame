@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 能量宝珠，AI=149（经典 Mir2 怪物类PowerBead）
+    /// </summary>
     public class PowerBead : MonsterObject
     {
         public bool Summoned;

@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 化身食尸鬼，AI=21（经典 Mir2 怪物类IncarnatedGhoul）
+    /// </summary>
     public class IncarnatedGhoul : MonsterObject
     {
         protected internal IncarnatedGhoul(MonsterInfo info) : base(info)

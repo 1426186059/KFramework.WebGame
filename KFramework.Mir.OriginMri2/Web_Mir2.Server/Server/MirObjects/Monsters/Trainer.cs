@@ -2,6 +2,9 @@
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 驯兽师，AI=56（经典 Mir2 怪物类Trainer）
+    /// </summary>
     public class Trainer : MonsterObject
     {
         private HumanObject _currentAttacker = null;

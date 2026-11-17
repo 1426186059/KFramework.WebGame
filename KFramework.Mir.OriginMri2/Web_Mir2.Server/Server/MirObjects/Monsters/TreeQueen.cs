@@ -1,10 +1,13 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 树女王，AI=142（经典 Mir2 怪物类TreeQueen）
+    /// </summary>
     public class TreeQueen : MonsterObject
     {
         protected override bool CanMove { get { return false; } }

@@ -3,6 +3,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 冰冻僵尸（经典 Mir2 怪物类FrozenZombie）：僵尸系变体，无独立 AI case
+    /// </summary>
     public class FrozenZombie : MonsterObject
     {
         protected internal FrozenZombie(MonsterInfo info)

@@ -4,6 +4,9 @@ using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 恶魔狼，AI=110（经典 Mir2 怪物类DemonWolf）
+    /// </summary>
     public class DemonWolf : MonsterObject
     {
         private readonly int _MaxPackSize = 5;

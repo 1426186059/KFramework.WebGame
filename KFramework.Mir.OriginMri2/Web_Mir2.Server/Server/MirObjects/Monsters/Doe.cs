@@ -1,9 +1,12 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
 {
+    /// <summary>
+    /// 母鹿（经典 Mir2 怪物类Doe）：鹿系变体，无独立 AI case
+    /// </summary>
     public class Doe : MonsterObject
     {
         public long FearTime;
