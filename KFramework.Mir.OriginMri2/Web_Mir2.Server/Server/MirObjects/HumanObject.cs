@@ -4481,8 +4481,10 @@ namespace Server.MirObjects
             cast = false;
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
-            UserItem item = GetAmulet(1);
-            if (item == null) return false;
+            // 灵魂火符（原始 5config.skill 13041）配置里没有消耗品字段，不消耗护身符；
+            // 换表后 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致
+            // 这里静默 return → cast=false → 客户端只播本地施法动作、飞行符与命中特效全无。
+            // 去掉符的检查与消耗，攻击照常结算。
             cast = true;
 
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
@@ -4492,7 +4494,6 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, magic, damage, target, target.CurrentLocation);
 
             ActionList.Add(action);
-            ConsumeItem(item, 1);
 
             return true;
         }

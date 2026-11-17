@@ -104,6 +104,10 @@ namespace Client.MirObjects
             // 死亡帧(action=10)在出场即预载：否则死亡瞬间才以临时请求去拉，会被连接池挤占而超时→被 _missing 永久拉黑，
             // 表现为“多杀几只后死亡动画就消失了”。与 PlayerObject 用 PreloadModel 预载全部动作（含死亡）对齐。
             Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, Mir2OriginObjectLibrary.PriorityUser);
+            // 普攻帧(action=4)同理必须出场预载：待机时后台只暖当前动作(action=1)，攻击瞬间才第一次请求 action=4，
+            // 属临时请求，连接池忙时会超时被 _missing 永久拉黑，表现为“待机有模型、一攻击动画就没了”。
+            // 神兽等召唤兽/宠物有独立攻击动画，尤其需要提前暖好全部方向。
+            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionAttack, Mir2OriginObjectLibrary.PriorityUser);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
                 _originImageLogged = true;

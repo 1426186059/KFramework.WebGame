@@ -2921,11 +2921,14 @@ namespace Client.MirObjects
 
                                     case Spell.SoulFireBall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        // 飞行符用原始传奇 CDN 资源（5config.effect：Lv1=654/model13023，Lv5=754/model13026），
-                                        // 替代已移除的经典 .Lib（Libraries.Magic/1160），否则浏览器端加载不到、看不到飞行特效。
+                                        // 原始传奇 5config.effect 核对过 CDN 实际画面：
+                                        //   653/model13003 = 符纸（多张小符），752/model13024 = Lv5 符纸  → 飞行道具
+                                        //   654/model13023 = 火焰爆炸，754/model13026 = Lv5 火焰      → 抵达目标后的爆炸
+                                        // 之前把 654/754（火焰）当成飞行符从玩家身上发射，看起来就是“爆炸直接在玩家身上播放”；
+                                        // 正确顺序是符纸先飞、命中时才在目标身上炸出火焰。
                                         {
-                                            int flyEffect = SpellLevel >= 5 ? 754 : 654;
-                                            int hitEffect = SpellLevel >= 5 ? 752 : 653;
+                                            int flyEffect = SpellLevel >= 5 ? 752 : 653;
+                                            int hitEffect = SpellLevel >= 5 ? 754 : 654;
                                             Point flyDest = ob != null ? ob.CurrentLocation : TargetPoint;
                                             OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest);
                                             MapObject hitTarget = ob;
