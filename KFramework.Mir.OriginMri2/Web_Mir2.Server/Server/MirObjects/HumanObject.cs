@@ -4466,14 +4466,22 @@ namespace Server.MirObjects
         {
             if (target == null || !target.IsAttackTarget(this)) return false;
 
-            UserItem item = GetPoison(1);
-            if (item == null) return false;
-
+            // 原始传奇施毒术（5config 13031）不消耗护符：换表后 ItemInfo 已无 Type=Amulet 的毒药，
+            // 旧 GetPoison(1) 必然返回 null 导致施毒静默失败、目标永不变绿。
+            // 同时原实现的 DelayedAction 传参缺 this（data[0] 应是 HumanObject），且 Map.CompleteMagic
+            // 根本没有 case Spell.Poisoning，延迟结算永远不会执行。这里改为即时施加绿毒，
+            // 复用引擎既有的 ProcessPoison→S.ObjectPoisoned 广播链路让目标变绿。
             int power = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
-
-            DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, magic, power, target, item);
-            ActionList.Add(action);
-            ConsumeItem(item, 1);
+            target.ApplyPoison(new Poison
+            {
+                PType = PoisonType.Green,
+                Duration = (2 * (magic.Level + 1)) + (power / 10),
+                TickSpeed = 1000,
+                Value = power / 15 + magic.Level + 1,
+                Owner = this
+            }, this);
+            target.OperateTime = 0;
+            LevelMagic(magic);
             return true;
         }
         private bool SoulFireball(MapObject target, UserMagic magic, out bool cast)
