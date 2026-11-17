@@ -1786,7 +1786,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 ForeColour = Color.White,
                 OutLineColour = Color.Black,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 10F),
                 RichText = true,
             };
 
@@ -1962,8 +1962,9 @@ namespace Client.MirScenes.Dialogs
                     safe = map.M2CellInfo[p.X, p.Y].IsSafe;
             }
 
-            LocationLabel.ForeColour = safe ? Color.FromArgb(255, 50, 220, 80) : Color.FromArgb(255, 240, 70, 70);
-            return safe ? "安全区域" : "<color=red>危险区域</color>";
+            // 整行前景保持白色：坐标用它；状态词用富文本标签单独上色。
+            LocationLabel.ForeColour = Color.White;
+            return safe ? "<color=green>安全区域</color>" : "<color=red>危险区域</color>";
         }
     }
 
