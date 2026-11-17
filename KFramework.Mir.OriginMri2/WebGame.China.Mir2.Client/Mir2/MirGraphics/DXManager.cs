@@ -91,9 +91,6 @@ namespace Client.MirGraphics
         static KFramework.MonoGame.Color ToColor(Color c) =>
             new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A);
 
-        static KFramework.MonoGame.Rectangle ToRect(Rectangle r) =>
-            new KFramework.MonoGame.Rectangle(r.X, r.Y, r.Width, r.Height);
-
         private static KFramework.MonoGame.Material _batchMaterial;
         private static KFramework.MonoGame.Matrix4x4? _batchTransform;
 
@@ -288,7 +285,7 @@ void main()
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture,
                 new KFramework.MonoGame.Rectangle((int)pos.X, (int)pos.Y, src.Width, src.Height),
-                ToRect(src), ToColor(color));
+                src, ToColor(color));
             CMain.DPSCounter++;
         }
 
@@ -297,7 +294,7 @@ void main()
             if (texture == null) return;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             // 目标矩形按浮点传递，保留亚像素定位，消除缩放精灵的逐帧取整抖动。
-            Batch.Draw(texture, destRect, ToRect(sourceRect), ToColor(color));
+            Batch.Draw(texture, destRect, sourceRect, ToColor(color));
             CMain.DPSCounter++;
         }
 

@@ -1700,327 +1700,233 @@ namespace Client.MirScenes.Dialogs
         }
     }
 
+    /// <summary>
+    /// 右上小地图 —— 直接移植原始传奇 HomeSmallMapCtrl / SmaillMapSkin。
+    /// 布局权威：default.thm.json 内嵌 SmaillMapSkin.gjs；逻辑：main10.25487.1.min.js 的 HomeSmallMapCtrl。
+    /// 皮肤 120×144：标题栏 y_h_map0(120×25) + 地图窗 y_h_map2(120×119) + 视口 scroller(140×140*0.85)
+    /// + mapImg(604×442) + 覆盖 y_h_map1 + 底条 y_h_msbg + 跨服标 y_map_kua
+    /// + 点位 y_map_p_0(怪)/_1(玩家)/_3(NPC) + txt_name/txt_info。
+    /// 本工程图集为高清版 y_H5HomeUI-sheet（帧约 142px 宽），按帧原生尺寸等比放大。
+    /// ★Anchor=TopRight 固定在右上角。
+    /// </summary>
     public sealed class MiniMapDialog : MirImageControl
     {
+        private const string HomeSheet = "y_homeUI-sheet";
+
+        // 高清帧原生尺寸：标题栏 142×25、窗体 142×140、底条 141×29
+        private const int FrameW = 142;
+        private const int TitleH = 25;
+        private const int WinH = 140;
+        private const int PanelH = TitleH + WinH;   // 165
+        // 地图可视窗（相对本控件左上角），对应 gjs scroller(140×140*0.85≈119，x=1,y=25)
+        private const int ViewX = 3, ViewY = TitleH + 3, ViewW = 136, ViewH = 132;
+
+        private readonly MirImageControl _title, _win, _cover, _bottomBar;
+
+        // 保留字段名以兼容可能的外部引用
         public MirImageControl LightSetting, NewMail;
         public MirButton ToggleButton, BigMapButton, MailButton;
         public MirLabel LocationLabel, MapNameLabel;
+        public MirLabel AModeLabel, PModeLabel;
+
         private float _fade = 1F;
         private bool _bigMode = true;
 
-        // 小地图纹理：从 CDN 按地图图像 id 取（与提取工具一致），替代老 MMap 库 + 服务端 MiniMap 索引
+        // 小地图纹理：CDN minimap/{img}.jpg，经 ImageUrl 通道加载后收进 _miniMapTexture
         private KFramework.MonoGame.Texture2D? _miniMapTexture;
         private int _miniMapLoadedImg = -1;
-
-        public MirLabel AModeLabel, PModeLabel;
 
         public List<MirLabel> QuestIcons = new List<MirLabel>();
 
         public MiniMapDialog()
         {
-            Index = 2090;
-            Library = Libraries.Prguse;
-            Location = new Point(Settings.ScreenWidth - 126, 0);
-            PixelDetect = true;
+            AutoSize = false;
+            Size = new Size(FrameW, PanelH);
+            PixelDetect = false;
+
+            // ★锚点固定在右上角（与 SkillBarDialog 同款）
+            Anchor = EAnchorType.TopRight;
+            AnchorPos = new Point(0, 0);
+            ApplyAnchor();
+
+            // 原始传奇外框（图集子控件，由引擎绘制）
+            _title = Frame("y_h_map0", 0, 0, FrameW, TitleH);
+            _win = Frame("y_h_map2", 0, TitleH, FrameW, WinH);
+            _cover = Frame("y_h_map1", 0, TitleH, FrameW, WinH);
+            _bottomBar = Frame("y_h_msbg", 0, PanelH - 29, 141, 29);
 
             BeforeDraw += MiniMap_BeforeDraw;
-            AfterDraw += MiniMapDialog_AfterDraw;
 
-            // 走 MirImageControl.ImageUrl 标准远程通道：加载完成后把纹理收进 _miniMapTexture，
-            // 同时清掉 Texture（否则 DrawControl 会把整张小地图盖在边框/控件上，而小地图的视口裁剪在 BeforeDraw 手绘）。
-            RemoteImageLoaded += (s, e) => { _miniMapTexture = Texture; Texture = null; };
+            // 小地图纹理加载完成：收进 _miniMapTexture 并清掉 Texture，避免整图盖住边框
+            RemoteImageLoaded += (s, e) => 
+            {
+                _win.Visible = false;
+                _miniMapTexture = Texture; 
+                Texture = null;
+            };
 
             MapNameLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
-                Size = new Size(120, 18),
-                Location = new Point(2, 2),
+                Size = new Size(FrameW - 8, 20),
+                Location = new Point(4, 2),
                 NotControl = true,
+                ForeColour = Color.White,
+                OutLineColour = Color.Black,
+                Font = new Font(Settings.FontName, 10F),
             };
 
             LocationLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
-                Size = new Size(56, 18),
-                Location = new Point(46, 131),
+                Size = new Size(FrameW - 16, 16),
+                Location = new Point(8, PanelH - 24),
                 NotControl = true,
-            };
-
-            MailButton = new MirButton
-            {
-                Index = 2099,
-                HoverIndex = 2100,
-                PressedIndex = 2101,
-                Parent = this,
-                Location = new Point(4, 131),
-                Library = Libraries.Prguse,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Mail)
-            };
-            MailButton.Click += (o, e) => GameScene.Scene.MailListDialog.Toggle();
-
-            NewMail = new MirImageControl
-            {
-                Index = 544,
-                Location = new Point(5, 132),
-                Parent = this,
-                Library = Libraries.Prguse,
-                Visible = false,
-                NotControl = true
-            };
-
-            BigMapButton = new MirButton
-            {
-                Index = 2096,
-                HoverIndex = 2097,
-                PressedIndex = 2098,
-                Parent = this,
-                Location = new Point(25, 131),
-                Library = Libraries.Prguse,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BigMapKey), CMain.InputKeys.GetKey(KeybindOptions.Bigmap))
-            };
-            BigMapButton.Click += (o, e) => GameScene.Scene.BigMapDialog.Toggle();
-
-            ToggleButton = new MirButton
-            {
-                Index = 2102,
-                HoverIndex = 2103,
-                PressedIndex = 2104,
-                Parent = this,
-                Location = new Point(109, 3),
-                Library = Libraries.Prguse,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MiniMapKey), CMain.InputKeys.GetKey(KeybindOptions.Minimap))
-            };
-            ToggleButton.Click += (o, e) => Toggle();
-
-            LightSetting = new MirImageControl
-            {
-                Index = 2093,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(102, 131),
-            };
-
-
-            AModeLabel = new MirLabel
-            {
-                AutoSize = true,
-                ForeColour = Color.Yellow,
+                ForeColour = Color.White,
                 OutLineColour = Color.Black,
-                Parent = this,
-                Location = new Point(115, 125)
             };
 
-            PModeLabel = new MirLabel
-            {
-                AutoSize = true,
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
-                Parent = this,
-                Location = new Point(230, 125),
-                Visible = false
-            };
+            // 点击整块小地图 → 打开大地图（对应 gjs img_0 clickHandler → uim.showOrHide(547)）
+            Click += (o, e) => GameScene.Scene.BigMapDialog.Toggle();
         }
 
-        private void MiniMapDialog_AfterDraw(object sender, EventArgs e)
+        private MirImageControl Frame(string name, int x, int y, int w, int h)
         {
-
+            return new MirImageControl
+            {
+                AtlasNameKey = HomeSheet + "#" + name,
+                AutoSize = false,
+                Size = new Size(w, h),
+                Location = new Point(x, y),
+                Parent = this,
+                NotControl = true,
+            };
         }
 
         private void MiniMap_BeforeDraw(object sender, EventArgs e)
         {
-
             foreach (var icon in QuestIcons)
+            {
                 icon.Dispose();
-
+            }
             QuestIcons.Clear();
 
             MapControl map = GameScene.Scene.MapControl;
-            if (map == null) return;
+            if (map == null)
+            {
+                return;
+            }
 
-            // 小地图改用 CDN：按地图图像 id 取 assets/resource/minimap/{img}.jpg（与提取工具同款），
-            // 不再依赖老 MMap 库 + 服务端 MiniMap 索引（原始传世这批图没有对应帧，且服务端 MiniMap 多为 0）。
+            // 地图图像 id 变化时发起 CDN 小地图纹理加载（minimap/{img}.jpg）。
+            // 之前这段在移植时被误删，导致 LoadMiniMapTexture 从未被调用、_miniMapTexture 永远为 null。
             if (map.MapImg != _miniMapLoadedImg)
             {
                 _miniMapLoadedImg = map.MapImg;
                 _miniMapTexture = null;
-                if (map.MapImg > 0) LoadMiniMapTexture(map.MapImg);
+                if (map.MapImg > 0)
+                    LoadMiniMapTexture(map.MapImg);
+            }
+            if (_miniMapTexture == null)
+            {
+                return;
             }
 
-            // 小模式(Index 2091)或未取到小地图时，仅显示外框
-            if (Index != 2090 || _miniMapTexture == null)
-                return;
+            // 恢复原版换算：scale = 纹理像素 / 地图格子数；裁剪框尺寸 = 视口显示尺寸，1:1 绘制，
+            // 绘制尺寸永远等于视口，不会超出。之前误用 map.PixelWidth(格子×48) 算 srcW，
+            // 导致裁剪框被放大数倍，小地图远超视口范围。
+            int texW = _miniMapTexture.Width, texH = _miniMapTexture.Height;
+            float scaleX = texW / (float)Math.Max(1, map.Width);
+            float scaleY = texH / (float)Math.Max(1, map.Height);
 
-            Rectangle viewRect = new Rectangle(0, 0, 120, 108);
-            Point drawLocation = Location;
-            drawLocation.Offset(3, 22);
-
-            Size miniMapSize = new Size(_miniMapTexture.Width, _miniMapTexture.Height);
-            float scaleX = miniMapSize.Width / (float)map.Width;
-            float scaleY = miniMapSize.Height / (float)map.Height;
-
+            Rectangle viewRect = new Rectangle(0, 0, ViewW, ViewH);
             viewRect.Location = new Point(
-                (int)(scaleX * MapObject.User.CurrentLocation.X) - viewRect.Width / 2,
-                (int)(scaleY * MapObject.User.CurrentLocation.Y) - viewRect.Height / 2);
-
-            //   viewRect.Location = viewRect.Location.Subtract(1, 1);
-            if (viewRect.Right >= miniMapSize.Width)
-                viewRect.X = miniMapSize.Width - viewRect.Width;
-            if (viewRect.Bottom >= miniMapSize.Height)
-                viewRect.Y = miniMapSize.Height - viewRect.Height;
-
+                (int)(scaleX * MapObject.User.CurrentLocation.X) - ViewW / 2,
+                (int)(scaleY * MapObject.User.CurrentLocation.Y) - ViewH / 2);
+            if (viewRect.Right >= texW) viewRect.X = texW - ViewW;
+            if (viewRect.Bottom >= texH) viewRect.Y = texH - ViewH;
             if (viewRect.X < 0) viewRect.X = 0;
             if (viewRect.Y < 0) viewRect.Y = 0;
 
+            Point drawLocation = Location;
+            drawLocation.Offset(ViewX, ViewY);
             DXManager.Draw(_miniMapTexture, viewRect, new Vector3(drawLocation.X, drawLocation.Y, 0), Color.FromArgb((int)(255 * _fade), 255, 255, 255));
 
+            float startPointX = viewRect.X / scaleX;
+            float startPointY = viewRect.Y / scaleY;
 
-            int startPointX = (int)(viewRect.X / scaleX);
-            int startPointY = (int)(viewRect.Y / scaleY);
-
+            // 对象点位：怪红 / 玩家白 / NPC 绿 / 队友蓝（对应 y_map_p_0/1/3）
             foreach (var ob in MapControl.Objects.Values)
             {
-                if (ob.Race == ObjectType.Item || ob.Dead || ob.Race == ObjectType.Spell || ob.Sneaking) continue;
+                if (ob == MapObject.User || ob.Race == ObjectType.Item || ob.Dead || ob.Race == ObjectType.Spell || ob.Sneaking) continue;
                 float x = ((ob.CurrentLocation.X - startPointX) * scaleX) + drawLocation.X;
                 float y = ((ob.CurrentLocation.Y - startPointY) * scaleY) + drawLocation.Y;
+                if (x < drawLocation.X || x > drawLocation.X + ViewW || y < drawLocation.Y || y > drawLocation.Y + ViewH) continue;
 
                 Color colour;
-
                 if ((GroupDialog.GroupList.Contains(ob.Name) && MapObject.User != ob) || ob.Name.EndsWith(string.Format("({0})", MapObject.User.Name)))
                     colour = Color.FromArgb(0, 0, 255);
-                else
-                    if (ob is PlayerObject)
-                {
+                else if (ob is PlayerObject)
                     colour = Color.FromArgb(255, 255, 255);
-                }
                 else if (ob is NPCObject || ob.AI == 6)
-                {
                     colour = Color.FromArgb(0, 255, 50);
-                }
                 else
                     colour = Color.FromArgb(255, 0, 0);
 
                 DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
 
-
                 if (ob is NPCObject npc && npc.GetAvailableQuests(true).Any())
                 {
                     string text = "";
                     Color color = Color.Empty;
-
                     switch (npc.QuestIcon)
                     {
-                        case QuestIcon.ExclamationBlue:
-                            color = Color.DodgerBlue;
-                            text = "!";
-                            break;
-                        case QuestIcon.ExclamationYellow:
-                            color = Color.Yellow;
-                            text = "!";
-                            break;
-                        case QuestIcon.ExclamationGreen:
-                            color = Color.Green;
-                            text = "!";
-                            break;
-                        case QuestIcon.QuestionBlue:
-                            color = Color.DodgerBlue;
-                            text = "?";
-                            break;
-                        case QuestIcon.QuestionWhite:
-                            color = Color.White;
-                            text = "?";
-                            break;
-                        case QuestIcon.QuestionYellow:
-                            color = Color.Yellow;
-                            text = "?";
-                            break;
-                        case QuestIcon.QuestionGreen:
-                            color = Color.Green;
-                            text = "?";
-                            break;
+                        case QuestIcon.ExclamationBlue: color = Color.DodgerBlue; text = "!"; break;
+                        case QuestIcon.ExclamationYellow: color = Color.Yellow; text = "!"; break;
+                        case QuestIcon.ExclamationGreen: color = Color.Green; text = "!"; break;
+                        case QuestIcon.QuestionBlue: color = Color.DodgerBlue; text = "?"; break;
+                        case QuestIcon.QuestionWhite: color = Color.White; text = "?"; break;
+                        case QuestIcon.QuestionYellow: color = Color.Yellow; text = "?"; break;
+                        case QuestIcon.QuestionGreen: color = Color.Green; text = "?"; break;
                     }
-
                     QuestIcons.Add(new MirLabel
                     {
                         AutoSize = true,
-                        Parent = GameScene.Scene.MiniMapDialog,
+                        Parent = this,
                         Font = new Font(Settings.FontName, 9f, KFramework.MonoGame.FontStyle.Bold),
                         DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                         Text = text,
                         ForeColour = color,
-                        Location = new Point((int)(x - Settings.ScreenWidth + GameScene.Scene.MiniMapDialog.Size.Width) - 6, (int)(y) - 10),
+                        Location = new Point((int)(x - Location.X) - 6, (int)(y - Location.Y) - 10),
                         NotControl = true,
                         Visible = true,
                         Modal = true
                     });
                 }
-
-
             }
+
+            // 自己（黄点，最后画，对应 y_map_p_2）；玩家恒在视口中心
+            float mx = drawLocation.X + (MapObject.User.CurrentLocation.X - startPointX) * scaleX;
+            float my = drawLocation.Y + (MapObject.User.CurrentLocation.Y - startPointY) * scaleY;
+            DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 5, 5), new Vector3((float)(mx - 1), (float)(my - 1), 0), Color.Yellow);
         }
 
         private async void LoadMiniMapTexture(int img)
         {
-            // 走 MirImageControl.ImageUrl 标准远程通道（带取消/重试安全），
-            // 加载完成由构造函数里的 RemoteImageLoaded 收进 _miniMapTexture；失败则保持 null（外框照常显示）。
+            _win.Visible = true;
             ImageUrl = Mir2OriginResource.MinimapPath(img);
         }
 
         public void Toggle()
         {
-            if (_fade == 0F)
-            {
-                _bigMode = true;
-                SetBigMode();
-                _fade = 1F;
-            }
-            //else if(_fade == 1F)
-            //{
-            //    _bigMode = true;
-            //    SetBigMode();
-            //    _fade = 0.8F;
-            //}
-            else
-            {
-                _bigMode = false;
-                SetSmallMode();
-                _fade = 0;
-            }
-
+            // 原始传奇小地图无折叠态；快捷键切换地图内容显示/隐藏（外框始终保留）
+            _fade = _fade == 0F ? 1F : 0F;
             Redraw();
         }
 
-        private void SetSmallMode()
-        {
-            Index = 2091;
-            int y = Size.Height - 23;
-            MailButton.Location = new Point(4, y);
-            NewMail.Location = new Point(5, y + 1);
-            BigMapButton.Location = new Point(25, y);
-            LocationLabel.Location = new Point(46, y);
-            LightSetting.Location = new Point(102, y);
-
-            GameScene.Scene.DuraStatusPanel.Location = new Point(GameScene.Scene.MiniMapDialog.Location.X + 86,
-            GameScene.Scene.MiniMapDialog.Size.Height);
-        }
-
-        private void SetBigMode()
-        {
-            Index = 2090;
-            int y = Size.Height - 23;
-            MailButton.Location = new Point(4, y);
-            NewMail.Location = new Point(5, y + 1);
-            BigMapButton.Location = new Point(25, y);
-            LocationLabel.Location = new Point(46, y);
-            LightSetting.Location = new Point(102, y);
-
-            GameScene.Scene.DuraStatusPanel.Location = new Point(GameScene.Scene.MiniMapDialog.Location.X + 86,
-            GameScene.Scene.MiniMapDialog.Size.Height);
-        }
+        private void SetSmallMode() { }
+        private void SetBigMode() { }
 
         public void Process()
         {
@@ -2028,39 +1934,11 @@ namespace Client.MirScenes.Dialogs
             if (map == null) return;
 
             MapNameLabel.Text = map.Title;
-            LocationLabel.Text = Functions.PointToString(MapObject.User.CurrentLocation);
-
-            GameScene.Scene.MainDialog.SModeLabel.Location = new Point((GameScene.Scene.MiniMapDialog.Location.X - 3) - GameScene.Scene.MainDialog.Location.X,
-            (GameScene.Scene.MiniMapDialog.Size.Height + 150) - Settings.ScreenHeight);
-            GameScene.Scene.MainDialog.AModeLabel.Location = new Point((GameScene.Scene.MiniMapDialog.Location.X - 3) - GameScene.Scene.MainDialog.Location.X,
-            (GameScene.Scene.MiniMapDialog.Size.Height + 165) - Settings.ScreenHeight);
-            GameScene.Scene.MainDialog.PModeLabel.Location = new Point((GameScene.Scene.MiniMapDialog.Location.X - 3) - GameScene.Scene.MainDialog.Location.X,
-            (GameScene.Scene.MiniMapDialog.Size.Height + 180) - Settings.ScreenHeight);
-
-            if (GameScene.Scene.NewMail)
-            {
-                double time = (CMain.Time) / 100D;
-
-                if (Math.Round(time) % 10 < 5 || GameScene.Scene.NewMailCounter >= 10)
-                {
-                    NewMail.Visible = true;
-                }
-                else
-                {
-                    if (NewMail.Visible)
-                    {
-                        GameScene.Scene.NewMailCounter++;
-                    }
-
-                    NewMail.Visible = false;
-                }
-            }
-            else
-            {
-                NewMail.Visible = false;
-            }
+            LocationLabel.Text = $"{MapObject.User.CurrentLocation.X}, {MapObject.User.CurrentLocation.Y}";
         }
     }
+
+
     public sealed class InspectDialog : MirImageControl
     {
         public static UserItem[] Items = new UserItem[Enum.GetNames(typeof(EquipmentSlot)).Length];
