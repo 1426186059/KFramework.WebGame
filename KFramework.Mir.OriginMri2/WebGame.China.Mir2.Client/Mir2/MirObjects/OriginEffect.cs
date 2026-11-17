@@ -88,28 +88,42 @@ namespace Client.MirObjects
     /// <summary>
     /// 原始传奇数据驱动"飞行道具"特效：与 OriginEffect 同样读 5config.effect（model/action/dir/intval/blend），
     /// 但沿 Source→Destination 插值飞行（替代已移除的经典 .Lib Missile），抵达时触发 Complete 供命中特效挂载。
-    /// 灵魂火符(Lv1 effect 654=model13023 / Lv5 754=model13026) 用它画飞行符。
+    /// 灵魂火符(Lv1 effect 653=model13003符纸 / Lv5 752=model13024) 用它画飞行符。
     /// </summary>
     public sealed class OriginMissile : Effect
     {
+        /// <summary>
+        /// 原始传奇 GameDefine.SKILL_HitTestY=60：飞行子弹的起点/终点都在实体像素 Y 基础上下移 60px
+        /// （JS: addSkillBullet(t.x, t.y - SKILL_HitTestY, ...)，把发射点从脚底抬到手/胸高度）。
+        /// 客户端格子 CellHeight=32，与原始传奇 MAP_GRID_HEIGHT=32 一致，故该值可直接作为屏幕像素偏移。
+        /// </summary>
+        public const int SkillHitTestY = 60;
+
         private readonly int _model;
         private readonly int _action;
         private readonly int _direction;
         private readonly int _intval;
         private readonly bool _addBlend;
         private readonly Point _source;
+        private readonly int _flightDuration;   // 飞行总时长(ms)：0=按距离估算；>0=用配置 delaytime
+        private readonly int _startYOffset;     // 起点/终点屏幕 Y 偏移（抬到手部）
         private int _totalFrames;
         private long _readyAt;   // CDN 帧首次就绪时刻；飞行计时以它为准，避免资源异步加载期间就被判定飞完
 
         public MapObject Target;
         public Point Destination;
 
-        public OriginMissile(int effectId, MapObject owner, MapObject target, Point destination, long duration = 500)
+        /// <param name="flightDuration">飞行时长(ms)。原始传奇 5config.skillEffects 里灵魂火符 type=2 子弹 delaytime=400。</param>
+        /// <param name="startYOffset">起点屏幕像素 Y 偏移（抬到手部）。原始传奇 SKILL_HitTestY=60。</param>
+        public OriginMissile(int effectId, MapObject owner, MapObject target, Point destination,
+                             long duration = 500, int flightDuration = 0, int startYOffset = SkillHitTestY)
             : base(null, 0, 1, (int)duration, owner)
         {
             Target = target;
             Destination = destination;
             _source = owner.CurrentLocation;
+            _flightDuration = flightDuration;
+            _startYOffset = startYOffset;
 
             if (!ExcelTableMgr.TryGetEffect(effectId, out var effect))
             {
@@ -154,18 +168,23 @@ namespace Client.MirObjects
             NextFrame = CMain.Time + _intval;
             GameScene.Scene.MapControl.TextureValid = false;
 
-            int travel = Math.Max(1, Functions.MaxDistance(_source, Destination) * 50);
-            if (CMain.Time >= _readyAt + travel)
+            if (CMain.Time >= _readyAt + GetTravel())
                 Remove();
+        }
+
+        /// <summary>飞行总时长：优先用配置 delaytime（原始传奇 skillEffects.type=2），否则按距离估算。</summary>
+        private int GetTravel()
+        {
+            if (_flightDuration > 0) return _flightDuration;
+            return Math.Max(1, Functions.MaxDistance(_source, Destination) * 50);
         }
 
         public override void Draw()
         {
             if (_model <= 0 || _readyAt == 0) return;
 
-            int travel = Math.Max(1, Functions.MaxDistance(_source, Destination) * 50);
             long elapsed = CMain.Time - _readyAt;
-            float t = Math.Min(1f, elapsed / (float)travel);
+            float t = Math.Min(1f, elapsed / (float)GetTravel());
 
             int cellX = _source.X + (int)((Destination.X - _source.X) * t);
             int cellY = _source.Y + (int)((Destination.Y - _source.Y) * t);
@@ -174,6 +193,9 @@ namespace Client.MirObjects
             int screenY = (cellY - MapObject.User.Movement.Y + MapControl.OffSetY) * MapControl.CellHeight;
             screenX += MapObject.User.OffSetMove.X;
             screenY += MapObject.User.OffSetMove.Y;
+            // 从脚底抬到手/胸高度发射（原始传奇 SKILL_HitTestY=60）：起点与终点同步上移，
+            // 保证整条飞行轨迹都落在身体上半部，而不是贴着地面从身上穿过。
+            screenY -= _startYOffset;
 
             int frame = CurrentFrame % _totalFrames;
             if (!Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, _model, _action, _direction, frame, out var sprite) || sprite == null)

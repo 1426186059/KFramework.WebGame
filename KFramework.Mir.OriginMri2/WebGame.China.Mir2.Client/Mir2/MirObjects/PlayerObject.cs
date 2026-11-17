@@ -2926,11 +2926,19 @@ namespace Client.MirObjects
                                         //   654/model13023 = 火焰爆炸，754/model13026 = Lv5 火焰      → 抵达目标后的爆炸
                                         // 之前把 654/754（火焰）当成飞行符从玩家身上发射，看起来就是“爆炸直接在玩家身上播放”；
                                         // 正确顺序是符纸先飞、命中时才在目标身上炸出火焰。
+                                        //
+                                        // 权威时序来自 5config.skillEffects[1304101/1304105]（原始传奇 JS 同款）：
+                                        //   type=2 子弹 effect653/752 delaytime=400 → 飞行时长 400ms
+                                        //   type=1 命中 effect654/754 delaytime=200 → 命中后火焰
+                                        //   skill.hurtDelay=500 → 伤害在施法后 500ms 结算
+                                        // 起点由 OriginMissile 内部按 GameDefine.SKILL_HitTestY=60 抬到手部。
                                         {
                                             int flyEffect = SpellLevel >= 5 ? 752 : 653;
                                             int hitEffect = SpellLevel >= 5 ? 754 : 654;
+                                            const int flyDelay = 400;  // skillEffects type=2 delaytime
                                             Point flyDest = ob != null ? ob.CurrentLocation : TargetPoint;
-                                            OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest);
+                                            OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest,
+                                                                                            flightDuration: flyDelay);
                                             MapObject hitTarget = ob;
                                             originMissile.Complete += (o, e) =>
                                             {

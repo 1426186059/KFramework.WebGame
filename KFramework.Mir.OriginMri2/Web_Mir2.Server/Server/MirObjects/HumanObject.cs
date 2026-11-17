@@ -4489,7 +4489,11 @@ namespace Server.MirObjects
 
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
 
-            int delay = Functions.MaxDistance(CurrentLocation, target.CurrentLocation) * 50 + 500; //50 MS per Step
+            // 伤害延迟对齐原始传奇 5config.skill.hurtDelay（灵魂火符=500ms）并计入飞行距离：
+            // hurtDelay 是基础延迟，远距离追加 距离*50ms，客户端符纸飞行 400ms + 命中火焰与之同步。
+            // 旧代码固定 距离*50+500，未读配置。
+            int delay = (magic.Info?.HurtDelay > 0 ? magic.Info.HurtDelay : 500)
+                        + Functions.MaxDistance(CurrentLocation, target.CurrentLocation) * 50;
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, magic, damage, target, target.CurrentLocation);
 
