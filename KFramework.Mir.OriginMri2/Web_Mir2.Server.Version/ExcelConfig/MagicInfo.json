@@ -414,9 +414,7 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": [
-      498
-    ],
+    "EffectIds": [],
     "NeedBook": 0
   },
   {
@@ -3272,9 +3270,7 @@
     "IsAuto": 0,
     "OriginIndex": 1,
     "Piaozi": 0,
-    "EffectIds": [
-      710
-    ],
+    "EffectIds": [],
     "NeedBook": 1
   },
   {
@@ -3326,7 +3322,7 @@
     "OriginIndex": 2,
     "Piaozi": 0,
     "EffectIds": [
-      720
+      603
     ],
     "NeedBook": 1
   },
@@ -3379,8 +3375,10 @@
     "OriginIndex": 3,
     "Piaozi": 0,
     "EffectIds": [
-      555,
-      895
+      601,
+      711,
+      715,
+      719
     ],
     "NeedBook": 1
   },
@@ -3432,7 +3430,12 @@
     "IsAuto": 1,
     "OriginIndex": 4,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      602,
+      710,
+      714,
+      718
+    ],
     "NeedBook": 1
   },
   {
@@ -3534,7 +3537,12 @@
     "IsAuto": 1,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      606,
+      712,
+      716,
+      720
+    ],
     "NeedBook": 1
   },
   {
@@ -3585,7 +3593,10 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      604,
+      605
+    ],
     "NeedBook": 1
   },
   {
@@ -3637,7 +3648,10 @@
     "OriginIndex": 8,
     "Piaozi": 0,
     "EffectIds": [
-      261
+      607,
+      713,
+      717,
+      721
     ],
     "NeedBook": 1
   },
@@ -3842,7 +3856,9 @@
     "IsAuto": 1,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      776
+    ],
     "NeedBook": 1
   },
   {
@@ -3894,7 +3910,9 @@
     "OriginIndex": 1,
     "Piaozi": 0,
     "EffectIds": [
-      621
+      613,
+      614,
+      615
     ],
     "NeedBook": 1
   },
@@ -3947,7 +3965,7 @@
     "OriginIndex": 2,
     "Piaozi": 0,
     "EffectIds": [
-      631
+      637
     ],
     "NeedBook": 1
   },
@@ -3999,7 +4017,10 @@
     "IsAuto": 0,
     "OriginIndex": 3,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      640,
+      641
+    ],
     "NeedBook": 1
   },
   {
@@ -4051,7 +4072,8 @@
     "OriginIndex": 4,
     "Piaozi": 0,
     "EffectIds": [
-      726
+      631,
+      632
     ],
     "NeedBook": 1
   },
@@ -4104,7 +4126,14 @@
     "OriginIndex": 5,
     "Piaozi": 0,
     "EffectIds": [
-      736
+      611,
+      612,
+      725,
+      726,
+      737,
+      738,
+      746,
+      747
     ],
     "NeedBook": 1
   },
@@ -4157,7 +4186,9 @@
     "OriginIndex": 6,
     "Piaozi": 0,
     "EffectIds": [
-      746
+      627,
+      628,
+      629
     ],
     "NeedBook": 1
   },
@@ -4209,7 +4240,10 @@
     "IsAuto": 1,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      638,
+      639
+    ],
     "NeedBook": 1
   },
   {
@@ -4260,7 +4294,10 @@
     "IsAuto": 1,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      618,
+      619
+    ],
     "NeedBook": 1
   },
   {
@@ -4311,7 +4348,9 @@
     "IsAuto": 0,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      616
+    ],
     "NeedBook": 1
   },
   {
@@ -4362,7 +4401,12 @@
     "IsAuto": 1,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      636,
+      724,
+      736,
+      745
+    ],
     "NeedBook": 1
   },
   {
@@ -4413,7 +4457,9 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      630
+    ],
     "NeedBook": 1
   },
   {
@@ -4464,7 +4510,10 @@
     "IsAuto": 1,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      622,
+      772
+    ],
     "NeedBook": 1
   },
   {
@@ -4515,7 +4564,16 @@
     "IsAuto": 1,
     "OriginIndex": 13,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      620,
+      621,
+      722,
+      723,
+      734,
+      735,
+      743,
+      744
+    ],
     "NeedBook": 1
   },
   {
@@ -4566,7 +4624,16 @@
     "IsAuto": 1,
     "OriginIndex": 14,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      625,
+      626,
+      729,
+      730,
+      741,
+      742,
+      750,
+      751
+    ],
     "NeedBook": 1
   },
   {
@@ -4617,7 +4684,16 @@
     "IsAuto": 1,
     "OriginIndex": 15,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      642,
+      643,
+      727,
+      728,
+      739,
+      740,
+      748,
+      749
+    ],
     "NeedBook": 1
   },
   {
@@ -4668,7 +4744,10 @@
     "IsAuto": 0,
     "OriginIndex": 16,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      779,
+      780
+    ],
     "NeedBook": 1
   },
   {
@@ -4719,7 +4798,11 @@
     "IsAuto": 0,
     "OriginIndex": 17,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      633,
+      634,
+      635
+    ],
     "NeedBook": 1
   },
   {
@@ -4822,7 +4905,8 @@
     "OriginIndex": 1,
     "Piaozi": 0,
     "EffectIds": [
-      661
+      671,
+      672
     ],
     "NeedBook": 1
   },
@@ -4874,9 +4958,7 @@
     "IsAuto": 0,
     "OriginIndex": 2,
     "Piaozi": 0,
-    "EffectIds": [
-      671
-    ],
+    "EffectIds": [],
     "NeedBook": 1
   },
   {
@@ -4928,7 +5010,8 @@
     "OriginIndex": 3,
     "Piaozi": 0,
     "EffectIds": [
-      759
+      664,
+      665
     ],
     "NeedBook": 1
   },
@@ -4981,7 +5064,11 @@
     "OriginIndex": 4,
     "Piaozi": 0,
     "EffectIds": [
-      769
+      653,
+      654,
+      753,
+      752,
+      754
     ],
     "NeedBook": 1
   },
@@ -5033,7 +5120,9 @@
     "IsAuto": 1,
     "OriginIndex": 5,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      655
+    ],
     "NeedBook": 1
   },
   {
@@ -5084,7 +5173,9 @@
     "IsAuto": 0,
     "OriginIndex": 6,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      662
+    ],
     "NeedBook": 1
   },
   {
@@ -5135,7 +5226,10 @@
     "IsAuto": 0,
     "OriginIndex": 7,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      653,
+      657
+    ],
     "NeedBook": 1
   },
   {
@@ -5186,7 +5280,13 @@
     "IsAuto": 1,
     "OriginIndex": 8,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      653,
+      663,
+      758,
+      764,
+      770
+    ],
     "NeedBook": 1
   },
   {
@@ -5237,7 +5337,13 @@
     "IsAuto": 1,
     "OriginIndex": 9,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      653,
+      661,
+      755,
+      761,
+      767
+    ],
     "NeedBook": 1
   },
   {
@@ -5288,7 +5394,10 @@
     "IsAuto": 0,
     "OriginIndex": 10,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      669,
+      670
+    ],
     "NeedBook": 1
   },
   {
@@ -5339,7 +5448,9 @@
     "IsAuto": 0,
     "OriginIndex": 11,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      656
+    ],
     "NeedBook": 1
   },
   {
@@ -5390,7 +5501,10 @@
     "IsAuto": 0,
     "OriginIndex": 12,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      659,
+      660
+    ],
     "NeedBook": 1
   },
   {
@@ -5441,7 +5555,12 @@
     "IsAuto": 1,
     "OriginIndex": 13,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      652,
+      759,
+      765,
+      771
+    ],
     "NeedBook": 1
   },
   {
@@ -5492,7 +5611,16 @@
     "IsAuto": 1,
     "OriginIndex": 14,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      666,
+      667,
+      756,
+      757,
+      762,
+      763,
+      768,
+      769
+    ],
     "NeedBook": 1
   },
   {
@@ -5543,7 +5671,9 @@
     "IsAuto": 1,
     "OriginIndex": 15,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      668
+    ],
     "NeedBook": 1
   },
   {
@@ -5594,7 +5724,9 @@
     "IsAuto": 1,
     "OriginIndex": 16,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      652
+    ],
     "NeedBook": 1
   },
   {
@@ -5645,7 +5777,10 @@
     "IsAuto": 0,
     "OriginIndex": 17,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      777,
+      778
+    ],
     "NeedBook": 1
   },
   {
@@ -5747,9 +5882,7 @@
     "IsAuto": 0,
     "OriginIndex": 50,
     "Piaozi": 0,
-    "EffectIds": [
-      510
-    ],
+    "EffectIds": [],
     "NeedBook": 1
   },
   {
@@ -5800,7 +5933,12 @@
     "IsAuto": 0,
     "OriginIndex": 19,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      10888,
+      10889,
+      10890,
+      10891
+    ],
     "NeedBook": 0
   },
   {
@@ -10596,7 +10734,11 @@
     "IsAuto": 0,
     "OriginIndex": 0,
     "Piaozi": 0,
-    "EffectIds": [],
+    "EffectIds": [
+      651,
+      760,
+      766
+    ],
     "NeedBook": 0
   },
   {

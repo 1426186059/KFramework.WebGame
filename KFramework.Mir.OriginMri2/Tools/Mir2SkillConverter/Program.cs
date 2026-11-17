@@ -77,9 +77,6 @@ public static class Program
             using JsonDocument condDoc = JsonDocument.Parse(File.ReadAllText(opt.Condition));
             JsonElement skills = doc.RootElement.GetProperty("skill");
             JsonElement effects = doc.RootElement.GetProperty("skillEffects");
-            JsonElement effectTable = doc.RootElement.GetProperty("effect");
-            Dictionary<int, List<int>> effectBySkill = BuildEffectIndex(effects);
-            Dictionary<int, List<int>> effectByModel = BuildEffectByModel(effectTable);
             Dictionary<int, Dictionary<int, JsonElement>> conditions = BuildConditionIndex(condDoc.RootElement);
 
             var rows = new List<(int Id, JsonElement Raw)>();
@@ -90,6 +87,11 @@ public static class Program
                 rows.Add((id, kv.Value));
             }
             rows.Sort((a, b) => a.Id.CompareTo(b.Id));
+            var skillIds = rows.Select(r => r.Id).ToHashSet();
+
+            // skillEffects 键有两种形态：少数内功技能直接用 skillId（97/1001…），
+            // 多数常规技能用 skillId*100+等级（如 1301101 = 治愈术 13011 Lv1）。
+            Dictionary<int, List<int>> effectBySkill = BuildEffectIndex(effects, skillIds);
 
             var result = new List<MagicInfoOut>(rows.Count);
             int effectsAttached = 0, offsetCount = 0, legacyCount = 0, combatCount = 0;
@@ -114,18 +116,10 @@ public static class Program
                 };
                 if (releaseDis > 0 && releaseDis <= byte.MaxValue) dto.Range = (byte)releaseDis;
 
+                // 只认权威 skillEffects（键 = skillId 或 skillId*100+等级）。
+                // 绝不再按 model/icon 撞号兜底：数字巧合会把别的技能特效（如召唤神兽 759）错配给施毒术。
                 int[] effectIds = effectBySkill.TryGetValue(id, out var list)
                     ? list.Distinct().ToArray() : Array.Empty<int>();
-
-                // 常规技能没有 skillEffects 条目，但 5config.effect 里 model == 技能号/图标号的
-                // 就是它的施法特效（如施毒术 13031 → effect 759、灵魂火符 13041 → effect 769）。
-                if (effectIds.Length == 0 && Int(rec, "isshow") == 1)
-                {
-                    if (effectByModel.TryGetValue(id, out var byId))
-                        effectIds = byId.Distinct().ToArray();
-                    else if (int.TryParse(icon, out int iconId) && effectByModel.TryGetValue(iconId, out var byIcon))
-                        effectIds = byIcon.Distinct().ToArray();
-                }
                 if (effectIds.Length > 0) effectsAttached++;
 
                 FillOriginFields(dto, rec, id, icon, effectIds);
@@ -147,7 +141,9 @@ public static class Program
                 result.Add(dto);
             }
 
-            // skillEffects 全量另存（176 键 / 358 条，多数属于没有 skill 定义的怪物/系统技能）
+            // skillEffects 全量快照（176 键 / 358 条，多数属于没有 skill 定义的怪物/系统技能）。
+            // 注意：这是构建期参考资料，服务端与客户端运行时都不加载它——真正生效的特效已由
+            // BuildEffectIndex 按 skillId 归集后写进 MagicInfo.json 的 EffectIds 字段并下发。
             if (!opt.NoEffects)
             {
                 var effectOut = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
@@ -346,12 +342,18 @@ public static class Program
         return int.TryParse(s, out n) ? n : 0;
     }
 
-    private static Dictionary<int, List<int>> BuildEffectIndex(JsonElement effects)
+    /// <summary>
+    /// 权威索引：skillEffects 键 = skillId 或 skillId*100+等级（如 13011*100+1=1301101 治愈术Lv1）。
+    /// 不对无条目的技能做任何数字撞号兜底——特效号与技能号/图标号是两套编号，撞号纯属巧合。
+    /// </summary>
+    private static Dictionary<int, List<int>> BuildEffectIndex(JsonElement effects, HashSet<int> skillIds)
     {
         var map = new Dictionary<int, List<int>>();
         foreach (var kv in effects.EnumerateObject())
         {
-            if (!int.TryParse(kv.Name, out int skillId)) continue;
+            if (!int.TryParse(kv.Name, out int key)) continue;
+            int skillId = skillIds.Contains(key) ? key : key / 100;
+            if (!skillIds.Contains(skillId)) continue;   // 怪物/系统技能的特效，不属于任何玩家技能
             var ids = new List<int>();
             IEnumerable<JsonElement> items = kv.Value.ValueKind == JsonValueKind.Array
                 ? kv.Value.EnumerateArray().ToArray()
@@ -362,22 +364,11 @@ public static class Program
                     && eff.ValueKind == JsonValueKind.Number && eff.TryGetInt32(out int effId))
                     ids.Add(effId);
             }
-            if (ids.Count > 0) map[skillId] = ids;
-        }
-        return map;
-    }
-
-    /// <summary>5config.effect：model → effect id 列表，用于给没有 skillEffects 条目的常规技能补特效。</summary>
-    private static Dictionary<int, List<int>> BuildEffectByModel(JsonElement effects)
-    {
-        var map = new Dictionary<int, List<int>>();
-        foreach (var kv in effects.EnumerateObject())
-        {
-            if (!int.TryParse(kv.Name, out int effectId)) continue;
-            int model = Int(kv.Value, "model");
-            if (model <= 0) continue;
-            if (!map.TryGetValue(model, out var list)) map[model] = list = new List<int>();
-            list.Add(effectId);
+            if (ids.Count > 0)
+            {
+                if (!map.TryGetValue(skillId, out var list)) map[skillId] = list = new List<int>();
+                list.AddRange(ids);   // 同技能多等级条目合并
+            }
         }
         return map;
     }

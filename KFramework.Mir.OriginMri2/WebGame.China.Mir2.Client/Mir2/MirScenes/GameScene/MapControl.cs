@@ -1785,10 +1785,12 @@ public sealed class MapControl : MirControl
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
         }
 
-        // 数据驱动施法特效只给原始技能（>218）用——它们没有旧引擎 Missile/Effect 链路。
-        // 旧技能（灵魂火符/施毒术/火球等 <=218）走各自完整的旧特效链（起手音效 + 飞行道具 + 命中特效），
-        // 若再叠加 OriginEffect 会导致时机/位置错误、特效重复。
-        if ((int)magic.Spell > 218 && magic.EffectIds != null && magic.EffectIds.Length > 0)
+        // 数据驱动施法特效：只要服务端下发了权威 EffectIds 就挂 CDN 的 OriginEffect。
+        // 原始技能（>218）本就只有这条链路；旧技能（<=218，如治愈术/施毒术/火球）原先走
+        // Libraries.Magic 的经典 .Lib 特效，但 .Lib 资源已从资源包移除（Libraries.cs:199），
+        // 那些 Effects.Add 现在是空壳。权威 EffectIds 由 5config.skillEffects 下发后，
+        // 用 OriginEffect 补上真实可见的施法特效，不再按 spell 值区分。
+        if (magic.EffectIds != null && magic.EffectIds.Length > 0)
         {
             MapObject effectOwner = target ?? actor;
             foreach (int effectId in magic.EffectIds)
