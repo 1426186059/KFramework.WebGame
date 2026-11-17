@@ -4743,9 +4743,14 @@ namespace Client.MirScenes
             User.SpellLevel = p.Level;
             User.SecondaryTargetIDs = p.SecondaryTargetIDs;
 
-            // CD 起点已在 MapControl.UseMagic 本地发起时记录（覆盖服务端 cast=false 的瞬发技能），
-            // 此处不再改 CastTime，避免服务端成功包到达时把 CD 起点往后推。
+            // CD 起点由服务端施法成功回包驱动：只有 cast=true 才记 CastTime（与经典引擎一致）。
+            // 技能因目标非法/未带符等原因未真正放出时（cast=false）不进 CD，玩家可立即重试，
+            // 不会误弹"X秒内无法释放"；全局施法锁 SpellTime 仍会静默限制连发。
             if (!p.Cast) return;
+
+            ClientMagic magic = User.GetMagic(p.Spell);
+            if (magic != null)
+                magic.CastTime = CMain.Time;
         }
 
         private void MagicDelay(S.MagicDelay p)

@@ -48,14 +48,51 @@ namespace Client.MirObjects
         }
 
         /// <summary>
-        /// 可攻击对象（语义别名）：点怪物/玩家时锁定的攻击目标，普通攻击和所有攻击法术统一用它。
-        /// 与 MouseObject（鼠标悬停、移到 UI 即为 null）不同，它一旦选中就持续保持。
+        /// 可攻击对象：此字段【一定是可攻击实体】——可攻击的怪物、其他玩家、卫士(守卫/弓卫)等敌对实体，
+        /// 也包括召唤物/宠物等能被攻击的对象；绝不会是 NPC / 物品 / 自己 / 尸体。
+        /// 普通攻击和所有攻击法术统一以它为目标；选中 NPC 时它必为 null（见 SelectTarget），
+        /// 永不把 NPC 塞进来。与 MouseObject（鼠标悬停、移到 UI 即 null）不同，它一旦选中就持续保持。
         /// 后端就是 TargetObject/TargetObjectID。
         /// </summary>
         public static MapObject CanAttackTargetObject
         {
             get => TargetObject;
             set => TargetObjectID = value != null ? value.ObjectID : 0;
+        }
+
+        /// <summary>
+        /// 统一"选中"入口（脚底环 SelectionTarget + 攻击目标 CanAttackTargetObject + 法术目标 MagicObjectID）。
+        /// 【参数 target 只是"被点选的对象"，不要求可攻击】——NPC、物品也会传进来。
+        /// 只有可攻击对象（怪物/玩家，排除 NPC/物品/死亡）才写入 CanAttackTargetObject；
+        /// 传 NPC/物品/null/死亡对象时，脚底环可以留在它身上，但 CanAttackTargetObject 一律置 null，
+        /// 从而保证 CanAttackTargetObject 永远只装可攻击对象。
+        /// 所有点击选中处都应走这里。
+        /// </summary>
+        public static void SelectTarget(MapObject target)
+        {
+            if (target == null || target.Dead)
+            {
+                SelectionTarget = null;
+                CanAttackTargetObject = null;
+                MagicObjectID = 0;
+                return;
+            }
+
+            SelectionTarget = target;
+
+            if (target.Race == ObjectType.Item || target.Race == ObjectType.Merchant || target is NPCObject)
+            {
+                CanAttackTargetObject = null;
+                MagicObjectID = 0;
+                return;
+            }
+
+            CanAttackTargetObject = target;
+
+            if (target is MonsterObject monster && monster.AI != 6)
+                MagicObjectID = target.ObjectID;
+            else
+                MagicObjectID = 0;
         }
 
         private static uint magicObjectID;

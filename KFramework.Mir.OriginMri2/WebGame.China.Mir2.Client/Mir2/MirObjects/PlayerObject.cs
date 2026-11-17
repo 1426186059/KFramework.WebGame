@@ -1793,7 +1793,9 @@ namespace Client.MirObjects
 
 
                             case Spell.SummonSkeleton:
-                                Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
+                                // 起手特效改走原始传奇 CDN（5config：召唤骷髅 skill 13051 → effect 655/model13005），
+                                // 替代已移除的经典 .Lib（Libraries.Magic/1500）。
+                                Effects.Add(new OriginEffect(655, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
@@ -1901,7 +1903,12 @@ namespace Client.MirObjects
 
 
                             case Spell.SummonShinsu:
-                                Effects.Add(new Effect(Libraries.Magic2, 0, 10, Frame.Count * FrameInterval, this));
+                                // 起手特效改走原始传奇 CDN（5config：召唤神兽 skill 13131 → Lv1 effect652/model13002、Lv5 759、Lv6 765、Lv7 771），
+                                // 替代已移除的经典 .Lib（Libraries.Magic2/0）。
+                                {
+                                    int shinsuEffect = SpellLevel >= 7 ? 771 : SpellLevel >= 6 ? 765 : SpellLevel >= 5 ? 759 : 652;
+                                    Effects.Add(new OriginEffect(shinsuEffect, this));
+                                }
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
@@ -2197,8 +2204,8 @@ namespace Client.MirObjects
                         GameScene.Scene.Redraw();
                         GameScene.Scene.MapControl.SortObject(this);
                         if (MouseObject == this) MouseObjectID = 0;
-                        if (TargetObject == this) TargetObjectID = 0;
-                        if (MagicObject == this) MagicObjectID = 0;
+                        if (SelectionTarget == this || TargetObject == this || MagicObject == this)
+                            SelectTarget(null);
                         DeadTime = CMain.Time;
                         break;
 
@@ -2914,16 +2921,21 @@ namespace Client.MirObjects
 
                                     case Spell.SoulFireBall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-
-                                        if (missile.Target != null)
+                                        // 飞行符用原始传奇 CDN 资源（5config.effect：Lv1=654/model13023，Lv5=754/model13026），
+                                        // 替代已移除的经典 .Lib（Libraries.Magic/1160），否则浏览器端加载不到、看不到飞行特效。
                                         {
-                                            missile.Complete += (o, e) =>
+                                            int flyEffect = SpellLevel >= 5 ? 754 : 654;
+                                            int hitEffect = SpellLevel >= 5 ? 752 : 653;
+                                            Point flyDest = ob != null ? ob.CurrentLocation : TargetPoint;
+                                            OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest);
+                                            MapObject hitTarget = ob;
+                                            originMissile.Complete += (o, e) =>
                                             {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic, 1360, 10, 600, missile.Target));
+                                                if (hitTarget == null || hitTarget.CurrentAction == MirAction.Dead) return;
+                                                hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
                                                 SoundManager.PlaySound(20000 + (ushort)Spell.SoulFireBall * 10 + 2);
                                             };
+                                            Effects.Add(originMissile);
                                         }
                                         break;
 

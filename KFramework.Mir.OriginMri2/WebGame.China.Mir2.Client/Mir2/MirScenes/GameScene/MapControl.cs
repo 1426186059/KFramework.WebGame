@@ -1002,7 +1002,7 @@ public sealed class MapControl : MirControl
                     NPCObject npc = MapObject.MouseObject as NPCObject;
                     if (npc != null)
                     {
-                        MapObject.SelectionTarget = npc; // 选定 NPC：单一变量覆盖旧选中（互斥），脚底环随之移到 NPC
+                        MapObject.SelectTarget(npc); // 选定 NPC：统一入口，脚底环移到 NPC、攻击目标按 NPC 语义清空
                         // 城市传送员：自定义分类传送对话框（开关 TeleporterData.UseCustomDialog，默认关，暂用原 NPC 脚本菜单）。
                         if (TeleporterData.UseCustomDialog && TeleporterData.IsCityTeleporter(npc.Name))
                         {
@@ -1171,13 +1171,9 @@ public sealed class MapControl : MirControl
             !(MapObject.MouseObject is NPCObject) && !(MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI == 64)
              && !(MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI == 70))
         {
-            MapObject.TargetObjectID = MapObject.MouseObject.ObjectID;
-            MapObject.SelectionTarget = MapObject.MouseObject; // 选定怪物/玩家：覆盖旧选中（互斥）
-            if (MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI != 6)
-                MapObject.MagicObjectID = MapObject.TargetObject.ObjectID;
+            MapObject.SelectTarget(MapObject.MouseObject); // 统一入口：脚底环/攻击目标/法术目标一次设齐（互斥）
         }
-        else
-            MapObject.TargetObjectID = 0;
+        // 点地面不清空目标：保留已选中的 NPC/怪物/玩家，只有点中新的可攻击对象或目标死亡时才切换/清空。
     }
 
     private void CheckInput()
@@ -1763,11 +1759,9 @@ public sealed class MapControl : MirControl
 
         GameScene.LogTime = CMain.Time + Globals.LogDelay;
 
-        // 本地即记 CD 起点：服务端只有 cast=true 才回 S.Magic{Cast=true}，瞬间技能(施毒术/灵魂火符)
-        // 无有效目标时服务端 cast=false，客户端收不到 CastTime 更新 → CD 不显示。
-        // 但服务端仍有 SpellTime=1800 全局施法锁，玩家不能连发，所以客户端在本地成功发起时同样记时。
-        magic.CastTime = CMain.Time;
-        if (magic.Delay <= 0) magic.Delay = 1800;   // Delay 未下发时用服务端全局 SpellTime 兜底
+        // CD 由服务端 S.Magic{Cast=true} 回包驱动（见 GameScene.Magic），发起瞬间不记 CastTime。
+        // 否则瞬发技能（灵魂火符/施毒术）在服务端 cast=false（目标非法/未带符）时技能没放出，
+        // 客户端却已进入 CD，反复按键会一直弹"1秒内无法释放"。
 
         if (actor == User)
         {
