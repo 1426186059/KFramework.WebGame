@@ -67,6 +67,12 @@ namespace KFramework.Test.Common.Tests
             },
             new TestEntry
             {
+                Name = "富文本 RichText（颜色 / 超链接 / 标签 / 命中断言）",
+                Desc = "Unity 风格富文本子集：① 颜色/样式标签（#RRGGBB、#RRGGBBAA、命名色、嵌套、<b><i><u><size>）与 richText=false 对照；② <link>/<a href> 超链接命中矩形可视化、悬停高亮、点击显示 URL；③ MeasureText 剥离标签 + DrawText 命中数量/URL/顺序/outlineMode 的 PASS/FAIL 断言",
+                Factory = static () => new RichTextTest.RichTextTestScene(),
+            },
+            new TestEntry
+            {
                 Name = "KCanvas 组件（KButton / KLabel / KImage / KSimpleLabel）",
                 Desc = "节点树 UI 体系：组件挂在 KUIRoot 的 KCanvas 上（由 KSceneMgr 驱动，Anchor/Pivot 布局 + 全局指针分发）。每个组件一个页签 —— KButton 九个按钮用 Anchor=Pivot 钉在固定矩形九处（文字居中、四态过渡）；KLabel 与它同构（Anchor 决定控件落点、Alignment 只管格内）+ 折行；KImage 尺寸/染色/Pivot；KSimpleLabel 纯 Pivot 定位九处",
                 Factory = static () => new KCanvasTest.KCanvasTestScene(),

@@ -104,10 +104,10 @@ namespace KFramework.MonoGame
 
         /// <summary>富文本绘制：<paramref name="richText"/>=true 时解析 &lt;color&gt;/&lt;link&gt;/&lt;b&gt;/&lt;i&gt;/&lt;u&gt;/&lt;size&gt; 标签逐段上色。
         /// <paramref name="outlineMode"/>=true 时只画去标签的纯文本、忽略段颜色（供描边用统一色）。
-        /// <paramref name="linkHits"/> 非 null 时收集超链接的命中矩形（局部坐标，相对 bounds 左上角），供点击命中使用。</summary>
+        /// 超链接点击命中请用 <see cref="GetLinkAt"/>，它复用本方法的排版逻辑。</summary>
         public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor,
                                     TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap, bool richText,
-                                    bool outlineMode = false, List<RichTextLink> linkHits = null)
+                                    bool outlineMode = false)
         {
             if (batch == null || font == null || string.IsNullOrEmpty(text))
             {
@@ -118,7 +118,7 @@ namespace KFramework.MonoGame
                 RichTextDocument doc = RichTextDocument.Parse(text);
                 if (doc != null && !string.IsNullOrEmpty(doc.PlainText))
                 {
-                    DrawRichCore(batch, doc, font, bounds, foreColor, anchor, hWrap, vWrap, outlineMode, linkHits);
+                    DrawRichCore(batch, doc, font, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
                     return;
                 }
                 if (doc != null)
@@ -172,10 +172,10 @@ namespace KFramework.MonoGame
 
         }
 
-        /// <summary>富文本核心：逐字符折行 → 按字符样式分段绘制（颜色/超链接/粗斜体/下划线/字号）。</summary>
-        private static void DrawRichCore(SpriteBatch batch, RichTextDocument doc, IFont font, RectangleF bounds,
-                                         Color foreColor, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                                         bool outlineMode, List<RichTextLink> linkHits)
+        /// <summary>富文本排版：逐字符折行 → 对齐 → 逐样式段切分，产出每段的文本、样式与矩形。
+        /// 绘制（<see cref="DrawRichCore"/>）与超链接命中（<see cref="GetLinkAt"/>）共用，保证命中区与画面一致。</summary>
+        private static List<RichTextRun> LayoutRich(RichTextDocument doc, IFont font, RectangleF bounds,
+                                                    TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
         {
             string text = doc.PlainText;
             RichTextStyle[] styles = doc.Styles;
@@ -222,7 +222,8 @@ namespace KFramework.MonoGame
             }
             float clipBottom = vWrap == VerticalWrapMode.Truncate ? bounds.Y + bounds.Height : float.MaxValue;
 
-            // 3) 逐行、逐样式段绘制
+            // 3) 逐行、逐样式段切分
+            var runs = new List<RichTextRun>();
             foreach (var span in spans)
             {
                 if (startY + lineH > clipBottom)
@@ -254,27 +255,62 @@ namespace KFramework.MonoGame
                         j++;
                     }
                     string seg = text.Substring(i, j - i);
-                    float scale = st.Scale;
-                    Color segColor = outlineMode ? foreColor : st.EffectiveColor(foreColor);
-                    float segW = font.MeasureString(seg).X * scale;
-                    font.Draw(batch, seg, new Vector2(tx, startY), segColor,
-                              0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                    if (!outlineMode)
-                    {
-                        if (linkHits != null && st.Link != null)
-                        {
-                            linkHits.Add(new RichTextLink(st.Link, tx, startY, segW, lineH));
-                        }
-                        if (st.Underline)
-                        {
-                            DrawUnderline(batch, tx, startY + lineH - 1, segW, segColor);
-                        }
-                    }
+                    float segW = font.MeasureString(seg).X * st.Scale;
+                    runs.Add(new RichTextRun(seg, st, tx, startY, segW, lineH));
                     tx += segW;
                     i = j;
                 }
                 startY += lineH;
             }
+            return runs;
+        }
+
+        /// <summary>富文本核心：用 <see cref="LayoutRich"/> 的结果逐段绘制（颜色/超链接/下划线/字号）。</summary>
+        private static void DrawRichCore(SpriteBatch batch, RichTextDocument doc, IFont font, RectangleF bounds,
+                                         Color foreColor, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
+                                         bool outlineMode)
+        {
+            List<RichTextRun> runs = LayoutRich(doc, font, bounds, anchor, hWrap, vWrap);
+            foreach (RichTextRun run in runs)
+            {
+                Color segColor = outlineMode ? foreColor : run.Style.EffectiveColor(foreColor);
+                font.Draw(batch, run.Text, new Vector2(run.X, run.Y), segColor,
+                          0f, Vector2.Zero, run.Style.Scale, SpriteEffects.None, 0f);
+                if (!outlineMode && run.Style.Underline)
+                {
+                    DrawUnderline(batch, run.X, run.Y + run.Height - 1, run.Width, segColor);
+                }
+            }
+        }
+
+        /// <summary>超链接点击回调：传入与绘制时相同的排版参数与鼠标坐标，命中某个 &lt;link&gt;/&lt;a href&gt; 段时返回其 url，
+        /// 否则返回 null。内部复用 <see cref="LayoutRich"/>，因此命中区与实际画面逐像素一致。</summary>
+        public static string GetLinkAt(string text, IFont font, RectangleF bounds,
+                                       TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
+                                       float x, float y)
+        {
+            if (font == null || string.IsNullOrEmpty(text))
+            {
+                return null;
+            }
+            RichTextDocument doc = RichTextDocument.Parse(text);
+            if (doc == null)
+            {
+                return null;
+            }
+            List<RichTextRun> runs = LayoutRich(doc, font, bounds, anchor, hWrap, vWrap);
+            foreach (RichTextRun run in runs)
+            {
+                if (run.Style.Link == null)
+                {
+                    continue;
+                }
+                if (x >= run.X && x <= run.X + run.Width && y >= run.Y && y <= run.Y + run.Height)
+                {
+                    return run.Style.Link;
+                }
+            }
+            return null;
         }
 
         private static bool SameStyle(RichTextStyle a, RichTextStyle b)

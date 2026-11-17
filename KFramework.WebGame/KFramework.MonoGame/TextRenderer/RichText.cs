@@ -3,29 +3,25 @@ using System.Text;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>一段超链接文字在"绘制局部坐标系"（相对传给 TextRenderer.DrawText 的 bounds 左上角）的命中矩形。
-    /// 由富文本绘制时按需收集，供上层控件把鼠标坐标换算到局部坐标后做点击命中。
-    /// 同一链接跨行/被样式分段时会拆成多条记录。</summary>
-    public sealed class RichTextLink
+    /// <summary>富文本布局后的一段可见文字（连续同样式），供绘制与超链接命中共用。
+    /// X/Y/Width/Height 的坐标系与传给 TextRenderer.DrawText 的 bounds 相同（已含 bounds.X/bounds.Y）。</summary>
+    internal sealed class RichTextRun
     {
-        public readonly string Url;
+        public readonly string Text;
+        public readonly RichTextStyle Style;
         public readonly float X;
         public readonly float Y;
         public readonly float Width;
         public readonly float Height;
 
-        public RichTextLink(string url, float x, float y, float width, float height)
+        public RichTextRun(string text, RichTextStyle style, float x, float y, float width, float height)
         {
-            Url = url;
+            Text = text;
+            Style = style;
             X = x;
             Y = y;
             Width = width;
             Height = height;
-        }
-
-        public bool Contains(float x, float y)
-        {
-            return x >= X && x <= X + Width && y >= Y && y <= Y + Height;
         }
     }
 
@@ -157,7 +153,7 @@ namespace KFramework.MonoGame
                     handled = true;
                     cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
                 }
-                else if ((key == "link" || key == "a") && !closing)
+                else if ((key == "link" || key == "a" || key == "a href") && !closing)
                 {
                     handled = true;
                     stack.Push(cur);

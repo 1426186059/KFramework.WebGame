@@ -179,9 +179,6 @@ namespace Client.MirControls
             }
         }
 
-        // 富文本绘制时收集的超链接命中矩形（局部坐标，相对本控件纹理左上角）。
-        private readonly List<KFramework.MonoGame.RichTextLink> _linkHits = new List<KFramework.MonoGame.RichTextLink>();
-
         /// <summary>命中超链接后是否自动用默认浏览器打开其 url。默认 true；
         /// 置 false 时可只订阅 <see cref="LinkClick"/> 自行处理（如走游戏内协议）。</summary>
         public bool AutoOpenLink = true;
@@ -204,24 +201,19 @@ namespace Client.MirControls
         public bool TryGetLinkAt(int x, int y, out string url)
         {
             url = null;
-            if (!RichText || !Visible || _linkHits.Count == 0)
+            if (!RichText || !Visible || string.IsNullOrEmpty(Text))
             {
                 return false;
             }
 
             Point loc = DisplayLocation;
-            float lx = x - loc.X;
-            float ly = y - loc.Y;
-            for (int i = 0; i < _linkHits.Count; i++)
-            {
-                KFramework.MonoGame.RichTextLink hit = _linkHits[i];
-                if (hit.Contains(lx, ly))
-                {
-                    url = hit.Url;
-                    return true;
-                }
-            }
-            return false;
+            KFramework.MonoGame.TextStyle format = new KFramework.MonoGame.TextStyle(
+                _drawFormat.Anchor,
+                _drawFormat.HorizontalWrap,
+                KFramework.MonoGame.VerticalWrapMode.Overflow);
+            url = TextRenderer.GetLinkAt(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height),
+                                         format, x - loc.X, y - loc.Y);
+            return url != null;
         }
 
         public override void OnMouseClick(MouseEventArgs e)
@@ -277,8 +269,6 @@ namespace Client.MirControls
             if (Size.Width == 0 || Size.Height == 0)
                 return;
 
-            _linkHits.Clear();
-
             if (TextureSize != Size)
                 DisposeTexture();
 
@@ -318,7 +308,7 @@ namespace Client.MirControls
                         TextRenderer.DrawText(Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), outline, format, RichText, true);
                         TextRenderer.DrawText(Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), outline, format, RichText, true);
                     }
-                    TextRenderer.DrawText(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), fore, format, RichText, false, _linkHits);
+                    TextRenderer.DrawText(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), fore, format, RichText, false);
 
                     if (_underLine)
                     {
@@ -372,7 +362,6 @@ namespace Client.MirControls
             TextChanged = null;
             _text = null;
             LinkClick = null;
-            _linkHits.Clear();
         }
 
     }
