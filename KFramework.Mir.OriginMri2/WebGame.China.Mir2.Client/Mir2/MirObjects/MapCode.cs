@@ -6,15 +6,8 @@ namespace Client.MirObjects
 {
     public class CellInfo
     {
-        // 原始传奇 CDN 地图下，瓦片视觉走 zipmap jpg，这些经典 .map 瓦片字段已不再被赋值；
-        // 保留 Back*/Middle*/Front* 仅因脚步声、阻挡等旧逻辑仍引用（值为默认），DoorIndex/FishingCell 同理。
-        public short BackIndex;
-        public int BackImage;
-        public short MiddleIndex;
-        public int MiddleImage;
-        public short FrontIndex;
-        public int FrontImage;
-
+        // 原始传奇 CDN 地图下瓦片视觉走 zipmap jpg，经典 .map 瓦片字段(Back*/Middle*/Front*)已全部移除；
+        // 阻挡/安全/遮挡走 Flags + Is* 属性。DoorIndex/FishingCell 仍被开门、钓鱼逻辑使用，保留。
         public byte DoorIndex;
 
         public List<MapObject> CellObjects;
@@ -186,10 +179,7 @@ namespace Client.MirObjects
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
                 {
-                    var c = new CellInfo { Flags = data.CellFlags[idx++] };
-                    // 与服务端一致：不可走(墙) → 标记 FrontImage 0x8000（客户端 EmptyCell 据此判阻挡）
-                    if (c.IsBlocked) c.FrontImage = 0x8000;
-                    MapCells[x, y] = c;
+                    MapCells[x, y] = new CellInfo { Flags = data.CellFlags[idx++] };
                 }
 
             //KFramework.MonoGame.PrintTool.Log($"[Map] 地图就绪: id={id} 名称={entry?.Name} img={MapImg} " +

@@ -54,6 +54,20 @@ public static partial class ExcelTableMgr
         return _itemsByIndex != null && _itemsByIndex.TryGetValue(index, out item) && item != null;
     }
 
+    // ── 怪物表（独立于 config 分片，从本地 MyRes/ExcelConfig/MonsterInfo.json 加载）──
+    // 完整映射服务端 MonsterInfo（2773 项），MonsterObject 按 Image 查怪物专属音效等。
+    public static List<MonsterInfoTable> _monsters;
+    public static Dictionary<int, MonsterInfoTable> _monstersByImage;   // Image(模型号) → 记录
+    public static List<MonsterInfoTable> Monsters => _monsters ?? new List<MonsterInfoTable>();
+    public static bool MonstersReady => _monsters != null;
+
+    /// <summary>按怪物 Image(模型号) 查 MonsterInfoTable（用于取 walk/attack/die audio）。</summary>
+    public static bool TryGetMonster(int image, out MonsterInfoTable info)
+    {
+        info = null;
+        return _monstersByImage != null && _monstersByImage.TryGetValue(image, out info) && info != null;
+    }
+
 
     /// <summary>
     /// 现阶段所有配置表统一在此串行加载完成，保证进游戏前全部就绪、结果确定。
@@ -77,6 +91,8 @@ public static partial class ExcelTableMgr
             }
             // 2) 物品表独立加载（不并入 IsReady：config 已就绪后再次调用仍会补拉物品表）
             await LoadItemsAsync(ct).ConfigureAwait(false);
+            // 3) 怪物表独立加载（含原始传奇 walk/attack/die audio，按 Image 建索引）
+            await LoadMonstersAsync(ct).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -113,6 +129,37 @@ public static partial class ExcelTableMgr
         catch (Exception ex)
         {
             PrintTool.LogError($"[ExcelTableMgr] ItemInfo 加载失败：{ex}");
+        }
+    }
+
+    /// <summary>从本地资源服务器加载 MyRes/ExcelConfig/MonsterInfo.json（2773 项怪物，含原始传奇音效 id）。
+    /// 按 Image 建索引，供 MonsterObject 取 walk/attack/die audio。失败仅记录日志，不抛出。</summary>
+    private static async Task LoadMonstersAsync(CancellationToken ct)
+    {
+        if (_monsters != null) return;
+        try
+        {
+            PrintTool.Log("[ExcelTableMgr] 开始加载 MonsterInfo.json");
+            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/MonsterInfo.json", ct).ConfigureAwait(false);
+            if (bytes == null || bytes.Length == 0)
+            {
+                PrintTool.Log("[ExcelTableMgr] MonsterInfo.json 为空（检查 127.0.0.1:5080/MyRes/ExcelConfig/）");
+                return;
+            }
+            _monsters = JsonTool.FromJson<List<MonsterInfoTable>>(
+                System.Text.Encoding.UTF8.GetString(bytes),
+                AppJsonContext.Default.MonsterInfoList);
+            var byImage = new Dictionary<int, MonsterInfoTable>(_monsters?.Count ?? 0);
+            if (_monsters != null)
+                foreach (var m in _monsters)
+                    if (m != null && m.Image > 0 && !byImage.ContainsKey(m.Image))
+                        byImage[m.Image] = m;
+            _monstersByImage = byImage;
+            PrintTool.Log($"[ExcelTableMgr] MonsterInfo 加载完成 {(_monsters?.Count ?? 0)} 项，Image 索引 {byImage.Count} 条");
+        }
+        catch (Exception ex)
+        {
+            PrintTool.LogError($"[ExcelTableMgr] MonsterInfo 加载失败：{ex}");
         }
     }
 

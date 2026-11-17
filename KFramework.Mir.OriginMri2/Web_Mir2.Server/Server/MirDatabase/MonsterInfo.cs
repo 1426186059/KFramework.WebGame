@@ -32,6 +32,10 @@ namespace Server.MirDatabase
         public ushort AttackSpeed = 2500, MoveSpeed = 1800;
         public uint Experience;
 
+        // 原始传奇怪物音效 id（4config.monster 的 walkaudio/attackaudio/dieaudio，对应 CDN audio/{id}.mp3）。
+        // 为 0 表示该怪没有配置对应音效，客户端回退到通用音。
+        public int WalkAudio, AttackAudio, DieAudio;
+
         public string DropPath = "";
         
         // 配置表里出现 DropSettings 字段（哪怕是空数组）就完全走配置表掉落；

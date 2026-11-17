@@ -3793,17 +3793,29 @@ namespace Client.MirObjects
             }
         }
 
-        // 战斗音效改用原始传奇通用音（ActionSound：AttackSound=2；命中通用音=6(skillEffects)；死亡=3/4）。
-        // 走 CDN audio/{id}.mp3（SoundManager.PlayOriginSound）。经典 BaseSound=Image*10 的 wav 属于被抛弃的旧资源体系。
-        public void PlayFlinchSound()       { SoundManager.PlayOriginSound(6); }
-        public void PlayStruckSound()       { SoundManager.PlayOriginSound(6); }   // 命中通用音
-        public void PlayAttackSound()       { SoundManager.PlayOriginSound(2); }   // AttackSound
-        public void PlaySecondAttackSound() { SoundManager.PlayOriginSound(2); }
-        public void PlayThirdAttackSound()  { SoundManager.PlayOriginSound(2); }
-        public void PlayFourthAttackSound() { SoundManager.PlayOriginSound(2); }
-        public void PlayFithAttackSound()   { SoundManager.PlayOriginSound(2); }
-        public void PlaySwingSound()        { SoundManager.PlayOriginSound(2); }   // 挥击
-        public void PlayDieSound()          { SoundManager.PlayOriginSound(CMain.Random.Next(3, 5)); } // 3/4
+        // 战斗音效走原始传奇：优先用本怪在 4config.monster 配置的 attackaudio/dieaudio/walkaudio
+        // （已按 model=Image 映射进 MonsterInfo.json，由 ExcelTableMgr 加载，OriginModel 即该 model 号）；
+        // 未配置(id=0)时回退到 ActionSound 通用音（攻击=2、命中=6、死亡=3/4）。
+        // 全部走 CDN audio/{id}.mp3（SoundManager.PlayOriginSound）。
+        private int MonsterAudio(int kind)
+        {
+            if (ExcelTableMgr.MonstersReady && ExcelTableMgr.TryGetMonster(OriginModel, out var info))
+            {
+                int id = kind == 0 ? info.WalkAudio : kind == 1 ? info.AttackAudio : info.DieAudio;
+                if (id > 0) return id;
+            }
+            return -1; // 未配置 → 用通用音
+        }
+
+        public void PlayFlinchSound()       { SoundManager.PlayOriginSound(6); }   // 命中通用音（4config 无 struck 字段）
+        public void PlayStruckSound()       { SoundManager.PlayOriginSound(6); }
+        public void PlayAttackSound()       { int id = MonsterAudio(1); SoundManager.PlayOriginSound(id >= 0 ? id : 2); }
+        public void PlaySecondAttackSound() { PlayAttackSound(); }
+        public void PlayThirdAttackSound()  { PlayAttackSound(); }
+        public void PlayFourthAttackSound() { PlayAttackSound(); }
+        public void PlayFithAttackSound()   { PlayAttackSound(); }
+        public void PlaySwingSound()        { PlayAttackSound(); }                // 挥击同攻击音
+        public void PlayDieSound()          { int id = MonsterAudio(2); SoundManager.PlayOriginSound(id >= 0 ? id : CMain.Random.Next(3, 5)); }
 
 
         public void PlayDeadSound()

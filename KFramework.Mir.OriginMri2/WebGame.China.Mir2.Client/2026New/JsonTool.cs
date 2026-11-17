@@ -26,6 +26,12 @@ using System.Text.Json.Serialization;
 // 物品表 ItemInfo（顶层数组）：GM 面板等需要全量物品时直接反序列化整张表。
 [JsonSerializable(typeof(ItemTableDTO))]
 [JsonSerializable(typeof(List<ItemTableDTO>), TypeInfoPropertyName = "ItemList")]
+// 怪物表 MonsterInfo（顶层数组）：MonsterObject 取怪物专属音效等配置。
+[JsonSerializable(typeof(MonsterInfoTable))]
+[JsonSerializable(typeof(List<MonsterInfoTable>), TypeInfoPropertyName = "MonsterInfoList")]
+[JsonSerializable(typeof(MonsterDropSettingTable))]
+[JsonSerializable(typeof(List<MonsterDropSettingTable>))]
+[JsonSerializable(typeof(List<object>))]
 
 // 图集 JSON 核心数据：普通图集 / MovieClip 图集及其嵌套类型与 frames 的两种集合形态。
 [JsonSerializable(typeof(EgretAtlasJson))]

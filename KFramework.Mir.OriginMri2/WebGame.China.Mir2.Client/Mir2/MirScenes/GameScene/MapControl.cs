@@ -220,8 +220,8 @@ public sealed class MapControl : MirControl
         if (!GameScene.Scene.MapControl.EmptyCell(target))
         {
             CellInfo c = M2CellInfo[target.X, target.Y];
-            LogMove("目标格不可走(阻挡): " + target + " BackImage=0x" + c.BackImage.ToString("X8") +
-                " FrontImage=0x" + c.FrontImage.ToString("X4"));
+            LogMove("目标格不可走(阻挡): " + target + " Flags=0x" + c.Flags.ToString("X2") +
+                " IsBlocked=" + c.IsBlocked + " IsCover=" + c.IsCover + " IsSafe=" + c.IsSafe);
             return;
         }
 
@@ -1855,10 +1855,20 @@ public sealed class MapControl : MirControl
         return Math.Sqrt(x * x + y * y);
     }
 
+    /// <summary>
+    /// 该格子是否"空"（可落脚/可通行）：地形不阻挡且格子上没有阻挡型对象。
+    /// 用于寻路、走位等判断能否进入某格。
+    /// 地形阻挡来自 map.dat 解码进 CellInfo.Flags 的不可走位(bit3 → IsBlocked)；
+    /// 对象阻挡来自 MapObject.Blocking（怪/玩家/NPC 等）。
+    /// </summary>
     public bool EmptyCell(Point p)
     {
         if (M2CellInfo == null) return false;
-        if ((M2CellInfo[p.X, p.Y].BackImage & 0x20000000) != 0 || (M2CellInfo[p.X, p.Y].FrontImage & 0x8000) != 0)
+        if (p.X < 0 || p.Y < 0 || p.X >= Width || p.Y >= Height)
+            return false;
+        // 用 map.dat 解码进 CellInfo.Flags 的不可走位(bit3)，替代旧的 BackImage/FrontImage 位判断
+        //（那两个字段在 CDN 地图下恒为 0，位判断永远为 false）。
+        if (M2CellInfo[p.X, p.Y].IsBlocked)
             return false;
 
         foreach (var ob in Objects.Values)
@@ -1990,11 +2000,17 @@ public sealed class MapControl : MirControl
     }
 
 
+    /// <summary>
+    /// 该格地形是否有效（可通行）：只看地图本身，不判断格子上是否有对象。
+    /// 与 EmptyCell 的区别：EmptyCell 还要求格子上没有阻挡型对象（怪/玩家/NPC）。
+    /// 地形有效性来自 map.dat 解码进 CellInfo.Flags 的不可走位(bit3 → IsBlocked)。
+    /// </summary>
     public bool ValidPoint(Point p)
     {
         if (M2CellInfo == null) return false;
-        //GameScene.Scene.ChatDialog.ReceiveChat(string.Format("cell: {0}", (M2CellInfo[p.X, p.Y].BackImage & 0x20000000)), ChatType.System);
-        return (M2CellInfo[p.X, p.Y].BackImage & 0x20000000) == 0;
+        if (p.X < 0 || p.Y < 0 || p.X >= Width || p.Y >= Height)
+            return false;
+        return !M2CellInfo[p.X, p.Y].IsBlocked;
     }
     public bool HasTarget(Point p)
     {
