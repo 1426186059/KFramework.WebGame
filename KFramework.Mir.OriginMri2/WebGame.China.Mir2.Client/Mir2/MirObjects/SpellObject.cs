@@ -22,6 +22,13 @@ namespace Client.MirObjects
         public Point AnimationOffset = new(0, 0);
         public int FrameCount, FrameInterval, FrameIndex;
         public bool Repeat, Ended;
+
+        // 安全区边沿光柱：原始传奇 initSafeZone 对 safeArea 每格 addEffect(261)=model 11081。
+        // 服务端 SafeZoneBorder 已把这些边框格下发为 Spell.TrapHexagon 装饰，但经典 .Lib(1390) 已废弃；
+        // 这里改走 CDN model 11081 的精灵帧，让现成的安全区边框逻辑重新可见。
+        private int _originModel;          // >0 表示用 CDN 精灵绘制（11081）
+        private const int OriginIntval = 86;   // 5config.effect[261].intval
+        private const int OriginDir = 4;       // effect[261].dir（totaldir=1）
         
 
         public SpellObject(uint objectID) : base(objectID)
@@ -41,11 +48,13 @@ namespace Client.MirObjects
             switch (Spell)
             {
                 case Spell.TrapHexagon:
-                    BodyLibrary = Libraries.Magic;
-                    DrawFrame = 1390;
-                    FrameInterval = 100;
-                    FrameCount = 10;
+                    // 安全区边沿光柱：用原始传奇 CDN model 11081（effect 261），不再用废弃的 Libraries.Magic 1390。
+                    _originModel = 11081;
+                    FrameInterval = OriginIntval;
+                    FrameCount = 8;
                     Blend = true;
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
+                                                    Mir2OriginObjectLibrary.PriorityVisible);
                     break;
                 case Spell.FireWall:
                     BodyLibrary = Libraries.Magic;
@@ -292,6 +301,12 @@ namespace Client.MirObjects
 
         public override void Process()
         {
+            // CDN 精灵的安全区光柱：资源就绪后按实际帧数循环（model 11081 单动作多帧）
+            if (_originModel > 0 &&
+                Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, 1, OriginDir, out int originFrames) &&
+                originFrames > 0)
+                FrameCount = originFrames;
+
             if (CMain.Time >= NextMotion)
             {
                 if (++FrameIndex >= FrameCount && Repeat)
@@ -329,6 +344,18 @@ namespace Client.MirObjects
         public override void Draw()
         {
             if (FrameIndex >= FrameCount && !Repeat) return;
+
+            // 安全区边沿光柱：走 CDN model 11081 精灵帧（替代废弃的 Libraries.Magic）。
+            // 用 DrawAnchored 按 modelInfo 枢轴(standx=30/standy=165)把脚底钉在格子点上——
+            // 它每帧按各自宽高算偏移但基准点固定，不会像手算矩形那样因帧尺寸变化而脚底乱跳。
+            if (_originModel > 0)
+            {
+                Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
+                                                     FrameIndex, DrawLocation.X, DrawLocation.Y, Color.White,
+                                                     standX: 30, standY: 165);
+                return;
+            }
+
             if (BodyLibrary == null) return;
 
             if (Blend)
