@@ -1,3 +1,4 @@
+using System.Text;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
@@ -9,6 +10,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
     /// ① 标签总览：颜色（#RRGGBB / #RRGGBBAA / 命名色 / 嵌套 / 恢复默认）与样式标签，旁边给 richText=false 的对照。
     /// ② 超链接命中：&lt;link="url"&gt; 与 &lt;a href="url"&gt; 两种写法，悬停 / 点击时调 TextRenderer.GetLinkAt 直接取回 URL。
     /// ③ 自动断言：用 MeasureText 验证标签确实被剥离、原样度量更宽；用 GetLinkAt 在链接文字坐标上采样，断言返回正确 URL。
+    /// ④ 随机样本对照：按按钮随机生成 1~3 行、覆盖全部标签类型的富文本，上格显示原始串、下格显示渲染结果。
     /// </summary>
     public sealed class RichTextTestScene : TestSceneBase
     {
@@ -25,6 +27,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Tags = 0,
             Links = 1,
             Assert = 2,
+            Random = 3,
         }
 
         private Page _page = Page.Tags;
@@ -33,6 +36,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private Rectangle _linkRect;
         private string _hoverUrl = string.Empty;
         private string _status = "把鼠标移到蓝色下划线文字上，点击可查看命中 URL（测试里只显示，不打开浏览器）";
+
+        // 页④：随机生成的富文本样本（上=原始串，下=富文本渲染）。
+        private string _randomSample = string.Empty;
+        private int _randomLineCount = 1;
+        private readonly Random _random = new();
 
         // ── 样本串（同时用于展示与断言）────────────────────────────────────
 
@@ -55,10 +63,23 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             AddUiButton("① 颜色与样式标签", () => { _page = Page.Tags; }, _page == Page.Tags);
             AddUiButton("② 超链接命中", () => { _page = Page.Links; }, _page == Page.Links);
             AddUiButton("③ 自动断言", () => { _page = Page.Assert; }, _page == Page.Assert);
+            AddUiButton("④ 随机样本对照", () => { _page = Page.Random; }, _page == Page.Random);
+
+            if (_page == Page.Random)
+            {
+                if (_randomSample.Length == 0)
+                {
+                    RegenerateRandomSample();
+                }
+                AddUiButton("换一批（1~3 行随机）", () => { RegenerateRandomSample(); });
+                AddUiButton("固定 1 行", () => { GenerateRandomSample(1); });
+                AddUiButton("固定 3 行", () => { GenerateRandomSample(3); });
+            }
 
             // 链接页的绘制矩形：Update 命中查询与 Draw 绘制必须共用同一个矩形与排版参数。
+            // 起点用 ContentTop（按钮区下方），与 DrawLinksPage 的正文起点一致。
             float x = 28f;
-            float y = 68f;
+            float y = ContentTop;
             y += Font.LineSpacing + 10f;   // DrawSection
             y += Font.LineSpacing + 6f;    // DrawLine
             _linkRect = new Rectangle((int)x, (int)y, (int)(Device.Viewport.Width - x * 2f), 70);
@@ -103,8 +124,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                 case Page.Links:
                     DrawLinksPage(batch, origin);
                     break;
-                default:
+                case Page.Assert:
                     DrawAssertPage(batch, origin);
+                    break;
+                default:
+                    DrawRandomPage(batch, origin);
                     break;
             }
             DrawButtons(batch);
@@ -115,7 +139,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private void DrawTagsPage(SpriteBatch batch, Vector2 origin)
         {
             float x = origin.X;
-            float y = origin.Y;
+            float y = ContentTop;
             float width = Device.Viewport.Width - x * 2f;
 
             y += DrawSection(batch, "① 颜色标签 <color=...>（开启富文本：标签不显示，只给文字上色）", new Vector2(x, y));
@@ -145,7 +169,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private void DrawLinksPage(SpriteBatch batch, Vector2 origin)
         {
             float x = origin.X;
-            float y = origin.Y;
+            float y = ContentTop;
             float width = Device.Viewport.Width - x * 2f;
 
             y += DrawSection(batch, "超链接：<link=\"url\"> / <a href=\"url\"> —— 蓝色下划线，调用 GetLinkAt 直接取回 URL", new Vector2(x, y));
@@ -175,7 +199,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private void DrawAssertPage(SpriteBatch batch, Vector2 origin)
         {
             float x = origin.X;
-            float y = origin.Y;
+            float y = ContentTop;
             float width = Device.Viewport.Width - x * 2f;
 
             y += DrawSection(batch, "自动断言（PASS/FAIL）：MeasureText 剥离标签 + DrawText 链接命中", new Vector2(x, y));
@@ -254,6 +278,117 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             }
             DrawLine(batch, Font, "合计 " + pass + "/" + rows.Count + " 通过", new Vector2(x, y),
                      pass == rows.Count ? new Color(120, 240, 160) : new Color(255, 160, 80));
+        }
+
+        // ── 页④：随机样本生成与上下对照 ───────────────────────────────────
+
+        /// <summary>可随机的词，让每次生成的样本内容不同。</summary>
+        private static readonly string[] RandomWords =
+        [
+            "传奇", "沙巴克", "裁决", "屠龙", "赤月", "祖玛", "沃玛", "道士", "法师", "战士", "行会", "攻城"
+        ];
+
+        /// <summary>所有标签类型的模板：{0} 是占位词。每次生成按随机顺序取用，保证一行里覆盖全部标签。</summary>
+        private static readonly string[] TagTemplates =
+        [
+            "<color=#FF5050>{0}</color>",
+            "<color=#50C05080>{0}</color>",
+            "<color=red>{0}</color>",
+            "<color=orange>{0}</color>",
+            "<color>{0}</color>",
+            "<b>{0}</b>",
+            "<i>{0}</i>",
+            "<u>{0}</u>",
+            "<size=26>{0}</size>",
+            "<size=12>{0}</size>",
+            "<link=\"https://www.example.com/\">{0}</link>",
+            "<a href=\"https://docs.example.com/guide\">{0}</a>",
+        ];
+
+        private string PickWord()
+        {
+            return RandomWords[_random.Next(RandomWords.Length)];
+        }
+
+        /// <summary>生成一行随机富文本：把所有标签类型洗牌后各用一次，词随机。</summary>
+        private string GenerateRandomLine()
+        {
+            List<string> order = new(TagTemplates);
+            for (int i = order.Count - 1; i > 0; i--)
+            {
+                int j = _random.Next(i + 1);
+                (order[i], order[j]) = (order[j], order[i]);
+            }
+
+            StringBuilder line = new();
+            for (int i = 0; i < order.Count; i++)
+            {
+                if (i > 0)
+                {
+                    line.Append(' ');
+                }
+                line.Append(string.Format(order[i], PickWord()));
+            }
+            return line.ToString();
+        }
+
+        private void GenerateRandomSample(int lineCount)
+        {
+            _randomLineCount = Math.Clamp(lineCount, 1, 3);
+            StringBuilder sample = new();
+            for (int i = 0; i < _randomLineCount; i++)
+            {
+                if (i > 0)
+                {
+                    sample.Append('\n');
+                }
+                sample.Append(GenerateRandomLine());
+            }
+            _randomSample = sample.ToString();
+        }
+
+        private void RegenerateRandomSample()
+        {
+            GenerateRandomSample(_random.Next(1, 4));
+        }
+
+        private void DrawRandomPage(SpriteBatch batch, Vector2 origin)
+        {
+            float x = origin.X;
+            float y = ContentTop;
+            float width = Device.Viewport.Width - x * 2f;
+
+            y += DrawSection(batch, "④ 随机样本对照：上=原始文本（含标签，richText=false），下=富文本渲染（richText=true）",
+                             new Vector2(x, y));
+            y += DrawLine(batch, Font, "点上方「换一批 / 固定 1 行 / 固定 3 行」按钮生成；每行随机洗牌覆盖全部标签类型。",
+                          new Vector2(x, y), new Color(190, 205, 230));
+
+            // 度量两块的真实高度：原始串含标签更长，按 Wrap 折行。
+            Size rawSize = TextRenderer.MeasureText(_randomSample, Font, new Size((int)width, int.MaxValue),
+                                                    HorizontalWrapMode.Wrap, false);
+            Size richSize = TextRenderer.MeasureText(_randomSample, Font, new Size((int)width, int.MaxValue),
+                                                     HorizontalWrapMode.Wrap, true);
+            int rawH = Math.Max(40, rawSize.Height + 12);
+            int richH = Math.Max(40, richSize.Height + 12);
+
+            // 上：原始文本（标签原样显示）
+            DrawSection(batch, "原始文本：" + _randomLineCount + " 行，共 " + _randomSample.Length + " 字符（标签当字符显示）",
+                        new Vector2(x, y));
+            y += Font.LineSpacing + 6f;
+            Rectangle rawRect = new((int)x, (int)y, (int)width, rawH);
+            DrawRect(batch, rawRect, new Color(36, 28, 20));
+            TextRenderer.DrawText(batch, _randomSample, Font, rawRect, new Color(255, 215, 170),
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, false);
+            y += rawH + 14f;
+
+            // 下：富文本渲染结果
+            DrawSection(batch, "富文本渲染结果（标签生效：颜色 / 超链接 / 粗斜体 / 下划线 / 字号）",
+                        new Vector2(x, y));
+            y += Font.LineSpacing + 6f;
+            Rectangle richRect = new((int)x, (int)y, (int)width, richH);
+            DrawRect(batch, richRect, new Color(18, 23, 36));
+            TextRenderer.DrawText(batch, _randomSample, Font, richRect, Color.White,
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
         }
 
         private Size Measure(string text, bool richText)
