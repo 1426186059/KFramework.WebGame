@@ -8,7 +8,8 @@ namespace Mir2ReverseWeb.Services;
 
 /// <summary>
 /// “按配置表提取资源（统一模式）”专用批量提取器：一次扫描所有配置表，导出三类资源：
-///   1) model 帧：所有配置表里字段名 = model 的整数值（monster/npc/title/effect…）+ item 表外观列 20/17，
+///   1) model 帧：配置表 model 字段 + item 外观列 20/17 作为候选，用 resourceVersion 的 model/{id}
+///      严格过滤真实性，动作只按 modelInfo 登记号下载（不再 0..60 全扫），
 ///      落地 {ModelOutDir}/{模型号}/{sourceId}.png；
 ///   2) 物品图标：item 表第 19 列图标 ID，落地 {ItemIconOutDir}/{iconId}.png；
 ///   3) 技能图标：skill 表 icon 字段，落地 {SkillIconOutDir}/{iconId}.png。
@@ -47,14 +48,13 @@ public class UnifiedExtractService
         await EnsureVersionsAsync();
         await EnsureModelInfoAsync();
 
-        int maxAction = Math.Max(1, Math.Min(req.MaxAction <= 0 ? 60 : req.MaxAction, 200));
         var allTables = _config.GetLoadedTableNames().Select(t => _config.GetTable(t)).Where(n => n != null).Select(n => n!).ToList();
 
-        // 1) 扫描所有配置表里字段名 = model 的整数值
+        // 1) 扫描所有配置表里字段名 = model 的整数值（候选，随后用 resourceVersion 严格过滤）
         var models = new HashSet<long>();
         foreach (var table in allTables) CollectModelFields(table, models);
 
-        // item 外观列 20/17 也当模型号
+        // item 外观列 20/17 也作为候选模型号
         var item = _config.GetTable("item");
         if (item != null)
             foreach (var node in Normalize(item))
@@ -64,6 +64,14 @@ public class UnifiedExtractService
                         var v = GetInt(o, col.ToString());
                         if (v.HasValue && v.Value > 0) models.Add(v.Value);
                     }
+
+        // ★关键过滤：只保留 resourceVersion 中真实存在的 model/{id}。
+        // 配置表 model 字段混有业务枚举(1,2,3…)、item 外观列混有图标ID，这些在 CDN 上
+        // 没有 model/{id} 资源，请求必然 404。用版本表过滤后即可根除 404 风暴。
+        int beforeFilter = models.Count;
+        bool hasVersions = _versions.Count > 0;
+        if (hasVersions)
+            models.RemoveWhere(m => !_versions.ContainsKey("model/" + m));
 
         // 2) 物品图标 item[col19] -> icon/tool
         var itemIcons = new HashSet<int>();
@@ -86,8 +94,10 @@ public class UnifiedExtractService
                     if (!string.IsNullOrWhiteSpace(s) && int.TryParse(s, out var iv) && iv > 0) skillIcons.Add(iv);
                 }
 
-        // 组装 model 动作组
+        // 组装 model 动作组：动作严格按 modelInfo 登记，不再 0..maxAction 全扫。
+        // 无动作登记的真实模型（静态资源/特效帧）跳过，扫动作只会制造 404。
         var modelGroups = new List<(long r, string ver, int action, bool json)>();
+        int noActionModels = 0;
         foreach (var r in models.OrderBy(x => x))
         {
             _versions.TryGetValue("model/" + r, out var ver);
@@ -102,17 +112,16 @@ public class UnifiedExtractService
             }
             else
             {
-                for (int a = 0; a <= maxAction; a++)
-                {
-                    modelGroups.Add((r, ver, a, false));
-                    if (req.WithJson) modelGroups.Add((r, ver, a, true));
-                }
+                noActionModels++;
             }
         }
 
         var total = modelGroups.Count + itemIcons.Count + skillIcons.Count;
         var job = new Job { TotalFiles = total };
-        job.Messages.Add($"[扫描] model 模型号 {models.Count}、动作组 {modelGroups.Count}；物品图标 {itemIcons.Count}；技能图标 {skillIcons.Count}");
+        job.Messages.Add($"[扫描] 候选模型 {beforeFilter} → 真实过滤后 {models.Count}" +
+            (hasVersions ? $"（剔除无资源值 {beforeFilter - models.Count}）" : "（版本表未加载，未做真实性过滤）") +
+            $"；动作组 {modelGroups.Count}（无动作登记跳过 {noActionModels} 个模型）；" +
+            $"物品图标 {itemIcons.Count}；技能图标 {skillIcons.Count}");
         var id = Guid.NewGuid();
         _jobs[id] = job;
 
@@ -161,7 +170,7 @@ public class UnifiedExtractService
                 await sem.WaitAsync();
                 tasks.Add(Task.Run(async () =>
                 {
-                    try { await DownloadIcon(job, itemDir, frameBase, verParam, iconId, "tool"); }
+                    try { await DownloadItemIcon(job, itemDir, frameBase, verParam, iconId); }
                     catch { }
                     finally { Interlocked.Increment(ref job.DoneFiles); sem.Release(); }
                 }));
@@ -205,6 +214,43 @@ public class UnifiedExtractService
         var local = Path.Combine(baseDir, iconId + ".png");
         job.Current = key;
         await Fetch(job, url, local);
+    }
+
+    /// <summary>
+    /// 物品图标：按 resourceVersion 里【真实存在的键】下载，不再一律假定 icon/tool。
+    /// 真实数据里多数在 icon/tool/，但也有在 icon/keji/（如金币 115）、icon/fashion/ 等子目录。
+    /// 命中真实键时：tool 子目录落到 itemDir 根，其它子目录落到 itemDir 的同级兄弟目录（...\icon\{子目录}\），
+    /// 保持与客户端相对路径 icon/{子目录}/{id}.png 一致。一个键都没命中时回退 icon/tool/{id}.png。
+    /// </summary>
+    private async Task DownloadItemIcon(Job job, string itemDir, string frameBase, string verParam, int iconId)
+    {
+        string suffix = "/" + iconId + ".png";
+        Dictionary<string, string> snap;
+        lock (_lock) { snap = new Dictionary<string, string>(_versions, StringComparer.OrdinalIgnoreCase); }
+        var hits = snap.Where(kv => kv.Key.StartsWith("icon/", StringComparison.OrdinalIgnoreCase)
+                                 && kv.Key.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        if (hits.Count == 0)
+        {
+            // 版本表没记录：回退无版本段的 icon/tool/{id}.png，落地 itemDir 根
+            await Fetch(job, $"{frameBase}/icon/tool/{iconId}.png{verParam}", Path.Combine(itemDir, iconId + ".png"));
+            job.Current = $"icon/tool/{iconId}.png(回退)";
+            return;
+        }
+
+        var iconRoot = Path.GetDirectoryName(itemDir.TrimEnd('\\', '/')) ?? itemDir; // itemDir 的父级 = .../icon
+        foreach (var kv in hits)
+        {
+            var parts = kv.Key.Split('/'); // icon/{子目录}/{id}.png
+            var sub = parts.Length >= 3 ? parts[1] : "tool";
+            // tool 落到 itemDir 根；其它子目录落到 icon 根下的同名兄弟目录
+            var targetDir = sub.Equals("tool", StringComparison.OrdinalIgnoreCase)
+                ? itemDir
+                : Path.Combine(iconRoot, sub);
+            string urlRel = string.IsNullOrEmpty(kv.Value) ? kv.Key : $"{kv.Value}/{kv.Key}";
+            job.Current = kv.Key;
+            await Fetch(job, $"{frameBase}/{urlRel}{verParam}", Path.Combine(targetDir, iconId + ".png"));
+        }
     }
 
     private async Task Fetch(Job job, string url, string local)
