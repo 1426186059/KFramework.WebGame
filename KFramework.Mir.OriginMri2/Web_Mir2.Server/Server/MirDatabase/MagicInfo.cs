@@ -194,6 +194,8 @@ namespace Server.MirDatabase
                     CastTime = CastTime - Envir.Time,
                     OriginIcon = Info.OriginIcon,
                     TargetType = (byte)Info.TargetType,
+                    // 需目标由 releaseType==1 决定；targetType 对召唤/火符都是1，不能用作判据。
+                    NeedTarget = Info.ReleaseType == 1,
                     EffectIds = Info.EffectIds ?? new int[0]
             };
         }

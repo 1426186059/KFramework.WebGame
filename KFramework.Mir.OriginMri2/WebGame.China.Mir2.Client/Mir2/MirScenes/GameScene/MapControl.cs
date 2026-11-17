@@ -1517,11 +1517,12 @@ public sealed class MapControl : MirControl
         User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = direction, Location = Functions.PointMove(User.CurrentLocation, direction, 1) };
     }
 
-    /// <summary>攻击类技能必须点击选中目标：TargetType=1（原始技能）或旧引擎单体攻击技能。</summary>
+    /// <summary>攻击类技能必须点击选中目标：NeedTarget（服务端按原始 releaseType==1 计算）或旧引擎单体攻击技能。</summary>
     private static bool RequiresSelectedTarget(ClientMagic magic)
     {
         if (magic == null) return false;
-        if (magic.TargetType == 1) return true;
+        // NeedTarget 由服务端按 releaseType==1 下发；不能用 TargetType（召唤与火符都是1）。
+        if (magic.NeedTarget) return true;
 
         switch (magic.Spell)
         {

@@ -3393,7 +3393,10 @@ namespace Server.MirObjects
         private static bool RequiresMagicTarget(UserMagic magic)
         {
             if (magic == null) return false;
-            if (magic.Info != null && magic.Info.TargetType == 1) return true;
+            // 原始传奇技能：releaseType==1 才是指向敌方目标释放。
+            // 不能用 targetType==1——召唤骷髅/神兽(handlerType=3)与灵魂火符的 targetType 都是1。
+            if (magic.Info != null && magic.Info.OriginId > 0)
+                return magic.Info.ReleaseType == 1;
 
             switch (magic.Spell)
             {
