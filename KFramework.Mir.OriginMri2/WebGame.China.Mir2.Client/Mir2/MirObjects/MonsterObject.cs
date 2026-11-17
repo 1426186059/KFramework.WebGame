@@ -3793,161 +3793,18 @@ namespace Client.MirObjects
             }
         }
 
-        public void PlayFlinchSound()
-        {
-            switch (BaseImage)
-            {
-                default:
-                    SoundManager.PlaySound(BaseSound + 2);
-                    break;
-            }
-        }
-        public void PlayStruckSound()
-        {
-            switch (BaseImage)
-            {
-                case Monster.EvilMir:
-                    SoundManager.PlaySound(SoundList.StruckEvilMir);
-                    return;
-            }
+        // 战斗音效改用原始传奇通用音（ActionSound：AttackSound=2；命中通用音=6(skillEffects)；死亡=3/4）。
+        // 走 CDN audio/{id}.mp3（SoundManager.PlayOriginSound）。经典 BaseSound=Image*10 的 wav 属于被抛弃的旧资源体系。
+        public void PlayFlinchSound()       { SoundManager.PlayOriginSound(6); }
+        public void PlayStruckSound()       { SoundManager.PlayOriginSound(6); }   // 命中通用音
+        public void PlayAttackSound()       { SoundManager.PlayOriginSound(2); }   // AttackSound
+        public void PlaySecondAttackSound() { SoundManager.PlayOriginSound(2); }
+        public void PlayThirdAttackSound()  { SoundManager.PlayOriginSound(2); }
+        public void PlayFourthAttackSound() { SoundManager.PlayOriginSound(2); }
+        public void PlayFithAttackSound()   { SoundManager.PlayOriginSound(2); }
+        public void PlaySwingSound()        { SoundManager.PlayOriginSound(2); }   // 挥击
+        public void PlayDieSound()          { SoundManager.PlayOriginSound(CMain.Random.Next(3, 5)); } // 3/4
 
-            switch (StruckWeapon)
-            {
-                case 0:
-                case 23:
-                case 28:
-                case 40:
-                    SoundManager.PlaySound(SoundList.StruckWooden);
-                    break;
-                case 1:
-                case 12:
-                    SoundManager.PlaySound(SoundList.StruckShort);
-                    break;
-                case 2:
-                case 8:
-                case 11:
-                case 15:
-                case 18:
-                case 20:
-                case 25:
-                case 31:
-                case 33:
-                case 34:
-                case 37:
-                case 41:
-                    SoundManager.PlaySound(SoundList.StruckSword);
-                    break;
-                case 3:
-                case 5:
-                case 7:
-                case 9:
-                case 13:
-                case 19:
-                case 24:
-                case 26:
-                case 29:
-                case 32:
-                case 35:
-                    SoundManager.PlaySound(SoundList.StruckSword2);
-                    break;
-                case 4:
-                case 14:
-                case 16:
-                case 38:
-                    SoundManager.PlaySound(SoundList.StruckAxe);
-                    break;
-                case 6:
-                case 10:
-                case 17:
-                case 22:
-                case 27:
-                case 30:
-                case 36:
-                case 39:
-                    SoundManager.PlaySound(SoundList.StruckShort);
-                    break;
-                case 21:
-                    SoundManager.PlaySound(SoundList.StruckClub);
-                    break;
-            }
-        }
-        public void PlayAttackSound()
-        {
-            switch (BaseImage)
-            {
-                default:
-                    SoundManager.PlaySound(BaseSound + 1);
-                    break;
-            }
-        }
-
-        public void PlaySecondAttackSound()
-        {
-            switch (BaseImage)
-            {
-                default:
-                    SoundManager.PlaySound(BaseSound + 6);
-                    break;
-
-            }
-        }
-
-        public void PlayThirdAttackSound()
-        {
-            switch (BaseImage)
-            {
-                case Monster.DarkCaptain:
-                case Monster.HornedSorceror:
-                case Monster.HornedCommander:
-                    return;
-                default:
-                    SoundManager.PlaySound(BaseSound + 7);
-                    return;
-            }
-        }
-
-        public void PlayFourthAttackSound()
-        {
-            switch (BaseImage)
-            {
-                case Monster.HornedCommander:
-                    return;
-                case Monster.SnowWolfKing:
-                    SoundManager.PlaySound(BaseSound + 5);
-                    return;
-                default:
-                    SoundManager.PlaySound(BaseSound + 8);
-                    return;
-            }
-        }
-
-        public void PlayFithAttackSound()
-        {
-            SoundManager.PlaySound(BaseSound + 9);
-        }
-
-        public void PlaySwingSound()
-        {
-            switch (BaseImage)
-            {
-                case Monster.DarkCaptain:
-                case Monster.EvilMir:
-                case Monster.DragonStatue:
-                    return;
-                default:
-                    SoundManager.PlaySound(BaseSound + 4);
-                    return;
-            }
-        }
-        public void PlayDieSound()
-        {
-            switch (BaseImage)
-            {
-                default:
-                    SoundManager.PlaySound(BaseSound + 3);
-                    return;
-            }
-        }
 
         public void PlayDeadSound()
         {
