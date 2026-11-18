@@ -9,7 +9,7 @@
 //   uiModel/ 目录里同编号是另一套图（9501 是黑金大刀），用它会导致「穿木剑却显示别的武器」。
 // 同名 .json 的 frames[0] 给出 offX/offY（该帧在 1025×1025 画布里的站位）与 w/h：
 //   裸模 9001 offX=559 offY=516 w=81 h=145；木剑 9501 offX=542 offY=525 w=29 h=57。
-//   各层按 (offX - 611, offY - 650) * 1.2 对齐容器脚底原点后依次覆盖。
+//   各层按 (offX - 611, offY - 650) * Scale 对齐容器脚底原点后依次覆盖（Scale 见下方常量）。
 //
 // 分层：底层常驻裸身 9001(男)/9002(女) + 头发 9498(男)/9499(女)；
 //       上层覆盖 衣服 / 头盔(斗笠优先) / 武器 / 面纱 / 盾牌，没装备就不画。
@@ -28,7 +28,7 @@ using Client.MirObjects;
 /// </summary>
 public static class Mir2OriginUIModel
 {
-    public const float Scale = 1.2f;          // 立绘整体缩放
+    public const float Scale = 1.5f;          // 立绘整体缩放（角色面板人物模型，1.2→1.5 放大）
     public const int AnchorX = 611, AnchorY = 650; // 1025×1025 画布的脚底锚点
     public const int MaleBody = 9001, FemaleBody = 9002;
     public const int MaleHair = 9498, FemaleHair = 9499;
