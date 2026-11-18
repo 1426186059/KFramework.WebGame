@@ -198,10 +198,12 @@ namespace KFramework.MonoGame
                 {
                     continue;
                 }
-                // 缓存的坐标相对 (0,0)，命中判断要加上本次 bounds 的原点。
+                // 命中区与绘制区用同一份 run 基线数据，保证点击范围和画面一致。
                 float rx = run.X + bounds.X;
-                float ry = run.Y + bounds.Y;
-                if (x >= rx && x <= rx + run.Width && y >= ry && y <= ry + run.Height)
+                float baselineY = run.BaselineY + bounds.Y;
+                float top = baselineY - run.Ascent;
+                float bottom = baselineY + run.Descent;
+                if (x >= rx && x <= rx + run.Width && y >= top && y <= bottom)
                 {
                     return run.Style.Link;
                 }
@@ -241,6 +243,8 @@ namespace KFramework.MonoGame
             RichTextStyle[] styles = _doc != null ? _doc.Styles : null;
             bool wrap = hWrap == HorizontalWrapMode.Wrap && bounds.Width > 0;
             float lineH = _font.LineSpacing;
+            float fontAscent = _font.Ascent;   // 基准字号（scale=1）的基线到行顶距离
+            float fontDescent = _font.Descent; // 基准字号的基线到字底距离
 
             // 1) 逐字符折行，记录每行的 [start,end)、宽度与该行最大缩放
             // 行高按最大 Scale 撑开，避免放大的字（<size> / 粗体）压到下一行。
@@ -303,6 +307,9 @@ namespace KFramework.MonoGame
                     break;
                 }
                 lineTops.Add(startY);
+                // 该行统一基线：最大字号的字形基线落在行顶 + Ascent*maxScale，
+                // 段内各字号按自身 Ascent*scale 回退，最终都贴到这条线上。
+                float baseY = startY + fontAscent * span.maxScale;
                 float tx = 0f;
                 if (col == 1)
                 {
@@ -330,13 +337,11 @@ namespace KFramework.MonoGame
                     }
                     string seg = text.Substring(i, j - i);
                     float segW = _font.MeasureString(seg).X * st.Scale;
-                    float segH = lineH * st.Scale;
-                    // 同一行内不同字号按「底部对齐」：run 底边统一贴到行底（startY + rowH）。
-                    // 若一律顶部对齐，放大字（scale>1）的字形会向下压到同排普通字/下划线的位置，
-                    // 表现为放大段首个字与相邻下划线重叠、甚至被盖住。
-                    float segY = startY + (rowH - segH);
-                    // Height 存该段自身缩放后的高度：下划线与命中区都按各自字号贴字。
-                    runs.Add(new RichTextRun(seg, st, tx, segY, segW, segH));
+                    // 仿 TMP：排版时就把该段按自身字号缩放好的基线/升降部固化进 run，
+                    // 后续绘制、命中、下划线只消费 run 自带值，不再回查字体。
+                    float segAsc = fontAscent * st.Scale;
+                    float segDesc = fontDescent * st.Scale;
+                    runs.Add(new RichTextRun(seg, st, tx, segW, segAsc + segDesc, baseY, segAsc, segDesc));
                     tx += segW;
                     i = j;
                 }
@@ -365,14 +370,16 @@ namespace KFramework.MonoGame
             foreach (RichTextRun run in runs)
             {
                 Color segColor = outlineMode ? foreColor : run.Style.EffectiveColor(foreColor);
-                // 缓存坐标相对 (0,0)，绘制时加上本次 bounds 原点。
+                // 缓存坐标相对 (0,0)，绘制时加 bounds 原点；只消费 run 自带的基线数据。
                 float px = run.X + bounds.X;
-                float py = run.Y + bounds.Y;
-                _font.Draw(batch, run.Text, new Vector2(px, py), segColor,
+                float baselineY = run.BaselineY + bounds.Y;
+                float glyphTop = baselineY - run.Ascent;
+                _font.Draw(batch, run.Text, new Vector2(px, glyphTop), segColor,
                            0f, Vector2.Zero, run.Style.Scale, SpriteEffects.None, 0f);
                 if (!outlineMode && run.Style.Underline)
                 {
-                    DrawUnderline(batch, px, py + run.Height - 1, run.Width, segColor);
+                    float glyphBottom = baselineY + run.Descent;
+                    DrawUnderline(batch, px, glyphBottom - 1, run.Width, segColor);
                 }
             }
         }

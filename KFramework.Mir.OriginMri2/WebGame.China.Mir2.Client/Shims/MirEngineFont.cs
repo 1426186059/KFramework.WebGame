@@ -29,6 +29,10 @@ namespace MirEngine
 
         public float LineSpacing => Resolved?.LineSpacing ?? 0f;
 
+        public float Ascent => Resolved?.Ascent ?? 0f;
+
+        public float Descent => (Resolved as IFont)?.Descent ?? 0f;
+
         public Vector2 Measure(string text) => Resolved?.Measure(text) ?? Vector2.Zero;
 
         public Vector2 MeasureString(string text) => Resolved?.MeasureString(text) ?? Vector2.Zero;

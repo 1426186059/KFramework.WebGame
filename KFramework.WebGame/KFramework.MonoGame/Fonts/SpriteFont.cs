@@ -69,6 +69,11 @@ namespace KFramework.MonoGame
         /// <summary>基线到行顶的距离。</summary>
         public readonly float Ascent;
 
+        // IFont 接口属性：字段不能隐式实现接口属性，显式转发。
+        float IFont.Ascent => Ascent;
+        // JS measure 未单独返回 descent（metrics[3] 恒 0），用行高减基线推导。
+        float IFont.Descent => Math.Max(0f, LineHeight - Ascent);
+
         /// <summary>行高（像素）。</summary>
         public readonly float LineHeight;
 

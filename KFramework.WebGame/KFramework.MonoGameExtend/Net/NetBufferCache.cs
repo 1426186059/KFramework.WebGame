@@ -28,6 +28,11 @@ namespace KFramework.MonoGameExtend
             nUseLength = 0;
         }
 
+        ~NetBufferCache()
+        {
+            Dispose();
+        }
+
         public void WriteFrom(ReadOnlySpan<byte> data)
         {
             SureSizeOK(data.Length);
@@ -67,8 +72,11 @@ namespace KFramework.MonoGameExtend
 
         public void Dispose()
         {
-            NativeMemory.Free(cache);
-            cache = null;
+            if (cache != null)
+            {
+                NativeMemory.Free(cache);
+                cache = null;
+            }
         }
 
         private void SureSizeOK(int nRequiredLength)

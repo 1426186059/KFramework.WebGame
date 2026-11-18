@@ -10,14 +10,17 @@ namespace KFramework.MonoGame
     public sealed partial class RichTextObject
     {
         /// <summary>富文本布局后的一段可见文字（连续同样式），供绘制与超链接命中共用。
-        /// X/Y/Width/Height 相对排版原点 (0,0)，绘制/命中时由宿主加上 bounds.X/bounds.Y。</summary>
+        /// 仿 Unity TMP 的 characterInfo：每段自带按自身字号缩放好的基线与升降部，
+        /// 渲染/命中只消费这些值，不再回查字体。坐标相对排版原点 (0,0)，使用时加 bounds.X/Y。</summary>
         internal readonly record struct RichTextRun(
             string Text,
             RichTextStyle Style,
             float X,
-            float Y,
             float Width,
-            float Height);
+            float Height,
+            float BaselineY,   // 该段字形基线 Y（已按 scale 落到行基线）
+            float Ascent,      // 该段缩放后的基线→字顶距离
+            float Descent);    // 该段缩放后的基线→字底距离
 
         /// <summary>
         /// 轻量富文本解析（Unity UGUI/TextMeshPro 风格标签的子集），供 <see cref="RichTextObject"/> 使用。

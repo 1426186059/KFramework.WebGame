@@ -42,6 +42,12 @@ namespace KFramework.MonoGame
         /// <summary>基线到行顶的距离（像素）。</summary>
         public float Base => _data.Base;
 
+        /// <summary>IFont 统一基线属性：BMFont 的 Base 即基线到行顶距离。</summary>
+        public float Ascent => _data.Base;
+
+        /// <summary>IFont 统一降部属性：行高减基线（BMFont 数据无单独 descent 字段）。</summary>
+        public float Descent => Math.Max(0f, LineHeight - _data.Base);
+
         /// <summary>行高（像素）。</summary>
         public float LineHeight => _data.LineHeight;
 

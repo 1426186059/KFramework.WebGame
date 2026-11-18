@@ -68,6 +68,10 @@ namespace KFramework.MonoGame
         /// <summary>基线到行顶的距离（像素）。</summary>
         public readonly float Ascent;
 
+        // IFont 接口属性：字段不能隐式实现接口属性，显式转发。
+        float IFont.Ascent => Ascent;
+        float IFont.Descent => Descent;
+
         /// <summary>基线到行底的距离（像素）。</summary>
         public readonly float Descent;
 

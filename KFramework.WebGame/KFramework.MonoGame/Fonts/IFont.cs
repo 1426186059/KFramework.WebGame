@@ -10,6 +10,12 @@ namespace KFramework.MonoGame
         /// <summary>行距（MonoGame 命名为 LineSpacing，等价于行高）。</summary>
         float LineSpacing { get; }
 
+        /// <summary>基线到行顶的距离（像素）。富文本混排字号时按各字号的 Ascent 做基线对齐。</summary>
+        float Ascent { get; }
+
+        /// <summary>基线到字形底部的距离（像素）。富文本下划线按各字号的 Descent 贴字形底。</summary>
+        float Descent { get; }
+
         /// <summary>测量文本占的宽高（多行按换行符分行）。</summary>
         Vector2 Measure(string text);
 
