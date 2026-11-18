@@ -259,6 +259,28 @@ public sealed class MapControl : MirControl
     public PathFinder PathFinder;
     public List<Node> CurrentPath = null;
 
+    /// <summary>场景缩放的中心（与 DrawControl 里地图 RT blit 的放大中心一致）。</summary>
+    private static PointF SceneScaleCenter
+    {
+        get
+        {
+            var fs = DXManager.FullScreenSize;
+            return new PointF(fs.Width / 2f, fs.Height / 2f);
+        }
+    }
+
+    /// <summary>屏幕/UI 逻辑坐标 → 世界像素坐标。地图 RT 在 DrawControl 里以 SceneScaleCenter 为中心放大
+    /// Settings.SceneScale 倍，命中需做逆变换 W = C + (S - C)/scale，才能对准视觉位置。UI 层不缩放，不要对 UI 坐标调用此方法。</summary>
+    public static Point ScreenToWorld(Point screen)
+    {
+        float s = Settings.SceneScale;
+        if (s <= 0 || Math.Abs(s - 1f) < 0.0001f) return screen;
+        var c = SceneScaleCenter;
+        return new Point(
+            (int)Math.Round(c.X + (screen.X - c.X) / s),
+            (int)Math.Round(c.Y + (screen.Y - c.Y) / s));
+    }
+
     public static Point MapLocation
     {
         get { return GameScene.User == null ? Point.Zero : new Point(MouseLocation.X / CellWidth - OffSetX, MouseLocation.Y / CellHeight - OffSetY).Add(GameScene.User.CurrentLocation); }
@@ -365,7 +387,7 @@ public sealed class MapControl : MirControl
         BackColour = Color.Black;
 
         MouseDown += OnMouseDown;
-        MouseMove += (o, e) => MouseLocation = e.Location;
+        MouseMove += (o, e) => MouseLocation = ScreenToWorld(e.Location);
         Click += OnMouseClick;
     }
 
@@ -542,7 +564,8 @@ public sealed class MapControl : MirControl
                 for (int i = cell.CellObjects.Count - 1; i >= 0; i--)
                 {
                     MapObject ob = cell.CellObjects[i];
-                    if (ob == MapObject.User || !ob.MouseOver(CMain.MPoint)) continue;
+                    // CMain.MPoint 是 UI 逻辑坐标；对象命中按世界像素比较，需先逆场景缩放（不改 CMain.MPoint，UI 仍用原值）。
+                    if (ob == MapObject.User || !ob.MouseOver(ScreenToWorld(CMain.MPoint))) continue;
 
                     if (MapObject.MouseObject != ob)
                     {
@@ -709,18 +732,23 @@ public sealed class MapControl : MirControl
 
         if (MapObject.User.Dead) DXManager.SetGrayscale(true);
 
-        // 全屏 1:1 上屏：强制单位变换，保证地板铺满、绝不被任何遗留 RenderTransform 缩放/偏移；
-        // 目标矩形取实时窗口尺寸（DXManager.FullScreenSize），确保铺满整个窗口——
-        // 窗口更大只是看到更多世界，而非放大世界像素（世界坐标本不放大）。
+        // 上屏：强制单位变换，避免遗留 RenderTransform 二次缩放。目标矩形按 Settings.SceneScale 以屏幕中心放大
+        // （原始传奇 setRootScale 默认 1.05），地图+角色一起等比放大，UI 层不受影响。
+        // 命中侧在 ScreenToWorld 做完全相同的逆变换，保证点击/悬停对准视觉位置。
         // 不能走 PresentToScreen（其内部清空变换 → 1:1 左上角，地图只显示局部/四周洋红）。
         var savedTransform = DXManager.RenderTransform;
         DXManager.RenderTransform = null;
         var tex = ControlTexture.RenderTarget;
         var fs = DXManager.FullScreenSize;
 
+        float sc = Settings.SceneScale;
+        if (sc <= 0) sc = 1f;
+        float drawW = fs.Width * sc, drawH = fs.Height * sc;
+        var drawRect = new RectangleF((fs.Width - drawW) / 2f, (fs.Height - drawH) / 2f, drawW, drawH);
+
         DXManager.Draw(tex,
             new Rectangle(0, 0, tex.Width, tex.Height),
-            new RectangleF(0, 0, fs.Width, fs.Height),
+            drawRect,
             Color.White);
         DXManager.RenderTransform = savedTransform;
 
@@ -908,6 +936,12 @@ public sealed class MapControl : MirControl
             }
         }
 
+        // 脚底选中环属于“地面层”，必须在实体之前画：本引擎无深度缓冲、纯按提交顺序作画，
+        // 若放在实体之后，环的上半部分会盖住 NPC/怪物/玩家的下半身。先画环，后画的实体自然压住它。
+        // 跟随“当前选中对象”SelectionTarget，走路/施法期间回落到可攻击对象，保证边走边打时环不丢。
+        var sel = MapObject.SelectionTarget ?? MapObject.CanAttackTargetObject;
+        if (sel != null && !sel.Dead) DrawSelectionRing(sel);
+
         for (int y = User.Movement.Y - ViewRangeY; y <= User.Movement.Y + ViewRangeY + 25; y++)
         {
             if (y <= 0) continue;
@@ -939,10 +973,6 @@ public sealed class MapControl : MirControl
             if (MapObject.TargetObject != null)
                 MapObject.TargetObject.DrawBlend();
         }
-
-        // 脚底环跟随"当前选中对象"SelectionTarget，走路/施法期间回落到可攻击对象，保证边走边打时环不丢。
-        var sel = MapObject.SelectionTarget ?? MapObject.CanAttackTargetObject;
-        if (sel != null && !sel.Dead) DrawSelectionRing(sel);
 
         if (Settings.Effect)
         {
@@ -1083,7 +1113,8 @@ public sealed class MapControl : MirControl
     {
         // 立即同步一次坐标：点击（按下->抬起->Click）期间若中间没有 mousemove，
         // MouseLocation 会停留在旧位置，导致 MapLocation 算到别的格子上。
-        MouseLocation = e.Location;
+        // 逆场景缩放：e.Location 是 UI 逻辑坐标，MouseLocation 必须是世界像素。
+        MouseLocation = ScreenToWorld(e.Location);
 
         // MouseButtons 现在是对齐 HTML MouseEvent.button 的顺序枚举（Left=0），不再是 WinForms 那种标志位枚举，
         // 因此不能再做 |= / &=~ 位运算（位运算在 Left=0 时根本置不上位）。直接记录当前按下的键即可。

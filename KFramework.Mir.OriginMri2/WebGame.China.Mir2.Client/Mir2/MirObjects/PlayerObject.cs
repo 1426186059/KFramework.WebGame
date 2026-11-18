@@ -203,6 +203,11 @@ namespace Client.MirObjects
         public string GuildName;
         public string GuildRankName;
 
+        // 头顶称号/阵法名字（占位字段：服务端当前只下发 OriginTitleID/OriginZhenfaID 外观 ID，没有名字文本；
+        // 后续接入时按 ID 查配置填入即可，本轮 DrawName 只画行会名+玩家名，不显示这两个）
+        public string ChengHaoName;
+        public string ZhenfaName;
+
         public Point FishingPoint;
 
         public LevelEffects LevelEffects;
@@ -3882,17 +3887,20 @@ namespace Client.MirObjects
         {
             CreateLabel();
 
+            // 名字中心 = 脚底 - NameYOffset（身体中段），行会名在名字上方 16px（对应原始传奇 bloodY-32 vs -48）。
+            int nameCenterY = DrawLocation.Y - NameYOffset + (Dead ? 35 : 0);
+
             if (GuildLabel != null && !string.IsNullOrEmpty(GuildName))
             {
                 GuildLabel.Text = GuildName;
-                GuildLabel.Location = new Point(DisplayRectangle.X + (50 - GuildLabel.Size.Width) / 2, DisplayRectangle.Y - (19 - GuildLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
+                GuildLabel.Location = new Point(DrawLocation.X - GuildLabel.Size.Width / 2, nameCenterY - 16 - GuildLabel.Size.Height / 2);
                 GuildLabel.Draw();
             }
 
             if (NameLabel != null)
             {
                 NameLabel.Text = Name;
-                NameLabel.Location = new Point(DisplayRectangle.X + (50 - NameLabel.Size.Width) / 2, DisplayRectangle.Y - (31 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8)); //was 48 -
+                NameLabel.Location = new Point(DrawLocation.X - NameLabel.Size.Width / 2, nameCenterY - NameLabel.Size.Height / 2);
                 NameLabel.Draw();
             }
         }

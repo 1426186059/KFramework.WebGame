@@ -488,26 +488,22 @@ namespace Client.MirObjects
 
 
         }
+        /// <summary>名字【中心】相对脚底 DrawLocation 的上移像素。
+        /// 原始传奇 EntityInfo：名字文本顶部 y = -(bloodY-48) = -30（相对脚底），血条 y = -bloodY=-78。
+        /// 名字中心 ≈ 30 + 半字高(约7) = 37，取 36 忠实还原（之前 48 偏高）。改这一个常量即可整体升降名字。
+        /// 名字只用实体逻辑坐标 + 固定偏移，不碰动画帧 offX/offY，故跑动不抖。各体型可重写。</summary>
+        protected virtual int NameYOffset => 36;
+
         public virtual void DrawName()
         {
             CreateLabel();
 
             if (NameLabel == null) return;
 
-            // 原始传奇：名字“显示在人物中间”——水平+垂直都居中于角色身体包围盒(DisplayRectangle)，
-            // 随角色一起移动（不随动作帧抖动）。注意 DisplayRectangle 是站立帧矩形(头顶在 .Y、脚底≈DrawLocation.Y)，
-            // 不能用 DrawLocation 直接偏移（1:1 渲染下 feet-137 会落进腿肚子），也不按固定 50px 居中（会歪）。
-            if (DisplayRectangle.Width > 0 && DisplayRectangle.Height > 0)
-            {
-                int bodyCx = DisplayRectangle.X + DisplayRectangle.Width / 2;
-                int bodyCy = (DisplayRectangle.Y + DrawLocation.Y) / 2; // 头顶↔脚底中点 = 身体中心
-                NameLabel.Location = new Point(bodyCx - NameLabel.Size.Width / 2, bodyCy - NameLabel.Size.Height / 2);
-            }
-            else
-            {
-                // 兜底：未拿到身体矩形时退回脚底居中，保证名字至少跟着角色走。
-                NameLabel.Location = new Point(DrawLocation.X - NameLabel.Size.Width / 2, DrawLocation.Y - NameLabel.Size.Height);
-            }
+            // 只用 DrawLocation（脚底逻辑坐标，随移动平滑变化），不依赖逐帧变化的动画矩形。
+            NameLabel.Location = new Point(
+                DrawLocation.X - NameLabel.Size.Width / 2,
+                DrawLocation.Y - NameYOffset - NameLabel.Size.Height / 2 + (Dead ? 35 : 0));
             NameLabel.Draw();
         }
 

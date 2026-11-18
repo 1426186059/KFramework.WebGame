@@ -74,10 +74,13 @@ namespace Client.MirObjects
 
             if (NameLabel == null || OwnerLabel == null) return;
 
-            NameLabel.Location = new Point(DisplayRectangle.X + (50 - NameLabel.Size.Width) / 2, DisplayRectangle.Y - (42 - NameLabel.Size.Height / 2) + (Dead ? 35 : 8));
+            // 名字中心 = 脚底 - NameYOffset（身体中段），主人名贴在名字下方。
+            int nameCenterY = DrawLocation.Y - NameYOffset + (Dead ? 35 : 0);
+
+            NameLabel.Location = new Point(DrawLocation.X - NameLabel.Size.Width / 2, nameCenterY - NameLabel.Size.Height / 2);
             NameLabel.Draw();
 
-            OwnerLabel.Location = new Point(DisplayRectangle.X + (50 - OwnerLabel.Size.Width) / 2, NameLabel.Location.Y + NameLabel.Size.Height - 1);
+            OwnerLabel.Location = new Point(DrawLocation.X - OwnerLabel.Size.Width / 2, NameLabel.Location.Y + NameLabel.Size.Height - 1);
             OwnerLabel.Draw();
         }
     }

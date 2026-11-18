@@ -5394,12 +5394,15 @@ namespace Client.MirObjects
                     break;
             }
 
+            // 名字中心 = 脚底 - NameYOffset（身体中段），多行以中心为基准上下排开；yOffset 供小体型怪微调。
+            int nameCenterY = DrawLocation.Y - NameYOffset + (Dead ? 35 : 0);
+
             for (int s = 0; s < splitName.Count(); s++)
             {
                 CreateMonsterLabel(splitName[s], s);
 
                 //TempLabel.Text = splitName[s];//When CreateLabel() is called, the name is already determined, so there's no need to assign it every time in DrawName.
-                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Count() - 1) * 10) / 2) + (s * 12) + yOffset);
+                TempLabel.Location = new Point(DrawLocation.X - TempLabel.Size.Width / 2, nameCenterY - TempLabel.Size.Height / 2 - (((splitName.Count() - 1) * 10) / 2) + (s * 12) + yOffset);
                 TempLabel.Draw();
             }
         }

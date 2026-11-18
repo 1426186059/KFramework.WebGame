@@ -442,10 +442,13 @@ namespace Client.MirObjects
 
             string[] splitName = Name.Split('_');
 
+            // 名字中心 = 脚底 - NameYOffset（身体中段），多行以中心为基准上下排开。
+            int nameCenterY = DrawLocation.Y - NameYOffset + (Dead ? 35 : 0);
+
             for (int s = 0; s < splitName.Length; s++)
             {
                 CreateNPCLabel(splitName[s], s);
-                TempLabel.Location = new Point(DisplayRectangle.X + (48 - TempLabel.Size.Width) / 2, DisplayRectangle.Y - (32 - TempLabel.Size.Height / 2) + (Dead ? 35 : 8) - (((splitName.Length - 1) * 10) / 2) + (s * 12));
+                TempLabel.Location = new Point(DrawLocation.X - TempLabel.Size.Width / 2, nameCenterY - TempLabel.Size.Height / 2 - (((splitName.Length - 1) * 10) / 2) + (s * 12));
                 TempLabel.Draw();
             }
         }

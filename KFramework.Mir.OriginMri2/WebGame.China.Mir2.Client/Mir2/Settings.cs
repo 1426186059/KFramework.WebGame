@@ -106,6 +106,10 @@ namespace Client
         public static float FontSize = 8F;
         public static bool UseMouseCursors = true;
 
+        // 场景等比缩放：原始传奇 setRootScale 默认 1.05（玩家设置项 1185 可调，范围约 1.0~1.5）。
+        // 同时作用于地图与角色（地图 RT blit 时放大），UI 层不受影响；鼠标命中会自动做逆变换。
+        public static float SceneScale = 1.05F;
+
         public static bool FPSCap = true;
         public static int MaxFPS = 100;
 
