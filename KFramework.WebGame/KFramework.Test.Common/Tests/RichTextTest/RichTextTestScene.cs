@@ -5,12 +5,14 @@ using KFramework.MonoGameExtend;
 namespace KFramework.Test.Common.Tests.RichTextTest
 {
     /// <summary>
-    /// 富文本（RichText）测试：验证引擎 TextRenderer 的 Unity 风格标签子集 —— 颜色、超链接、粗/斜/下划线、字号。
-    /// 三个页签：
-    /// ① 标签总览：颜色（#RRGGBB / #RRGGBBAA / 命名色 / 嵌套 / 恢复默认）与样式标签，旁边给 richText=false 的对照。
-    /// ② 超链接命中：&lt;link="url"&gt; 与 &lt;a href="url"&gt; 两种写法，悬停 / 点击时调 TextRenderer.GetLinkAt 直接取回 URL。
-    /// ③ 自动断言：用 MeasureText 验证标签确实被剥离、原样度量更宽；用 GetLinkAt 在链接文字坐标上采样，断言返回正确 URL。
+    /// 富文本（RichText）测试：验证 KRichLabel 的 Unity 风格标签子集 —— 颜色、超链接、粗/斜/下划线、字号。
+    /// 五个页签：
+    /// ① 标签总览：颜色（#RRGGBB / #RRGGBBAA / 命名色 / 嵌套 / 恢复默认）与样式标签，旁边给非富文本的原始串对照。
+    /// ② 超链接命中：&lt;link="url"&gt; 与 &lt;a href="url"&gt; 两种写法，悬停 / 点击时调 KRichLabel.GetLinkAt 直接取回 URL。
+    /// ③ 自动断言：用 Measure 验证标签确实被剥离、原样度量更宽；用 GetLinkAt 在链接文字坐标上采样，断言返回正确 URL。
     /// ④ 随机样本对照：按按钮随机生成 1~3 行、覆盖全部标签类型的富文本，上格显示原始串、下格显示渲染结果。
+    /// ⑤ 自动换行：标签内容被折行拆开时，颜色/下划线/字号/链接是否延续到下一行（窄/中/宽框切换）。
+    /// 富文本一律走 KRichLabel（内部持有 RichTextObject，解析 + 排版缓存复用），原始串对照走 TextRenderer 普通文本 API。
     /// </summary>
     public sealed class RichTextTestScene : TestSceneBase
     {
@@ -46,6 +48,16 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         // 页⑤：自动换行测试（标签内容被折行拆开时，颜色/链接/下划线是否延续到下一行）。
         private string _wrapSample = string.Empty;
         private int _wrapWidth = 420;
+
+        // 富文本控件：内部持有 RichTextObject，解析与排版缓存复用；测试页只管设 Text / 调 DrawTo。
+        private readonly KRichLabel _colorRich = new KRichLabel(ColorSample);
+        private readonly KRichLabel _styleRich = new KRichLabel(StyleSample);
+        private readonly KRichLabel _linkRich = new KRichLabel(LinkSample);
+        private readonly KRichLabel _probeRich = new KRichLabel("<link=\"urlA\">甲</link>X<a href=\"urlB\">乙</a>");
+        private readonly KRichLabel _randomRich = new KRichLabel();
+        private readonly KRichLabel _wrapRich = new KRichLabel(WrapSample);
+        private readonly KRichLabel _queryRich = new KRichLabel();   // GetLink 复用
+        private readonly KRichLabel _measureRich = new KRichLabel(); // Measure 复用
 
         // ── 样本串（同时用于展示与断言）────────────────────────────────────
 
@@ -132,12 +144,13 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             }
         }
 
-        /// <summary>用与链接页绘制相同的排版参数调 GetLinkAt。</summary>
+        /// <summary>用与链接页绘制相同的排版参数调 KRichLabel.GetLinkAt。</summary>
         private string GetLink(string text, Rectangle bounds, float x, float y)
         {
-            return TextRenderer.GetLinkAt(text, Font, bounds,
-                                          TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow,
-                                          x, y);
+            _queryRich.Text = text;
+            return _queryRich.GetLinkAt(bounds,
+                                        TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow,
+                                        x, y);
         }
 
         protected override void DrawBody(SpriteBatch batch, Vector2 origin)
@@ -174,15 +187,15 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             y += DrawSection(batch, "① 颜色标签 <color=...>（开启富文本：标签不显示，只给文字上色）", new Vector2(x, y));
             Rectangle colorRect = new((int)x, (int)y, (int)width, 150);
             DrawRect(batch, colorRect, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, ColorSample, Font, colorRect, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+            _colorRich.DrawTo(batch, colorRect, Color.White,
+                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
             y += colorRect.Height + 16f;
 
             y += DrawSection(batch, "② 样式标签 <b> <i> <u> <size=n>（粗/斜体取决于字体是否提供该字形）", new Vector2(x, y));
             Rectangle styleRect = new((int)x, (int)y, (int)width, 110);
             DrawRect(batch, styleRect, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, StyleSample, Font, styleRect, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+            _styleRich.DrawTo(batch, styleRect, Color.White,
+                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
             y += styleRect.Height + 16f;
 
             y += DrawSection(batch, "③ 对照：richText = false（标签原样显示成字符）", new Vector2(x, y));
@@ -190,7 +203,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, "<color=#FF5050>红色</color> <link=\"url\">链接</link> <b>粗体</b>", Font, rawRect,
                                   new Color(255, 210, 160), TextAnchor.UpperLeft,
-                                  HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, false);
+                                  HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
         }
 
         // ── 页②：超链接命中 ───────────────────────────────────────────────
@@ -206,9 +219,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                           new Vector2(x, y), new Color(190, 205, 230));
 
             DrawRect(batch, _linkRect, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, LinkSample, Font, _linkRect, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow,
-                                  true);
+            _linkRich.DrawTo(batch, _linkRect, Color.White,
+                             TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
             y = _linkRect.Bottom + 14f;
 
             Vector2 p = Input_Mouse.Position;
@@ -272,9 +284,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             const string probeText = "<link=\"urlA\">甲</link>X<a href=\"urlB\">乙</a>";
             Rectangle probe = new((int)x, (int)y, (int)MathF.Min(width, 700f), 40);
             DrawRect(batch, probe, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, probeText, Font, probe, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow,
-                                  true);
+            _probeRich.DrawTo(batch, probe, Color.White,
+                              TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
             y += probe.Height + 14f;
 
             float wA = Font.MeasureString("甲").X;
@@ -394,9 +405,9 @@ namespace KFramework.Test.Common.Tests.RichTextTest
 
             // 度量两块的真实高度：原始串含标签更长，按 Wrap 折行。
             Size rawSize = TextRenderer.MeasureText(_randomSample, Font, new Size((int)width, int.MaxValue),
-                                                    HorizontalWrapMode.Wrap, false);
-            Size richSize = TextRenderer.MeasureText(_randomSample, Font, new Size((int)width, int.MaxValue),
-                                                     HorizontalWrapMode.Wrap, true);
+                                                    HorizontalWrapMode.Wrap);
+            _randomRich.Text = _randomSample;
+            Size richSize = _randomRich.Measure(new Size((int)width, int.MaxValue), HorizontalWrapMode.Wrap);
             int rawH = Math.Max(40, rawSize.Height + 12);
             int richH = Math.Max(40, richSize.Height + 12);
 
@@ -407,7 +418,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle rawRect = new((int)x, (int)y, (int)width, rawH);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, _randomSample, Font, rawRect, new Color(255, 215, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, false);
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
             y += rawH + 14f;
 
             // 下：富文本渲染结果
@@ -416,8 +427,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             y += Font.LineSpacing + 6f;
             Rectangle richRect = new((int)x, (int)y, (int)width, richH);
             DrawRect(batch, richRect, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, _randomSample, Font, richRect, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+            _randomRich.DrawTo(batch, richRect, Color.White,
+                               TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
         }
 
         // ── 页⑤：自动换行（标签内容被折行拆开）─────────────────────────────
@@ -437,26 +448,25 @@ namespace KFramework.Test.Common.Tests.RichTextTest
 
             // 上：原始串（标签当字符，同样折行，作对照）
             Size rawSize = TextRenderer.MeasureText(_wrapSample, Font, new Size(_wrapWidth, int.MaxValue),
-                                                    HorizontalWrapMode.Wrap, false);
+                                                    HorizontalWrapMode.Wrap);
             int rawH = Math.Max(40, rawSize.Height + 12);
             DrawSection(batch, "原始文本（标签原样，richText=false）", new Vector2(x, y));
             y += Font.LineSpacing + 6f;
             Rectangle rawRect = new((int)x, (int)y, _wrapWidth, rawH);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, _wrapSample, Font, rawRect, new Color(255, 215, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, false);
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
             y += rawH + 16f;
 
             // 下：富文本渲染（标签生效），并画每行高度辅助线
-            Size richSize = TextRenderer.MeasureText(_wrapSample, Font, new Size(_wrapWidth, int.MaxValue),
-                                                     HorizontalWrapMode.Wrap, true);
+            Size richSize = _wrapRich.Measure(new Size(_wrapWidth, int.MaxValue), HorizontalWrapMode.Wrap);
             int richH = Math.Max(40, richSize.Height + 12);
             DrawSection(batch, "富文本渲染（richText=true，横线=每行基线辅助，观察折行点）", new Vector2(x, y));
             y += Font.LineSpacing + 6f;
             Rectangle richRect = new((int)x, (int)y, _wrapWidth, richH);
             DrawRect(batch, richRect, new Color(18, 23, 36));
-            TextRenderer.DrawText(batch, _wrapSample, Font, richRect, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, true);
+            _wrapRich.DrawTo(batch, richRect, Color.White,
+                             TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
             int lineCount = Math.Max(1, (int)MathF.Ceiling(richSize.Height / Font.LineSpacing));
             for (int i = 1; i < lineCount; i++)
             {
@@ -473,7 +483,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                 bool rowHit = false;
                 for (int px = richRect.X + 2; px < richRect.Right - 2; px += 6)
                 {
-                    string url = TextRenderer.GetLinkAt(_wrapSample, Font, richRect,
+                    string url = _wrapRich.GetLinkAt(richRect,
                                       TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, px, py);
                     if (url != null)
                     {
@@ -500,8 +510,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
 
         private Size Measure(string text, bool richText)
         {
-            return TextRenderer.MeasureText(text, Font, new Size(int.MaxValue, int.MaxValue),
-                                            HorizontalWrapMode.Overflow, richText);
+            if (!richText)
+                return TextRenderer.MeasureText(text, Font, new Size(int.MaxValue, int.MaxValue),
+                                                HorizontalWrapMode.Overflow);
+            _measureRich.Text = text;
+            return _measureRich.Measure(new Size(int.MaxValue, int.MaxValue), HorizontalWrapMode.Overflow);
         }
 
         private static void Add(List<(string name, bool pass, string detail)> rows, string name, bool pass, string detail)

@@ -34,39 +34,23 @@ namespace KFramework.MonoGame
 
         public static Size MeasureText(string text, IFont font)
         {
-            return MeasureTextCore(text, font, int.MaxValue, HorizontalWrapMode.Overflow, false);
+            return MeasureTextCore(text, font, int.MaxValue, HorizontalWrapMode.Overflow);
         }
 
         public static Size MeasureText(string text, IFont font, Size proposedSize)
         {
-            return MeasureTextCore(text, font, proposedSize.Width, HorizontalWrapMode.Overflow, false);
+            return MeasureTextCore(text, font, proposedSize.Width, HorizontalWrapMode.Overflow);
         }
 
         /// <summary>度量文本：<paramref name="hWrap"/> = Wrap 时按 proposedSize.Width 折行后再量（取最宽行 + 行数高）。</summary>
         public static Size MeasureText(string text, IFont font, Size proposedSize, HorizontalWrapMode hWrap)
         {
-            return MeasureTextCore(text, font, proposedSize.Width, hWrap, false);
+            return MeasureTextCore(text, font, proposedSize.Width, hWrap);
         }
 
-        /// <summary>富文本度量：<paramref name="richText"/>=true 时先剥离 &lt;color&gt;/&lt;link&gt; 等标签再量。</summary>
-        public static Size MeasureText(string text, IFont font, Size proposedSize, HorizontalWrapMode hWrap, bool richText)
-        {
-            return MeasureTextCore(text, font, proposedSize.Width, hWrap, richText);
-        }
-
-        private static Size MeasureTextCore(string text, IFont font, int maxWidth, HorizontalWrapMode hWrap, bool richText)
+        private static Size MeasureTextCore(string text, IFont font, int maxWidth, HorizontalWrapMode hWrap)
         {
             if (font == null || string.IsNullOrEmpty(text))
-            {
-                return Size.Empty;
-            }
-
-            RichTextDocument doc = richText ? RichTextDocument.Parse(text) : null;
-            if (doc != null)
-            {
-                text = doc.PlainText;   // 度量一律用去标签的纯文本
-            }
-            if (string.IsNullOrEmpty(text))
             {
                 return Size.Empty;
             }
@@ -93,38 +77,16 @@ namespace KFramework.MonoGame
 
         // ---------------- DrawText（一律用调用方传入的批） ----------------
 
-        /// <summary>在给定矩形内绘制文本；<paramref name="batch"/> 必须处于 Begin / End 之间。</summary>
+        /// <summary>在给定矩形内绘制普通文本；<paramref name="batch"/> 必须处于 Begin / End 之间。
+        /// 富文本请用 <see cref="RichTextObject"/>。</summary>
         public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor,
                                     TextAnchor anchor = TextAnchor.UpperLeft,
                                     HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
                                     VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
         {
-            DrawText(batch, text, font, bounds, foreColor, anchor, hWrap, vWrap, false);
-        }
-
-        /// <summary>富文本绘制：<paramref name="richText"/>=true 时解析 &lt;color&gt;/&lt;link&gt;/&lt;b&gt;/&lt;i&gt;/&lt;u&gt;/&lt;size&gt; 标签逐段上色。
-        /// <paramref name="outlineMode"/>=true 时只画去标签的纯文本、忽略段颜色（供描边用统一色）。
-        /// 超链接点击命中请用 <see cref="GetLinkAt"/>，它复用本方法的排版逻辑。</summary>
-        public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor,
-                                    TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap, bool richText,
-                                    bool outlineMode = false)
-        {
             if (batch == null || font == null || string.IsNullOrEmpty(text))
             {
                 return;
-            }
-            if (richText)
-            {
-                RichTextDocument doc = RichTextDocument.Parse(text);
-                if (doc != null && !string.IsNullOrEmpty(doc.PlainText))
-                {
-                    DrawRichCore(batch, doc, font, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
-                    return;
-                }
-                if (doc != null)
-                {
-                    return; // 全是标签，无可见文本
-                }
             }
 
             int maxWidth = hWrap == HorizontalWrapMode.Wrap ? (int)bounds.Width : 0;
@@ -170,179 +132,6 @@ namespace KFramework.MonoGame
                 startY += lineH;
             }
 
-        }
-
-        /// <summary>富文本排版：逐字符折行 → 对齐 → 逐样式段切分，产出每段的文本、样式与矩形。
-        /// 绘制（<see cref="DrawRichCore"/>）与超链接命中（<see cref="GetLinkAt"/>）共用，保证命中区与画面一致。</summary>
-        private static List<RichTextRun> LayoutRich(RichTextDocument doc, IFont font, RectangleF bounds,
-                                                    TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
-        {
-            string text = doc.PlainText;
-            RichTextStyle[] styles = doc.Styles;
-            bool wrap = hWrap == HorizontalWrapMode.Wrap && bounds.Width > 0;
-            float lineH = font.LineSpacing;
-
-            // 1) 逐字符折行，记录每行的 [start,end)、宽度与该行最大缩放
-            // 行高按最大 Scale 撑开，避免放大的字（<size> / 粗体）压到下一行。
-            var spans = new List<(int start, int end, float width, float maxScale)>();
-            int lineStart = 0;
-            float lineW = 0;
-            float lineMaxScale = 1f;
-            for (int i = 0; i < text.Length; i++)
-            {
-                char ch = text[i];
-                if (ch == '\n')
-                {
-                    spans.Add((lineStart, i, lineW, lineMaxScale));
-                    lineStart = i + 1;
-                    lineW = 0;
-                    lineMaxScale = 1f;
-                    continue;
-                }
-                float cw = font.MeasureString(ch.ToString()).X * styles[i].Scale;
-                if (wrap && lineW + cw > bounds.Width && i > lineStart)
-                {
-                    spans.Add((lineStart, i, lineW, lineMaxScale));
-                    lineStart = i;
-                    lineW = 0;
-                    lineMaxScale = 1f;
-                }
-                lineW += cw;
-                lineMaxScale = Math.Max(lineMaxScale, styles[i].Scale);
-            }
-            spans.Add((lineStart, text.Length, lineW, lineMaxScale));
-
-            // 2) 对齐：每行行高 = 基础行高 * 该行最大缩放，累加得到总高
-            int row = (int)anchor / 3;
-            int col = (int)anchor % 3;
-            float totalH = 0f;
-            foreach (var span in spans)
-            {
-                totalH += lineH * span.maxScale;
-            }
-            float startY = bounds.Y;
-            if (row == 1)
-            {
-                startY = bounds.Y + (bounds.Height - totalH) / 2f;
-            }
-            else if (row == 2)
-            {
-                startY = bounds.Y + (bounds.Height - totalH);
-            }
-            float clipBottom = vWrap == VerticalWrapMode.Truncate ? bounds.Y + bounds.Height : float.MaxValue;
-
-            // 3) 逐行、逐样式段切分
-            var runs = new List<RichTextRun>();
-            foreach (var span in spans)
-            {
-                float rowH = lineH * span.maxScale;
-                if (startY + rowH > clipBottom)
-                {
-                    break;
-                }
-                float tx = bounds.X;
-                if (col == 1)
-                {
-                    tx = bounds.X + (bounds.Width - span.width) / 2f;
-                }
-                else if (col == 2)
-                {
-                    tx = bounds.X + (bounds.Width - span.width);
-                }
-
-                int i = span.start;
-                while (i < span.end)
-                {
-                    if (text[i] == '\n')
-                    {
-                        i++;
-                        continue;
-                    }
-                    RichTextStyle st = styles[i];
-                    int j = i + 1;
-                    while (j < span.end && text[j] != '\n' && SameStyle(styles[j], st))
-                    {
-                        j++;
-                    }
-                    string seg = text.Substring(i, j - i);
-                    float segW = font.MeasureString(seg).X * st.Scale;
-                    // Height 存该段自身缩放后的高度：下划线与命中区都按各自字号贴字。
-                    // 行与行的间距另用 rowH（该行最大缩放）控制，互不干扰。
-                    runs.Add(new RichTextRun(seg, st, tx, startY, segW, lineH * st.Scale));
-                    tx += segW;
-                    i = j;
-                }
-                startY += rowH;
-            }
-            return runs;
-        }
-
-        /// <summary>富文本核心：用 <see cref="LayoutRich"/> 的结果逐段绘制（颜色/超链接/下划线/字号）。</summary>
-        private static void DrawRichCore(SpriteBatch batch, RichTextDocument doc, IFont font, RectangleF bounds,
-                                         Color foreColor, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                                         bool outlineMode)
-        {
-            List<RichTextRun> runs = LayoutRich(doc, font, bounds, anchor, hWrap, vWrap);
-            foreach (RichTextRun run in runs)
-            {
-                Color segColor = outlineMode ? foreColor : run.Style.EffectiveColor(foreColor);
-                font.Draw(batch, run.Text, new Vector2(run.X, run.Y), segColor,
-                          0f, Vector2.Zero, run.Style.Scale, SpriteEffects.None, 0f);
-                if (!outlineMode && run.Style.Underline)
-                {
-                    DrawUnderline(batch, run.X, run.Y + run.Height - 1, run.Width, segColor);
-                }
-            }
-        }
-
-        /// <summary>超链接点击回调：传入与绘制时相同的排版参数与鼠标坐标，命中某个 &lt;link&gt;/&lt;a href&gt; 段时返回其 url，
-        /// 否则返回 null。内部复用 <see cref="LayoutRich"/>，因此命中区与实际画面逐像素一致。</summary>
-        public static string GetLinkAt(string text, IFont font, RectangleF bounds,
-                                       TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                                       float x, float y)
-        {
-            if (font == null || string.IsNullOrEmpty(text))
-            {
-                return null;
-            }
-            RichTextDocument doc = RichTextDocument.Parse(text);
-            if (doc == null)
-            {
-                return null;
-            }
-            List<RichTextRun> runs = LayoutRich(doc, font, bounds, anchor, hWrap, vWrap);
-            foreach (RichTextRun run in runs)
-            {
-                if (run.Style.Link == null)
-                {
-                    continue;
-                }
-                if (x >= run.X && x <= run.X + run.Width && y >= run.Y && y <= run.Y + run.Height)
-                {
-                    return run.Style.Link;
-                }
-            }
-            return null;
-        }
-
-        private static bool SameStyle(RichTextStyle a, RichTextStyle b)
-        {
-            return a.Color == b.Color && a.Link == b.Link && a.Bold == b.Bold &&
-                   a.Italic == b.Italic && a.Underline == b.Underline && a.Scale == b.Scale;
-        }
-
-        private static void DrawUnderline(SpriteBatch batch, float x, float y, float width, Color color)
-        {
-            if (width <= 0)
-            {
-                return;
-            }
-            if (_whitePixel == null)
-            {
-                _whitePixel = batch.GraphicsDevice.CreateTexture(1, 1);
-                _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
-            }
-            batch.Draw(_whitePixel, new RectangleF(x, y, width, 1f), null, color);
         }
 
         /// <summary>带背景铺底的重载：<paramref name="backColor"/> 非透明时先用 1x1 白纹把矩形填满，再画文本。</summary>

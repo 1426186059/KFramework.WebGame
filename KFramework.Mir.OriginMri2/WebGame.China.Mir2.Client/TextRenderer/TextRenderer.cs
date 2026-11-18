@@ -1,6 +1,7 @@
 using Client.MirGraphics;
 using EngineColor = KFramework.MonoGame.Color;
 using EngineRect = KFramework.MonoGame.Rectangle;
+using EngineRich = KFramework.MonoGame.RichTextObject;
 using EngineText = KFramework.MonoGame.TextRenderer;
 using EngineTextStyle = KFramework.MonoGame.TextStyle;
 
@@ -30,34 +31,29 @@ public static class TextRenderer
             EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
     }
 
-    /// <summary>富文本绘制：<paramref name="richText"/>=true 解析 &lt;color&gt;/&lt;link&gt; 等标签。
-    /// <paramref name="outlineMode"/>=true 时忽略段颜色、只画纯文本（描边用）。
-    /// 超链接点击命中请用 <see cref="GetLinkAt"/>。</summary>
-    public static void DrawText(string text, Font font, Rectangle bounds, int foreColor, EngineTextStyle style,
-                                bool richText, bool outlineMode = false)
+    // ---------------- 富文本（交给 EngineRich，由调用方持有实例以复用解析结果）----------------
+
+    /// <summary>富文本度量：用调用方持有的 rich 对象剥离标签后测量，供 AutoSize 使用。</summary>
+    public static Size MeasureText(EngineRich rich, EngineTextStyle style)
     {
-        EngineText.DrawText(DXManager.Batch, text, font,
+        return rich.Measure(new KFramework.MonoGame.Size(int.MaxValue, int.MaxValue), style.HorizontalWrap);
+    }
+
+    /// <summary>富文本绘制；outlineMode=true 时只画去标签的纯文本（描边用）。</summary>
+    public static void DrawText(EngineRich rich, Rectangle bounds, int foreColor, EngineTextStyle style,
+                                bool outlineMode = false)
+    {
+        rich.Draw(DXManager.Batch,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
             EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap,
-            richText, outlineMode);
+            outlineMode);
     }
 
-    /// <summary>超链接点击回调：传入与绘制时相同的矩形/排版样式与鼠标坐标，命中超链接时返回其 url，否则 null。</summary>
-    public static string GetLinkAt(string text, Font font, Rectangle bounds, EngineTextStyle style, int x, int y)
+    /// <summary>超链接点击回调：命中超链接时返回其 url，否则 null。</summary>
+    public static string GetLinkAt(EngineRich rich, Rectangle bounds, EngineTextStyle style, int x, int y)
     {
-        return EngineText.GetLinkAt(text, font,
+        return rich.GetLinkAt(
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
             style.Anchor, style.HorizontalWrap, style.VerticalWrap, x, y);
-    }
-
-    /// <summary>富文本度量：剥离标签后测量，供 AutoSize 使用。</summary>
-    public static Size MeasureText(string text, Font font, bool richText)
-    {
-        if (!richText)
-        {
-            return EngineText.MeasureText(text, font);
-        }
-        return EngineText.MeasureText(text, font, new KFramework.MonoGame.Size(int.MaxValue, int.MaxValue),
-                                      KFramework.MonoGame.HorizontalWrapMode.Overflow, true);
     }
 }

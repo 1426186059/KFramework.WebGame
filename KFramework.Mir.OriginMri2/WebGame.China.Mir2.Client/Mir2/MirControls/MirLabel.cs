@@ -134,7 +134,9 @@ namespace Client.MirControls
                 Size = Size.Empty;
             else
             {
-                Size = TextRenderer.MeasureText(Text, Font, RichText);
+                // 统一走 RichTextObject：无标签时它内部按普通文本快路径度量，有标签时剥离标签后度量。
+                SyncRich();
+                Size = TextRenderer.MeasureText(_rich, _drawFormat);
                 //Size = new Size(Size.Width, Size.Height + 5);
 
                 if (OutLine && Size != Size.Empty)
@@ -157,9 +159,9 @@ namespace Client.MirControls
         }
 
         /// <summary>
-        /// 是否启用富文本（Unity 风格标签）：&lt;color=#RRGGBB&gt;文本&lt;/color&gt;、
-        /// &lt;link="url"&gt;文本&lt;/link&gt;、&lt;b&gt;&lt;i&gt;&lt;u&gt;&lt;size=20&gt; 等。
-        /// 开启后 Text 里的标签不显示、只作用于对应文字；关闭时标签当普通字符原样显示。
+        /// 兼容属性：渲染现已统一走 <see cref="KFramework.MonoGame.RichTextObject"/>，
+        /// 无标签文本按普通文本绘制、有标签时标签生效，无需再切开关。
+        /// 保留此属性仅为兼容旧的对象初始化器，赋值只触发一次重绘。
         /// </summary>
         private bool _richText;
         public bool RichText
@@ -177,6 +179,16 @@ namespace Client.MirControls
                 _richText = value;
                 OnTextChanged(EventArgs.Empty);   // 重新度量与重绘
             }
+        }
+
+        // 富文本对象：持有文本/字体并缓存标签解析，度量/绘制/链接命中共用，
+        // 避免一次重绘里 4 次描边 + 1 次前景反复解析同一段文本。
+        private readonly KFramework.MonoGame.RichTextObject _rich = new KFramework.MonoGame.RichTextObject();
+
+        private void SyncRich()
+        {
+            _rich.SetText(Text);
+            _rich.SetFont(Font);
         }
 
         /// <summary>命中超链接后是否自动用默认浏览器打开其 url。默认 true；
@@ -201,7 +213,7 @@ namespace Client.MirControls
         public bool TryGetLinkAt(int x, int y, out string url)
         {
             url = null;
-            if (!RichText || !Visible || string.IsNullOrEmpty(Text))
+            if (!Visible || string.IsNullOrEmpty(Text))
             {
                 return false;
             }
@@ -211,7 +223,8 @@ namespace Client.MirControls
                 _drawFormat.Anchor,
                 _drawFormat.HorizontalWrap,
                 KFramework.MonoGame.VerticalWrapMode.Overflow);
-            url = TextRenderer.GetLinkAt(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height),
+            SyncRich();
+            url = TextRenderer.GetLinkAt(_rich, new Rectangle(1, 1, Size.Width, Size.Height),
                                          format, x - loc.X, y - loc.Y);
             return url != null;
         }
@@ -301,14 +314,17 @@ namespace Client.MirControls
                 try
                 {
                     // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
+                    // 统一走 RichTextObject：无标签时内部按普通文本逐字符折行绘制，
+                    // 解析与排版结果跨 4 次描边 + 1 次前景复用；描边用 outlineMode 只画去标签的纯文本。
+                    SyncRich();
                     if (outline != 0)
                     {
-                        TextRenderer.DrawText(Text, Font, new Rectangle(1, 0, Size.Width, Size.Height), outline, format, RichText, true);
-                        TextRenderer.DrawText(Text, Font, new Rectangle(0, 1, Size.Width, Size.Height), outline, format, RichText, true);
-                        TextRenderer.DrawText(Text, Font, new Rectangle(2, 1, Size.Width, Size.Height), outline, format, RichText, true);
-                        TextRenderer.DrawText(Text, Font, new Rectangle(1, 2, Size.Width, Size.Height), outline, format, RichText, true);
+                        TextRenderer.DrawText(_rich, new Rectangle(1, 0, Size.Width, Size.Height), outline, format, true);
+                        TextRenderer.DrawText(_rich, new Rectangle(0, 1, Size.Width, Size.Height), outline, format, true);
+                        TextRenderer.DrawText(_rich, new Rectangle(2, 1, Size.Width, Size.Height), outline, format, true);
+                        TextRenderer.DrawText(_rich, new Rectangle(1, 2, Size.Width, Size.Height), outline, format, true);
                     }
-                    TextRenderer.DrawText(Text, Font, new Rectangle(1, 1, Size.Width, Size.Height), fore, format, RichText, false);
+                    TextRenderer.DrawText(_rich, new Rectangle(1, 1, Size.Width, Size.Height), fore, format, false);
 
                     if (_underLine)
                     {
