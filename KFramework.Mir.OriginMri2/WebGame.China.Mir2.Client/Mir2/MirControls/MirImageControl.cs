@@ -20,6 +20,10 @@ namespace Client.MirControls
         // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
         public float SizeScale { get; set; } = 1f;
 
+        // 用 DXManager.UISampler（默认线性）采样绘制本控件图像，供放大的 UI 小图（如角色立绘）平滑显示。
+        // 默认 false 保持全局 PointClamp 像素风；仅放大的小图控件才置 true。
+        public bool UseUISampler { get; set; } = false;
+
         // 白鹭 MovieClip 原生帧对齐：开启后图集帧按【子图原始尺寸】绘制（不拉伸到 Size），
         // 且逐帧偏移用下面的统一缩放换算。默认关闭，其它控件行为不变。
         // 由 MirAnimatedAtlasControl.SetMovieClip 统一装配，外部不要逐个赋值。
@@ -447,7 +451,11 @@ namespace Client.MirControls
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
                 var srcRect = new KFramework.MonoGame.Rectangle(0, 0, Texture.Width, Texture.Height);
                 var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
-                DXManager.Draw(Texture, srcRect, dstRect, drawColor, (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), FlipEffects);
+                var drawBlend = (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState();
+                if (UseUISampler)
+                    DXManager.DrawWithUISampler(Texture, srcRect, dstRect, drawColor, drawBlend, FlipEffects);
+                else
+                    DXManager.Draw(Texture, srcRect, dstRect, drawColor, drawBlend, FlipEffects);
                 return;
             }
 
