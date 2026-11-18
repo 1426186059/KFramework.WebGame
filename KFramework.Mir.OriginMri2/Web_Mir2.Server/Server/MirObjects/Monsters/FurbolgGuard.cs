@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -18,7 +18,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal FurbolgGuard(MonsterInfo info)
+        protected internal FurbolgGuard(MonsterInfoTable info)
             : base(info)
         {
         }

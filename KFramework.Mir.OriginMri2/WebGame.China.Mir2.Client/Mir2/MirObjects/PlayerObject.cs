@@ -59,7 +59,7 @@ namespace Client.MirObjects
             if (armour > 0) return armour;                         // 普通盔甲（含职业差异）
             return Gender == MirGender.Female ? 9002 : 9001;       // 裸身：男 9001 / 女 9002（仅按性别）
         }
-        // 本地玩家(UserObject)没有 ObjectPlayer 包，需从自身 Equipment 反推各层 origin 模型号（页游物品 id = ItemInfo.Index）。
+        // 本地玩家(UserObject)没有 ObjectPlayer 包，需从自身 Equipment 反推各层 origin 模型号（页游物品 id = ItemInfoTable.Index）。
         // 与服务端 ObjectPlayer.OriginArmourID = Equipment[Armour]?.Info.Index 同义；盔甲/武器/坐骑来自装备槽。
         // 翅膀/装扮等本服务端未在下发的 UserInformation 中追踪，回落 0（不绘制）。仅按传入 Equipment 解算；装备变化(SetSlots)时再次调用刷新。
         protected void SetUserOriginModels(UserItem[] equipment)

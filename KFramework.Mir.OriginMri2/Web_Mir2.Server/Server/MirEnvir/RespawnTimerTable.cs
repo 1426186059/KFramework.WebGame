@@ -1,4 +1,4 @@
-﻿namespace Server.MirEnvir
+namespace Server.MirEnvir
 {
     public class RespawnSave
     {
@@ -25,8 +25,8 @@
 
     public class RespawnTickOption
     {
-        public int UserCount = 1;
-        public double DelayLoss = 1.0;
+        public int UserCount { get; set; } = 1;
+        public double DelayLoss { get; set; } = 1.0;
 
         public RespawnTickOption() { }
 
@@ -48,28 +48,28 @@
         }
     }
 
-    public class RespawnTimer
+    public class RespawnTimerTable
     {
         protected static Envir Envir
         {
             get { return Envir.Main; }
         }
 
-        public byte BaseSpawnRate = 20;//amount of minutes between respawnticks (with no bonus)
-        public ulong CurrentTickcounter = 0; //counter used to respawn everything
-        public long LastTick = 0; //what 'time' was the last tick?
-        public int LastUsercount = 0; //stops it from having to check delay each time
-        public long CurrentDelay = 0;
-        public List<RespawnTickOption> Respawn = new List<RespawnTickOption>();
+        public byte BaseSpawnRate { get; set; } = 20;//amount of minutes between respawnticks (with no bonus)
+        public ulong CurrentTickcounter { get; set; } = 0; //counter used to respawn everything
+        public long LastTick { get; set; } = 0; //what 'time' was the last tick?
+        public int LastUsercount { get; set; } = 0; //stops it from having to check delay each time
+        public long CurrentDelay { get; set; } = 0;
+        public List<RespawnTickOption> Respawn { get; set; } = new List<RespawnTickOption>();
 
-        public RespawnTimer()
+        public RespawnTimerTable()
         {
             RespawnTickOption Option = new RespawnTickOption { UserCount = 0, DelayLoss = 1.0 };
             Respawn.Add(Option);
             //LastTick = Envir.Time;
         }
 
-        public RespawnTimer(BinaryReader reader)
+        public RespawnTimerTable(BinaryReader reader)
         {
             BaseSpawnRate = reader.ReadByte();
             CurrentTickcounter = reader.ReadUInt64();

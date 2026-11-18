@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -34,7 +34,7 @@ namespace Server.MirObjects.Monsters
         public override void Die() { }
         public override void ReceiveChat(string text, ChatType type) { }
 
-        protected internal Trainer(MonsterInfo info)
+        protected internal Trainer(MonsterInfoTable info)
             : base(info) { }
 
         public override void Spawned()

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     public class CargoBox : MonsterObject
     {
         protected override bool CanMove { get { return false; } }
-        protected internal CargoBox(MonsterInfo info)
+        protected internal CargoBox(MonsterInfoTable info)
             : base(info)
         {
         }

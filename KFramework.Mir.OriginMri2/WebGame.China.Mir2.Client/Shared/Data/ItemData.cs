@@ -1,45 +1,54 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
-public class ItemInfo
+public class ItemInfoTable
 {
-    public int Index;
-    public string Name = string.Empty;
-    public ItemType Type;
-    public ItemGrade Grade;
-    public RequiredType RequiredType = RequiredType.Level;
-    public RequiredClass RequiredClass = RequiredClass.None;
-    public RequiredGender RequiredGender = RequiredGender.None;
-    public ItemSet Set;
+    public int Index { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public short Shape;
-    public byte Weight, Light, RequiredAmount;
+    // 原始传奇外观模型号（1config.item[col17]，"男号/女号" 或单号）：供 origin 地图渲染按性别取模型。
+    // 由 ItemInfo.json 的 OriginModel 列反序列化；无该列的旧数据为空串，渲染时回落裸身。
+    public string OriginModel { get; set; } = string.Empty;
 
-    public uint Image;
-    public ushort Durability;
+    public ItemType Type { get; set; }
+    public ItemGrade Grade { get; set; }
+    public RequiredType RequiredType { get; set; } = RequiredType.Level;
+    public RequiredClass RequiredClass { get; set; } = RequiredClass.None;
+    public RequiredGender RequiredGender { get; set; } = RequiredGender.None;
+    public ItemSet Set { get; set; }
 
-    public uint Price;
-    public ushort StackSize = 1;
+    public short Shape { get; set; }
+    public byte Weight { get; set; }
+    public byte Light { get; set; }
+    public byte RequiredAmount { get; set; }
 
-    public bool StartItem;
-    public byte Effect;
+    public uint Image { get; set; }
+    public ushort Durability { get; set; }
 
-    public bool NeedIdentify, ShowGroupPickup, GlobalDropNotify;
-    public bool ClassBased;
-    public bool LevelBased;
-    public bool CanMine;
-    public bool CanFastRun;
-    public bool CanAwakening;
+    public uint Price { get; set; }
+    public ushort StackSize { get; set; } = 1;
 
-    public BindMode Bind = BindMode.None;
+    public bool StartItem { get; set; }
+    public byte Effect { get; set; }
 
-    public SpecialItemMode Unique = SpecialItemMode.None;
-    public byte RandomStatsId;
-    public RandomItemStat RandomStats;
-    public string ToolTip = string.Empty;
+    public bool NeedIdentify { get; set; }
+    public bool ShowGroupPickup { get; set; }
+    public bool GlobalDropNotify { get; set; }
+    public bool ClassBased { get; set; }
+    public bool LevelBased { get; set; }
+    public bool CanMine { get; set; }
+    public bool CanFastRun { get; set; }
+    public bool CanAwakening { get; set; }
 
-    public byte Slots;
+    public BindMode Bind { get; set; } = BindMode.None;
 
-    public Stats Stats;
+    public SpecialItemMode Unique { get; set; } = SpecialItemMode.None;
+    public byte RandomStatsId { get; set; }
+    public RandomItemStat RandomStats { get; set; }
+    public string ToolTip { get; set; } = string.Empty;
+
+    public byte Slots { get; set; }
+
+    public Stats Stats { get; set; }
 
     public bool IsConsumable
     {
@@ -62,12 +71,12 @@ public class ItemInfo
         }
     }
 
-    public ItemInfo()
+    public ItemInfoTable()
     {
         Stats = new Stats();
     }
 
-    public ItemInfo(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
+    public ItemInfoTable(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
     {
         Index = reader.ReadInt32();
         Name = reader.ReadString();
@@ -258,7 +267,7 @@ public class ItemInfo
 
     }
 
-    public static ItemInfo FromText(string text)
+    public static ItemInfoTable FromText(string text)
     {
         return null;
     }
@@ -280,7 +289,7 @@ public class UserItem
     public ulong UniqueID;
     public int ItemIndex;
 
-    public ItemInfo Info;
+    public ItemInfoTable Info;
     public ushort CurrentDura, MaxDura;
     public ushort Count = 1,
         GemCount = 0;
@@ -327,7 +336,7 @@ public class UserItem
 
     public bool GMMade { get; set; }
 
-    public UserItem(ItemInfo info)
+    public UserItem(ItemInfoTable info)
     {
         SoulBoundId = -1;
         ItemIndex = info.Index;
@@ -778,7 +787,7 @@ public class GameShopItem
 {
     public int ItemIndex;
     public int GIndex;
-    public ItemInfo Info;
+    public ItemInfoTable Info;
     public uint GoldPrice = 0;
     public uint CreditPrice = 0;
     public ushort Count = 1;
@@ -829,7 +838,7 @@ public class GameShopItem
     {
         ItemIndex = reader.ReadInt32();
         GIndex = reader.ReadInt32();
-        Info = new ItemInfo(reader);
+        Info = new ItemInfoTable(reader);
         GoldPrice = reader.ReadUInt32();
         CreditPrice = reader.ReadUInt32();
         Count = reader.ReadUInt16();

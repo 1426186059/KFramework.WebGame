@@ -3,7 +3,7 @@ using Server.MirEnvir;
 
 namespace Server.MirDatabase
 {
-    public class MonsterInfo
+    public class MonsterInfoTable
     {
         protected static Envir Envir
         {
@@ -20,45 +20,54 @@ namespace Server.MirDatabase
             get { return MessageQueue.Instance; }
         }
 
-        public int Index;
-        public string Name = string.Empty;
+        public int Index { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public Monster Image;
-        public byte AI, Effect, ViewRange = 7, CoolEye;
-        public ushort Level;
+        public Monster Image { get; set; }
+        public byte AI { get; set; }
+        public byte Effect { get; set; }
+        public byte ViewRange { get; set; } = 7;
+        public byte CoolEye { get; set; }
+        public ushort Level { get; set; }
 
-        public byte Light;
+        public byte Light { get; set; }
 
-        public ushort AttackSpeed = 2500, MoveSpeed = 1800;
-        public uint Experience;
+        public ushort AttackSpeed { get; set; } = 2500;
+        public ushort MoveSpeed { get; set; } = 1800;
+        public uint Experience { get; set; }
 
         // 原始传奇怪物音效 id（4config.monster 的 walkaudio/attackaudio/dieaudio，对应 CDN audio/{id}.mp3）。
         // 为 0 表示该怪没有配置对应音效，客户端回退到通用音。
-        public int WalkAudio, AttackAudio, DieAudio;
+        public int WalkAudio { get; set; }
+        public int AttackAudio { get; set; }
+        public int DieAudio { get; set; }
 
-        public string DropPath = "";
+        public string DropPath { get; set; } = "";
         
         // 配置表里出现 DropSettings 字段（哪怕是空数组）就完全走配置表掉落；
         // 旧表没有该字段，反序列化后为 null，继续走 Drops/*.txt 脚本。
-        public List<MonsterDropSetting> DropSettings;
+        public List<MonsterDropSetting> DropSettings { get; set; }
 
-        public List<DropInfo> Drops = new List<DropInfo>();
+        public List<DropInfo> Drops { get; set; } = new List<DropInfo>();
 
-        public bool CanTame = true, CanPush = true, AutoRev = true, Undead = false;
-        public bool CanRecall = false;
-        public bool IsBoss = false;
+        public bool CanTame { get; set; } = true;
+        public bool CanPush { get; set; } = true;
+        public bool AutoRev { get; set; } = true;
+        public bool Undead { get; set; } = false;
+        public bool CanRecall { get; set; } = false;
+        public bool IsBoss { get; set; } = false;
 
-        public bool HasSpawnScript;
-        public bool HasDieScript;
+        public bool HasSpawnScript { get; set; }
+        public bool HasDieScript { get; set; }
 
-        public Stats Stats;
+        public Stats Stats { get; set; }
 
-        public MonsterInfo()
+        public MonsterInfoTable()
         {
             Stats = new Stats();
         }
 
-        public MonsterInfo(BinaryReader reader)
+        public MonsterInfoTable(BinaryReader reader)
         {
             Index = reader.ReadInt32();
             Name = reader.ReadString();
@@ -239,15 +248,19 @@ namespace Server.MirDatabase
 
             if (data.Length < 28) return; //28
 
-            MonsterInfo info = new MonsterInfo {Name = data[0]};
+            MonsterInfoTable info = new MonsterInfoTable {Name = data[0]};
             ushort image;
             if (!ushort.TryParse(data[1], out image)) return;
             info.Image = (Monster) image;
 
-            if (!byte.TryParse(data[2], out info.AI)) return;
-            if (!byte.TryParse(data[3], out info.Effect)) return;
-            if (!ushort.TryParse(data[4], out info.Level)) return;
-            if (!byte.TryParse(data[5], out info.ViewRange)) return;
+            if (!byte.TryParse(data[2], out byte ai)) return;
+            if (!byte.TryParse(data[3], out byte effect)) return;
+            if (!ushort.TryParse(data[4], out ushort level)) return;
+            if (!byte.TryParse(data[5], out byte viewRange)) return;
+            info.AI = ai;
+            info.Effect = effect;
+            info.Level = level;
+            info.ViewRange = viewRange;
 
             //if (!int.TryParse(data[6], out info.HP)) return;
 
@@ -263,19 +276,29 @@ namespace Server.MirDatabase
             //if (!ushort.TryParse(data[16], out info.MaxSC)) return;
             //if (!byte.TryParse(data[17], out info.Accuracy)) return;
             //if (!byte.TryParse(data[18], out info.Agility)) return;
-            if (!byte.TryParse(data[19], out info.Light)) return;
+            if (!byte.TryParse(data[19], out byte light)) return;
+            info.Light = light;
 
-            if (!ushort.TryParse(data[20], out info.AttackSpeed)) return;
-            if (!ushort.TryParse(data[21], out info.MoveSpeed)) return;
+            if (!ushort.TryParse(data[20], out ushort attackSpeed)) return;
+            if (!ushort.TryParse(data[21], out ushort moveSpeed)) return;
 
-            if (!uint.TryParse(data[22], out info.Experience)) return;
+            if (!uint.TryParse(data[22], out uint experience)) return;
             
-            if (!bool.TryParse(data[23], out info.CanTame)) return;
-            if (!bool.TryParse(data[24], out info.CanPush)) return;
+            if (!bool.TryParse(data[23], out bool canTame)) return;
+            if (!bool.TryParse(data[24], out bool canPush)) return;
 
-            if (!bool.TryParse(data[25], out info.AutoRev)) return;
-            if (!bool.TryParse(data[26], out info.Undead)) return;
-            if (!byte.TryParse(data[27], out info.CoolEye)) return;
+            if (!bool.TryParse(data[25], out bool autoRev)) return;
+            if (!bool.TryParse(data[26], out bool undead)) return;
+            if (!byte.TryParse(data[27], out byte coolEye)) return;
+
+            info.AttackSpeed = attackSpeed;
+            info.MoveSpeed = moveSpeed;
+            info.Experience = experience;
+            info.CanTame = canTame;
+            info.CanPush = canPush;
+            info.AutoRev = autoRev;
+            info.Undead = undead;
+            info.CoolEye = coolEye;
 
             //int count;
 
@@ -303,28 +326,28 @@ namespace Server.MirDatabase
 
     public class DropRewardInfo
     {
-        public List<ItemInfo> Items;
+        public List<ItemInfoTable> Items;
         public uint Gold;
     }
 
     public class GroupDropInfo : List<DropInfo>
     {
-        public bool Random;
-        public bool First;
+        public bool Random { get; set; }
+        public bool First { get; set; }
     }
 
     // 怪物表内嵌掉落配置：Chance 为 1/N；ItemIndexes 非空时表示一组候选，
     // Random=true 从组内随机掉 1 件（对应旧脚本的 GROUP*）。
     public class MonsterDropSetting
     {
-        public int Chance = 1;
-        public int ItemIndex;
-        public uint Gold;
-        public bool QuestRequired;
-        public byte Type;
-        public bool Random;
-        public bool First;
-        public List<int> ItemIndexes = new List<int>();
+        public int Chance { get; set; } = 1;
+        public int ItemIndex { get; set; }
+        public uint Gold { get; set; }
+        public bool QuestRequired { get; set; }
+        public byte Type { get; set; }
+        public bool Random { get; set; }
+        public bool First { get; set; }
+        public List<int> ItemIndexes { get; set; } = new List<int>();
     }
 
     public class DropInfo
@@ -339,13 +362,13 @@ namespace Server.MirDatabase
             get { return MessageQueue.Instance; }
         }
 
-        public int Chance;
-        public ItemInfo Item;
-        public uint Gold;
-        public GroupDropInfo GroupedDrop;
+        public int Chance { get; set; }
+        public ItemInfoTable Item { get; set; }
+        public uint Gold { get; set; }
+        public GroupDropInfo GroupedDrop { get; set; }
 
-        public byte Type;
-        public bool QuestRequired;
+        public byte Type { get; set; }
+        public bool QuestRequired { get; set; }
 
         public static DropInfo FromSetting(MonsterDropSetting setting)
         {
@@ -400,12 +423,14 @@ namespace Server.MirDatabase
 
             DropInfo info = new DropInfo();
 
-            if (!int.TryParse(parts[0].Substring(2), out info.Chance)) return null;
+            if (!int.TryParse(parts[0].Substring(2), out int chance)) return null;
+            info.Chance = chance;
 
             if (string.Compare(parts[1], "Gold", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 if (parts.Length < 3) return null;
-                if (!uint.TryParse(parts[2], out info.Gold) || info.Gold == 0) return null;
+                if (!uint.TryParse(parts[2], out uint gold) || gold == 0) return null;
+                info.Gold = gold;
             }
             else if (parts[1].Length > 1 && parts[1][0] == '@' &&
                      int.TryParse(parts[1].Substring(1), out int itemIndex))
@@ -602,7 +627,7 @@ namespace Server.MirDatabase
             }
 
             uint gold = 0;
-            var items = new List<ItemInfo>();
+            var items = new List<ItemInfoTable>();
 
             if (Gold > 0)
             {
@@ -624,7 +649,7 @@ namespace Server.MirDatabase
             }
             else if (GroupedDrop != null)
             {
-                var tempItems = new List<ItemInfo>();
+                var tempItems = new List<ItemInfoTable>();
 
                 foreach (var item in GroupedDrop)
                 {

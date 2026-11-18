@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime, TeleportTime;
         public byte AttackRange = 6;
 
-        protected internal RedFoxman(MonsterInfo info)
+        protected internal RedFoxman(MonsterInfoTable info)
             : base(info)
         {
         }

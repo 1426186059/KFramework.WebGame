@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime, TeleportTime;
         public byte AttackRange = 6;
 
-        protected internal WhiteFoxman(MonsterInfo info)
+        protected internal WhiteFoxman(MonsterInfoTable info)
             : base(info)
         {
         }

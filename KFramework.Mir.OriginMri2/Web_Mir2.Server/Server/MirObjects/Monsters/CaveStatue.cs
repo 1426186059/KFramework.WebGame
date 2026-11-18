@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanAttack { get { return false; } }
         protected override bool CanRegen { get { return false; } }
 
-        protected internal CaveStatue(MonsterInfo info)
+        protected internal CaveStatue(MonsterInfoTable info)
             : base(info)
         {
             if (info.Effect == 1)

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirObjects;
 
@@ -22,7 +22,7 @@ namespace Server.MirForms.Systems
         {
             ComboBox comboBox = (ComboBox)sender;
 
-            MonsterInfo monster = (MonsterInfo)comboBox.SelectedItem;
+            MonsterInfoTable monster = (MonsterInfoTable)comboBox.SelectedItem;
 
             if (monster == null) return;
 
@@ -50,7 +50,7 @@ namespace Server.MirForms.Systems
 
         private void updateButton_Click(object sender, EventArgs e)
         {
-            MonsterInfo monster = (MonsterInfo)SelectMonsterComboBox.SelectedItem;
+            MonsterInfoTable monster = (MonsterInfoTable)SelectMonsterComboBox.SelectedItem;
 
             if (monster == null) return;
 
@@ -97,7 +97,7 @@ namespace Server.MirForms.Systems
         {
             for (int i = 0; i < SelectMonsterComboBox.Items.Count; i++)
             {
-                MonsterInfo mob = (MonsterInfo)SelectMonsterComboBox.Items[i];
+                MonsterInfoTable mob = (MonsterInfoTable)SelectMonsterComboBox.Items[i];
 
                 if (mob == null) continue;
 

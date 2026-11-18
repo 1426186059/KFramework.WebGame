@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         private const long TeleDelay = 10000;
         private byte _stage = 7;
 
-        protected internal WoomaTaurus(MonsterInfo info)
+        protected internal WoomaTaurus(MonsterInfoTable info)
             : base(info)
         {
         }

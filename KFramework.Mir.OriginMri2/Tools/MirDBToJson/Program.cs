@@ -6,9 +6,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using Server.MirDatabase;   // MapInfo / MonsterInfo / NPCInfo / QuestInfo / DragonInfo / MagicInfo / ConquestInfo
-using Server.MirEnvir;     // RespawnTimer
-// 注意：ItemInfo / GameShopItem / Stats 位于全局命名空间（ItemData.cs 无 namespace 声明），直接可用。
+using Server.MirDatabase;   // MapInfoTable / MonsterInfoTable / NPCInfoTable / QuestInfoTable / DragonInfoTable / MagicInfoTable / ConquestInfoTable
+using Server.MirEnvir;     // RespawnTimerTable
+// 注意：ItemInfoTable / GameShopItemTable / Stats 位于全局命名空间（ItemData.cs 无 namespace 声明），直接可用。
 
 namespace MirDBToJson
 {
@@ -18,16 +18,16 @@ namespace MirDBToJson
     /// </summary>
     public class ConfigData
     {
-        public List<MapInfo> Maps = new();
-        public List<ItemInfo> Items = new();
-        public List<MonsterInfo> Monsters = new();
-        public List<NPCInfo> NPCs = new();
-        public List<QuestInfo> Quests = new();
-        public DragonInfo Dragon;
-        public List<MagicInfo> Magics = new();
-        public List<GameShopItem> GameShop = new();
-        public List<ConquestInfo> Conquests = new();
-        public RespawnTimer Respawn;
+        public List<MapInfoTable> Maps = new();
+        public List<ItemInfoTable> Items = new();
+        public List<MonsterInfoTable> Monsters = new();
+        public List<NPCInfoTable> NPCs = new();
+        public List<QuestInfoTable> Quests = new();
+        public DragonInfoTable Dragon;
+        public List<MagicInfoTable> Magics = new();
+        public List<GameShopItemTable> GameShop = new();
+        public List<ConquestInfoTable> Conquests = new();
+        public RespawnTimerTable Respawn;
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace MirDBToJson
 
             // 全量一致汉化（服务器端直接写中文名）：
             //   MirDBToJson --cn-server <crystalConfigDir> <dataRoot1> [dataRoot2 ...]
-            //   crystalConfigDir = Mir2Res_Crystal\Crystal\Config（ItemInfo/MonsterInfo 的英文源，原位改写 Name）
+            //   crystalConfigDir = Mir2Res_Crystal\Crystal\Config（ItemInfoTable/MonsterInfoTable 的英文源，原位改写 Name）
             //   dataRoot         = 服务器运行目录（含 Envir\ 与 Configs\）
             //   关键：Name 是掉落/配方/NPC脚本/启动检查的关联键，改写 Name 的同时必须用同一份
             //   映射重写所有引用（Envir\**\*.txt 的名字 token、Configs\*.ini 的名字值），
@@ -102,31 +102,31 @@ namespace MirDBToJson
                 if (version >= 68) reader.ReadInt32(); // RespawnIndex
 
                 int c;
-                c = reader.ReadInt32(); // MapInfo 块
-                for (int i = 0; i < c; i++) data.Maps.Add(new MapInfo(reader));
-                c = reader.ReadInt32(); // ItemInfo 块
-                for (int i = 0; i < c; i++) data.Items.Add(new ItemInfo(reader, version, customVersion));
-                c = reader.ReadInt32(); // MonsterInfo 块
-                for (int i = 0; i < c; i++) data.Monsters.Add(new MonsterInfo(reader));
-                c = reader.ReadInt32(); // NPCInfo 块
-                for (int i = 0; i < c; i++) data.NPCs.Add(new NPCInfo(reader));
-                c = reader.ReadInt32(); // QuestInfo 块
-                for (int i = 0; i < c; i++) data.Quests.Add(new QuestInfo(reader));
-                data.Dragon = new DragonInfo(reader);
-                c = reader.ReadInt32(); // MagicInfo 块（无版本门控，总是读取）
-                for (int i = 0; i < c; i++) data.Magics.Add(new MagicInfo(reader, version, customVersion));
+                c = reader.ReadInt32(); // MapInfoTable 块
+                for (int i = 0; i < c; i++) data.Maps.Add(new MapInfoTable(reader));
+                c = reader.ReadInt32(); // ItemInfoTable 块
+                for (int i = 0; i < c; i++) data.Items.Add(new ItemInfoTable(reader, version, customVersion));
+                c = reader.ReadInt32(); // MonsterInfoTable 块
+                for (int i = 0; i < c; i++) data.Monsters.Add(new MonsterInfoTable(reader));
+                c = reader.ReadInt32(); // NPCInfoTable 块
+                for (int i = 0; i < c; i++) data.NPCs.Add(new NPCInfoTable(reader));
+                c = reader.ReadInt32(); // QuestInfoTable 块
+                for (int i = 0; i < c; i++) data.Quests.Add(new QuestInfoTable(reader));
+                data.Dragon = new DragonInfoTable(reader);
+                c = reader.ReadInt32(); // MagicInfoTable 块（无版本门控，总是读取）
+                for (int i = 0; i < c; i++) data.Magics.Add(new MagicInfoTable(reader, version, customVersion));
                 if (version >= 63)
                 {
                     c = reader.ReadInt32(); // GameShop 块
-                    for (int i = 0; i < c; i++) data.GameShop.Add(new GameShopItem(reader, version, customVersion));
+                    for (int i = 0; i < c; i++) data.GameShop.Add(new GameShopItemTable(reader, version, customVersion));
                 }
                 if (version >= 66)
                 {
-                    c = reader.ReadInt32(); // ConquestInfo 块
-                    for (int i = 0; i < c; i++) data.Conquests.Add(new ConquestInfo(reader));
+                    c = reader.ReadInt32(); // ConquestInfoTable 块
+                    for (int i = 0; i < c; i++) data.Conquests.Add(new ConquestInfoTable(reader));
                 }
                 if (version > 67)
-                    data.Respawn = new RespawnTimer(reader);
+                    data.Respawn = new RespawnTimerTable(reader);
             }
 
             var opts = new JsonSerializerOptions
@@ -156,12 +156,12 @@ namespace MirDBToJson
             File.WriteAllText(Path.Combine(OutDir, "Meta.json"),
                 JsonSerializer.Serialize(new ConfigMeta { version = version, customVersion = customVersion }, opts));
 
-            // 往返验证：把导出的 ItemInfo.json 反序列化回官方 List<ItemInfo>，
+            // 往返验证：把导出的 ItemInfo.json 反序列化回官方 List<ItemInfoTable>，
             // 确认第二步（服务器改为从 JSON 加载配置表）在技术上可行。
             try
             {
                 string json = File.ReadAllText(Path.Combine(OutDir, "ItemInfo.json"));
-                var back = JsonSerializer.Deserialize<List<ItemInfo>>(json, opts);
+                var back = JsonSerializer.Deserialize<List<ItemInfoTable>>(json, opts);
                 int withStats = 0;
                 foreach (var it in back)
                     if (it.Stats != null && it.Stats.Values.Count > 0) withStats++;
@@ -212,16 +212,16 @@ namespace MirDBToJson
         {
             var tables = new (string File, Type Type, bool IsList)[]
             {
-                ("ItemInfo.json", typeof(ItemInfo), true),
-                ("MonsterInfo.json", typeof(MonsterInfo), true),
-                ("NPCInfo.json", typeof(NPCInfo), true),
-                ("MapInfo.json", typeof(MapInfo), true),
-                ("MagicInfo.json", typeof(MagicInfo), true),
-                ("QuestInfo.json", typeof(QuestInfo), true),
-                ("GameShopItem.json", typeof(GameShopItem), true),
-                ("ConquestInfo.json", typeof(ConquestInfo), true),
-                ("DragonInfo.json", typeof(DragonInfo), false),
-                ("RespawnTimer.json", typeof(RespawnTimer), false),
+                ("ItemInfo.json", typeof(ItemInfoTable), true),
+                ("MonsterInfo.json", typeof(MonsterInfoTable), true),
+                ("NPCInfo.json", typeof(NPCInfoTable), true),
+                ("MapInfo.json", typeof(MapInfoTable), true),
+                ("MagicInfo.json", typeof(MagicInfoTable), true),
+                ("QuestInfo.json", typeof(QuestInfoTable), true),
+                ("GameShopItem.json", typeof(GameShopItemTable), true),
+                ("ConquestInfo.json", typeof(ConquestInfoTable), true),
+                ("DragonInfo.json", typeof(DragonInfoTable), false),
+                ("RespawnTimer.json", typeof(RespawnTimerTable), false),
             };
             var opts = GetOpts();
             int totalChanged = 0, totalKept = 0;
@@ -734,7 +734,7 @@ namespace MirDBToJson
 
     /// <summary>
     /// 在序列化时移除不可序列化（指针 / byref / LinkedListNode 等运行时引用）的属性，
-    /// 这些字段属于运行时状态（如 QuestInfo 内指向 NPC 实例的链表节点），不属于静态配置。
+    /// 这些字段属于运行时状态（如 QuestInfoTable 内指向 NPC 实例的链表节点），不属于静态配置。
     /// </summary>
     internal sealed class IgnoreResolver : DefaultJsonTypeInfoResolver
     {
@@ -748,7 +748,7 @@ namespace MirDBToJson
                 if (member is System.Reflection.PropertyInfo pi)
                 {
                     // 属性：只保留有 setter 的（如 Stats.Values），移除只读计算属性
-                    // （如 QuestInfo.FinishNPC 调 Envir.NPCs.Single() 在空匹配时抛异常、ItemInfo.FriendlyName 等）。
+                    // （如 QuestInfoTable.FinishNPC 调 Envir.NPCs.Single() 在空匹配时抛异常、ItemInfoTable.FriendlyName 等）。
                     if (!pi.CanWrite) { ti.Properties.Remove(p); continue; }
                 }
                 Type pt = p.PropertyType;

@@ -10,15 +10,18 @@ namespace Server.MirDatabase
             get { return Envir.Main; }
         }
 
-        public int MonsterIndex;
-        public Point Location;
-        public ushort Count, Spread, Delay, RandomDelay;
-        public byte Direction;
+        public int MonsterIndex { get; set; }
+        public Point Location { get; set; }
+        public ushort Count { get; set; }
+        public ushort Spread { get; set; }
+        public ushort Delay { get; set; }
+        public ushort RandomDelay { get; set; }
+        public byte Direction { get; set; }
 
-        public string RoutePath = string.Empty;
-        public int RespawnIndex;
-        public bool SaveRespawnTime = false;
-        public ushort RespawnTicks; //leave 0 if not using this system!
+        public string RoutePath { get; set; } = string.Empty;
+        public int RespawnIndex { get; set; }
+        public bool SaveRespawnTime { get; set; } = false;
+        public ushort RespawnTicks { get; set; } //leave 0 if not using this system!
 
         public RespawnInfo()
         {
@@ -61,20 +64,30 @@ namespace Server.MirDatabase
 
             int x,y ;
 
-            if (!int.TryParse(data[0], out info.MonsterIndex)) return null;
+            if (!int.TryParse(data[0], out int monsterIndex)) return null;
             if (!int.TryParse(data[1], out x)) return null;
             if (!int.TryParse(data[2], out y)) return null;
 
             info.Location = new Point(x, y);
 
-            if (!ushort.TryParse(data[3], out info.Count)) return null;
-            if (!ushort.TryParse(data[4], out info.Spread)) return null;
-            if (!ushort.TryParse(data[5], out info.Delay)) return null;
-            if (!byte.TryParse(data[6], out info.Direction)) return null;
-            if (!ushort.TryParse(data[7], out info.RandomDelay)) return null;
-            if (!int.TryParse(data[8], out info.RespawnIndex)) return null;
-            if (!bool.TryParse(data[9], out info.SaveRespawnTime)) return null;
-            if (!ushort.TryParse(data[10], out info.RespawnTicks)) return null;
+            if (!ushort.TryParse(data[3], out ushort count)) return null;
+            if (!ushort.TryParse(data[4], out ushort spread)) return null;
+            if (!ushort.TryParse(data[5], out ushort delay)) return null;
+            if (!byte.TryParse(data[6], out byte direction)) return null;
+            if (!ushort.TryParse(data[7], out ushort randomDelay)) return null;
+            if (!int.TryParse(data[8], out int respawnIndex)) return null;
+            if (!bool.TryParse(data[9], out bool saveRespawnTime)) return null;
+            if (!ushort.TryParse(data[10], out ushort respawnTicks)) return null;
+
+            info.MonsterIndex = monsterIndex;
+            info.Count = count;
+            info.Spread = spread;
+            info.Delay = delay;
+            info.Direction = direction;
+            info.RandomDelay = randomDelay;
+            info.RespawnIndex = respawnIndex;
+            info.SaveRespawnTime = saveRespawnTime;
+            info.RespawnTicks = respawnTicks;
 
             return info;
         }

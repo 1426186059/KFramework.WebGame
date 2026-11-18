@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         public long ExplosionTime;
 
-        protected internal BombSpider(MonsterInfo info) 
+        protected internal BombSpider(MonsterInfoTable info) 
             : base(info)
         {
             ExplosionTime = Envir.Time + 1000 * 60 * 5;

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         protected byte AttackRange = 6;
         public long SitDownTime;
 
-        protected internal FrostTiger(MonsterInfo info)
+        protected internal FrostTiger(MonsterInfoTable info)
             : base(info)
         {
             SitDownTime = NewSitDownTime();

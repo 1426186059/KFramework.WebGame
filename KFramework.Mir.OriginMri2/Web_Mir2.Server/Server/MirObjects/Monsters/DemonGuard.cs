@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -18,7 +18,7 @@ namespace Server.MirObjects.Monsters
             get { return Info.Experience * (100 - (25 * RevivalCount)) / 100; }
         }
 
-        protected internal DemonGuard(MonsterInfo info)
+        protected internal DemonGuard(MonsterInfoTable info)
             : base(info)
         {
             RevivalCount = 0;

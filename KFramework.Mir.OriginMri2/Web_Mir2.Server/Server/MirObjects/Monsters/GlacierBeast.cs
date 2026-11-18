@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -7,7 +7,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class GlacierBeast : CrazyManworm
     {
-        protected internal GlacierBeast(MonsterInfo info)
+        protected internal GlacierBeast(MonsterInfoTable info)
             : base(info)
         {
         }

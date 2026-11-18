@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server
@@ -8,7 +8,7 @@ namespace Server
 
         public Envir Envir => SMain.EditEnvir;
 
-        private MagicInfo _selectedMagicInfo;
+        private MagicInfoTable _selectedMagicInfo;
 
         public MagicInfoForm()
         {
@@ -19,7 +19,7 @@ namespace Server
 
         private void UpdateMagicForm(byte field = 0)
         {
-            _selectedMagicInfo = (MagicInfo)MagiclistBox.SelectedItem;
+            _selectedMagicInfo = (MagicInfoTable)MagiclistBox.SelectedItem;
 
             lblBookValid.BackColor = SystemColors.Window;
 
@@ -74,7 +74,7 @@ namespace Server
                 if (field != 2)
                     txtDmgMultBoost.Text = _selectedMagicInfo.MultiplierBonus.ToString();
                 txtRange.Text = _selectedMagicInfo.Range.ToString();
-                ItemInfo Book = Envir.GetBook((short)_selectedMagicInfo.Spell);
+                ItemInfoTable Book = Envir.GetBook((short)_selectedMagicInfo.Spell);
                 if (Book != null)
                 {
                     lblBookValid.Text = Book.Name;

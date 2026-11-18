@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server
@@ -9,7 +9,7 @@ namespace Server
 
         public Envir Envir => SMain.EditEnvir;
 
-        private List<MonsterInfo> _selectedMonsterInfos;
+        private List<MonsterInfoTable> _selectedMonsterInfos;
 
         public MonsterInfoForm()
         {
@@ -47,7 +47,7 @@ namespace Server
                     MonsterInfoListBox.Items.Add(Envir.MonsterInfoList[i]);
             }
 
-            _selectedMonsterInfos = MonsterInfoListBox.SelectedItems.Cast<MonsterInfo>().ToList();
+            _selectedMonsterInfos = MonsterInfoListBox.SelectedItems.Cast<MonsterInfoTable>().ToList();
 
             if (_selectedMonsterInfos.Count == 0)
             {
@@ -91,7 +91,7 @@ namespace Server
                 return;
             }
 
-            MonsterInfo info = _selectedMonsterInfos[0];
+            MonsterInfoTable info = _selectedMonsterInfos[0];
 
             MonsterInfoPanel.Enabled = true;
 
@@ -611,7 +611,7 @@ namespace Server
 
 
             for (int i = 1; i < monsters.Length; i++)
-                MonsterInfo.FromText(monsters[i]);
+                MonsterInfoTable.FromText(monsters[i]);
 
             UpdateInterface();
         }
@@ -653,14 +653,14 @@ namespace Server
 
         private void ExportSelected_Click(object sender, EventArgs e)
         {
-            var list = MonsterInfoListBox.SelectedItems.Cast<MonsterInfo>().ToList();
+            var list = MonsterInfoListBox.SelectedItems.Cast<MonsterInfoTable>().ToList();
 
             ExportMonsters(list);
         }
 
-        private void ExportMonsters(IEnumerable<MonsterInfo> monsters)
+        private void ExportMonsters(IEnumerable<MonsterInfoTable> monsters)
         {
-            var monsterInfos = monsters as MonsterInfo[] ?? monsters.ToArray();
+            var monsterInfos = monsters as MonsterInfoTable[] ?? monsters.ToArray();
             var list = monsterInfos.Select(monster => monster.ToText()).ToList();
 
             File.WriteAllLines(MonsterListPath, list);
@@ -689,7 +689,7 @@ namespace Server
             var monsters = data.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var m in monsters)
-                MonsterInfo.FromText(m);
+                MonsterInfoTable.FromText(m);
 
             UpdateInterface();
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         private const byte AttackRange = 9;
 
-        protected internal RedThunderZuma(MonsterInfo info) : base(info)
+        protected internal RedThunderZuma(MonsterInfoTable info) : base(info)
         {
         }
 

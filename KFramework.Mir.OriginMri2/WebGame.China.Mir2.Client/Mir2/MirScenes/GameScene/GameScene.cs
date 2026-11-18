@@ -148,7 +148,7 @@ namespace Client.MirScenes
         public RollDialog RollControl;
 
 
-        public static List<ItemInfo> ItemInfoList = new List<ItemInfo>();
+        public static List<ItemInfoTable> ItemInfoList = new List<ItemInfoTable>();
         public static List<UserId> UserIdList = new List<UserId>();
         public static List<UserItem> ChatItemList = new List<UserItem>();
         public static List<ClientQuestInfo> QuestInfoList = new List<ClientQuestInfo>();
@@ -1211,7 +1211,7 @@ namespace Client.MirScenes
                 else
                 {
                     // 拖拽预览走 origin 图标（与 MirItemCell.DrawItemIcon 同链路）：
-                    // 服务器 S.NewItemInfo 下发的 ItemInfo.Image 已是完整 uint，直接用。
+                    // 服务器 S.NewItemInfo 下发的 ItemInfoTable.Image 已是完整 uint，直接用。
                     var item = SelectedCell.Item;
                     int id = (int)item.Info.Image;
                     if (id > 0)
@@ -6893,7 +6893,7 @@ namespace Client.MirScenes
             }
         }
 
-        public ItemInfo GetItemInfo(int index)
+        public ItemInfoTable GetItemInfo(int index)
         {
             var info = ItemInfoList.Find(x => x.Index == index);
             if (info != null && info.Image > 0) Mir2OriginObjectLibrary.PreloadItemIcon((int)info.Image);
@@ -6961,7 +6961,7 @@ namespace Client.MirScenes
             ushort level = inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             string GradeString = "";
             switch (HoverItem.Info.Grade)
@@ -7233,7 +7233,7 @@ namespace Client.MirScenes
                 UserItem socketItem = item.Slots[i];
                 if (socketItem == null) continue;
 
-                ItemInfo socketInfo = Functions.GetRealItem(socketItem.Info, level, job, ItemInfoList);
+                ItemInfoTable socketInfo = Functions.GetRealItem(socketItem.Info, level, job, ItemInfoList);
 
                 if (socketItem.CurrentDura == 0 && socketInfo.Durability > 0) continue;
 
@@ -7248,7 +7248,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
             Stats addedStats = GetTotalAddedStats(item, level, job);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
@@ -7826,7 +7826,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
             Stats addedStats = GetTotalAddedStats(item, level, job);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
@@ -8373,7 +8373,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -8545,7 +8545,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -8637,7 +8637,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -8709,7 +8709,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -8899,7 +8899,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -9536,7 +9536,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -9636,7 +9636,7 @@ namespace Client.MirScenes
             ushort level = Inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = Inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
@@ -9765,7 +9765,7 @@ namespace Client.MirScenes
             ushort level = inspect ? InspectDialog.Level : MapObject.User.Level;
             MirClass job = inspect ? InspectDialog.Class : MapObject.User.Class;
             HoverItem = item;
-            ItemInfo realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
+            ItemInfoTable realItem = Functions.GetRealItem(item.Info, level, job, ItemInfoList);
 
             ItemLabel = new MirControl
             {

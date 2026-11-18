@@ -1,4 +1,4 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 using Server.MirObjects;
 using Server.MirObjects.Monsters;
 
@@ -19,7 +19,7 @@ namespace Server.MirDatabase
         public int AttackerID;
         public byte NPCRate = 0;
 
-        public ConquestInfo Info;
+        public ConquestInfoTable Info;
 
         public bool NeedSave = false;
 
@@ -132,7 +132,7 @@ namespace Server.MirDatabase
         {
             if (Gate != null) Gate.Despawn();
 
-            MonsterInfo monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
+            MonsterInfoTable monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
 
             if (monsterInfo == null) return;
             if (monsterInfo.AI != 72) return;
@@ -217,7 +217,7 @@ namespace Server.MirDatabase
 
         public void Spawn()
         {
-            NPCInfo npcInfo = new NPCInfo
+            NPCInfoTable npcInfo = new NPCInfoTable
             {
                 Name = Info.Name,
                 FileName = Info.FileName,
@@ -314,7 +314,7 @@ namespace Server.MirDatabase
         {
             if (Wall != null) Wall.Despawn();
 
-            MonsterInfo monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
+            MonsterInfoTable monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
 
             if (monsterInfo == null) return;
 
@@ -414,7 +414,7 @@ namespace Server.MirDatabase
         {
             if (Gate != null) Gate.Despawn();
 
-            MonsterInfo monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
+            MonsterInfoTable monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
 
             if (monsterInfo == null) return;
             if (monsterInfo.AI != 81) return;
@@ -519,7 +519,7 @@ namespace Server.MirDatabase
         {
             if (Revive) Alive = true;
 
-            MonsterInfo monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
+            MonsterInfoTable monsterInfo = Envir.GetMonsterInfo(Info.MobIndex);
 
             if (monsterInfo == null) return;
             if (monsterInfo.AI != 80) return;

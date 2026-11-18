@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Server.MirDatabase;
@@ -16,7 +16,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 6;
         public bool Summoned;
 
-        protected internal SepHighArcher(MonsterInfo info)
+        protected internal SepHighArcher(MonsterInfoTable info)
             : base(info)
         {
         }

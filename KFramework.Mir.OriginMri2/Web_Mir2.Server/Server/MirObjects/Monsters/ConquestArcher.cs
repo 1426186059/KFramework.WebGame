@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
@@ -16,7 +16,7 @@ namespace Server.MirObjects.Monsters
             get { return Route.Count > 0 && !Dead && Envir.Time > MoveTime && Envir.Time > ActionTime && Envir.Time > ShockTime; }
         }
 
-        protected internal ConquestArcher(MonsterInfo info) 
+        protected internal ConquestArcher(MonsterInfoTable info) 
             : base(info) 
         { 
         }

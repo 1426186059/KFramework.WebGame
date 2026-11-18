@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic.PowerPacks;
+using Microsoft.VisualBasic.PowerPacks;
 using Server.MirForms.VisualMapInfo.Class;
 using Server.MirEnvir;
 using Server.MirDatabase;
@@ -202,7 +202,7 @@ namespace Server.MirForms.VisualMapInfo.Control
 
         private void MonsterComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MonsterInfo info = MonsterComboBox.SelectedItem as MonsterInfo;
+            MonsterInfoTable info = MonsterComboBox.SelectedItem as MonsterInfoTable;
             if (info == null) return;
             MonsterIndex = info.Index;
         }

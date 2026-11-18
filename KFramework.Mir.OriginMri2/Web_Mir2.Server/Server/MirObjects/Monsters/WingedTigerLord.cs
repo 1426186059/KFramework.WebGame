@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -21,7 +21,7 @@ namespace Server.MirObjects.Monsters
 
         private int AttackRange = 5;
 
-        protected internal WingedTigerLord(MonsterInfo info) 
+        protected internal WingedTigerLord(MonsterInfoTable info) 
             : base(info)
         {
         }

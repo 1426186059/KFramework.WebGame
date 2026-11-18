@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -14,7 +14,7 @@ namespace Server.MirObjects.Monsters
         public long DieTime;
         public int MaxMinions;
 
-        protected internal SnakeTotem(MonsterInfo info) : base(info)
+        protected internal SnakeTotem(MonsterInfoTable info) : base(info)
         {
             ActionTime = Envir.Time + 1000;
             Direction = MirDirection.Up;
@@ -134,7 +134,7 @@ namespace Server.MirObjects.Monsters
         {
             if (Pets.Count >= MaxMinions) return false;
 
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.SnakesName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.SnakesName);
             if (info == null) return false;
 
             MonsterObject monster;

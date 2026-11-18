@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         private const byte AttackRange = 3;
         private long _thrustTime;
 
-        protected internal ManectricClaw(MonsterInfo info)
+        protected internal ManectricClaw(MonsterInfoTable info)
             : base(info)
         {
         }

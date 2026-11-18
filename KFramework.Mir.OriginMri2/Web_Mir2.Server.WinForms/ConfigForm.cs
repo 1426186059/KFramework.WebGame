@@ -1,4 +1,4 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -298,7 +298,7 @@ namespace Server
 
                         if (string.IsNullOrEmpty(itemName)) continue;
 
-                        foreach (ItemInfo item in itemLookup[itemName])
+                        foreach (ItemInfoTable item in itemLookup[itemName])
                         {
                             if (item.RequiredClass == RequiredClass.None) continue;
                             if (!item.RequiredClass.HasFlag(targetClass)) continue;

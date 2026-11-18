@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -36,7 +36,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal DigOutZombie(MonsterInfo info)
+        protected internal DigOutZombie(MonsterInfoTable info)
             : base(info)
         {
             Visible = false;

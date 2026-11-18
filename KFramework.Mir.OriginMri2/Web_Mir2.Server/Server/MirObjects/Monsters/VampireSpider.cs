@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -14,7 +14,7 @@ namespace Server.MirObjects.Monsters
         public long AliveTime;
         public long deadTime;
 
-        protected internal VampireSpider(MonsterInfo info) : base(info)
+        protected internal VampireSpider(MonsterInfoTable info) : base(info)
         {
             ActionTime = Envir.Time + 1000;
         }

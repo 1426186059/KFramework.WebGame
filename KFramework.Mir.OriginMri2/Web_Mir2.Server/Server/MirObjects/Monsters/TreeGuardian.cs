@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -14,7 +14,7 @@ namespace Server.MirObjects.Monsters
             get { return 6; }
         }
 
-        protected internal TreeGuardian(MonsterInfo info)
+        protected internal TreeGuardian(MonsterInfoTable info)
             : base(info)
         {
         }

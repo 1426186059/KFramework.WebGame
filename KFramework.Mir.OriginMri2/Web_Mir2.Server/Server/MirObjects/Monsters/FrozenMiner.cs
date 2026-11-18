@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     class FrozenMiner : MonsterObject
     {
 
-        protected internal FrozenMiner(MonsterInfo info)
+        protected internal FrozenMiner(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -21,7 +21,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal ChieftainArcher(MonsterInfo info)
+        protected internal ChieftainArcher(MonsterInfoTable info)
             : base(info)
         {
         }

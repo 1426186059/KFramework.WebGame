@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirObjects;
 using System.Diagnostics;
@@ -154,7 +154,7 @@ namespace Server
 
             foreach (int completedQuestID in Character.CompletedQuests)
             {
-                QuestInfo completedQuest = SMain.Envir.GetQuestInfo(completedQuestID);
+                QuestInfoTable completedQuest = SMain.Envir.GetQuestInfo(completedQuestID);
 
                 ListViewItem item = new ListViewItem(completedQuestID.ToString());
                 item.SubItems.Add("Completed");

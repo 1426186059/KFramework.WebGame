@@ -233,7 +233,7 @@ namespace Client.MirObjects
                 UserItem temp = Equipment[i];
                 if (temp == null) continue;
 
-                ItemInfo realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
+                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
 
                 if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
                     CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
@@ -341,7 +341,7 @@ namespace Client.MirObjects
                 UserItem temp = equipItem.Slots[i];
 
                 if (temp == null) continue;
-                ItemInfo realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
+                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
 
                 if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
                     CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);

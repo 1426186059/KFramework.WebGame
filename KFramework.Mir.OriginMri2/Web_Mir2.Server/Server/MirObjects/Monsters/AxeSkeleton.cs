@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -18,7 +18,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal AxeSkeleton(MonsterInfo info)
+        protected internal AxeSkeleton(MonsterInfoTable info)
             : base(info)
         {
         }

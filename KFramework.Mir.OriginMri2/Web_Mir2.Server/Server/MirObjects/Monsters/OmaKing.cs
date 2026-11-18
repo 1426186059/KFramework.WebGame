@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
     {
         public byte AttackRange = 7;
 
-        protected internal OmaKing(MonsterInfo info) 
+        protected internal OmaKing(MonsterInfoTable info) 
             : base(info)
         {
         }

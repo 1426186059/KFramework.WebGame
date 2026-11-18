@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class IncarnatedZT : ZumaMonster
     {
-        protected internal IncarnatedZT(MonsterInfo info) : base(info)
+        protected internal IncarnatedZT(MonsterInfoTable info) : base(info)
         {
             AvoidFireWall = false;
             Stoned = false;

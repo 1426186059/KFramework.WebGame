@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
 
         private int _ballMoveDistance = 4;
 
-        protected internal Football(MonsterInfo info)
+        protected internal Football(MonsterInfoTable info)
             : base(info)
         {
 

@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -2026,7 +2026,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Libraries.StateItems == null) return;
 
-                ItemInfo RealItem = null;
+                ItemInfoTable RealItem = null;
 
                 if (ArmorCell.Item != null)
                 {

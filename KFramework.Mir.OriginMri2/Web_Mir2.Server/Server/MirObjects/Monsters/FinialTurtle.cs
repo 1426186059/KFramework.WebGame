@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
     {
         private const byte AttackRange = 6;
 
-        protected internal FinialTurtle(MonsterInfo info)
+        protected internal FinialTurtle(MonsterInfoTable info)
             : base(info)
         {
         }

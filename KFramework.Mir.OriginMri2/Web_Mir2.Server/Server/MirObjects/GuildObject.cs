@@ -1,4 +1,4 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 using Server.MirDatabase;
 using Server.Library.MirDatabase;
 
@@ -1059,7 +1059,7 @@ namespace Server.MirObjects
 
     public class GuildItemVolume
     {
-        public ItemInfo Item;
+        public ItemInfoTable Item;
         public string ItemName;
         public uint Amount;
     }

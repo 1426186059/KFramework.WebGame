@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class BurningZombie : MonsterObject
     {
-        protected internal BurningZombie(MonsterInfo info)
+        protected internal BurningZombie(MonsterInfoTable info)
             : base(info)
         {
         }

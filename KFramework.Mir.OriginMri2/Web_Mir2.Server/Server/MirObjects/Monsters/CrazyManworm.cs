@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class CrazyManworm : MonsterObject
     {
-        protected internal CrazyManworm(MonsterInfo info)
+        protected internal CrazyManworm(MonsterInfoTable info)
             : base(info)
         {
         }

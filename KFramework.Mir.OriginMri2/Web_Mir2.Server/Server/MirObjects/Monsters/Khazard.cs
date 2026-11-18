@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         public long PullTime;
         public bool Range;
 
-        protected internal Khazard(MonsterInfo info)
+        protected internal Khazard(MonsterInfoTable info)
             : base(info)
         {
             PullTime = Envir.Time;

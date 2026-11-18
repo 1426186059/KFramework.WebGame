@@ -13,7 +13,7 @@ namespace Server.MirObjects
 
         public ConquestGuildInfo GuildInfo;
 
-        public ConquestInfo Info
+        public ConquestInfoTable Info
         {
             get { return GuildInfo.Info; }
             set { GuildInfo.Info = value; }

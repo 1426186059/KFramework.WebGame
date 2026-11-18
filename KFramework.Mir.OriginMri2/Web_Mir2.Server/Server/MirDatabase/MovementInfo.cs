@@ -5,10 +5,14 @@ namespace Server.MirDatabase
 {
     public class MovementInfo
     {
-        public int MapIndex;
-        public Point Source, Destination;
-        public bool NeedHole, NeedMove, ShowOnBigMap;
-        public int ConquestIndex, Icon;
+        public int MapIndex { get; set; }
+        public Point Source { get; set; }
+        public Point Destination { get; set; }
+        public bool NeedHole { get; set; }
+        public bool NeedMove { get; set; }
+        public bool ShowOnBigMap { get; set; }
+        public int ConquestIndex { get; set; }
+        public int Icon { get; set; }
 
         public MovementInfo()
         {

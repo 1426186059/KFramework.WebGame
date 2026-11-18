@@ -1,11 +1,11 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 
 namespace Server
 {
     public partial class GameShop : Form
     {
 
-        private List<GameShopItem> SelectedItems;
+        private List<GameShopItemTable> SelectedItems;
 
         public Envir Envir => SMain.EditEnvir;
 
@@ -84,7 +84,7 @@ namespace Server
 
         public void UpdateInterface(bool refreshList = false)
         {
-            SelectedItems = GameShopListBox.SelectedItems.Cast<GameShopItem>().ToList();
+            SelectedItems = GameShopListBox.SelectedItems.Cast<GameShopItemTable>().ToList();
 
             if (SelectedItems.Count == 0)
             {
@@ -419,8 +419,8 @@ namespace Server
                 ? SMain.EditEnvir.GameShopList.Max(item => item.GIndex) + 1
                 : 1;
 
-            // Create the new GameShopItem
-            var newItem = new GameShopItem
+            // Create the new GameShopItemTable
+            var newItem = new GameShopItemTable
             {
                 GIndex = nextGIndex,
                 GoldPrice = 0,
@@ -444,7 +444,7 @@ namespace Server
 
         private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Ensure we have a selected GameShopItem
+            // Ensure we have a selected GameShopItemTable
             if (SelectedItems == null || SelectedItems.Count == 0)
                 return;
 
@@ -453,14 +453,14 @@ namespace Server
             if (string.IsNullOrEmpty(selectedName) || selectedName == "None")
                 return;
 
-            // Find the corresponding ItemInfo object by name
+            // Find the corresponding ItemInfoTable object by name
             var newItemInfo = SMain.EditEnvir.ItemInfoList
                 .FirstOrDefault(x => x.Name == selectedName);
 
             if (newItemInfo == null)
                 return;
 
-            // Update the selected GameShopItem
+            // Update the selected GameShopItemTable
             var selectedGameShopItem = SelectedItems[0];
             selectedGameShopItem.ItemIndex = newItemInfo.Index;
             selectedGameShopItem.Info = newItemInfo;
@@ -521,7 +521,7 @@ namespace Server
 
             foreach (var obj in GameShopListBox.Items)
             {
-                if (obj is GameShopItem item && item.Info != null)
+                if (obj is GameShopItemTable item && item.Info != null)
                 {
                     string name = item.Info.Name;
                     uint gp = item.CreditPrice;

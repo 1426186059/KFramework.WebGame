@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using System.Runtime.CompilerServices;
 using Server.MirDatabase;
 
@@ -22,7 +22,7 @@ namespace Server.MirObjects
 
         #region Move Actions
 
-        public void MapChange(MapInfo oldMap, MapInfo newMap, [CallerMemberName] string source = "")
+        public void MapChange(MapInfoTable oldMap, MapInfoTable newMap, [CallerMemberName] string source = "")
         {
             string message = $"Moved Map {oldMap.FileName} => {newMap.FileName}";
 
@@ -104,7 +104,7 @@ namespace Server.MirObjects
             LogHeroMessage(message, source);
         }
 
-        public void ItemGSBought(GameShopItem item, uint amount, uint CreditCost, uint GoldCost, [CallerMemberName] string source = "")
+        public void ItemGSBought(GameShopItemTable item, uint amount, uint CreditCost, uint GoldCost, [CallerMemberName] string source = "")
         {
             string message = $"Purchased {item.Info.FriendlyName} x{amount} for {CreditCost} Credits and {GoldCost} Gold.";
 

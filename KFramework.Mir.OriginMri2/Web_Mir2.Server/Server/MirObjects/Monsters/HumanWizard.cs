@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 6;
         public bool Summoned;
 
-        protected internal HumanWizard(MonsterInfo info)
+        protected internal HumanWizard(MonsterInfoTable info)
             : base(info)
         {
             Direction = MirDirection.Down;

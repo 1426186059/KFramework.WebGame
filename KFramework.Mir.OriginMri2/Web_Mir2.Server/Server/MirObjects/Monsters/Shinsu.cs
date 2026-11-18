@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -21,7 +21,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal Shinsu(MonsterInfo info) : base(info)
+        protected internal Shinsu(MonsterInfoTable info) : base(info)
         {
             ActionTime = Envir.Time + 1000;
         }
@@ -94,7 +94,7 @@ namespace Server.MirObjects.Monsters
         public override Packet GetInfo()
         {
             var packet = (S.ObjectMonster)base.GetInfo();
-            // 原始传奇下 Image 必须是正式 MonsterInfo 表的 CDN model 号（神兽=4171）。
+            // 原始传奇下 Image 必须是正式 MonsterInfoTable 表的 CDN model 号（神兽=4171）。
             // 旧代码这里强制改回经典 Mir2 枚举 Monster.Shinsu(79)/Shinsu1(80)，
             // 客户端据此去 CDN 拉 model/79，资源不存在→只显示名字没有模型。
             // base.GetInfo() 已经填了 Info.Image，直接保留即可；Mode 的睁眼/闭眼由 ObjectShow/Hide 表达。

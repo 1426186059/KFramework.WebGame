@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -18,7 +18,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal AncientBringer(MonsterInfo info)
+        protected internal AncientBringer(MonsterInfoTable info)
             : base(info)
         {
         }

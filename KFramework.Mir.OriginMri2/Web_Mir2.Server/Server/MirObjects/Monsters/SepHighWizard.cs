@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 5;
         public bool Summoned;
 
-        protected internal SepHighWizard(MonsterInfo info)
+        protected internal SepHighWizard(MonsterInfoTable info)
             : base(info)
         {
         }

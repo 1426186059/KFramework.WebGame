@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
 
         private byte AttackRange = 3;
-        protected internal Kirin(MonsterInfo info) : base(info)
+        protected internal Kirin(MonsterInfoTable info) : base(info)
         {
         }
 

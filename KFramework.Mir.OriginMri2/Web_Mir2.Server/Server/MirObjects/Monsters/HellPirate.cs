@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class HellPirate : MonsterObject
     {
-        protected internal HellPirate(MonsterInfo info)
+        protected internal HellPirate(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Server.MirObjects.Monsters
         public bool Summoned;
         public long DieTime;
 
-        protected internal StoneTrap(MonsterInfo info) : base(info)
+        protected internal StoneTrap(MonsterInfoTable info) : base(info)
         {
             Direction = MirDirection.Up;
         }
@@ -63,7 +63,7 @@ namespace Server.MirObjects.Monsters
                                 case ObjectType.Monster:
                                 case ObjectType.Hero:
 
-                                    MonsterInfo mInfo = Envir.GetMonsterInfo(ob.Name);
+                                    MonsterInfoTable mInfo = Envir.GetMonsterInfo(ob.Name);
                                     if (mInfo == null)
                                     {
                                         continue;

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class AvengingSpirit : AxeSkeleton
     {
-        protected internal AvengingSpirit(MonsterInfo info)
+        protected internal AvengingSpirit(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -18,7 +18,7 @@ namespace Server.MirEnvir
             get { return MessageQueue.Instance; }
         }
 
-        public MapInfo Info;
+        public MapInfoTable Info;
 
         public int Thread = 0;
 
@@ -41,7 +41,7 @@ namespace Server.MirEnvir
         public List<ConquestObject> Conquest = new List<ConquestObject>();
         public ConquestObject tempConquest;
 
-        public Map(MapInfo info)
+        public Map(MapInfoTable info)
         {
             Info = info;
             Thread = Envir.Random.Next(Settings.ThreadLimit);
@@ -79,7 +79,7 @@ namespace Server.MirEnvir
 
                 for (int i = 0; i < Info.NPCs.Count; i++)
                 {
-                    NPCInfo info = Info.NPCs[i];
+                    NPCInfoTable info = Info.NPCs[i];
                     if (!ValidPoint(info.Location))
                     {
                         MessageQueue.Enqueue($"[地图NPC放置] NPC '{info.Name}'(Index={info.Index}, 文件={info.FileName}) 落在地图 '{Info.Title}'(Index={Info.Index}) 的不可行走或越界坐标 ({info.Location.X},{info.Location.Y})，已跳过加载。");
@@ -107,7 +107,7 @@ namespace Server.MirEnvir
         }
 
         /// <summary>
-        /// 按 MapInfo.FileName(整数 id) 从原始传奇数据源(.dat 4-bit/格) 加载地图单元格。
+        /// 按 MapInfoTable.FileName(整数 id) 从原始传奇数据源(.dat 4-bit/格) 加载地图单元格。
         /// 直接复用提取工具的解码逻辑，不再支持任何旧 .map 格式。
         /// </summary>
         private bool LoadCells()
@@ -2173,7 +2173,7 @@ namespace Server.MirEnvir
         }
 
         public RespawnInfo Info;
-        public MonsterInfo Monster;
+        public MonsterInfoTable Monster;
         public Map Map;
         public int Count;
         public long RespawnTime;

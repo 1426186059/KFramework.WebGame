@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -38,7 +38,7 @@ namespace Server.MirObjects.Monsters
             return CurrentMap == Target.CurrentMap && Functions.InRange(CurrentLocation, Target.CurrentLocation, AttackRange);
         }
 
-        protected internal Siege(MonsterInfo info) : base(info)
+        protected internal Siege(MonsterInfoTable info) : base(info)
         {
             switch (info.Effect)
             {

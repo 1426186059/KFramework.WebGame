@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 public class SelectInfo
 {
@@ -67,14 +67,14 @@ public class RankCharacterInfo
 
 public class QuestItemReward
 {
-    public ItemInfo Item;
-    public ushort Count = 1;
+    public ItemInfoTable Item { get; set; }
+    public ushort Count { get; set; } = 1;
 
     public QuestItemReward() { }
 
     public QuestItemReward(BinaryReader reader)
     {
-        Item = new ItemInfo(reader);
+        Item = new ItemInfoTable(reader);
         Count = reader.ReadUInt16();
     }
 

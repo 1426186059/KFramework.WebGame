@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -29,7 +29,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal Yimoogi(MonsterInfo info)
+        protected internal Yimoogi(MonsterInfoTable info)
             : base(info)
         {
             SpawnTime = Envir.Time + 4000;

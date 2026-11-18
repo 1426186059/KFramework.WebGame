@@ -1,4 +1,4 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 
 namespace Server
 {
@@ -7,7 +7,7 @@ namespace Server
         public string ItemListPath = Path.Combine(Settings.ExportPath, "ItemList.txt");
 
         public Envir Envir => SMain.EditEnvir;
-        private List<ItemInfo> _selectedItemInfos;
+        private List<ItemInfoTable> _selectedItemInfos;
 
         public class ComboBoxItem
         {
@@ -99,7 +99,7 @@ namespace Server
                 }
             }
 
-            _selectedItemInfos = ItemInfoListBox.SelectedItems.Cast<ItemInfo>().ToList();
+            _selectedItemInfos = ItemInfoListBox.SelectedItems.Cast<ItemInfoTable>().ToList();
 
 
             if (_selectedItemInfos.Count == 0)
@@ -209,7 +209,7 @@ namespace Server
                 return;
             }
 
-            ItemInfo info = _selectedItemInfos[0];
+            ItemInfoTable info = _selectedItemInfos[0];
 
             ItemInfoPanel.Enabled = true;
 
@@ -1064,7 +1064,7 @@ namespace Server
 
             //for (int i = 1; i < items.Length; i++)
             //{
-            //    ItemInfo info = ItemInfo.FromText(items[i]);
+            //    ItemInfoTable info = ItemInfoTable.FromText(items[i]);
 
             //    if (info == null) continue;
             //    info.Index = ++Envir.ItemIndex;
@@ -1086,14 +1086,14 @@ namespace Server
 
         private void ExportSelectedButton_Click(object sender, EventArgs e)
         {
-            //var list = ItemInfoListBox.SelectedItems.Cast<ItemInfo>().ToList();
+            //var list = ItemInfoListBox.SelectedItems.Cast<ItemInfoTable>().ToList();
 
             //ExportItems(list);
         }
 
-        private void ExportItems(IEnumerable<ItemInfo> items)
+        private void ExportItems(IEnumerable<ItemInfoTable> items)
         {
-            //var itemInfos = items as ItemInfo[] ?? items.ToArray();
+            //var itemInfos = items as ItemInfoTable[] ?? items.ToArray();
             //var list = itemInfos.Select(item => item.ToText()).ToList();
 
             //File.WriteAllLines(ItemListPath, list);
@@ -1122,7 +1122,7 @@ namespace Server
             //var items = data.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             //var count = 0;
-            //foreach (var info in items.Select(ItemInfo.FromText).Where(info => info != null))
+            //foreach (var info in items.Select(ItemInfoTable.FromText).Where(info => info != null))
             //{
             //    count++;
             //    info.Index = ++Envir.ItemIndex;

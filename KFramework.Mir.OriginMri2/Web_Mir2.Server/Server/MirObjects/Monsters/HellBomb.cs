@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -14,7 +14,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanMove { get { return false; } }
         protected override bool CanRegen { get { return false; } }
 
-        protected internal HellBomb(MonsterInfo info)
+        protected internal HellBomb(MonsterInfoTable info)
             : base(info)
         {
             ExplosionTime = Envir.Time + (10 * Settings.Second);

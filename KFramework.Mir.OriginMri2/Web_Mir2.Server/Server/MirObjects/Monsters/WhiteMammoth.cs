@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class WhiteMammoth : MonsterObject
     {
-        protected internal WhiteMammoth(MonsterInfo info)
+        protected internal WhiteMammoth(MonsterInfoTable info)
             : base(info)
         {
         }

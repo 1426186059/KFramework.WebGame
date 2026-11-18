@@ -54,10 +54,10 @@ namespace Server.MirEnvir
         };
 
 
-        public DragonInfo Info;
+        public DragonInfoTable Info;
         public MonsterObject LinkedMonster;
 
-        public Dragon(DragonInfo info)
+        public Dragon(DragonInfoTable info)
         {
             Info = info;
         }
@@ -65,7 +65,7 @@ namespace Server.MirEnvir
         {
             try
             {
-                MonsterInfo info = Envir.GetMonsterInfo(Info.MonsterName);
+                MonsterInfoTable info = Envir.GetMonsterInfo(Info.MonsterName);
                 if (info == null)
                 {
                     MessageQueue.Enqueue("Failed to load Dragon (bad monster name): " + Info.MonsterName);
@@ -95,7 +95,7 @@ namespace Server.MirEnvir
                             mob.DragonLink = true;
                         }
                     }
-                    MonsterInfo bodyinfo = Envir.GetMonsterInfo(Info.BodyName);
+                    MonsterInfoTable bodyinfo = Envir.GetMonsterInfo(Info.BodyName);
                     if (bodyinfo != null)
                     {
                         MonsterObject bodymob;
@@ -153,11 +153,11 @@ namespace Server.MirEnvir
             if (level > Info.Drops.Length) return;
             if (Info.Drops[level - 1] == null) return;
             if (LinkedMonster == null) return;
-            List<DragonInfo.DropInfo> droplist = new List<DragonInfo.DropInfo>(Info.Drops[level - 1]);
+            List<DragonInfoTable.DropInfo> droplist = new List<DragonInfoTable.DropInfo>(Info.Drops[level - 1]);
 
             for (int i = 0; i < droplist.Count; i++)
             {
-                DragonInfo.DropInfo drop = droplist[i];
+                DragonInfoTable.DropInfo drop = droplist[i];
 
                 int rate = (int)(drop.Chance / Settings.DropRate); if (rate < 1) rate = 1;
                 if (Envir.Random.Next(rate) != 0) continue;

@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime;
         public long teleportTime = 5000;
 
-        protected internal Doe(MonsterInfo info)
+        protected internal Doe(MonsterInfoTable info)
             : base(info)
         {
         }

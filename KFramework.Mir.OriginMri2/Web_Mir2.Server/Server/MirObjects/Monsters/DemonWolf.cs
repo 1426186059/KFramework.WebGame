@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
 
         public List<MonsterObject> Pack = new List<MonsterObject>();
 
-        protected internal DemonWolf(MonsterInfo info)
+        protected internal DemonWolf(MonsterInfoTable info)
             : base(info)
         {
         }

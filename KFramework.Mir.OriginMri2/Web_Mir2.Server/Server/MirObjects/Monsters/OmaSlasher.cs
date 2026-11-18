@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class OmaSlasher : MonsterObject
     {
-        protected internal OmaSlasher(MonsterInfo info)
+        protected internal OmaSlasher(MonsterInfoTable info)
             : base(info)
         {
         }

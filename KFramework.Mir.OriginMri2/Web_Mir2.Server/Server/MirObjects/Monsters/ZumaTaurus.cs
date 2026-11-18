@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         private byte _stage = 7;
 
-        protected internal ZumaTaurus(MonsterInfo info) : base(info)
+        protected internal ZumaTaurus(MonsterInfoTable info) : base(info)
         {
             Direction = MirDirection.DownLeft;
             AvoidFireWall = false;

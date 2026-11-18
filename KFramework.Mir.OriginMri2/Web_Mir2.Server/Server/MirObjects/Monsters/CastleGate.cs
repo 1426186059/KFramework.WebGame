@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 
@@ -38,7 +38,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal CastleGate(MonsterInfo info)
+        protected internal CastleGate(MonsterInfoTable info)
             : base(info)
         {
             Closed = true;
@@ -51,7 +51,7 @@ namespace Server.MirObjects.Monsters
 
             if (BlockArray == null) return;
 
-            MonsterInfo bInfo = new MonsterInfo
+            MonsterInfoTable bInfo = new MonsterInfoTable
             {
                 Image = Monster.EvilMirBody,
                 CanTame = false,

@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class TucsonMage : MonsterObject
     {
-        protected internal TucsonMage(MonsterInfo info)
+        protected internal TucsonMage(MonsterInfoTable info)
             : base(info)
         {
         }

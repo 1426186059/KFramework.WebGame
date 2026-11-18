@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Linq;
 using Server.MirDatabase;
 using Server.MirEnvir;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 5;
         public bool Summoned;
 
-        protected internal SepHighTaoist(MonsterInfo info)
+        protected internal SepHighTaoist(MonsterInfoTable info)
             : base(info)
         {
         }
@@ -108,7 +108,7 @@ namespace Server.MirObjects.Monsters
             {
                 MonsterObject monster;
 
-                MonsterInfo info = Envir.GetMonsterInfo(Settings.ShinsuName);
+                MonsterInfoTable info = Envir.GetMonsterInfo(Settings.ShinsuName);
                 if (info == null) return;
 
                 monster = MonsterObject.GetMonster(info);

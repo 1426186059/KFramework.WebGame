@@ -1,4 +1,4 @@
-﻿using Server.MirObjects;
+using Server.MirObjects;
 using Server.MirEnvir;
 
 namespace Server.MirDatabase
@@ -14,7 +14,7 @@ namespace Server.MirDatabase
 
         public int Index;
 
-        public QuestInfo Info;
+        public QuestInfoTable Info;
 
         public DateTime StartDateTime = DateTime.MinValue;
         public DateTime EndDateTime = DateTime.MaxValue;
@@ -366,12 +366,12 @@ namespace Server.MirDatabase
 
         #region Need Requirement
 
-        public bool NeedItem(ItemInfo iInfo)
+        public bool NeedItem(ItemInfoTable iInfo)
         {
             return ItemTaskCount.Where((task, i) => task.Info.Item == iInfo && !task.Complete).Any();
         }
 
-        public bool NeedKill(MonsterInfo mInfo)
+        public bool NeedKill(MonsterInfoTable mInfo)
         {
             return KillTaskCount.Where((task, i) => mInfo.Name.StartsWith(task.Info.Monster.Name, StringComparison.OrdinalIgnoreCase) && !task.Complete).Any();
         }
@@ -385,7 +385,7 @@ namespace Server.MirDatabase
 
         #region Process Quest Task
 
-        public void ProcessKill(MonsterInfo mInfo)
+        public void ProcessKill(MonsterInfoTable mInfo)
         {
             if (Info.KillTasks.Count < 1) return;
 
@@ -553,7 +553,7 @@ namespace Server.MirDatabase
 
         #region Quest Target Helpers
 
-        private QuestTaskTarget MakeMonsterTarget(MonsterInfo monster)
+        private QuestTaskTarget MakeMonsterTarget(MonsterInfoTable monster)
         {
             if (monster == null) return null;
 
@@ -604,7 +604,7 @@ namespace Server.MirDatabase
 
         private QuestTaskTarget MakeNPCTarget()
         {
-            NPCInfo npc = Info.NpcInfo;
+            NPCInfoTable npc = Info.NpcInfo;
             // 兜底解析：部分任务可能尚未绑定 NpcInfo，尝试用索引定位 NPC
             if (npc == null && Info.NpcIndex != 0)
                 npc = Envir.GetNPCInfo((int)Info.NpcIndex);
@@ -635,11 +635,11 @@ namespace Server.MirDatabase
 
         private QuestTaskTarget MakeFinishNPCTarget()
         {
-            // 交任务（返回）目标：使用 FinishNpcIndex（静态 NPCInfo 索引）定位交任务 NPC；
+            // 交任务（返回）目标：使用 FinishNpcIndex（静态 NPCInfoTable 索引）定位交任务 NPC；
             // 兼容旧数据把 FinishNpcIndex 存为运行时 ObjectID 的情况。
             if (Info.FinishNpcIndex != 0)
             {
-                NPCInfo npcInfo = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
+                NPCInfoTable npcInfo = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
                 if (npcInfo != null)
                     return new QuestTaskTarget
                     {
@@ -694,7 +694,7 @@ namespace Server.MirDatabase
 
                 for (int m = 0; m < Envir.MonsterInfoList.Count; m++)
                 {
-                    MonsterInfo monster = Envir.MonsterInfoList[m];
+                    MonsterInfoTable monster = Envir.MonsterInfoList[m];
                     if (monster?.Drops == null) continue;
 
                     bool dropsItem = false;

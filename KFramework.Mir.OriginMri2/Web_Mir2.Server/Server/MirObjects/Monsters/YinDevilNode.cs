@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         protected override bool CanMove { get { return false; } }
 
-        protected internal YinDevilNode(MonsterInfo info) 
+        protected internal YinDevilNode(MonsterInfoTable info) 
             : base(info)
         {
         }

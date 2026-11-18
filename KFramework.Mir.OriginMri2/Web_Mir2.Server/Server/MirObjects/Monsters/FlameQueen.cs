@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 3;
         private long MassAttackTime;
 
-        protected internal FlameQueen(MonsterInfo info)
+        protected internal FlameQueen(MonsterInfoTable info)
             : base(info)
         {
         }

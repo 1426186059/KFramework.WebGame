@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class SandSnail : MonsterObject
     {   
-        protected internal SandSnail(MonsterInfo info)
+        protected internal SandSnail(MonsterInfoTable info)
             : base(info)
         {
         }

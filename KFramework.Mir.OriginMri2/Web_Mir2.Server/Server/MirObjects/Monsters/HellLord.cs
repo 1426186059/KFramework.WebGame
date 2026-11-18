@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -28,7 +28,7 @@ namespace Server.MirObjects.Monsters
         private int _quakeSpreadMax = 15;
         private int _quakeCount = 5;
 
-        protected internal HellLord(MonsterInfo info) : base(info)
+        protected internal HellLord(MonsterInfoTable info) : base(info)
         {
             Direction = MirDirection.Up;
             _begin = true;

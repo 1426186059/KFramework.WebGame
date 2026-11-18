@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -17,7 +17,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal Deer(MonsterInfo info)
+        protected internal Deer(MonsterInfoTable info)
             : base(info)
         {
             if (Info.AI != 2) return;

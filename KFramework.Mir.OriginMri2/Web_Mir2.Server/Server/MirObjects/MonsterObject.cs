@@ -11,7 +11,7 @@ namespace Server.MirObjects
 {
     public class MonsterObject : MapObject
     {
-        public static MonsterObject GetMonster(MonsterInfo info)
+        public static MonsterObject GetMonster(MonsterInfoTable info)
         {
             if (info == null) return null;
 
@@ -500,7 +500,7 @@ namespace Server.MirObjects
         
         public virtual bool IgnoresNoPetRestriction => false;
         
-        public MonsterInfo Info;
+        public MonsterInfoTable Info;
         public MapRespawn Respawn;
         public MonsterType MonsterType { get; private set; } = MonsterType.Normal;
         private long NextRecallTime;
@@ -663,7 +663,7 @@ namespace Server.MirObjects
                     (!CurrentPoison.HasFlag(PoisonType.Stun) || (Info.Light == 10 || Info.Light == 5));
             }
         }
-        protected internal MonsterObject(MonsterInfo info)
+        protected internal MonsterObject(MonsterInfoTable info)
         {
             Info = info;
 

@@ -1,4 +1,4 @@
-﻿using Server.MirForms.VisualMapInfo.Class;
+using Server.MirForms.VisualMapInfo.Class;
 using Server.MirForms.VisualMapInfo.Control;
 using Microsoft.VisualBasic.PowerPacks;
 using Server.MirEnvir;
@@ -30,8 +30,8 @@ namespace Server.MirForms.VisualMapInfo
         private void VForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             VisualizerGlobal.ZoomLevel = 1;
-            VisualizerGlobal.MapInfo.Respawns.Clear();
-            VisualizerGlobal.MapInfo.MineZones.Clear();
+            VisualizerGlobal.MapInfoTable.Respawns.Clear();
+            VisualizerGlobal.MapInfoTable.MineZones.Clear();
 
             for (int i = 0; i < RespawnPanel.Controls.Count; i++)
             {
@@ -49,7 +49,7 @@ namespace Server.MirForms.VisualMapInfo
                     NewRespawnZone.Direction = RespawnControl.Direction;
                     NewRespawnZone.RandomDelay = RespawnControl.RandomDelay;
 
-                    VisualizerGlobal.MapInfo.Respawns.Add(NewRespawnZone);
+                    VisualizerGlobal.MapInfoTable.Respawns.Add(NewRespawnZone);
                 }
                 catch (Exception) { continue; }
             }
@@ -65,7 +65,7 @@ namespace Server.MirForms.VisualMapInfo
                     NewMineZone.Mine = MineControl.MineIndex;
                     NewMineZone.Size = MineControl.Range;
 
-                    VisualizerGlobal.MapInfo.MineZones.Add(NewMineZone);
+                    VisualizerGlobal.MapInfoTable.MineZones.Add(NewMineZone);
                 }
                 catch (Exception) { continue; }
             }
@@ -75,7 +75,7 @@ namespace Server.MirForms.VisualMapInfo
         {
             ReadMap readMap = new ReadMap();
 
-            readMap.mapFile = VisualizerGlobal.MapInfo.FileName;
+            readMap.mapFile = VisualizerGlobal.MapInfoTable.FileName;
             readMap.Load();
 
             MapImage.Image = VisualizerGlobal.ClippingMap;
@@ -84,7 +84,7 @@ namespace Server.MirForms.VisualMapInfo
             Canvas.BringToFront();
 
             MapDetailsLabel.Text =
-                $"Map Name: {VisualizerGlobal.MapInfo.Title}   Width: {VisualizerGlobal.ClippingMap.Width}   Height: {VisualizerGlobal.ClippingMap.Height}";
+                $"Map Name: {VisualizerGlobal.MapInfoTable.Title}   Width: {VisualizerGlobal.ClippingMap.Width}   Height: {VisualizerGlobal.ClippingMap.Height}";
         }
 
         private void InitializeMineInfo()
@@ -96,15 +96,15 @@ namespace Server.MirForms.VisualMapInfo
             MiningFilter.DataSource = miningFilterItems;
             MiningFilter.Text = "No Filter";
 
-            for (int i = 0; i < VisualizerGlobal.MapInfo.MineZones.Count; i++)
+            for (int i = 0; i < VisualizerGlobal.MapInfoTable.MineZones.Count; i++)
             {
                 MineEntry MineRegion = new MineEntry();
                 MineRegion.Dock = DockStyle.Top;
-                MineRegion.MineIndex = VisualizerGlobal.MapInfo.MineZones[i].Mine;
-                MineRegion.X = VisualizerGlobal.MapInfo.MineZones[i].Location.X;
-                MineRegion.Y = VisualizerGlobal.MapInfo.MineZones[i].Location.Y;
-                MineRegion.tempRange = VisualizerGlobal.MapInfo.MineZones[i].Size;
-                MineRegion.Range = VisualizerGlobal.MapInfo.MineZones[i].Size;
+                MineRegion.MineIndex = VisualizerGlobal.MapInfoTable.MineZones[i].Mine;
+                MineRegion.X = VisualizerGlobal.MapInfoTable.MineZones[i].Location.X;
+                MineRegion.Y = VisualizerGlobal.MapInfoTable.MineZones[i].Location.Y;
+                MineRegion.tempRange = VisualizerGlobal.MapInfoTable.MineZones[i].Size;
+                MineRegion.Range = VisualizerGlobal.MapInfoTable.MineZones[i].Size;
                 MineRegion.ShowControl();
 
                 MiningPanel.Controls.Add(MineRegion);
@@ -121,19 +121,19 @@ namespace Server.MirForms.VisualMapInfo
             RespawnsFilter.Items.Add("No Filter");
             RespawnsFilter.Text = "No Filter";
 
-            for (int i = 0; i < VisualizerGlobal.MapInfo.Respawns.Count; i++)
+            for (int i = 0; i < VisualizerGlobal.MapInfoTable.Respawns.Count; i++)
             {
                 RespawnEntry RespawnRegion = new RespawnEntry();
                 RespawnRegion.Dock = DockStyle.Top;
-                RespawnRegion.MonsterIndex = VisualizerGlobal.MapInfo.Respawns[i].MonsterIndex;
-                RespawnRegion.X = VisualizerGlobal.MapInfo.Respawns[i].Location.X;
-                RespawnRegion.Y = VisualizerGlobal.MapInfo.Respawns[i].Location.Y;
-                RespawnRegion.Range = VisualizerGlobal.MapInfo.Respawns[i].Spread;
-                RespawnRegion.Count.Text = VisualizerGlobal.MapInfo.Respawns[i].Count.ToString();
-                RespawnRegion.Delay.Text = VisualizerGlobal.MapInfo.Respawns[i].Delay.ToString();
-                RespawnRegion.RoutePath = VisualizerGlobal.MapInfo.Respawns[i].RoutePath;
-                RespawnRegion.Direction = VisualizerGlobal.MapInfo.Respawns[i].Direction;
-                RespawnRegion.RandomDelay = VisualizerGlobal.MapInfo.Respawns[i].RandomDelay;
+                RespawnRegion.MonsterIndex = VisualizerGlobal.MapInfoTable.Respawns[i].MonsterIndex;
+                RespawnRegion.X = VisualizerGlobal.MapInfoTable.Respawns[i].Location.X;
+                RespawnRegion.Y = VisualizerGlobal.MapInfoTable.Respawns[i].Location.Y;
+                RespawnRegion.Range = VisualizerGlobal.MapInfoTable.Respawns[i].Spread;
+                RespawnRegion.Count.Text = VisualizerGlobal.MapInfoTable.Respawns[i].Count.ToString();
+                RespawnRegion.Delay.Text = VisualizerGlobal.MapInfoTable.Respawns[i].Delay.ToString();
+                RespawnRegion.RoutePath = VisualizerGlobal.MapInfoTable.Respawns[i].RoutePath;
+                RespawnRegion.Direction = VisualizerGlobal.MapInfoTable.Respawns[i].Direction;
+                RespawnRegion.RandomDelay = VisualizerGlobal.MapInfoTable.Respawns[i].RandomDelay;
                 RespawnRegion.HideControl();
 
                 RespawnPanel.Controls.Add(RespawnRegion);
@@ -716,7 +716,7 @@ namespace Server.MirForms.VisualMapInfo
 
         private void RespawnsFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MonsterInfo info = RespawnsFilter.SelectedItem as MonsterInfo;
+            MonsterInfoTable info = RespawnsFilter.SelectedItem as MonsterInfoTable;
 
             VisualizerGlobal.ZoomLevel = 1;
 

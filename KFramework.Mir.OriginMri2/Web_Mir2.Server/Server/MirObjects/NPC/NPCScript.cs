@@ -262,7 +262,7 @@ namespace Server.MirObjects
                 }
                 else if (Type == NPCScriptType.AutoMonster)
                 {
-                    MonsterInfo MobInfo;
+                    MonsterInfoTable MobInfo;
                     if (lines[i].ToUpper().Contains("SPAWN"))
                     {
                         Regex regex = new Regex(@"\((.*?)\)");
@@ -667,7 +667,7 @@ namespace Server.MirObjects
 
                     var data = lines[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    ItemInfo info = Envir.GetItemInfo(data[0]);
+                    ItemInfoTable info = Envir.GetItemInfo(data[0]);
                     if (info == null)
                         continue;
 
@@ -712,16 +712,16 @@ namespace Server.MirObjects
                     if (index == 0) continue;
 
                     // [Quests] 段每行一个任务索引，符号约定：
-                    //   正数 -> 由本 NPC 发放（起始）：写入 QuestInfo.NpcIndex（即 CollectQuestIndexes）。
-                    //   负数 -> 需在本 NPC 处交付（完成）：写入 QuestInfo.FinishNpcIndex（即 FinishQuestIndexes）。
-                    QuestInfo info = Envir.GetQuestInfo(Math.Abs(index));
+                    //   正数 -> 由本 NPC 发放（起始）：写入 QuestInfoTable.NpcIndex（即 CollectQuestIndexes）。
+                    //   负数 -> 需在本 NPC 处交付（完成）：写入 QuestInfoTable.FinishNpcIndex（即 FinishQuestIndexes）。
+                    QuestInfoTable info = Envir.GetQuestInfo(Math.Abs(index));
 
                     if (info == null) return;
 
                     if (index > 0)
                     {
                         // NpcIndex / FinishNpcIndex 存“运行时世界唯一索引”(NPCObject.ObjectID)，
-                        // 与客户端/服务端按 ObjectID 查找保持一致；NPCInfo 引用另存，用于精确反查运行时实例。
+                        // 与客户端/服务端按 ObjectID 查找保持一致；NPCInfoTable 引用另存，用于精确反查运行时实例。
                         info.NpcIndex = LoadedObjectID;
                         info.NpcInfo = loadedNPC.Info;
                     }
@@ -774,7 +774,7 @@ namespace Server.MirObjects
 
                     var data = lines[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    ItemInfo info = Envir.GetItemInfo(data[0]);
+                    ItemInfoTable info = Envir.GetItemInfo(data[0]);
                     if (info == null)
                         continue;
 

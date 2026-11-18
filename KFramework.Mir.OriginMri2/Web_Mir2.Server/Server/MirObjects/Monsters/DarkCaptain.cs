@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         protected long _MassThunderTime;
         protected long _OrbTime;
 
-        protected internal DarkCaptain(MonsterInfo info)
+        protected internal DarkCaptain(MonsterInfoTable info)
             : base(info)
         {
             _ThunderTime = Envir.Time + 10000;

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     public class FrozenAxeman : MonsterObject
     {
         public long PullTime;
-        protected internal FrozenAxeman(MonsterInfo info)
+        protected internal FrozenAxeman(MonsterInfoTable info)
             : base(info)
         {
         }

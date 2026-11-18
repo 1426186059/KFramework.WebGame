@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class CaveMaggot : HarvestMonster
     {
-        protected internal CaveMaggot(MonsterInfo info)
+        protected internal CaveMaggot(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         public bool Summoned;
 
-        protected internal BoneFamiliar(MonsterInfo info) : base(info)
+        protected internal BoneFamiliar(MonsterInfoTable info) : base(info)
         {
             Direction = MirDirection.DownLeft;
         }

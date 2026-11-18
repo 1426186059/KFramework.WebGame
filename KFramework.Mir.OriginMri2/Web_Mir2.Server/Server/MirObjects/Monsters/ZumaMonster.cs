@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -30,7 +30,7 @@ namespace Server.MirObjects.Monsters
         }
 
 
-        protected internal ZumaMonster(MonsterInfo info) : base(info)
+        protected internal ZumaMonster(MonsterInfoTable info) : base(info)
         {
         }
 

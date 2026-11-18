@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime;
         public byte AttackRange = 6;
 
-        protected internal WitchDoctor(MonsterInfo info)
+        protected internal WitchDoctor(MonsterInfoTable info)
             : base(info)
         {
         }

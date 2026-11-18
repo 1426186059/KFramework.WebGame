@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -25,7 +25,7 @@ namespace Server.MirObjects.Monsters
             return CurrentMap == Target.CurrentMap && Functions.InRange(CurrentLocation, Target.CurrentLocation, AttackRange);
         }
 
-        protected internal RestlessJar(MonsterInfo info)
+        protected internal RestlessJar(MonsterInfoTable info)
             : base(info)
         {
         }

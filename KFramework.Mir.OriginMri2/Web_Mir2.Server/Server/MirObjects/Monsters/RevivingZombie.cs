@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -16,7 +16,7 @@ namespace Server.MirObjects.Monsters
             get { return (uint)(Info.Experience * (100 - (25 * RevivalCount)) / 100); }
         }
 
-        protected internal RevivingZombie(MonsterInfo info)
+        protected internal RevivingZombie(MonsterInfoTable info)
             : base(info)
         {
             RevivalCount = 0;

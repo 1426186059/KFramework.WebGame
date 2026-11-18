@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class FlamingMutant : MonsterObject
     {
-        protected internal FlamingMutant(MonsterInfo info)
+        protected internal FlamingMutant(MonsterInfoTable info)
             : base(info)
         {
         }

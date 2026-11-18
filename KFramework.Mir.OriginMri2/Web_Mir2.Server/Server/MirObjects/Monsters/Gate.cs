@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class Gate : CastleGate
     {
-        protected internal Gate(MonsterInfo info) : base(info)
+        protected internal Gate(MonsterInfoTable info) : base(info)
         {
             switch (info.Effect)
             {

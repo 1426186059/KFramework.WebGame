@@ -682,8 +682,8 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class HeroAutoPotPreview : MirImageControl
     {
-        public Func<ItemInfo> GetInfo;
-        private ItemInfo Info => GetInfo();
+        public Func<ItemInfoTable> GetInfo;
+        private ItemInfoTable Info => GetInfo();
         public MirLabel AmountLabel;
 
         public HeroAutoPotPreview()
@@ -717,7 +717,7 @@ namespace Client.MirScenes.Dialogs
             AmountLabel.Draw();
         }
 
-        int CountItem(ItemInfo info)
+        int CountItem(ItemInfoTable info)
         {
             var count = 0;
             if (GameScene.Hero == null) return count;

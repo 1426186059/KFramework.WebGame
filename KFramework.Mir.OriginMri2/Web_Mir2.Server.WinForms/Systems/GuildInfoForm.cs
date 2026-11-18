@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Server.Library.MirDatabase;
 using Server.MirEnvir;
 using Server.MirObjects;
@@ -247,7 +247,7 @@ namespace Server
             }
             else
             {
-                Settings.Guild_CreationCostList[GuildCreateListcomboBox.SelectedIndex].Item = (ItemInfo)GuildItemNamecomboBox.SelectedItem;
+                Settings.Guild_CreationCostList[GuildCreateListcomboBox.SelectedIndex].Item = (ItemInfoTable)GuildItemNamecomboBox.SelectedItem;
                 Settings.Guild_CreationCostList[GuildCreateListcomboBox.SelectedIndex].ItemName = Settings.Guild_CreationCostList[GuildCreateListcomboBox.SelectedIndex].Item.Name;
             }
             UpdateGuildInterface();

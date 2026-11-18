@@ -89,7 +89,7 @@ namespace Server.MirObjects
         public override bool IgnoresNoPetRestriction => true;
 
 
-        public IntelligentCreatureObject(MonsterInfo info) : base(info)
+        public IntelligentCreatureObject(MonsterInfoTable info) : base(info)
         {
             ActionTime = Envir.Time + 1000;
             PetType = (IntelligentCreatureType)info.Effect;

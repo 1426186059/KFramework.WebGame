@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         private const byte AttackRange = 4;
         public long LineAttackTime;
 
-        protected internal DarkWraith(MonsterInfo info)
+        protected internal DarkWraith(MonsterInfoTable info)
             : base(info)
         {
         }

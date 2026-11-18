@@ -3,54 +3,54 @@ using System.Drawing;
 
 namespace Server.MirDatabase
 {
-    public class ConquestInfo
+    public class ConquestInfoTable
     {
-        public int Index;
-        public bool FullMap;
-        public Point Location;
-        public ushort Size;
-        public string Name;
-        public int MapIndex;
-        public int PalaceIndex;
+        public int Index { get; set; }
+        public bool FullMap { get; set; }
+        public Point Location { get; set; }
+        public ushort Size { get; set; }
+        public string Name { get; set; }
+        public int MapIndex { get; set; }
+        public int PalaceIndex { get; set; }
 
-        public List<int> ExtraMaps = new List<int>();
-        public List<ConquestArcherInfo> ConquestGuards = new List<ConquestArcherInfo>();
-        public List<ConquestGateInfo> ConquestGates = new List<ConquestGateInfo>();
-        public List<ConquestWallInfo> ConquestWalls = new List<ConquestWallInfo>();
-        public List<ConquestSiegeInfo> ConquestSieges = new List<ConquestSiegeInfo>();
-        public List<ConquestFlagInfo> ConquestFlags = new List<ConquestFlagInfo>();
+        public List<int> ExtraMaps { get; set; } = new List<int>();
+        public List<ConquestArcherInfo> ConquestGuards { get; set; } = new List<ConquestArcherInfo>();
+        public List<ConquestGateInfo> ConquestGates { get; set; } = new List<ConquestGateInfo>();
+        public List<ConquestWallInfo> ConquestWalls { get; set; } = new List<ConquestWallInfo>();
+        public List<ConquestSiegeInfo> ConquestSieges { get; set; } = new List<ConquestSiegeInfo>();
+        public List<ConquestFlagInfo> ConquestFlags { get; set; } = new List<ConquestFlagInfo>();
 
-        public int GuardIndex;
-        public int GateIndex;
-        public int WallIndex;
-        public int SiegeIndex;
-        public int FlagIndex;
+        public int GuardIndex { get; set; }
+        public int GateIndex { get; set; }
+        public int WallIndex { get; set; }
+        public int SiegeIndex { get; set; }
+        public int FlagIndex { get; set; }
 
-        public byte StartHour = 0;
-        public int WarLength = 60;
+        public byte StartHour { get; set; } = 0;
+        public int WarLength { get; set; } = 60;
 
-        public ConquestType Type = ConquestType.Request;
-        public ConquestGame Game = ConquestGame.CapturePalace;
+        public ConquestType Type { get; set; } = ConquestType.Request;
+        public ConquestGame Game { get; set; } = ConquestGame.CapturePalace;
 
-        public bool Monday;
-        public bool Tuesday;
-        public bool Wednesday;
-        public bool Thursday;
-        public bool Friday;
-        public bool Saturday;
-        public bool Sunday;
+        public bool Monday { get; set; }
+        public bool Tuesday { get; set; }
+        public bool Wednesday { get; set; }
+        public bool Thursday { get; set; }
+        public bool Friday { get; set; }
+        public bool Saturday { get; set; }
+        public bool Sunday { get; set; }
 
         //King of the hill
-        public Point KingLocation;
-        public ushort KingSize;
+        public Point KingLocation { get; set; }
+        public ushort KingSize { get; set; }
 
         //Control points
-        public List<ConquestFlagInfo> ControlPoints = new List<ConquestFlagInfo>();
-        public int ControlPointIndex;
+        public List<ConquestFlagInfo> ControlPoints { get; set; } = new List<ConquestFlagInfo>();
+        public int ControlPointIndex { get; set; }
 
-        public ConquestInfo() { }
+        public ConquestInfoTable() { }
 
-        public ConquestInfo(BinaryReader reader)
+        public ConquestInfoTable(BinaryReader reader)
         {
             Index = reader.ReadInt32();
 
@@ -225,11 +225,11 @@ namespace Server.MirDatabase
 
     public class ConquestSiegeInfo
     {
-        public int Index;
-        public Point Location;
-        public int MobIndex;
-        public string Name;
-        public int RepairCost;
+        public int Index { get; set; }
+        public Point Location { get; set; }
+        public int MobIndex { get; set; }
+        public string Name { get; set; }
+        public int RepairCost { get; set; }
 
         public ConquestSiegeInfo() { }
 
@@ -268,11 +268,11 @@ namespace Server.MirDatabase
 
     public class ConquestWallInfo
     {
-        public int Index;
-        public Point Location;
-        public int MobIndex;
-        public string Name;
-        public int RepairCost;
+        public int Index { get; set; }
+        public Point Location { get; set; }
+        public int MobIndex { get; set; }
+        public string Name { get; set; }
+        public int RepairCost { get; set; }
 
         public ConquestWallInfo() { }
 
@@ -311,11 +311,11 @@ namespace Server.MirDatabase
 
     public class ConquestGateInfo
     {
-        public int Index;
-        public Point Location;
-        public int MobIndex;
-        public string Name;
-        public int RepairCost;
+        public int Index { get; set; }
+        public Point Location { get; set; }
+        public int MobIndex { get; set; }
+        public string Name { get; set; }
+        public int RepairCost { get; set; }
 
         public ConquestGateInfo() { }
 
@@ -354,11 +354,11 @@ namespace Server.MirDatabase
 
     public class ConquestArcherInfo
     {
-        public int Index;
-        public Point Location;
-        public int MobIndex;
-        public string Name;
-        public uint RepairCost;
+        public int Index { get; set; }
+        public Point Location { get; set; }
+        public int MobIndex { get; set; }
+        public string Name { get; set; }
+        public uint RepairCost { get; set; }
 
         public ConquestArcherInfo() { }
 
@@ -389,10 +389,10 @@ namespace Server.MirDatabase
 
     public class ConquestFlagInfo
     {
-        public int Index;
-        public Point Location;
-        public string Name;
-        public string FileName = string.Empty;
+        public int Index { get; set; }
+        public Point Location { get; set; }
+        public string Name { get; set; }
+        public string FileName { get; set; } = string.Empty;
 
         public ConquestFlagInfo() { }
 

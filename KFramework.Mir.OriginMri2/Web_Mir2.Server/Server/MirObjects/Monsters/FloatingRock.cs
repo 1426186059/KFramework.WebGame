@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
     {
         protected override bool CanMove { get { return false; } }
 
-        protected internal FloatingRock(MonsterInfo info)
+        protected internal FloatingRock(MonsterInfoTable info)
             : base(info)
         {
         }

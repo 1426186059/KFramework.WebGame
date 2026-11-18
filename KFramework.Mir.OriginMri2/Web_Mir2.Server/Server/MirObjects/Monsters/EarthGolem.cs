@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -20,7 +20,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal EarthGolem(MonsterInfo info)
+        protected internal EarthGolem(MonsterInfoTable info)
             : base(info)
         {
         }

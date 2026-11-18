@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using System.Drawing;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class ThunderElement : MonsterObject
     {
-        protected internal ThunderElement(MonsterInfo info)
+        protected internal ThunderElement(MonsterInfoTable info)
             : base(info)
         {
         }

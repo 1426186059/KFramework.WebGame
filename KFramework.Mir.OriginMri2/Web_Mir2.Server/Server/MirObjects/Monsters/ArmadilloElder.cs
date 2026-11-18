@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class ArmadilloElder : Armadillo
     {
-        protected internal ArmadilloElder(MonsterInfo info)
+        protected internal ArmadilloElder(MonsterInfoTable info)
             : base(info)
         {
         }

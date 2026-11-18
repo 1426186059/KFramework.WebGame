@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         public bool slaves1 = false;
         public bool slaves2 = false;
 
-        protected internal HoodedSummoner(MonsterInfo info)
+        protected internal HoodedSummoner(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirForms.VisualMapInfo.Class
 {
@@ -15,8 +15,8 @@ namespace Server.MirForms.VisualMapInfo.Class
                 FocusModeActivated(null, null);
         }
 
-        public static Server.MirDatabase.MapInfo
-            MapInfo;
+        public static Server.MirDatabase.MapInfoTable
+            MapInfoTable;
 
         public static int
             ZoomLevel = 1; // 1 - 6
@@ -33,7 +33,7 @@ namespace Server.MirForms.VisualMapInfo.Class
             }
         }
 
-        public static MapInfo
+        public static MapInfoTable
             ActiveMap;
 
         public static Bitmap

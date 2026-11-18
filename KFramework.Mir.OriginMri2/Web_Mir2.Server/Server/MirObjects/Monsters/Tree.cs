@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanAttack { get { return false; } }
         protected override bool CanRegen { get { return false; } }
 
-        protected internal Tree(MonsterInfo info)
+        protected internal Tree(MonsterInfoTable info)
             : base(info)
         {
             Direction = MirDirection.Up;

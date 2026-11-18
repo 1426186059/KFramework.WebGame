@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
         public byte AttackRange = 10;
 
-        protected internal Behemoth(MonsterInfo info)
+        protected internal Behemoth(MonsterInfoTable info)
             : base(info)
         {
         }

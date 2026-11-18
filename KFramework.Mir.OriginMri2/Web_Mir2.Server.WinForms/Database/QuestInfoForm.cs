@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using System.Diagnostics;
 
@@ -10,7 +10,7 @@ namespace Server
 
         public Envir Envir => SMain.EditEnvir;
 
-        private List<QuestInfo> _selectedQuestInfos;
+        private List<QuestInfoTable> _selectedQuestInfos;
 
         public QuestInfoForm()
         {
@@ -62,7 +62,7 @@ namespace Server
         private void UpdateInterface()
         {
             // Get selected quests from the ListBox
-            _selectedQuestInfos = QuestInfoListBox.SelectedItems.Cast<QuestInfo>().ToList();
+            _selectedQuestInfos = QuestInfoListBox.SelectedItems.Cast<QuestInfoTable>().ToList();
 
             if (_selectedQuestInfos.Count == 0)
             {
@@ -70,7 +70,7 @@ namespace Server
                 return;
             }
 
-            QuestInfo info = _selectedQuestInfos[0];
+            QuestInfoTable info = _selectedQuestInfos[0];
 
             // Enable the panel and populate fields with selected quest details
             QuestInfoPanel.Enabled = true;
@@ -91,10 +91,10 @@ namespace Server
             if (Convert.ToInt32(RequiredMaxLevelTextBox.Text) <= 0)
                 RequiredMaxLevelTextBox.Text = byte.MaxValue.ToString();
 
-            QuestInfo tempQuest = Envir.QuestInfoList.FirstOrDefault(c => c.Index == info.RequiredQuest);
+            QuestInfoTable tempQuest = Envir.QuestInfoList.FirstOrDefault(c => c.Index == info.RequiredQuest);
 
             RequiredQuestComboBox.Items.Clear();
-            RequiredQuestComboBox.Items.Add(new QuestInfo { Index = 0, Name = "None" });
+            RequiredQuestComboBox.Items.Add(new QuestInfoTable { Index = 0, Name = "None" });
             RequiredQuestComboBox.Items.AddRange(Envir.QuestInfoList.ToArray());
             RequiredQuestComboBox.SelectedItem = tempQuest ?? RequiredQuestComboBox.Items[0];
             RequiredClassComboBox.SelectedItem = info.RequiredClass;
@@ -128,8 +128,8 @@ namespace Server
                 if (RequiredMaxLevelTextBox.Text != info.RequiredMaxLevel.ToString())
                     RequiredMaxLevelTextBox.Text = byte.MaxValue.ToString();
 
-                // BUG 2: items are QuestInfo objects; compare selected item's Index
-                if (RequiredQuestComboBox.SelectedItem is QuestInfo selReq &&
+                // BUG 2: items are QuestInfoTable objects; compare selected item's Index
+                if (RequiredQuestComboBox.SelectedItem is QuestInfoTable selReq &&
                     selReq.Index != info.RequiredQuest)
                 {
                     RequiredQuestComboBox.SelectedItem = null;
@@ -223,7 +223,7 @@ namespace Server
 
 
             //for (int i = 1; i < npcs.Length; i++)
-            //    NPCInfo.FromText(npcs[i]);
+            //    NPCInfoTable.FromText(npcs[i]);
             RefreshQuestList();
             UpdateInterface();
         }
@@ -236,12 +236,12 @@ namespace Server
 
         private void ExportSelected_Click(object sender, EventArgs e)
         {
-            var list = QuestInfoListBox.SelectedItems.Cast<QuestInfo>().ToList();
+            var list = QuestInfoListBox.SelectedItems.Cast<QuestInfoTable>().ToList();
 
             ExportQuests(list);
         }
 
-        public void ExportQuests(List<QuestInfo> Quests)
+        public void ExportQuests(List<QuestInfoTable> Quests)
         {
             if (Quests.Count == 0) return;
 
@@ -278,7 +278,7 @@ namespace Server
             Path = ofd.FileName;
 
             foreach (var m in File.ReadAllLines(Path).Skip(1))
-                QuestInfo.FromText(m);
+                QuestInfoTable.FromText(m);
 
             RefreshQuestList();
             UpdateInterface();
@@ -395,7 +395,7 @@ namespace Server
 
             for (int i = 0; i < _selectedQuestInfos.Count; i++)
             {
-                QuestInfo temp = (QuestInfo)RequiredQuestComboBox.SelectedItem;
+                QuestInfoTable temp = (QuestInfoTable)RequiredQuestComboBox.SelectedItem;
 
                 _selectedQuestInfos[i].RequiredQuest = temp.Index;
             }

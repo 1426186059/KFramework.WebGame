@@ -30,7 +30,7 @@ namespace Server.MirDatabase
 
         public RecipeInfo(string name)
         {
-            ItemInfo itemInfo = Envir.GetItemInfo(name);
+            ItemInfoTable itemInfo = Envir.GetItemInfo(name);
             if (itemInfo == null)
             {
                 MessageQueue.Enqueue(string.Format("Could not find Item: {0}", name));
@@ -94,7 +94,7 @@ namespace Server.MirDatabase
                         {
                             var data = lines[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            ItemInfo info = Envir.GetItemInfo(data[0]);
+                            ItemInfoTable info = Envir.GetItemInfo(data[0]);
 
                             if (info == null)
                             {
@@ -111,7 +111,7 @@ namespace Server.MirDatabase
                         {
                             var data = lines[i].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            ItemInfo info = Envir.GetItemInfo(data[0]);
+                            ItemInfoTable info = Envir.GetItemInfo(data[0]);
 
                             if (info == null)
                             {

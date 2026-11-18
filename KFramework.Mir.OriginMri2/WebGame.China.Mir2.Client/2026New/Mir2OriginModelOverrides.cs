@@ -1,4 +1,4 @@
-// 物品 Index -> model/ 站立帧模型号的覆盖表（手工维护，优先级高于自动生成的 Mir2OriginItemModelMap）。
+// 物品 Index -> model/ 站立帧模型号的覆盖表（手工维护，优先级高于 ItemInfo.json 的 OriginModel 列）。
 // 值格式同 cm.item[col17]："男号/女号" 或单个通用号。
 //
 // 立绘实际取的是 model/{版本}/model/{模型号}/{模型号}994.png（动作 99 + 方向 4），

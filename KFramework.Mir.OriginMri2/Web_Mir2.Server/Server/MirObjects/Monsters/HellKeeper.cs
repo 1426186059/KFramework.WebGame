@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -13,7 +13,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanRegen { get { return false; } }
         
 
-        protected internal HellKeeper(MonsterInfo info) : base(info)
+        protected internal HellKeeper(MonsterInfoTable info) : base(info)
         {
             Direction = MirDirection.Up;
         }

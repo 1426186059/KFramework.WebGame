@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using Server.MirDatabase;
 using Server.MirEnvir;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 3;
         public bool Summoned;
 
-        protected internal SepAssassin(MonsterInfo info)
+        protected internal SepAssassin(MonsterInfoTable info)
             : base(info)
         {
         }

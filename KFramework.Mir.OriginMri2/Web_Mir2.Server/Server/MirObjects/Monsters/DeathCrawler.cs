@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class DeathCrawler : MonsterObject
     {
-        protected internal DeathCrawler(MonsterInfo info)
+        protected internal DeathCrawler(MonsterInfoTable info)
             : base(info)
         {
         }

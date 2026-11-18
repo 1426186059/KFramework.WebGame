@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime;
         public byte AttackRange = 4;
 
-        protected internal FlameSpear(MonsterInfo info)
+        protected internal FlameSpear(MonsterInfoTable info)
             : base(info)
         {
         }

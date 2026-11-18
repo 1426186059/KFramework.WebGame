@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 
@@ -8,12 +8,12 @@ namespace Server
     {
         public Envir Envir => SMain.EditEnvir;
 
-        private List<MapInfo> _selectedMapInfos;
+        private List<MapInfoTable> _selectedMapInfos;
         private List<SafeZoneInfo> _selectedSafeZoneInfos;
         private List<RespawnInfo> _selectedRespawnInfos;
         private List<MovementInfo> _selectedMovementInfos;
         private List<MineZone> _selectedMineZones;
-        private MapInfo _info;
+        private MapInfoTable _info;
 
         public MapInfoForm()
         {
@@ -27,7 +27,7 @@ namespace Server
 
             LightsComboBox.Items.AddRange(Enum.GetValues(typeof(LightSetting)).Cast<object>().ToArray());
 
-            List<MonsterInfo> monsterInfoItems = new();
+            List<MonsterInfoTable> monsterInfoItems = new();
             Envir.MonsterInfoList.ForEach(x => monsterInfoItems.Add(x));
             MonsterInfoComboBox.DataSource = monsterInfoItems;
 
@@ -50,7 +50,7 @@ namespace Server
 
             if (refresh || MapInfoListBox.Items.Count != Envir.MapInfoList.Count)
             {
-                MapInfo selectedMap = MapInfoListBox.SelectedItem as MapInfo;
+                MapInfoTable selectedMap = MapInfoListBox.SelectedItem as MapInfoTable;
 
                 MapInfoListBox.Items.Clear();
                 DestMapComboBox.Items.Clear();
@@ -73,7 +73,7 @@ namespace Server
             }
             MapInfoListBox.SelectedIndexChanged += MapInfoListBox_SelectedIndexChanged;
 
-            _selectedMapInfos = MapInfoListBox.SelectedItems.Cast<MapInfo>().ToList();
+            _selectedMapInfos = MapInfoListBox.SelectedItems.Cast<MapInfoTable>().ToList();
 
             if (_selectedMapInfos == null || _selectedMapInfos.Count == 0)
             {
@@ -121,7 +121,7 @@ namespace Server
             }
 
 
-            MapInfo mi = _selectedMapInfos[0];
+            MapInfoTable mi = _selectedMapInfos[0];
 
             MapTabs.Enabled = true;
 
@@ -675,7 +675,7 @@ namespace Server
             MZListlistBox.Items.Clear();
             lstParticles.SelectedItems.Clear();
 
-            _selectedMapInfos = MapInfoListBox.SelectedItems.Cast<MapInfo>().ToList();
+            _selectedMapInfos = MapInfoListBox.SelectedItems.Cast<MapInfoTable>().ToList();
 
             if (_selectedMapInfos == null || _selectedMapInfos.Count == 0)
             {
@@ -773,7 +773,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedSafeZoneInfos.Count; i++)
-                _selectedSafeZoneInfos[i].Location.X = temp;
+            {
+                Point location = _selectedSafeZoneInfos[i].Location;
+                location.X = temp;
+                _selectedSafeZoneInfos[i].Location = location;
+            }
 
             RefreshSafeZoneList();
         }
@@ -791,7 +795,11 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
             for (int i = 0; i < _selectedSafeZoneInfos.Count; i++)
-                _selectedSafeZoneInfos[i].Location.Y = temp;
+            {
+                Point location = _selectedSafeZoneInfos[i].Location;
+                location.Y = temp;
+                _selectedSafeZoneInfos[i].Location = location;
+            }
 
             RefreshSafeZoneList();
         }
@@ -846,7 +854,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            MonsterInfo info = MonsterInfoComboBox.SelectedItem as MonsterInfo;
+            MonsterInfoTable info = MonsterInfoComboBox.SelectedItem as MonsterInfoTable;
 
             if (info == null) return;
 
@@ -871,7 +879,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedRespawnInfos.Count; i++)
-                _selectedRespawnInfos[i].Location.X = temp;
+            {
+                Point location = _selectedRespawnInfos[i].Location;
+                location.X = temp;
+                _selectedRespawnInfos[i].Location = location;
+            }
 
             RefreshRespawnList();
         }
@@ -890,7 +902,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedRespawnInfos.Count; i++)
-                _selectedRespawnInfos[i].Location.Y = temp;
+            {
+                Point location = _selectedRespawnInfos[i].Location;
+                location.Y = temp;
+                _selectedRespawnInfos[i].Location = location;
+            }
 
             RefreshRespawnList();
         }
@@ -1053,7 +1069,11 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
             for (int i = 0; i < _selectedMovementInfos.Count; i++)
-                _selectedMovementInfos[i].Source.X = temp;
+            {
+                Point source = _selectedMovementInfos[i].Source;
+                source.X = temp;
+                _selectedMovementInfos[i].Source = source;
+            }
 
             RefreshMovementList();
         }
@@ -1072,7 +1092,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedMovementInfos.Count; i++)
-                _selectedMovementInfos[i].Source.Y = temp;
+            {
+                Point source = _selectedMovementInfos[i].Source;
+                source.Y = temp;
+                _selectedMovementInfos[i].Source = source;
+            }
 
             RefreshMovementList();
         }
@@ -1091,7 +1115,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedMovementInfos.Count; i++)
-                _selectedMovementInfos[i].Destination.X = temp;
+            {
+                Point destination = _selectedMovementInfos[i].Destination;
+                destination.X = temp;
+                _selectedMovementInfos[i].Destination = destination;
+            }
 
             RefreshMovementList();
         }
@@ -1110,7 +1138,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedMovementInfos.Count; i++)
-                _selectedMovementInfos[i].Destination.Y = temp;
+            {
+                Point destination = _selectedMovementInfos[i].Destination;
+                destination.Y = temp;
+                _selectedMovementInfos[i].Destination = destination;
+            }
 
             RefreshMovementList();
         }
@@ -1118,7 +1150,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            MapInfo info = DestMapComboBox.SelectedItem as MapInfo;
+            MapInfoTable info = DestMapComboBox.SelectedItem as MapInfoTable;
 
             if (info == null) return;
 
@@ -1164,7 +1196,7 @@ namespace Server
 
 
             for (int i = 1; i < maps.Length; i++)
-                MapInfo.FromText(maps[i]);
+                MapInfoTable.FromText(maps[i]);
 
             UpdateInterface();
         }
@@ -1409,7 +1441,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedMineZones.Count; i++)
-                _selectedMineZones[i].Location.X = temp;
+            {
+                Point location = _selectedMineZones[i].Location;
+                location.X = temp;
+                _selectedMineZones[i].Location = location;
+            }
             RefreshMineZoneList();
         }
 
@@ -1428,7 +1464,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedMineZones.Count; i++)
-                _selectedMineZones[i].Location.Y = temp;
+            {
+                Point location = _selectedMineZones[i].Location;
+                location.Y = temp;
+                _selectedMineZones[i].Location = location;
+            }
             RefreshMineZoneList();
         }
 
@@ -1533,7 +1573,7 @@ namespace Server
             }
             MessageBox.Show("Map Info Export Complete");
         }
-        private String PrintMapAttributes(MapInfo map)
+        private String PrintMapAttributes(MapInfoTable map)
         {
             string textOut = string.Empty;
             if (map.NoTeleport) textOut += " NOTELEPORT";
@@ -1626,7 +1666,7 @@ namespace Server
                 {
                     for (int j = 0; j < _selectedMapInfos[i].Respawns.Count; j++)
                     {
-                        MonsterInfo mob = Envir.GetMonsterInfo(_selectedMapInfos[i].Respawns[j].MonsterIndex);
+                        MonsterInfoTable mob = Envir.GetMonsterInfo(_selectedMapInfos[i].Respawns[j].MonsterIndex);
 
                         if (mob == null) continue;
 
@@ -1653,12 +1693,12 @@ namespace Server
                 return;
 
             MirForms.VisualMapInfo.VForm VForm = new MirForms.VisualMapInfo.VForm();
-            MirForms.VisualMapInfo.Class.VisualizerGlobal.MapInfo = _selectedMapInfos[0];
+            MirForms.VisualMapInfo.Class.VisualizerGlobal.MapInfoTable = _selectedMapInfos[0];
             VForm.FormClosed += VForm_Disposed;
 
             VForm.ShowDialog();
 
-            _selectedMapInfos[0] = MirForms.VisualMapInfo.Class.VisualizerGlobal.MapInfo;
+            _selectedMapInfos[0] = MirForms.VisualMapInfo.Class.VisualizerGlobal.MapInfoTable;
             UpdateMineZoneInterface();
             UpdateRespawnInterface();
         }
@@ -1797,7 +1837,7 @@ namespace Server
 
                 if (cmb.SelectedIndex >= 0)
                 {
-                    ConquestInfo info = Envir.ConquestInfoList.FirstOrDefault(x => x.Name == ConquestComboBox.SelectedItem.ToString());
+                    ConquestInfoTable info = Envir.ConquestInfoList.FirstOrDefault(x => x.Name == ConquestComboBox.SelectedItem.ToString());
 
                     if (info != null)
                     {

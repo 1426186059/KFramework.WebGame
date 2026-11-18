@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -7,7 +7,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class TrollBomber : AxeSkeleton
     {
-        protected internal TrollBomber(MonsterInfo info)
+        protected internal TrollBomber(MonsterInfoTable info)
             : base(info)
         {
         }

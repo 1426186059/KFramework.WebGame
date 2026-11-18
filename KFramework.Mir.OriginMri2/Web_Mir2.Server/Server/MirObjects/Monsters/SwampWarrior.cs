@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -16,7 +16,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal SwampWarrior(MonsterInfo info)
+        protected internal SwampWarrior(MonsterInfoTable info)
             : base(info)
         {
         }

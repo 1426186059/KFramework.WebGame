@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 5;
         public long ExplosionTime;
 
-        protected internal PoisonHugger(MonsterInfo info)
+        protected internal PoisonHugger(MonsterInfoTable info)
             : base(info)
         {
             ExplosionTime = Envir.Time + 1000 * 60 * 5;

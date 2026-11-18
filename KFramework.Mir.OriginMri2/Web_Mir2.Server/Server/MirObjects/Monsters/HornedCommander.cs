@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -52,7 +52,7 @@ namespace Server.MirObjects.Monsters
         private bool _CalledShield;
         private readonly byte _ShieldSeconds = 20;
 
-        protected internal HornedCommander(MonsterInfo info)
+        protected internal HornedCommander(MonsterInfoTable info)
             : base(info)
         {
         }

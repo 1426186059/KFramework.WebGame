@@ -338,7 +338,7 @@ public static class Functions
                 return dir;
         }
     }
-    public static ItemInfo GetRealItem(ItemInfo Origin, ushort Level, MirClass job, List<ItemInfo> ItemList)
+    public static ItemInfoTable GetRealItem(ItemInfoTable Origin, ushort Level, MirClass job, List<ItemInfoTable> ItemList)
     {
         if (Origin.ClassBased && Origin.LevelBased)
             return GetClassAndLevelBasedItem(Origin, job, Level, ItemList);
@@ -348,23 +348,23 @@ public static class Functions
             return GetLevelBasedItem(Origin, Level, ItemList);
         return Origin;
     }
-    public static ItemInfo GetLevelBasedItem(ItemInfo Origin, ushort level, List<ItemInfo> ItemList)
+    public static ItemInfoTable GetLevelBasedItem(ItemInfoTable Origin, ushort level, List<ItemInfoTable> ItemList)
     {
-        ItemInfo output = Origin;
+        ItemInfoTable output = Origin;
         for (int i = 0; i < ItemList.Count; i++)
         {
-            ItemInfo info = ItemList[i];
+            ItemInfoTable info = ItemList[i];
             if (info.Name.StartsWith(Origin.Name))
                 if ((info.RequiredType == RequiredType.Level) && (info.RequiredAmount <= level) && (output.RequiredAmount < info.RequiredAmount) && (Origin.RequiredGender == info.RequiredGender))
                     output = info;
         }
         return output;
     }
-    public static ItemInfo GetClassBasedItem(ItemInfo Origin, MirClass job, List<ItemInfo> ItemList)
+    public static ItemInfoTable GetClassBasedItem(ItemInfoTable Origin, MirClass job, List<ItemInfoTable> ItemList)
     {
         for (int i = 0; i < ItemList.Count; i++)
         {
-            ItemInfo info = ItemList[i];
+            ItemInfoTable info = ItemList[i];
             if (info.Name.StartsWith(Origin.Name))
                 if (((byte)info.RequiredClass == (1 << (byte)job)) && (Origin.RequiredGender == info.RequiredGender))
                     return info;
@@ -372,12 +372,12 @@ public static class Functions
         return Origin;
     }
 
-    public static ItemInfo GetClassAndLevelBasedItem(ItemInfo Origin, MirClass job, ushort level, List<ItemInfo> ItemList)
+    public static ItemInfoTable GetClassAndLevelBasedItem(ItemInfoTable Origin, MirClass job, ushort level, List<ItemInfoTable> ItemList)
     {
-        ItemInfo output = Origin;
+        ItemInfoTable output = Origin;
         for (int i = 0; i < ItemList.Count; i++)
         {
-            ItemInfo info = ItemList[i];
+            ItemInfoTable info = ItemList[i];
             if (info.Name.StartsWith(Origin.Name))
                 if ((byte)info.RequiredClass == (1 << (byte)job))
                     if ((info.RequiredType == RequiredType.Level) && (info.RequiredAmount <= level) && (output.RequiredAmount <= info.RequiredAmount) && (Origin.RequiredGender == info.RequiredGender))

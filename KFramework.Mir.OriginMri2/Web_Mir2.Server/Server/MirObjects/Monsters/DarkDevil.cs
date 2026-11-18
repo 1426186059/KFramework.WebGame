@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
     {
         private long _areaTime;
 
-        protected internal DarkDevil(MonsterInfo info) : base(info)
+        protected internal DarkDevil(MonsterInfoTable info) : base(info)
         {
         }
 

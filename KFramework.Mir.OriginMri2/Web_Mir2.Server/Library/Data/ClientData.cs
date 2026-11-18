@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 
 public class ClientMagic
 {
@@ -563,7 +563,7 @@ public class ClientQuestProgress
 {
     public int Id;
 
-    public ClientQuestInfo QuestInfo;
+    public ClientQuestInfo QuestInfoTable;
 
     public List<string> TaskList = new List<string>();
 
@@ -581,7 +581,7 @@ public class ClientQuestProgress
     {
         get
         {
-            return QuestInfo.GetQuestIcon(Taken, Completed);
+            return QuestInfoTable.GetQuestIcon(Taken, Completed);
         }
     }
 

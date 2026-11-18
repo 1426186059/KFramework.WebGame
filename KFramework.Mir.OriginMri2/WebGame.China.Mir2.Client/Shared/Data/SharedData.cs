@@ -74,14 +74,14 @@ public class RankCharacterInfo
 
 public class QuestItemReward
 {
-    public ItemInfo Item;
+    public ItemInfoTable Item;
     public ushort Count = 1;
 
     public QuestItemReward() { }
 
     public QuestItemReward(BinaryReader reader)
     {
-        Item = new ItemInfo(reader);
+        Item = new ItemInfoTable(reader);
         Count = reader.ReadUInt16();
     }
 

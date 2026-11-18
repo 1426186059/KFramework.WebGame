@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class PlagueCrab : MonsterObject
     {
-        protected internal PlagueCrab(MonsterInfo info)
+        protected internal PlagueCrab(MonsterInfoTable info)
             : base(info)
         {
         }

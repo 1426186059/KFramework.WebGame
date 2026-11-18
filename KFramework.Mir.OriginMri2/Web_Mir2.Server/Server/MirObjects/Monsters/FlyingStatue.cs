@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -18,7 +18,7 @@ namespace Server.MirObjects.Monsters
     {
         public long _BlizzardCooldown;
 
-        protected internal FlyingStatue(MonsterInfo info)
+        protected internal FlyingStatue(MonsterInfoTable info)
             : base(info)
         {
         }

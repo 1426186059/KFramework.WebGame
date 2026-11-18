@@ -175,7 +175,7 @@ public static class Mir2OriginUIModel
 
     /// <summary>
     /// 复刻 UIModelUtil.setFirstPlayerModel / showPlayerModel：由装备槽的页游物品 id 解算各层 uiModel 模型号。
-    /// itemId 均为 cm.item 的键（本工程 ItemInfo.Index）；0 表示该槽为空。
+    /// itemId 均为 cm.item 的键（本工程 ItemInfoTable.Index）；0 表示该槽为空。
     /// 未装备的装饰层返回 0（不绘制）。
     /// </summary>
     public static int[] ResolvePlayerModels(bool female, int armour, int weapon, int helmet,

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     public class IceCrystalSoldier : MonsterObject
     {
         private long _areaTime;
-        protected internal IceCrystalSoldier(MonsterInfo info)
+        protected internal IceCrystalSoldier(MonsterInfoTable info)
             : base(info)
         {
         }

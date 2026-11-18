@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class TucsonWarrior : MonsterObject
     {
-        protected internal TucsonWarrior(MonsterInfo info)
+        protected internal TucsonWarrior(MonsterInfoTable info)
             : base(info)
         {
         }

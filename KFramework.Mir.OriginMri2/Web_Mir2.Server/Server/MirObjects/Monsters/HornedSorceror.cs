@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -22,7 +22,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal HornedSorceror(MonsterInfo info)
+        protected internal HornedSorceror(MonsterInfoTable info)
             : base(info)
         {
         }

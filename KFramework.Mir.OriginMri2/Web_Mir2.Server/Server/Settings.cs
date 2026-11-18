@@ -1427,7 +1427,7 @@ namespace Server
                 Guild_BuffList[i].Save(reader, i);
             }
         }
-        public static void LinkGuildCreationItems(List<ItemInfo> ItemList)
+        public static void LinkGuildCreationItems(List<ItemInfoTable> ItemList)
         {
             for (int i = 0; i < Guild_CreationCostList.Count; i++)
             {

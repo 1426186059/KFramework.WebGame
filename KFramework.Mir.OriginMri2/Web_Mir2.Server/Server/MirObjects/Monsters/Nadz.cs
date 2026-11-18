@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class Nadz : MonsterObject
     {
-        protected internal Nadz(MonsterInfo info)
+        protected internal Nadz(MonsterInfoTable info)
             : base(info)
         {
         }

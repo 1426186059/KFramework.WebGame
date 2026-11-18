@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 using Server.MirEnvir;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
 
         private byte _stage = 5;
 
-        protected internal TurtleKing(MonsterInfo info)
+        protected internal TurtleKing(MonsterInfoTable info)
             : base(info)
         {
         }

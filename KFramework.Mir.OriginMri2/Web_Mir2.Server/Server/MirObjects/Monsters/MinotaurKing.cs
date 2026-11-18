@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal MinotaurKing(MonsterInfo info)
+        protected internal MinotaurKing(MonsterInfoTable info)
             : base(info)
         {
         }

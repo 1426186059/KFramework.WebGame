@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         public long BuffTime;
 
-        protected internal HornedArcher(MonsterInfo info)
+        protected internal HornedArcher(MonsterInfoTable info)
             : base(info)
         {
         }

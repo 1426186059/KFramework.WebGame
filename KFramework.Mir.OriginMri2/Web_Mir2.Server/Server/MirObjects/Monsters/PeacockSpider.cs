@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         private long _PoisonTime;
         private long _PoisonRainTime;
 
-        protected internal PeacockSpider(MonsterInfo info)
+        protected internal PeacockSpider(MonsterInfoTable info)
             : base(info)
         {
         }

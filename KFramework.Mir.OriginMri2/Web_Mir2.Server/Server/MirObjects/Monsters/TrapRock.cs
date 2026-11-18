@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -31,7 +31,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal TrapRock(MonsterInfo info)
+        protected internal TrapRock(MonsterInfoTable info)
             : base(info)
         {
             Visible = false;

@@ -962,7 +962,7 @@ namespace Client.MirScenes.Dialogs
         }
 
         // 物品奖励：物品名（下划线、悬浮/点击弹背包同款提示） + 其后 " x数量"
-        private int AddItemSegment(int x, ItemInfo item, int count)
+        private int AddItemSegment(int x, ItemInfoTable item, int count)
         {
             var nameLabel = new MirLabel
             {
@@ -1035,7 +1035,7 @@ namespace Client.MirScenes.Dialogs
             if (rewardItems == null) return filtered;
             foreach (var reward in rewardItems)
             {
-                ItemInfo item = reward.Item;
+                ItemInfoTable item = reward.Item;
 
                 switch (MapObject.User.Gender)
                 {
@@ -1064,7 +1064,7 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class QuestCell : MirControl
     {
-        public ItemInfo Item;
+        public ItemInfoTable Item;
         public UserItem ShowItem;
         public ushort Count;
 

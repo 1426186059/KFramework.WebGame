@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         private const byte AttackRange = 5;
 
-        protected internal Tornado(MonsterInfo info)
+        protected internal Tornado(MonsterInfoTable info)
             : base(info)
         {
         }

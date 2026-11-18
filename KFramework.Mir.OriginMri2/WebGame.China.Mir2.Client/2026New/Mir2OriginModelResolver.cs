@@ -10,10 +10,14 @@ namespace Client.MirObjects
         {
             if (pgItemId <= 0) return fallback;
 
-            // 手工覆盖表优先，其次才是 1config.item[col17] 自动生成的映射。
+            // 手工覆盖表优先；否则从本地 ItemInfo.json 的 OriginModel 列读（= 1config.item[col17]，随配置更新，无需重编译）。
             string s;
-            if (!Mir2OriginModelOverrides.Models.TryGetValue(pgItemId, out s) &&
-                !Mir2OriginItemModelMap.Body.TryGetValue(pgItemId, out s)) return fallback;
+            if (!Mir2OriginModelOverrides.Models.TryGetValue(pgItemId, out s))
+            {
+                if (!ExcelTableMgr.TryGetItem(pgItemId, out var item) || item == null ||
+                    string.IsNullOrEmpty(item.OriginModel)) return fallback;
+                s = item.OriginModel;
+            }
             if (string.IsNullOrEmpty(s)) return fallback;
 
             int slash = s.IndexOf('/');

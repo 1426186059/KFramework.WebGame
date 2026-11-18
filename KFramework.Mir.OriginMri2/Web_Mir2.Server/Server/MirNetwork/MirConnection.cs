@@ -63,13 +63,13 @@ namespace Server.MirNetwork
         public List<MirConnection> Observers = new List<MirConnection>();
         public MirConnection Observing;
 
-        public List<ItemInfo> SentItemInfo = new List<ItemInfo>();
-        public List<MonsterInfo> SentMonsterInfo = new List<MonsterInfo>();
-        public List<NPCInfo> SentNPCInfo = new List<NPCInfo>();
-        public List<QuestInfo> SentQuestInfo = new List<QuestInfo>();
+        public List<ItemInfoTable> SentItemInfo = new List<ItemInfoTable>();
+        public List<MonsterInfoTable> SentMonsterInfo = new List<MonsterInfoTable>();
+        public List<NPCInfoTable> SentNPCInfo = new List<NPCInfoTable>();
+        public List<QuestInfoTable> SentQuestInfo = new List<QuestInfoTable>();
         public List<RecipeInfo> SentRecipeInfo = new List<RecipeInfo>();
         public List<UserItem> SentChatItem = new List<UserItem>(); //TODO - Add Expiry time
-        public List<MapInfo> SentMapInfo = new List<MapInfo>();
+        public List<MapInfoTable> SentMapInfo = new List<MapInfoTable>();
         public List<ulong> SentHeroInfo = new List<ulong>();
         public bool WorldMapSetupSent;
         public bool StorageSent;
@@ -2369,7 +2369,7 @@ namespace Server.MirNetwork
             Player.ConfirmItemRental();
         }
 
-        public void CheckItemInfo(ItemInfo info, bool dontLoop = false)
+        public void CheckItemInfo(ItemInfoTable info, bool dontLoop = false)
         {
             if ((dontLoop == false) && (info.ClassBased | info.LevelBased)) //send all potential data so client can display it
             {
@@ -2393,7 +2393,7 @@ namespace Server.MirNetwork
             CheckMonsterInfo(Envir.GetMonsterInfo(monsterIndex));
         }
 
-        public void CheckMonsterInfo(MonsterInfo info)
+        public void CheckMonsterInfo(MonsterInfoTable info)
         {
             if (info == null) return;
 
@@ -2411,7 +2411,7 @@ namespace Server.MirNetwork
             CheckNPCInfo(Envir.GetNPCInfo(npcIndex));
         }
 
-        public void CheckNPCInfo(NPCInfo info)
+        public void CheckNPCInfo(NPCInfoTable info)
         {
             if (info == null) return;
 

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirForms
@@ -35,10 +35,10 @@ namespace Server.MirForms
                     var a = lines[i].Split(']'); // Split map info into [0] = MapFile MapName 0 || [1] = Attributes
                     string[] b = a[0].Split(' ');
                     string fileName = b[0].TrimStart('[');// Assign MapFile from variable and trim leading '[' char
-                    MapInfo newMapInfo = null;
+                    MapInfoTable newMapInfo = null;
                     if ((newMapInfo = EditEnvir.MapInfoList.FirstOrDefault(it => it.FileName == fileName)) == null)
                     {
-                        newMapInfo = new MirDatabase.MapInfo { Index = ++EditEnvir.MapIndex, FileName = fileName };
+                        newMapInfo = new MirDatabase.MapInfoTable { Index = ++EditEnvir.MapIndex, FileName = fileName };
                         isNew=true;
                     }
                     newMapInfo.Title = b[1].Replace("*", " "); // Assign MapName from variable, replacing asterisk with space

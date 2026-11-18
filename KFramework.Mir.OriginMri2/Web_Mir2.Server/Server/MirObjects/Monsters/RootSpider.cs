@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class RootSpider : BugBagMaggot
     {
-        protected internal RootSpider(MonsterInfo info) 
+        protected internal RootSpider(MonsterInfoTable info) 
             : base(info)
         {
             byte randomdirection = (byte)Envir.Random.Next(3);

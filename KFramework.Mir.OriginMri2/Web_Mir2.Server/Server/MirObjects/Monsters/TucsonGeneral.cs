@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
 
         private const int _RockCount = 15;
 
-        protected internal TucsonGeneral(MonsterInfo info)
+        protected internal TucsonGeneral(MonsterInfoTable info)
             : base(info)
         {
         }

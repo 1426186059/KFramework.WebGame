@@ -1,4 +1,4 @@
-﻿using Server.MirEnvir;
+using Server.MirEnvir;
 
 
 namespace Server
@@ -49,7 +49,7 @@ namespace Server
                 FishingMobIndexComboBox.Items.Add(Envir.MonsterInfoList[i]);
             }
 
-            MirDatabase.MonsterInfo fishingMob = Envir.GetMonsterInfo(Settings.FishingMonster);
+            MirDatabase.MonsterInfoTable fishingMob = Envir.GetMonsterInfo(Settings.FishingMonster);
 
             if (fishingMob != null)
                 FishingMobIndexComboBox.SelectedIndex = Envir.GetMonsterInfo(Settings.FishingMonster).Index - 1;
@@ -157,7 +157,7 @@ namespace Server
             {
                 HeroSealItem_ComboBox.Items.Add(Envir.ItemInfoList[i]);
             }
-            ItemInfo sealItem = Envir.GetItemInfo(Settings.HeroSealItemName);
+            ItemInfoTable sealItem = Envir.GetItemInfo(Settings.HeroSealItemName);
             if (sealItem != null)
                 HeroSealItem_ComboBox.SelectedIndex = sealItem.Index - 4;
         }
@@ -276,7 +276,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            MirDatabase.MonsterInfo mob = Envir.MonsterInfoList[FishingMobIndexComboBox.SelectedIndex];
+            MirDatabase.MonsterInfoTable mob = Envir.MonsterInfoList[FishingMobIndexComboBox.SelectedIndex];
 
             if (mob == null) return;
 
@@ -896,7 +896,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            ItemInfo item = Envir.ItemInfoList[HeroSealItem_ComboBox.SelectedIndex];
+            ItemInfoTable item = Envir.ItemInfoList[HeroSealItem_ComboBox.SelectedIndex];
 
             if (item == null) return;
 

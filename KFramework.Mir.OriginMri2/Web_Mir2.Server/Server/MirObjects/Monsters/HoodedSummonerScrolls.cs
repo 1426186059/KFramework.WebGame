@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -21,7 +21,7 @@ namespace Server.MirObjects.Monsters
     {
         public long FearTime;
 
-        protected internal HoodedSummonerScrolls(MonsterInfo info)
+        protected internal HoodedSummonerScrolls(MonsterInfoTable info)
             : base(info)
         {
         }

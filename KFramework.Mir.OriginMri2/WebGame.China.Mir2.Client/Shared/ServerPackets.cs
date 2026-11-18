@@ -1301,11 +1301,11 @@ namespace ServerPackets
 
         public override bool Observable => false;
 
-        public ItemInfo Info;
+        public ItemInfoTable Info;
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Info = new ItemInfo(reader);
+            Info = new ItemInfoTable(reader);
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -5922,7 +5922,7 @@ namespace ServerPackets
     {
         public override short Index { get { return (short)ServerPacketIds.AwakeningNeedMaterials; } }
 
-        public ItemInfo[] Materials;
+        public ItemInfoTable[] Materials;
         public byte[] MaterialsCount;
 
         protected override void ReadPacket(BinaryReader reader)
@@ -5930,13 +5930,13 @@ namespace ServerPackets
             if (!reader.ReadBoolean()) return;
 
             int count = reader.ReadInt32();
-            Materials = new ItemInfo[count];
+            Materials = new ItemInfoTable[count];
             MaterialsCount = new byte[count];
 
             for (int i = 0; i < Materials.Length; i++)
             {
                 if (!reader.ReadBoolean()) continue;
-                Materials[i] = new ItemInfo(reader);
+                Materials[i] = new ItemInfoTable(reader);
                 MaterialsCount[i] = reader.ReadByte();
             }
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server
@@ -7,7 +7,7 @@ namespace Server
     {
         public Envir Envir => SMain.EditEnvir;
 
-        private ConquestInfo selectedConquest;
+        private ConquestInfoTable selectedConquest;
         private ConquestArcherInfo selectedArcher;
         private ConquestGateInfo selectedGate;
         private ConquestWallInfo selectedWall;
@@ -198,7 +198,7 @@ namespace Server
                 }
             }
 
-            selectedConquest = (ConquestInfo)ConquestInfoListBox.SelectedItem;
+            selectedConquest = (ConquestInfoTable)ConquestInfoListBox.SelectedItem;
 
             if (selectedConquest != null)
             {
@@ -321,7 +321,7 @@ namespace Server
 
         private void AddConq_button_Click(object sender, EventArgs e)
         {
-            Envir.ConquestInfoList.Add(new ConquestInfo { Index = ++Envir.ConquestIndex, Location = new Point(0, 0), Size = 10, Name = "Conquest Wall", MapIndex = 1, PalaceIndex = 2});
+            Envir.ConquestInfoList.Add(new ConquestInfoTable { Index = ++Envir.ConquestIndex, Location = new Point(0, 0), Size = 10, Name = "Conquest Wall", MapIndex = 1, PalaceIndex = 2});
             UpdateInterface();
         }
 
@@ -350,7 +350,7 @@ namespace Server
         {
             if (selectedConquest != null && ExtraMaps_combo.SelectedIndex != -1)
             {
-                MapInfo temp = (MapInfo)ExtraMaps_combo.SelectedItem;
+                MapInfoTable temp = (MapInfoTable)ExtraMaps_combo.SelectedItem;
                 selectedConquest.ExtraMaps.Add(temp.Index);
                 UpdateInterface();
             }
@@ -381,7 +381,9 @@ namespace Server
             }
             ActiveControl.BackColor = SystemColors.Window;
 
-            selectedConquest.Location.X = temp;
+            Point location = selectedConquest.Location;
+            location.X = temp;
+            selectedConquest.Location = location;
         }
 
         private void LocY_textbox_TextChanged(object sender, EventArgs e)
@@ -398,7 +400,9 @@ namespace Server
             }
             ActiveControl.BackColor = SystemColors.Window;
 
-            selectedConquest.Location.Y = temp;
+            Point location = selectedConquest.Location;
+            location.Y = temp;
+            selectedConquest.Location = location;
         }
 
         private void Size_textbox_TextChanged(object sender, EventArgs e)
@@ -431,7 +435,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedArcher.Location.X = temp;
+            Point location = selectedArcher.Location;
+            location.X = temp;
+            selectedArcher.Location = location;
         }
 
         private void ArchYLoc_textbox_TextChanged(object sender, EventArgs e)
@@ -447,7 +453,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedArcher.Location.Y = temp;
+            Point location = selectedArcher.Location;
+            location.Y = temp;
+            selectedArcher.Location = location;
         }
 
         private void ConquestMap_combo_SelectedIndexChanged(object sender, EventArgs e)
@@ -455,7 +463,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MapInfo temp = (MapInfo)ConquestMap_combo.SelectedItem;
+            MapInfoTable temp = (MapInfoTable)ConquestMap_combo.SelectedItem;
             selectedConquest.MapIndex = temp.Index;
         }
 
@@ -464,7 +472,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MapInfo temp = (MapInfo)PalaceMap_combo.SelectedItem;
+            MapInfoTable temp = (MapInfoTable)PalaceMap_combo.SelectedItem;
             selectedConquest.PalaceIndex = temp.Index;
         }
 
@@ -473,7 +481,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MonsterInfo temp = (MonsterInfo)ArcherIndex_combo.SelectedItem;
+            MonsterInfoTable temp = (MonsterInfoTable)ArcherIndex_combo.SelectedItem;
             selectedArcher.MobIndex = temp.Index;
         }
 
@@ -519,7 +527,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedGate.Location.X = temp;
+            Point location = selectedGate.Location;
+            location.X = temp;
+            selectedGate.Location = location;
         }
 
         private void GateIndex_combo_SelectedIndexChanged(object sender, EventArgs e)
@@ -527,7 +537,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MonsterInfo temp = (MonsterInfo)GateIndex_combo.SelectedItem;
+            MonsterInfoTable temp = (MonsterInfoTable)GateIndex_combo.SelectedItem;
             selectedGate.MobIndex = temp.Index;
         }
 
@@ -544,7 +554,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedGate.Location.Y = temp;
+            Point location = selectedGate.Location;
+            location.Y = temp;
+            selectedGate.Location = location;
         }
 
         private void AddWall_button_Click(object sender, EventArgs e)
@@ -574,7 +586,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MonsterInfo temp = (MonsterInfo)WallIndex_combo.SelectedItem;
+            MonsterInfoTable temp = (MonsterInfoTable)WallIndex_combo.SelectedItem;
             selectedWall.MobIndex = temp.Index;
         }
 
@@ -591,7 +603,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedWall.Location.X = temp;
+            Point location = selectedWall.Location;
+            location.X = temp;
+            selectedWall.Location = location;
         }
 
         private void WallYLoc_textbox_TextChanged(object sender, EventArgs e)
@@ -607,7 +621,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedWall.Location.Y = temp;
+            Point location = selectedWall.Location;
+            location.Y = temp;
+            selectedWall.Location = location;
         }
 
         private void ArcherCost_textbox_TextChanged(object sender, EventArgs e)
@@ -771,7 +787,7 @@ namespace Server
         {
             if (selectedConquest == null) return;
             if (Maps_listbox.SelectedItem != null)
-                selectedConquest.ExtraMaps.Remove(((MapInfo)Maps_listbox.SelectedItem).Index);
+                selectedConquest.ExtraMaps.Remove(((MapInfoTable)Maps_listbox.SelectedItem).Index);
 
             UpdateInterface(); 
         }
@@ -822,7 +838,9 @@ namespace Server
             }
             ActiveControl.BackColor = SystemColors.Window;
 
-            selectedConquest.KingLocation.X = temp;
+            Point kingLocation = selectedConquest.KingLocation;
+            kingLocation.X = temp;
+            selectedConquest.KingLocation = kingLocation;
         }
 
         private void ObLocY_textbox_TextChanged(object sender, EventArgs e)
@@ -839,7 +857,9 @@ namespace Server
             }
             ActiveControl.BackColor = SystemColors.Window;
 
-            selectedConquest.KingLocation.Y = temp;
+            Point kingLocation = selectedConquest.KingLocation;
+            kingLocation.Y = temp;
+            selectedConquest.KingLocation = kingLocation;
         }
 
         private void ObSize_textbox_TextChanged(object sender, EventArgs e)
@@ -903,7 +923,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedSiege.Location.X = temp;
+            Point location = selectedSiege.Location;
+            location.X = temp;
+            selectedSiege.Location = location;
         }
 
         private void SiegeYLoc_textbox_TextChanged(object sender, EventArgs e)
@@ -919,7 +941,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedSiege.Location.Y = temp;
+            Point location = selectedSiege.Location;
+            location.Y = temp;
+            selectedSiege.Location = location;
         }
 
         private void SiegeName_textbox_TextChanged(object sender, EventArgs e)
@@ -950,7 +974,7 @@ namespace Server
             if (selectedConquest == null) return;
             if (ActiveControl != sender) return;
 
-            MonsterInfo temp = (MonsterInfo)SiegeIndex_combo.SelectedItem;
+            MonsterInfoTable temp = (MonsterInfoTable)SiegeIndex_combo.SelectedItem;
             selectedSiege.MobIndex = temp.Index;
         }
 
@@ -986,7 +1010,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedFlag.Location.X = temp;
+            Point location = selectedFlag.Location;
+            location.X = temp;
+            selectedFlag.Location = location;
         }
 
         private void FlagYLoc_textbox_TextChanged(object sender, EventArgs e)
@@ -1002,7 +1028,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedFlag.Location.Y = temp;
+            Point location = selectedFlag.Location;
+            location.Y = temp;
+            selectedFlag.Location = location;
         }
 
         private void FlagName_textbox_TextChanged(object sender, EventArgs e)
@@ -1086,7 +1114,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedControlPoint.Location.X = temp;
+            Point location = selectedControlPoint.Location;
+            location.X = temp;
+            selectedControlPoint.Location = location;
         }
 
         private void ControlYLoc_textbox_TextChanged(object sender, EventArgs e)
@@ -1102,7 +1132,9 @@ namespace Server
                 return;
             }
             ActiveControl.BackColor = SystemColors.Window;
-            selectedControlPoint.Location.Y = temp;
+            Point location = selectedControlPoint.Location;
+            location.Y = temp;
+            selectedControlPoint.Location = location;
         }
 
         private void ControlName_textbox_TextChanged(object sender, EventArgs e)

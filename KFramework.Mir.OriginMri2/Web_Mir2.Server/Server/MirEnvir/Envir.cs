@@ -77,7 +77,7 @@ namespace Server.MirEnvir
         public readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
         public long Time { get; private set; }
-        public RespawnTimer RespawnTick = new RespawnTimer();
+        public RespawnTimerTable RespawnTick = new RespawnTimerTable();
 
         private static List<string> DisabledCharNames = new List<string>();
         private static List<string> LineMessages = new List<string>();
@@ -113,20 +113,20 @@ namespace Server.MirEnvir
 
         //Server DB
         public int MapIndex, ItemIndex, MonsterIndex, NPCIndex, QuestIndex, GameshopIndex, ConquestIndex, RespawnIndex, ScriptIndex;
-        public List<MapInfo> MapInfoList = new List<MapInfo>();
-        public List<ItemInfo> ItemInfoList = new List<ItemInfo>();
-        public List<MonsterInfo> MonsterInfoList = new List<MonsterInfo>();
-        public List<MagicInfo> MagicInfoList = new List<MagicInfo>();
-        public List<NPCInfo> NPCInfoList = new List<NPCInfo>();
+        public List<MapInfoTable> MapInfoList = new List<MapInfoTable>();
+        public List<ItemInfoTable> ItemInfoList = new List<ItemInfoTable>();
+        public List<MonsterInfoTable> MonsterInfoList = new List<MonsterInfoTable>();
+        public List<MagicInfoTable> MagicInfoList = new List<MagicInfoTable>();
+        public List<NPCInfoTable> NPCInfoList = new List<NPCInfoTable>();
 
         /// <summary>mapnpc 表：NPC id → 全部摆放点。由 LoadMapNpcPlacements 从 5config 分片读取。</summary>
         public Dictionary<int, List<NPCPlacement>> MapNpcPlacements = new Dictionary<int, List<NPCPlacement>>();
-        public DragonInfo DragonInfo = new DragonInfo();
-        public List<QuestInfo> QuestInfoList = new List<QuestInfo>();
-        public List<GameShopItem> GameShopList = new List<GameShopItem>();
+        public DragonInfoTable DragonInfoTable = new DragonInfoTable();
+        public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();
+        public List<GameShopItemTable> GameShopList = new List<GameShopItemTable>();
         public List<RecipeInfo> RecipeInfoList = new List<RecipeInfo>();
         public List<BuffInfo> BuffInfoList = new List<BuffInfo>();
-        public List<ConquestInfo> ConquestInfoList = new List<ConquestInfo>();
+        public List<ConquestInfoTable> ConquestInfoList = new List<ConquestInfoTable>();
         public List<GTMap> GTMapList = new List<GTMap>();
 
         //User DB
@@ -146,7 +146,7 @@ namespace Server.MirEnvir
         public bool Saving = false;
         public List<Map> MapList = new List<Map>();
         public List<SafeZoneInfo> StartPoints = new List<SafeZoneInfo>();
-        public List<ItemInfo> StartItems = new List<ItemInfo>();
+        public List<ItemInfoTable> StartItems = new List<ItemInfoTable>();
 
         public List<PlayerObject> Players = new List<PlayerObject>();
         public List<SpellObject> Spells = new List<SpellObject>();
@@ -1049,7 +1049,7 @@ namespace Server.MirEnvir
         {
             try
             {
-                // 本地配置表目录：Web_Mir2.Server.Version/ExcelConfig/（ItemInfo/MonsterInfo/.../Meta 等 *.json）
+                // 本地配置表目录：Web_Mir2.Server.Version/ExcelConfig/（ItemInfoTable/MonsterInfoTable/.../Meta 等 *.json）
                 string baseDir = Settings.ExcelConfigPath;
                 if (!Directory.Exists(baseDir))
                 {
@@ -1072,33 +1072,33 @@ namespace Server.MirEnvir
                     return false;
                 }
 
-                MapInfoList = JsonSerializer.Deserialize<List<MapInfo>>(
-                    NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfo>();
+                MapInfoList = JsonSerializer.Deserialize<List<MapInfoTable>>(
+                    NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfoTable>();
                 // SafeZoneInfo.Info 已 [JsonIgnore]，反序列化后手动挂回所属地图（SetBind 依赖 szi.Info.Index）。
-                foreach (MapInfo mi in MapInfoList)
+                foreach (MapInfoTable mi in MapInfoList)
                     foreach (SafeZoneInfo sz in mi.SafeZones)
                         sz.Info = mi;
-                ItemInfoList = LoadConfigList<ItemInfo>(baseDir, "ItemInfo.json");
-                MonsterInfoList = LoadConfigList<MonsterInfo>(baseDir, "MonsterInfo.json");
-                NPCInfoList = LoadConfigList<NPCInfo>(baseDir, "NPCInfo.json");
+                ItemInfoList = LoadConfigList<ItemInfoTable>(baseDir, "ItemInfo.json");
+                MonsterInfoList = LoadConfigList<MonsterInfoTable>(baseDir, "MonsterInfo.json");
+                NPCInfoList = LoadConfigList<NPCInfoTable>(baseDir, "NPCInfo.json");
                 // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
                 foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
                 // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
                 LoadMapNpcPlacements(baseDir);
-                QuestInfoList = LoadConfigList<QuestInfo>(baseDir, "QuestInfo.json");
-                // JSON 反序列化走无参构造函数，不会触发 QuestInfo.LoadInfo()，
+                QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
+                // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
                 foreach (var quest in QuestInfoList) quest.LoadInfo();
-                DragonInfo = LoadConfig<DragonInfo>(baseDir, "DragonInfo.json");
-                MagicInfoList = LoadConfigList<MagicInfo>(baseDir, "MagicInfo.json");
+                DragonInfoTable = LoadConfig<DragonInfoTable>(baseDir, "DragonInfo.json");
+                MagicInfoList = LoadConfigList<MagicInfoTable>(baseDir, "MagicInfo.json");
                 // 原始传奇技能书映射：物品 id → 技能/目标等级（构建期从 1config.item 导出）。
-                SkillBookInfo.BuildIndex(LoadConfigList<SkillBookInfo>(baseDir, "SkillBookInfo.json"));
+                SkillBookInfoTable.BuildIndex(LoadConfigList<SkillBookInfoTable>(baseDir, "SkillBookInfo.json"));
                 if (LoadVersion >= 63)
-                    GameShopList = LoadConfigList<GameShopItem>(baseDir, "GameShopItem.json");
+                    GameShopList = LoadConfigList<GameShopItemTable>(baseDir, "GameShopItem.json");
                 if (LoadVersion >= 66)
-                    ConquestInfoList = LoadConfigList<ConquestInfo>(baseDir, "ConquestInfo.json");
+                    ConquestInfoList = LoadConfigList<ConquestInfoTable>(baseDir, "ConquestInfo.json");
                 if (LoadVersion > 67)
-                    RespawnTick = LoadConfig<RespawnTimer>(baseDir, "RespawnTimer.json");
+                    RespawnTick = LoadConfig<RespawnTimerTable>(baseDir, "RespawnTimer.json");
 
                 PostLoadDB();
                 return true;
@@ -1130,7 +1130,7 @@ namespace Server.MirEnvir
         /// Condition = 10000 + 学习等级（如 10007 = 7 级）。普通攻击(Condition=10001,Spell=10101)不纳入，
         /// 普攻走引擎 Spell.None=0，不需要作为技能学习。
         /// </summary>
-        public List<MagicInfo> GetLearnableSkills(MirClass playerClass)
+        public List<MagicInfoTable> GetLearnableSkills(MirClass playerClass)
         {
             int cls = playerClass switch
             {
@@ -1139,12 +1139,12 @@ namespace Server.MirEnvir
                 MirClass.Taoist => 3,
                 _ => -1,
             };
-            var result = new List<MagicInfo>();
+            var result = new List<MagicInfoTable>();
             if (cls < 0) return result;
 
             for (int i = 0; i < MagicInfoList.Count; i++)
             {
-                MagicInfo info = MagicInfoList[i];
+                MagicInfoTable info = MagicInfoList[i];
                 if (info == null || info.IsShow != 1 || info.Cls != cls) continue;
                 // condition 10001 = 普通攻击等 1 级无门槛技能，跳过（普攻不占技能栏）。
                 if (info.Condition <= 10001) continue;
@@ -1154,7 +1154,7 @@ namespace Server.MirEnvir
         }
 
         /// <summary>技能学习等级：Condition - 10000（如 10007 → 7），钳制到 [1,255]。</summary>
-        public static int GetLearnLevel(MagicInfo info)
+        public static int GetLearnLevel(MagicInfoTable info)
         {
             if (info == null) return 0;
             int level = info.Condition >= 10000 ? info.Condition - 10000 : info.Condition;
@@ -1162,9 +1162,9 @@ namespace Server.MirEnvir
         }
 
         /// <summary>
-        /// 地图 NPC 摆放来自 NPCInfo.OriginSettings.Placements：构建期 Mir2NPCConverter 已把
+        /// 地图 NPC 摆放来自 NPCInfoTable.OriginSettings.Placements：构建期 Mir2NPCConverter 已把
         /// 5config.mapnpc 的摆放点内嵌到每条 NPC 定义，运行时不再读分片。
-        /// MapInfo.CreateMap 会按 MapId 把每个摆放点挂到对应地图，一个 NPC 定义可生成多个实例。
+        /// MapInfoTable.CreateMap 会按 MapId 把每个摆放点挂到对应地图，一个 NPC 定义可生成多个实例。
         /// </summary>
         private void LoadMapNpcPlacements(string baseDir)
         {
@@ -1184,22 +1184,20 @@ namespace Server.MirEnvir
 
         private sealed class ConfigMeta
         {
-            public int version;
-            public int customVersion;
+            public int version { get; set; }
+            public int customVersion { get; set; }
         }
 
-        // 与 MapInfo 一致：不再使用 ReferenceHandler.Preserve，配置表里禁止出现 $id/$ref/$values 元数据。
+        // 与 MapInfoTable 一致：不再使用 ReferenceHandler.Preserve，配置表里禁止出现 $id/$ref/$values 元数据。
         private static readonly JsonSerializerOptions JsonConfigOptions = new JsonSerializerOptions
         {
-            IncludeFields = true,
             TypeInfoResolver = new JsonConfigResolver(),
         };
 
-        // MapInfo 不再使用 ReferenceHandler.Preserve：SafeZoneInfo.Info 已用 [JsonIgnore] 排除，
+        // MapInfoTable 不再使用 ReferenceHandler.Preserve：SafeZoneInfo.Info 已用 [JsonIgnore] 排除，
         // 因此文件里不再出现 $id/$ref/$values 元数据（编辑器曾误把 $id 写成数字导致加载失败）。
         private static readonly JsonSerializerOptions MapInfoJsonOptions = new JsonSerializerOptions
         {
-            IncludeFields = true,
             TypeInfoResolver = new JsonConfigResolver(),
         };
 
@@ -1685,9 +1683,9 @@ namespace Server.MirEnvir
             LoadDisabledChars();
             LoadLineMessages();
 
-            if (DragonInfo.Enabled)
+            if (DragonInfoTable.Enabled)
             {
-                DragonSystem = new Dragon(DragonInfo);
+                DragonSystem = new Dragon(DragonInfoTable);
                 if (DragonSystem != null)
                 {
                     if (DragonSystem.Load()) DragonSystem.Info.LoadDrops();
@@ -2635,28 +2633,28 @@ namespace Server.MirEnvir
         }
         public void CreateMapInfo()
         {
-            MapInfoList.Add(new MapInfo { Index = ++MapIndex });
+            MapInfoList.Add(new MapInfoTable { Index = ++MapIndex });
         }
         public void CreateItemInfo(ItemType type = ItemType.Nothing)
         {
-            ItemInfoList.Add(new ItemInfo { Index = ++ItemIndex, Type = type, RandomStatsId = 255 });
+            ItemInfoList.Add(new ItemInfoTable { Index = ++ItemIndex, Type = type, RandomStatsId = 255 });
         }
         public void CreateMonsterInfo()
         {
-            MonsterInfoList.Add(new MonsterInfo { Index = ++MonsterIndex });
+            MonsterInfoList.Add(new MonsterInfoTable { Index = ++MonsterIndex });
         }
         public void CreateNPCInfo()
         {
-            NPCInfoList.Add(new NPCInfo { Index = ++NPCIndex });
+            NPCInfoList.Add(new NPCInfoTable { Index = ++NPCIndex });
         }
         public void CreateQuestInfo()
         {
-            QuestInfoList.Add(new QuestInfo { Index = ++QuestIndex });
+            QuestInfoList.Add(new QuestInfoTable { Index = ++QuestIndex });
         }
 
-        public void AddToGameShop(ItemInfo Info)
+        public void AddToGameShop(ItemInfoTable Info)
         {
-            GameShopList.Add(new GameShopItem
+            GameShopList.Add(new GameShopItemTable
             {
                 GIndex = ++GameshopIndex,
                 GoldPrice = (uint)(1000 * Settings.CredxGold),
@@ -2669,32 +2667,32 @@ namespace Server.MirEnvir
             });
         }
 
-        public void Remove(MapInfo info)
+        public void Remove(MapInfoTable info)
         {
             MapInfoList.Remove(info);
             //Desync all objects\
         }
-        public void Remove(ItemInfo info)
+        public void Remove(ItemInfoTable info)
         {
             ItemInfoList.Remove(info);
         }
-        public void Remove(MonsterInfo info)
+        public void Remove(MonsterInfoTable info)
         {
             MonsterInfoList.Remove(info);
             //Desync all objects\
         }
-        public void Remove(NPCInfo info)
+        public void Remove(NPCInfoTable info)
         {
             NPCInfoList.Remove(info);
             //Desync all objects\
         }
-        public void Remove(QuestInfo info)
+        public void Remove(QuestInfoTable info)
         {
             QuestInfoList.Remove(info);
             //Desync all objects\
         }
 
-        public void Remove(GameShopItem info)
+        public void Remove(GameShopItemTable info)
         {
             GameShopList.Remove(info);
 
@@ -2706,7 +2704,7 @@ namespace Server.MirEnvir
             //Desync all objects\
         }
 
-        public UserItem CreateFreshItem(ItemInfo info)
+        public UserItem CreateFreshItem(ItemInfoTable info)
         {
             var item = new UserItem(info)
             {
@@ -2723,7 +2721,7 @@ namespace Server.MirEnvir
         {
             return CreateDropItem(GetItemInfo(index));
         }
-        public UserItem CreateDropItem(ItemInfo info)
+        public UserItem CreateDropItem(ItemInfoTable info)
         {
             if (info == null) return null;
 
@@ -2742,7 +2740,7 @@ namespace Server.MirEnvir
             return item;
         }
 
-        public UserItem CreateShopItem(ItemInfo info, ulong id)
+        public UserItem CreateShopItem(ItemInfoTable info, ulong id)
         {
             if (info == null) return null;
 
@@ -2866,7 +2864,7 @@ namespace Server.MirEnvir
             return false;
         }
 
-        public bool BindGameShop(GameShopItem item, bool editEnvir = true)
+        public bool BindGameShop(GameShopItemTable item, bool editEnvir = true)
         {
             for (var i = 0; i < Edit.ItemInfoList.Count; i++)
             {
@@ -2918,7 +2916,7 @@ namespace Server.MirEnvir
             return MapList.FirstOrDefault(t => t.Info.Title.StartsWith(name, StringComparison.CurrentCultureIgnoreCase) && t.Info.BigMap > 0);
         }
 
-        public MapInfo GetMapInfo(int index)
+        public MapInfoTable GetMapInfo(int index)
         {
             return MapInfoList.FirstOrDefault(t => t.Index == index);
         }
@@ -2942,7 +2940,7 @@ namespace Server.MirEnvir
             return Objects.Where(x => x.CurrentMapIndex == map && x.Race == race).ToList();
         }
 
-        public MonsterInfo GetMonsterInfo(int index)
+        public MonsterInfoTable GetMonsterInfo(int index)
         {
             for (var i = 0; i < MonsterInfoList.Count; i++)
                 if (MonsterInfoList[i].Index == index) return MonsterInfoList[i];
@@ -2950,7 +2948,7 @@ namespace Server.MirEnvir
             return null;
         }
 
-        public NPCInfo GetNPCInfo(int index)
+        public NPCInfoTable GetNPCInfo(int index)
         {
             for (var i = 0; i < NPCInfoList.Count; i++)
             {
@@ -2961,7 +2959,7 @@ namespace Server.MirEnvir
             return null;
         }
 
-        public MonsterInfo GetMonsterInfo(int ai, int effect = -1)
+        public MonsterInfoTable GetMonsterInfo(int ai, int effect = -1)
         {
             for (var i = 0; i < MonsterInfoList.Count; i++)
                 if (MonsterInfoList[i].AI == ai && (MonsterInfoList[i].Effect == effect || effect < 0)) return MonsterInfoList[i];
@@ -2979,7 +2977,7 @@ namespace Server.MirEnvir
             return MapList.SelectMany(t1 => t1.NPCs.Where(t => t.Info.GameName.StartsWith(name, StringComparison.CurrentCultureIgnoreCase) && t.Info.ShowOnBigMap)).FirstOrDefault();
         }
 
-        public MonsterInfo GetMonsterInfo(int id, bool strict = false)
+        public MonsterInfoTable GetMonsterInfo(int id, bool strict = false)
         {
             String monsterName = MonsterInfoList.FirstOrDefault(x => x.Index == id)?.Name;
 
@@ -2993,7 +2991,7 @@ namespace Server.MirEnvir
             }
         }
 
-        public MonsterInfo GetMonsterInfo(string name, bool Strict = false)
+        public MonsterInfoTable GetMonsterInfo(string name, bool Strict = false)
         {
             for (var i = 0; i < MonsterInfoList.Count; i++)
             {
@@ -3050,7 +3048,7 @@ namespace Server.MirEnvir
             return HeroList.FirstOrDefault(x => x.Index == index);
         }
 
-        public ItemInfo GetItemInfo(int index)
+        public ItemInfoTable GetItemInfo(int index)
         {
             for (var i = 0; i < ItemInfoList.Count; i++)
             {
@@ -3061,7 +3059,7 @@ namespace Server.MirEnvir
             return null;
         }
 
-        public ItemInfo GetItemInfo(string name)
+        public ItemInfoTable GetItemInfo(string name)
         {
             for (var i = 0; i < ItemInfoList.Count; i++)
             {
@@ -3072,12 +3070,12 @@ namespace Server.MirEnvir
             return null;
         }
 
-        public QuestInfo GetQuestInfo(int index)
+        public QuestInfoTable GetQuestInfo(int index)
         {
             return QuestInfoList.FirstOrDefault(info => info.Index == index);
         }
 
-        public ItemInfo GetBook(short Skill)
+        public ItemInfoTable GetBook(short Skill)
         {
             for (var i = 0; i < ItemInfoList.Count; i++)
             {
@@ -3800,7 +3798,7 @@ namespace Server.MirEnvir
         {
             foreach (WorldMapIcon wmi in Settings.WorldMapSetup.Icons)
             {
-                MapInfo info = GetMapInfo(wmi.MapIndex);
+                MapInfoTable info = GetMapInfo(wmi.MapIndex);
 
                 if (info == null)
                     return wmi;

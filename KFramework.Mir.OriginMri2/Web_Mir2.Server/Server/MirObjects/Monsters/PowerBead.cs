@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
         public bool Summoned;
 
-        protected internal PowerBead(MonsterInfo info)
+        protected internal PowerBead(MonsterInfoTable info)
             : base(info)
         {
         }

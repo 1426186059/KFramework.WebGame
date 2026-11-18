@@ -33,14 +33,14 @@ using System.Drawing;
             }
         }
 
-        public void SetDrops(List<ItemInfo> items)
+        public void SetDrops(List<ItemInfoTable> items)
         {
             if (DropsSet) return;
             for (int i = 0; i < Drops.Count; i++)
             {
                 for (int j = 0; j < items.Count; j++)
                 {
-                    ItemInfo info = items[j];
+                    ItemInfoTable info = items[j];
                     if (String.Compare(info.Name.Replace(" ", ""), Drops[i].ItemName, StringComparison.OrdinalIgnoreCase) != 0) continue;
                     Drops[i].Item = info;
                     break;
@@ -60,7 +60,7 @@ using System.Drawing;
     public class MineDrop
     {
         public string ItemName;
-        public ItemInfo Item;
+        public ItemInfoTable Item;
         public byte MinSlot = 0;
         public byte MaxSlot = 0;
         public byte MinDura = 1;
@@ -71,9 +71,9 @@ using System.Drawing;
 
     public class MineZone
     {
-        public byte Mine;
-        public Point Location;
-        public ushort Size;
+        public byte Mine { get; set; }
+        public Point Location { get; set; }
+        public ushort Size { get; set; }
 
         public MineZone()
         {

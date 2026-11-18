@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using S = ServerPackets;
 
@@ -24,7 +24,7 @@ namespace Server.MirObjects.Monsters
             get { return false; }
         }
 
-        protected internal Guard(MonsterInfo info)
+        protected internal Guard(MonsterInfoTable info)
             : base(info)
         {
             NameColour = Color.SkyBlue;

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -11,7 +11,7 @@ namespace Server
 
         public Envir Envir => SMain.EditEnvir;
 
-        private List<NPCInfo> _selectedNPCInfos;
+        private List<NPCInfoTable> _selectedNPCInfos;
 
         public NPCInfoForm()
         {
@@ -56,7 +56,7 @@ namespace Server
 
         private void UpdateInterface()
         {
-            _selectedNPCInfos = NPCInfoListBox.SelectedItems.Cast<NPCInfo>().ToList();
+            _selectedNPCInfos = NPCInfoListBox.SelectedItems.Cast<NPCInfoTable>().ToList();
 
             if (_selectedNPCInfos.Count == 0)
             {
@@ -64,7 +64,7 @@ namespace Server
                 return;
             }
 
-            NPCInfo info = _selectedNPCInfos[0];
+            NPCInfoTable info = _selectedNPCInfos[0];
 
             tabPage1.Enabled = true;
             tabPage2.Enabled = true;
@@ -144,7 +144,7 @@ namespace Server
         {
             if (_selectedNPCInfos.Count > 0)
             {
-                NPCInfo info = _selectedNPCInfos[0];
+                NPCInfoTable info = _selectedNPCInfos[0];
                 LoadImage(info.Image);
             }
             else
@@ -203,7 +203,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedNPCInfos.Count; i++)
-                _selectedNPCInfos[i].Location.X = temp;
+            {
+                Point location = _selectedNPCInfos[i].Location;
+                location.X = temp;
+                _selectedNPCInfos[i].Location = location;
+            }
 
             RefreshNPCList();
         }
@@ -222,7 +226,11 @@ namespace Server
 
 
             for (int i = 0; i < _selectedNPCInfos.Count; i++)
-                _selectedNPCInfos[i].Location.Y = temp;
+            {
+                Point location = _selectedNPCInfos[i].Location;
+                location.Y = temp;
+                _selectedNPCInfos[i].Location = location;
+            }
 
             RefreshNPCList();
         }
@@ -269,7 +277,7 @@ namespace Server
 
             for (int i = 0; i < _selectedNPCInfos.Count; i++)
             {
-                MapInfo temp = (MapInfo)MapComboBox.SelectedItem;
+                MapInfoTable temp = (MapInfoTable)MapComboBox.SelectedItem;
                 _selectedNPCInfos[i].MapIndex = temp.Index;
             }
 
@@ -297,7 +305,7 @@ namespace Server
 
 
             //for (int i = 1; i < npcs.Length; i++)
-            //    NPCInfo.FromText(npcs[i]);
+            //    NPCInfoTable.FromText(npcs[i]);
 
             UpdateInterface();
         }
@@ -309,12 +317,12 @@ namespace Server
 
         private void ExportSelected_Click(object sender, EventArgs e)
         {
-            var list = NPCInfoListBox.SelectedItems.Cast<NPCInfo>().ToList();
+            var list = NPCInfoListBox.SelectedItems.Cast<NPCInfoTable>().ToList();
 
             ExportNPCs(list);
         }
 
-        public void ExportNPCs(List<NPCInfo> NPCs)
+        public void ExportNPCs(List<NPCInfoTable> NPCs)
         {
             if (NPCs.Count == 0) return;
 
@@ -354,7 +362,7 @@ namespace Server
             {
                 try
                 {
-                    NPCInfo.FromText(m);
+                    NPCInfoTable.FromText(m);
                 }
                 catch { }
             }
@@ -572,7 +580,7 @@ namespace Server
 
             int conquestIndex = 0;
 
-            if (ConquestHidden_combo.SelectedItem is ConquestInfo conquestInfo)
+            if (ConquestHidden_combo.SelectedItem is ConquestInfoTable conquestInfo)
             {
                 conquestIndex = conquestInfo.Index;
             }

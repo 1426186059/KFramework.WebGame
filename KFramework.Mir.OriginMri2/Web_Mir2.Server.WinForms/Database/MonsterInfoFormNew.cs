@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using Server.MirDatabase;
@@ -136,7 +136,7 @@ namespace Server.Database
                 Table.Columns.Add(col.DataPropertyName, col.ValueType);
             }
 
-            foreach (MirDatabase.MonsterInfo item in Envir.MonsterInfoList)
+            foreach (MirDatabase.MonsterInfoTable item in Envir.MonsterInfoList)
             {
                 DataRow row = Table.NewRow();
 
@@ -208,11 +208,11 @@ namespace Server.Database
                     continue;
                 }
 
-                MonsterInfo monster;
+                MonsterInfoTable monster;
 
                 if (string.IsNullOrEmpty((string)row.Cells["MonsterIndex"].FormattedValue))
                 {
-                    Envir.MonsterInfoList.Add(monster = new MonsterInfo());
+                    Envir.MonsterInfoList.Add(monster = new MonsterInfoTable());
 
                     monster.Index = ++lastIndex;
                 }

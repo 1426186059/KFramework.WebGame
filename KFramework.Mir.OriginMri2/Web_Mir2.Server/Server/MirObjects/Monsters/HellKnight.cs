@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         public bool Summoned;
         public HellLord Lord;
 
-        protected internal HellKnight(MonsterInfo info)
+        protected internal HellKnight(MonsterInfoTable info)
             : base(info)
         {
         }

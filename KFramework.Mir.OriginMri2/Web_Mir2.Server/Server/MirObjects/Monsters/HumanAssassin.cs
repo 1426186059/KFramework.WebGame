@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -15,7 +15,7 @@ namespace Server.MirObjects.Monsters
         public bool Summoned;
         public long ExplosionTime;
 
-        protected internal HumanAssassin(MonsterInfo info)
+        protected internal HumanAssassin(MonsterInfoTable info)
             : base(info)
         {
             ExplosionTime = Envir.Time + 1000 * 10;

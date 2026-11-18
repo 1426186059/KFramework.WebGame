@@ -1,4 +1,4 @@
-﻿// 浏览器 WASM（AOT/裁剪）构建没有反射元数据，基于反射的 System.Text.Json 会抛
+// 浏览器 WASM（AOT/裁剪）构建没有反射元数据，基于反射的 System.Text.Json 会抛
 // JsonSerializerIsReflectionDisabled。因此所有 (反)序列化都走【源生成】的 AppJsonContext，
 // 并通过 KFramework.MonoGame.JsonTool 这个静态工具类统一入口（传入 JsonTypeInfo<T>，
 // 由编译期生成代码完成，不碰反射）。
@@ -23,10 +23,11 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(Dictionary<string, SoundNormalTable>))]
 [JsonSerializable(typeof(Dictionary<string, Dictionary<string, SoundNormalTable>>))]
 [JsonSerializable(typeof(OriginMir2Config5))]
-// 物品表 ItemInfo（顶层数组）：GM 面板等需要全量物品时直接反序列化整张表。
-[JsonSerializable(typeof(ItemTableDTO))]
-[JsonSerializable(typeof(List<ItemTableDTO>), TypeInfoPropertyName = "ItemList")]
-// 怪物表 MonsterInfo（顶层数组）：MonsterObject 取怪物专属音效等配置。
+// 物品表 ItemInfoTable（顶层数组）：GM 面板、origin 渲染查模型号等需要全量物品时直接反序列化整张表。
+// 统一用客户端 ItemInfoTable 类（OriginModel 列也在其中），不再有单独的 ItemTableDTO。
+[JsonSerializable(typeof(ItemInfoTable))]
+[JsonSerializable(typeof(List<ItemInfoTable>), TypeInfoPropertyName = "ItemInfoTableList")]
+// 怪物表 MonsterInfoTable（顶层数组）：MonsterObject 取怪物专属音效等配置。
 [JsonSerializable(typeof(MonsterInfoTable))]
 [JsonSerializable(typeof(List<MonsterInfoTable>), TypeInfoPropertyName = "MonsterInfoList")]
 [JsonSerializable(typeof(MonsterDropSettingTable))]

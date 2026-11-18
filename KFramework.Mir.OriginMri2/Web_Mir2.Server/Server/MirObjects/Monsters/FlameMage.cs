@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     {
         public long FearTime;
 
-        protected internal FlameMage(MonsterInfo info)
+        protected internal FlameMage(MonsterInfoTable info)
             : base(info)
         {
         }

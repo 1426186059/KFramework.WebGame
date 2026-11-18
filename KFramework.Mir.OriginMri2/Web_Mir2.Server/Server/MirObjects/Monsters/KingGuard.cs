@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -17,7 +17,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal KingGuard(MonsterInfo info)
+        protected internal KingGuard(MonsterInfoTable info)
             : base(info)
         {
         }

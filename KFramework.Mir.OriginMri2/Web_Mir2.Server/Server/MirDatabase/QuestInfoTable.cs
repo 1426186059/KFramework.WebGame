@@ -8,53 +8,72 @@ namespace Server.MirDatabase
     // 原始传奇任务内嵌配置：非 null 表示任务内容直接来自配置表，不走 Envir/Quests/*.txt。
     public class QuestOriginSettings
     {
-        public int OriginTaskId;
-        public string Source = "";
+        public int OriginTaskId { get; set; }
+        public string Source { get; set; } = "";
 
-        public int StartNpcId, FinishNpcId;
-        public string StartNpcName = "", FinishNpcName = "";
-        public int NextQuestId, RequiredQuestId;
+        public int StartNpcId { get; set; }
+        public int FinishNpcId { get; set; }
+        public string StartNpcName { get; set; } = "";
+        public string FinishNpcName { get; set; } = "";
+        public int NextQuestId { get; set; }
+        public int RequiredQuestId { get; set; }
 
-        public int TaskGroupId, OriginalType;
-        public string Condition = "", ConditionText = "";
+        public int TaskGroupId { get; set; }
+        public int OriginalType { get; set; }
+        public string Condition { get; set; } = "";
+        public string ConditionText { get; set; } = "";
 
-        public string Rewards = "", RewardText = "", Tip3 = "", CompleteInfo = "";
+        public string Rewards { get; set; } = "";
+        public string RewardText { get; set; } = "";
+        public string Tip3 { get; set; } = "";
+        public string CompleteInfo { get; set; } = "";
 
-        public int GoalId, GoalType, GoalCount, GoalMapId, GoalX, GoalY;
-        public string GoalInfo = "", GoalParams = "";
-        public bool GoalMultiTarget;
+        public int GoalId { get; set; }
+        public int GoalType { get; set; }
+        public int GoalCount { get; set; }
+        public int GoalMapId { get; set; }
+        public int GoalX { get; set; }
+        public int GoalY { get; set; }
+        public string GoalInfo { get; set; } = "";
+        public string GoalParams { get; set; } = "";
+        public bool GoalMultiTarget { get; set; }
 
-        // 按 Index 精确引用，服务器启动时解析成 ItemInfo / MonsterInfo，避开按名字查找重名的问题。
-        public List<QuestOriginReward> FixedRewards = new List<QuestOriginReward>();
-        public List<QuestOriginKill> KillTasks = new List<QuestOriginKill>();
+        // 按 Index 精确引用，服务器启动时解析成 ItemInfoTable / MonsterInfoTable，避开按名字查找重名的问题。
+        public List<QuestOriginReward> FixedRewards { get; set; } = new List<QuestOriginReward>();
+        public List<QuestOriginKill> KillTasks { get; set; } = new List<QuestOriginKill>();
 
         // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本。
-        public QuestOriginAlternate Alternate;
+        public QuestOriginAlternate Alternate { get; set; }
     }
 
     public class QuestOriginReward
     {
-        public int ItemIndex;
-        public uint Count;
-        public string ItemName = "";
-        public bool ItemResolved;
+        public int ItemIndex { get; set; }
+        public uint Count { get; set; }
+        public string ItemName { get; set; } = "";
+        public bool ItemResolved { get; set; }
     }
 
     public class QuestOriginKill
     {
-        public int MonsterIndex;
-        public int Count;
-        public string MonsterName = "";
-        public bool MonsterResolved;
+        public int MonsterIndex { get; set; }
+        public int Count { get; set; }
+        public string MonsterName { get; set; } = "";
+        public bool MonsterResolved { get; set; }
     }
 
     public class QuestOriginAlternate
     {
-        public string Name = "", Tip3 = "", RewardText = "", CompleteInfo = "", Rewards = "";
-        public int StartNpcId, FinishNpcId;
+        public string Name { get; set; } = "";
+        public string Tip3 { get; set; } = "";
+        public string RewardText { get; set; } = "";
+        public string CompleteInfo { get; set; } = "";
+        public string Rewards { get; set; } = "";
+        public int StartNpcId { get; set; }
+        public int FinishNpcId { get; set; }
     }
 
-    public class QuestInfo
+    public class QuestInfoTable
     {
         protected static Envir Envir
         {
@@ -71,20 +90,20 @@ namespace Server.MirDatabase
             get { return MessageQueue.Instance; }
         }
 
-        public int Index;
+        public int Index { get; set; }
 
         // 旧表没有该字段（反序列化为 null），继续走 FileName 指向的 Envir/Quests/*.txt 脚本。
-        public QuestOriginSettings OriginSettings;
+        public QuestOriginSettings OriginSettings { get; set; }
 
         // 发放（起始）NPC 索引。
         // 注意：此字段由发放 NPC 在加载其脚本 [Quests] 段时自动回填
         // （见 NPCScript.ParseQuests：正数任务索引 -> info.NpcIndex = LoadedObjectID），
-        // 对应 NPCInfo 中声明的接取任务索引。
+        // 对应 NPCInfoTable 中声明的接取任务索引。
         // 因此不要在 QuestInfo.json 里手动维护本字段，它会在运行时被自动填充。
         // 该字段仅存在于运行期，不参与 JSON 序列化（避免写入无意义的 0 或被误改）。
         [JsonIgnore]
         public uint NpcIndex;
-        public NPCInfo NpcInfo;
+        public NPCInfoTable NpcInfo;
 
         private uint _finishNpcIndex;
 
@@ -102,49 +121,50 @@ namespace Server.MirDatabase
             }
         }
 
-        public string
-            Name = string.Empty,
-            Group = string.Empty,
-            FileName = string.Empty,
-            GotoMessage = string.Empty,
-            KillMessage = string.Empty,
-            ItemMessage = string.Empty,
-            FlagMessage = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Group { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
+        public string GotoMessage { get; set; } = string.Empty;
+        public string KillMessage { get; set; } = string.Empty;
+        public string ItemMessage { get; set; } = string.Empty;
+        public string FlagMessage { get; set; } = string.Empty;
 
-        public List<string> Description = new List<string>();
-        public List<string> TaskDescription = new List<string>();
-        public List<string> ReturnDescription = new List<string>();
-        public List<string> CompletionDescription = new List<string>();
+        public List<string> Description { get; set; } = new List<string>();
+        public List<string> TaskDescription { get; set; } = new List<string>();
+        public List<string> ReturnDescription { get; set; } = new List<string>();
+        public List<string> CompletionDescription { get; set; } = new List<string>();
         // 玩家任务台词：NPC 说完（Description / @NPC_TASK_TALK）后，玩家自动回复的话语（@PLAYER_TASK_TALK），形成一问一答。
-        public List<string> PlayerTaskTalk = new List<string>();
+        public List<string> PlayerTaskTalk { get; set; } = new List<string>();
 
-        public int RequiredMinLevel, RequiredMaxLevel, RequiredQuest;
-        public RequiredClass RequiredClass = RequiredClass.None;
+        public int RequiredMinLevel { get; set; }
+        public int RequiredMaxLevel { get; set; }
+        public int RequiredQuest { get; set; }
+        public RequiredClass RequiredClass { get; set; } = RequiredClass.None;
 
-        public QuestType Type;
+        public QuestType Type { get; set; }
 
-        public int TimeLimitInSeconds = 0;
+        public int TimeLimitInSeconds { get; set; } = 0;
 
-        public List<QuestItemTask> CarryItems = new List<QuestItemTask>();
+        public List<QuestItemTask> CarryItems { get; set; } = new List<QuestItemTask>();
 
-        public List<QuestKillTask> KillTasks = new List<QuestKillTask>();
-        public List<QuestItemTask> ItemTasks = new List<QuestItemTask>();
-        public List<QuestFlagTask> FlagTasks = new List<QuestFlagTask>();
+        public List<QuestKillTask> KillTasks { get; set; } = new List<QuestKillTask>();
+        public List<QuestItemTask> ItemTasks { get; set; } = new List<QuestItemTask>();
+        public List<QuestFlagTask> FlagTasks { get; set; } = new List<QuestFlagTask>();
         //TODO: ZoneTasks
         //TODO: EscortTasks
 
-        public uint GoldReward;
-        public uint ExpReward;
-        public uint CreditReward;
-        public List<QuestItemReward> FixedRewards = new List<QuestItemReward>();
-        public List<QuestItemReward> SelectRewards = new List<QuestItemReward>();
+        public uint GoldReward { get; set; }
+        public uint ExpReward { get; set; }
+        public uint CreditReward { get; set; }
+        public List<QuestItemReward> FixedRewards { get; set; } = new List<QuestItemReward>();
+        public List<QuestItemReward> SelectRewards { get; set; } = new List<QuestItemReward>();
 
         private Regex _regexMessage = new Regex("\"([^\"]*)\"");
 
 
-        public QuestInfo() { }
+        public QuestInfoTable() { }
 
-        public QuestInfo(BinaryReader reader)
+        public QuestInfoTable(BinaryReader reader)
         {
             Index = reader.ReadInt32();
             Name = reader.ReadString();
@@ -257,7 +277,7 @@ namespace Server.MirDatabase
             {
                 foreach (var r in o.FixedRewards)
                 {
-                    ItemInfo item = Envir.GetItemInfo(r.ItemIndex);
+                    ItemInfoTable item = Envir.GetItemInfo(r.ItemIndex);
                     if (item == null) continue;
 
                     FixedRewards.Add(new QuestItemReward
@@ -272,7 +292,7 @@ namespace Server.MirDatabase
             {
                 foreach (var k in o.KillTasks)
                 {
-                    MonsterInfo monster = Envir.GetMonsterInfo(k.MonsterIndex);
+                    MonsterInfoTable monster = Envir.GetMonsterInfo(k.MonsterIndex);
                     if (monster == null) continue;
 
                     KillTasks.Add(new QuestKillTask { Monster = monster, Count = k.Count, Message = "" });
@@ -380,13 +400,16 @@ namespace Server.MirDatabase
                                     break;
                                 }
                             case expRewardKey:
-                                uint.TryParse(innerLine, out ExpReward);
+                                uint.TryParse(innerLine, out uint expReward);
+                                ExpReward = expReward;
                                 break;
                             case goldRewardKey:
-                                uint.TryParse(innerLine, out GoldReward);
+                                uint.TryParse(innerLine, out uint goldReward);
+                                GoldReward = goldReward;
                                 break;
                             case creditRewardKey:
-                                uint.TryParse(innerLine, out CreditReward);
+                                uint.TryParse(innerLine, out uint creditReward);
+                                CreditReward = creditReward;
                                 break;
                         }
                     }
@@ -405,7 +428,7 @@ namespace Server.MirDatabase
 
             if (split.Length > 1) ushort.TryParse(split[1], out count);
 
-            ItemInfo mInfo = Envir.GetItemInfo(split[0]);
+            ItemInfoTable mInfo = Envir.GetItemInfo(split[0]);
 
             if (mInfo == null)
             {
@@ -429,7 +452,7 @@ namespace Server.MirDatabase
             int count = 1;
             string message = "";
 
-            MonsterInfo mInfo = Envir.GetMonsterInfo(split[0]);
+            MonsterInfoTable mInfo = Envir.GetMonsterInfo(split[0]);
             if (split.Length > 1) int.TryParse(split[1], out count);
 
             var match = _regexMessage.Match(line);
@@ -449,7 +472,7 @@ namespace Server.MirDatabase
             ushort count = 1;
             string message = "";
 
-            ItemInfo mInfo = Envir.GetItemInfo(split[0]);
+            ItemInfoTable mInfo = Envir.GetItemInfo(split[0]);
             if (split.Length > 1) ushort.TryParse(split[1], out count);
 
             var match = _regexMessage.Match(line);
@@ -607,7 +630,7 @@ namespace Server.MirDatabase
             string[] data = text.Split(new[] { ',' });
 
             if (data.Length < 10) return;
-            QuestInfo info;
+            QuestInfoTable info;
             bool isNew = false;
             if (!int.TryParse(data[0], out var index))
             {
@@ -615,7 +638,7 @@ namespace Server.MirDatabase
             }
             if (index == -1 || (info = EditEnvir.QuestInfoList.FirstOrDefault(it => it.Index == index)) == null)
             {
-                info = new QuestInfo() { Index = ++EditEnvir.QuestIndex };
+                info = new QuestInfoTable() { Index = ++EditEnvir.QuestIndex };
                 isNew = true;
 
             }
@@ -634,9 +657,12 @@ namespace Server.MirDatabase
             info.ItemMessage = data[7];
             info.FlagMessage = data[8];
 
-            int.TryParse(data[9], out info.RequiredMinLevel);
-            int.TryParse(data[10], out info.RequiredMaxLevel);
-            int.TryParse(data[11], out info.RequiredQuest);
+            int.TryParse(data[9], out int requiredMinLevel);
+            int.TryParse(data[10], out int requiredMaxLevel);
+            int.TryParse(data[11], out int requiredQuest);
+            info.RequiredMinLevel = requiredMinLevel;
+            info.RequiredMaxLevel = requiredMaxLevel;
+            info.RequiredQuest = requiredQuest;
 
             byte.TryParse(data[12], out temp);
 
@@ -659,21 +685,21 @@ namespace Server.MirDatabase
 
     public class QuestKillTask
     {
-        public MonsterInfo Monster;
-        public int Count;
-        public string Message;
+        public MonsterInfoTable Monster { get; set; }
+        public int Count { get; set; }
+        public string Message { get; set; }
     }
 
     public class QuestItemTask
     {
-        public ItemInfo Item;
-        public ushort Count;
-        public string Message;
+        public ItemInfoTable Item { get; set; }
+        public ushort Count { get; set; }
+        public string Message { get; set; }
     }
 
     public class QuestFlagTask
     {
-        public int Number;
-        public string Message;
+        public int Number { get; set; }
+        public string Message { get; set; }
     }
 }

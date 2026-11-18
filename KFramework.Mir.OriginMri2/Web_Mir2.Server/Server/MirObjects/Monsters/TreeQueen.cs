@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -24,7 +24,7 @@ namespace Server.MirObjects.Monsters
         private readonly int _nearMultiplier = 4;
         private bool _notNear = true;
 
-        protected internal TreeQueen(MonsterInfo info)
+        protected internal TreeQueen(MonsterInfoTable info)
             : base(info)
         {
             Direction = MirDirection.Up;

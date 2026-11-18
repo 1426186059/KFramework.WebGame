@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         public byte AttackRange = 7;
         public byte _stage = 3;
 
-        protected internal BoneLord(MonsterInfo info)
+        protected internal BoneLord(MonsterInfoTable info)
             : base(info)
         {
         }

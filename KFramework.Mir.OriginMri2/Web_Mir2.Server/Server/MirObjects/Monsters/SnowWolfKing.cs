@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
         private bool _SpawnedSlaves;
 
-        protected internal SnowWolfKing(MonsterInfo info)
+        protected internal SnowWolfKing(MonsterInfoTable info)
             : base(info)
         {
         }

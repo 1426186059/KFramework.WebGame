@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -9,7 +9,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class OmaWitchDoctor : MonsterObject
     {
-        protected internal OmaWitchDoctor(MonsterInfo info)
+        protected internal OmaWitchDoctor(MonsterInfoTable info)
             : base(info)
         {
         }

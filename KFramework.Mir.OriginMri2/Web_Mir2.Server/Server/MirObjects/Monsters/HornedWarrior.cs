@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         private long _ShieldTime;
         protected byte AttackRange = 4;
 
-        protected internal HornedWarrior(MonsterInfo info)
+        protected internal HornedWarrior(MonsterInfoTable info)
             : base(info)
         {       
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
     {
         public override byte TeleportEffect { get { return 7; } }
 
-        protected internal Mandrill(MonsterInfo info)
+        protected internal Mandrill(MonsterInfoTable info)
             : base(info)
         {
         }

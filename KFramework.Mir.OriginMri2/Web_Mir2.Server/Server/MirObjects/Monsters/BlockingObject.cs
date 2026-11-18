@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         public MonsterObject Parent;
         public bool Visible;
 
-        protected internal BlockingObject(MonsterObject parent, MonsterInfo info) : base(info)
+        protected internal BlockingObject(MonsterObject parent, MonsterInfoTable info) : base(info)
         {
             Parent = parent;
             Visible = true;

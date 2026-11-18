@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -44,7 +44,7 @@ namespace Server.MirObjects.Monsters
         }
         protected override bool CanMove { get { return false; } }
 
-        protected internal EvilMir(MonsterInfo info)
+        protected internal EvilMir(MonsterInfoTable info)
             : base(info)
         {
             Direction = MirDirection.Up;

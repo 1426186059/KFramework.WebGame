@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 
 namespace ServerPackets
@@ -1301,11 +1301,11 @@ namespace ServerPackets
 
         public override bool Observable => false;
 
-        public ItemInfo Info;
+        public ItemInfoTable Info;
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Info = new ItemInfo(reader);
+            Info = new ItemInfoTable(reader);
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -2956,7 +2956,7 @@ namespace ServerPackets
         public MirDirection Direction;
         public List<int> QuestIDs = new List<int>();
 
-        /// <summary>原始页游 NPC 显示缩放（NPCInfo.OriginSettings.ScalePercent / 100，默认 1）。客户端按此倍率绘制。</summary>
+        /// <summary>原始页游 NPC 显示缩放（NPCInfoTable.OriginSettings.ScalePercent / 100，默认 1）。客户端按此倍率绘制。</summary>
         public float Scale = 1f;
 
         protected override void ReadPacket(BinaryReader reader)
@@ -5464,12 +5464,12 @@ namespace ServerPackets
             get { return (short)ServerPacketIds.GameShopInfo; }
         }
 
-        public GameShopItem Item;
+        public GameShopItemTable Item;
         public int StockLevel;
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Item = new GameShopItem(reader, true);
+            Item = new GameShopItemTable(reader, true);
             StockLevel = reader.ReadInt32();
         }
 
@@ -5922,7 +5922,7 @@ namespace ServerPackets
     {
         public override short Index { get { return (short)ServerPacketIds.AwakeningNeedMaterials; } }
 
-        public ItemInfo[] Materials;
+        public ItemInfoTable[] Materials;
         public byte[] MaterialsCount;
 
         protected override void ReadPacket(BinaryReader reader)
@@ -5930,13 +5930,13 @@ namespace ServerPackets
             if (!reader.ReadBoolean()) return;
 
             int count = reader.ReadInt32();
-            Materials = new ItemInfo[count];
+            Materials = new ItemInfoTable[count];
             MaterialsCount = new byte[count];
 
             for (int i = 0; i < Materials.Length; i++)
             {
                 if (!reader.ReadBoolean()) continue;
-                Materials[i] = new ItemInfo(reader);
+                Materials[i] = new ItemInfoTable(reader);
                 MaterialsCount[i] = reader.ReadByte();
             }
         }

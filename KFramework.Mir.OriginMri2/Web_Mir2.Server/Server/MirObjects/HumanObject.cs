@@ -238,7 +238,7 @@ namespace Server.MirObjects
 
             for (int i = 0; i < Envir.StartItems.Count; i++)
             {
-                ItemInfo info = Envir.StartItems[i];
+                ItemInfoTable info = Envir.StartItems[i];
                 if (!CorrectStartItem(info)) continue;
 
                 AddItem(Envir.CreateFreshItem(info));
@@ -1628,7 +1628,7 @@ namespace Server.MirObjects
                 return;
             }
         }
-        protected bool CorrectStartItem(ItemInfo info)
+        protected bool CorrectStartItem(ItemInfoTable info)
         {
             switch (Class)
             {
@@ -1665,7 +1665,7 @@ namespace Server.MirObjects
 
             return true;
         }
-        public void CheckItemInfo(ItemInfo info, bool dontLoop = false)
+        public void CheckItemInfo(ItemInfoTable info, bool dontLoop = false)
         {
             Connection.CheckItemInfo(info, dontLoop);
         }
@@ -1826,7 +1826,7 @@ namespace Server.MirObjects
             {
                 UserItem temp = Info.Equipment[i];
                 if (temp == null) continue;
-                ItemInfo realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
+                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
                 if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
                     CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
@@ -1953,7 +1953,7 @@ namespace Server.MirObjects
                 UserItem temp = equipItem.Slots[j];
                 if (temp == null) continue;
 
-                ItemInfo RealItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
+                ItemInfoTable RealItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
                 if (RealItem.Type == ItemType.Weapon || RealItem.Type == ItemType.Torch)
                     CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
@@ -2738,7 +2738,7 @@ namespace Server.MirObjects
             LogTime = Envir.Time + Globals.LogDelay;
 
             if (Info.Equipment[(int)EquipmentSlot.Weapon] == null) return;
-            ItemInfo RealItem = Functions.GetRealItem(Info.Equipment[(int)EquipmentSlot.Weapon].Info, Info.Level, Info.Class, Envir.ItemInfoList);
+            ItemInfoTable RealItem = Functions.GetRealItem(Info.Equipment[(int)EquipmentSlot.Weapon].Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
             if ((RealItem.Shape / Globals.ClassWeaponCount) != 2) return;
             if (Functions.InRange(CurrentLocation, location, Globals.MaxAttackRange) == false) return;
@@ -4388,7 +4388,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.CloneName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.CloneName);
             if (info == null) return;
 
             LevelMagic(magic);
@@ -4466,7 +4466,7 @@ namespace Server.MirObjects
         {
             if (target == null || !target.IsAttackTarget(this)) return false;
 
-            // 原始传奇施毒术（5config 13031）不消耗护符：换表后 ItemInfo 已无 Type=Amulet 的毒药，
+            // 原始传奇施毒术（5config 13031）不消耗护符：换表后 ItemInfoTable 已无 Type=Amulet 的毒药，
             // 旧 GetPoison(1) 必然返回 null 导致施毒静默失败、目标永不变绿。
             // 同时原实现的 DelayedAction 传参缺 this（data[0] 应是 HumanObject），且 Map.CompleteMagic
             // 根本没有 case Spell.Poisoning，延迟结算永远不会执行。这里改为即时施加绿毒，
@@ -4490,7 +4490,7 @@ namespace Server.MirObjects
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
             // 灵魂火符（原始 5config.skill 13041）配置里没有消耗品字段，不消耗护身符；
-            // 换表后 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致
+            // 换表后 ItemInfoTable 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致
             // 这里静默 return → cast=false → 客户端只播本地施法动作、飞行符与命中特效全无。
             // 去掉符的检查与消耗，攻击照常结算。
             cast = true;
@@ -4530,9 +4530,9 @@ namespace Server.MirObjects
             if (Pets.Count(x => x.Race == ObjectType.Monster) >= 2) return;
 
             // 原始传奇召唤技能（5config.skill handlerType=3）没有任何消耗品字段，本就不吃护身符；
-            // 换表后的 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
+            // 换表后的 ItemInfoTable 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
             // （有施法动作但骷髅不出现）。因此去掉符的检查与消耗。
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.SkeletonName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.SkeletonName);
             if (info == null) return;
 
             LevelMagic(magic);
@@ -4578,9 +4578,9 @@ namespace Server.MirObjects
             if (Pets.Count(x => x.Race == ObjectType.Monster) >= 2) return;
 
             // 原始传奇召唤技能（5config.skill handlerType=3）没有任何消耗品字段，本就不吃护身符；
-            // 换表后的 ItemInfo 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
+            // 换表后的 ItemInfoTable 也无 Type=Amulet(8) 物品，旧引擎 GetAmulet 必然返回 null 导致静默失败
             // （有施法动作但神兽不出现）。因此去掉符的检查与消耗。
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.ShinsuName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.ShinsuName);
             if (info == null) return;
 
             LevelMagic(magic);
@@ -4830,7 +4830,7 @@ namespace Server.MirObjects
             UserItem item = GetAmulet(2);
             if (item == null) return;
 
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.AngelName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.AngelName);
             if (info == null) return;
 
             LevelMagic(magic);
@@ -5451,7 +5451,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            MonsterInfo info = Envir.GetMonsterInfo(Settings.AssassinCloneName);
+            MonsterInfoTable info = Envir.GetMonsterInfo(Settings.AssassinCloneName);
             if (info == null) return;
 
             monster = MonsterObject.GetMonster(info);
@@ -6809,7 +6809,7 @@ namespace Server.MirObjects
                     //UserItem item = GetAmulet(5);
                     //if (item == null) return;
 
-                    MonsterInfo info = Envir.GetMonsterInfo((SummonType == 1 ? Settings.VampireName : (SummonType == 2 ? Settings.ToadName : Settings.SnakeTotemName)));
+                    MonsterInfoTable info = Envir.GetMonsterInfo((SummonType == 1 ? Settings.VampireName : (SummonType == 2 ? Settings.ToadName : Settings.SnakeTotemName)));
                     if (info == null) return;
 
                     LevelMagic(magic);
@@ -6842,7 +6842,7 @@ namespace Server.MirObjects
 
                         if (Pets.Where(x => x.Race == ObjectType.Monster).Count() >= magic.Level + 1) return;
 
-                        MonsterInfo mInfo = Envir.GetMonsterInfo(Settings.StoneName);
+                        MonsterInfoTable mInfo = Envir.GetMonsterInfo(Settings.StoneName);
                         if (mInfo == null) return;
 
                         LevelMagic(magic);

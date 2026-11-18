@@ -61,7 +61,7 @@ public class MonsterInfoTable
     [JsonPropertyName("DropSettings")]
     public List<MonsterDropSettingTable> DropSettings { get; set; } = new List<MonsterDropSettingTable>();
 
-    // 服务端此字段全为空数组，客户端不引入复杂 ItemInfo/GroupDropInfo 类型
+    // 服务端此字段全为空数组，客户端不引入复杂 ItemInfoTable/GroupDropInfo 类型
     [JsonPropertyName("Drops")]
     public List<object> Drops { get; set; } = new List<object>();
 

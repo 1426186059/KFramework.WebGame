@@ -28,7 +28,7 @@ namespace Server.MirObjects
 
         public int ScriptID { get; set; }
 
-        public NPCInfo Info;
+        public NPCInfoTable Info;
         private const long TurnDelay = 10000, SpeechDelay = 5000;
         public long TurnTime, UsedGoodsTime, VisTime, SpeechTime;
         public bool Visible = true;
@@ -36,7 +36,7 @@ namespace Server.MirObjects
         public Dictionary<int, bool> VisibleLog = new Dictionary<int, bool>();
 
         public ConquestObject Conq;
-        public List<QuestInfo> Quests = new List<QuestInfo>();
+        public List<QuestInfoTable> Quests = new List<QuestInfoTable>();
         public List<NPCSpeech> Speech = new List<NPCSpeech>();
 
         public List<UserItem> UsedGoods = new List<UserItem>();
@@ -44,7 +44,7 @@ namespace Server.MirObjects
 
         public bool NeedSave;
 
-        public NPCObject(NPCInfo info)
+        public NPCObject(NPCInfoTable info)
         {
             Info = info;
             NameColour = Color.Lime;

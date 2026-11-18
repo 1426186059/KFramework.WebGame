@@ -1,4 +1,4 @@
-﻿using CustomFormControl;
+using CustomFormControl;
 using Server.Account;
 using Server.Database;
 using Server.MirDatabase;
@@ -172,7 +172,7 @@ namespace Server
             ListItem.SubItems.Add(character.Class.ToString());
             ListItem.SubItems.Add(character.Gender.ToString());
 
-            string mapName = MapInfo.GetMapTitleByIndex(character.CurrentMapIndex);
+            string mapName = MapInfoTable.GetMapTitleByIndex(character.CurrentMapIndex);
             ListItem.SubItems.Add($"{mapName}");
 
             return ListItem;

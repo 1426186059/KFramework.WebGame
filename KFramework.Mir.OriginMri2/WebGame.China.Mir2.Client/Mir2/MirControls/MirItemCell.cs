@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes;
@@ -2491,7 +2491,7 @@ namespace Client.MirControls
             return true;
         }
 
-        // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfo.Image 是原始传奇 1config.item 的 col19
+        // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfoTable.Image 是原始传奇 1config.item 的 col19
         // 图标号，对应 assets/resource/icon/tool/{图标号}.png（col19 有 46% 超过 ushort，必须用 uint）。
         // 注意：这里绝不能依赖 Library != null —— 背包 / 角色装备格子并没有配置 .Lib 图库，
         // 旧代码把整段绘制包在 if (Library != null) 里，导致背包里一个图标都画不出来。
@@ -2510,7 +2510,7 @@ namespace Client.MirControls
         {
             if (item?.Info == null) return;
             KFramework.MonoGame.Color originColour = dim ? Color.DimGray : ForeColour;
-            // 服务器通过 S.NewItemInfo 下发的 ItemInfo.Image 已是完整 uint（协议两端 Image 对齐 uint），
+            // 服务器通过 S.NewItemInfo 下发的 ItemInfoTable.Image 已是完整 uint（协议两端 Image 对齐 uint），
             // 直接用即可，无需本地表补全。
             uint iconId = item.Info.Image;
             if (DrawOriginItem(iconId, DisplayLocation, Size, originColour))

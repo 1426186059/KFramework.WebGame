@@ -1,45 +1,49 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
-public class ItemInfo
+public class ItemInfoTable
 {
-    public int Index;
-    public string Name = string.Empty;
-    public ItemType Type;
-    public ItemGrade Grade;
-    public RequiredType RequiredType = RequiredType.Level;
-    public RequiredClass RequiredClass = RequiredClass.None;
-    public RequiredGender RequiredGender = RequiredGender.None;
-    public ItemSet Set;
+    public int Index { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public ItemType Type { get; set; }
+    public ItemGrade Grade { get; set; }
+    public RequiredType RequiredType { get; set; } = RequiredType.Level;
+    public RequiredClass RequiredClass { get; set; } = RequiredClass.None;
+    public RequiredGender RequiredGender { get; set; } = RequiredGender.None;
+    public ItemSet Set { get; set; }
 
-    public short Shape;
-    public byte Weight, Light, RequiredAmount;
+    public short Shape { get; set; }
+    public byte Weight { get; set; }
+    public byte Light { get; set; }
+    public byte RequiredAmount { get; set; }
 
-    public uint Image;
-    public ushort Durability;
+    public uint Image { get; set; }
+    public ushort Durability { get; set; }
 
-    public uint Price;
-    public ushort StackSize = 1;
+    public uint Price { get; set; }
+    public ushort StackSize { get; set; } = 1;
 
-    public bool StartItem;
-    public byte Effect;
+    public bool StartItem { get; set; }
+    public byte Effect { get; set; }
 
-    public bool NeedIdentify, ShowGroupPickup, GlobalDropNotify;
-    public bool ClassBased;
-    public bool LevelBased;
-    public bool CanMine;
-    public bool CanFastRun;
-    public bool CanAwakening;
+    public bool NeedIdentify { get; set; }
+    public bool ShowGroupPickup { get; set; }
+    public bool GlobalDropNotify { get; set; }
+    public bool ClassBased { get; set; }
+    public bool LevelBased { get; set; }
+    public bool CanMine { get; set; }
+    public bool CanFastRun { get; set; }
+    public bool CanAwakening { get; set; }
 
-    public BindMode Bind = BindMode.None;
+    public BindMode Bind { get; set; } = BindMode.None;
 
-    public SpecialItemMode Unique = SpecialItemMode.None;
-    public byte RandomStatsId;
-    public RandomItemStat RandomStats;
-    public string ToolTip = string.Empty;
+    public SpecialItemMode Unique { get; set; } = SpecialItemMode.None;
+    public byte RandomStatsId { get; set; }
+    public RandomItemStat RandomStats { get; set; }
+    public string ToolTip { get; set; } = string.Empty;
 
-    public byte Slots;
+    public byte Slots { get; set; }
 
-    public Stats Stats;
+    public Stats Stats { get; set; }
 
     public bool IsConsumable
     {
@@ -62,12 +66,12 @@ public class ItemInfo
         }
     }
 
-    public ItemInfo()
+    public ItemInfoTable()
     {
         Stats = new Stats();
     }
 
-    public ItemInfo(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
+    public ItemInfoTable(BinaryReader reader, int version = int.MaxValue, int customVersion = int.MaxValue)
     {
         Index = reader.ReadInt32();
         Name = reader.ReadString();
@@ -222,7 +226,7 @@ public class ItemInfo
         writer.Write(Light);
         writer.Write(RequiredAmount);
 
-        // 协议固定为 ushort：两端 ItemInfo(BinaryReader) 都是 ReadUInt16。
+        // 协议固定为 ushort：两端 ItemInfoTable(BinaryReader) 都是 ReadUInt16。
         // 数据层 Image 扩成 uint 只为容纳原始传奇的 7 位图标 ID，发往客户端必须截断，
         // 否则多写 2 字节会让后续字段整体错位（ReadString 抛 Format_Bad7BitInt）。
         writer.Write(Image);
@@ -261,7 +265,7 @@ public class ItemInfo
 
     }
 
-    public static ItemInfo FromText(string text)
+    public static ItemInfoTable FromText(string text)
     {
         return null;
     }
@@ -283,7 +287,7 @@ public class UserItem
     public ulong UniqueID;
     public int ItemIndex;
 
-    public ItemInfo Info;
+    public ItemInfoTable Info;
     public ushort CurrentDura, MaxDura;
     public ushort Count = 1,
         GemCount = 0;
@@ -330,7 +334,7 @@ public class UserItem
 
     public bool GMMade { get; set; }
 
-    public UserItem(ItemInfo info)
+    public UserItem(ItemInfoTable info)
     {
         SoulBoundId = -1;
         ItemIndex = info.Index;
@@ -781,29 +785,29 @@ public class RentalInformation
     }
 }
 
-public class GameShopItem
+public class GameShopItemTable
 {
-    public int ItemIndex;
-    public int GIndex;
-    public ItemInfo Info;
-    public uint GoldPrice = 0;
-    public uint CreditPrice = 0;
-    public ushort Count = 1;
-    public string Class = "";
-    public string Category = "";
-    public int Stock = 0;
-    public bool iStock = false;
-    public bool Deal = false;
-    public bool TopItem = false;
-    public DateTime Date;
-    public bool CanBuyGold = false;
-    public bool CanBuyCredit = false;
+    public int ItemIndex { get; set; }
+    public int GIndex { get; set; }
+    public ItemInfoTable Info { get; set; }
+    public uint GoldPrice { get; set; } = 0;
+    public uint CreditPrice { get; set; } = 0;
+    public ushort Count { get; set; } = 1;
+    public string Class { get; set; } = "";
+    public string Category { get; set; } = "";
+    public int Stock { get; set; } = 0;
+    public bool iStock { get; set; } = false;
+    public bool Deal { get; set; } = false;
+    public bool TopItem { get; set; } = false;
+    public DateTime Date { get; set; }
+    public bool CanBuyGold { get; set; } = false;
+    public bool CanBuyCredit { get; set; } = false;
 
-    public GameShopItem()
+    public GameShopItemTable()
     {
     }
 
-    public GameShopItem(BinaryReader reader, int version = int.MaxValue, int Customversion = int.MaxValue)
+    public GameShopItemTable(BinaryReader reader, int version = int.MaxValue, int Customversion = int.MaxValue)
     {
         ItemIndex = reader.ReadInt32();
         GIndex = reader.ReadInt32();
@@ -832,11 +836,11 @@ public class GameShopItem
 
     }
 
-    public GameShopItem(BinaryReader reader, bool packet = false)
+    public GameShopItemTable(BinaryReader reader, bool packet = false)
     {
         ItemIndex = reader.ReadInt32();
         GIndex = reader.ReadInt32();
-        Info = new ItemInfo(reader);
+        Info = new ItemInfoTable(reader);
         GoldPrice = reader.ReadUInt32();
         CreditPrice = reader.ReadUInt32();
         Count = reader.ReadUInt16();
@@ -1185,16 +1189,76 @@ public class ItemSets
 
 public class RandomItemStat
 {
-    public byte MaxDuraChance, MaxDuraStatChance, MaxDuraMaxStat;
-    public byte MaxAcChance, MaxAcStatChance, MaxAcMaxStat, MaxMacChance, MaxMacStatChance, MaxMacMaxStat, MaxDcChance, MaxDcStatChance, MaxDcMaxStat, MaxMcChance, MaxMcStatChance, MaxMcMaxStat, MaxScChance, MaxScStatChance, MaxScMaxStat;
-    public byte AccuracyChance, AccuracyStatChance, AccuracyMaxStat, AgilityChance, AgilityStatChance, AgilityMaxStat, HpChance, HpStatChance, HpMaxStat, MpChance, MpStatChance, MpMaxStat, StrongChance, StrongStatChance, StrongMaxStat;
-    public byte MagicResistChance, MagicResistStatChance, MagicResistMaxStat, PoisonResistChance, PoisonResistStatChance, PoisonResistMaxStat;
-    public byte HpRecovChance, HpRecovStatChance, HpRecovMaxStat, MpRecovChance, MpRecovStatChance, MpRecovMaxStat, PoisonRecovChance, PoisonRecovStatChance, PoisonRecovMaxStat;
-    public byte CriticalRateChance, CriticalRateStatChance, CriticalRateMaxStat, CriticalDamageChance, CriticalDamageStatChance, CriticalDamageMaxStat;
-    public byte FreezeChance, FreezeStatChance, FreezeMaxStat, PoisonAttackChance, PoisonAttackStatChance, PoisonAttackMaxStat;
-    public byte AttackSpeedChance, AttackSpeedStatChance, AttackSpeedMaxStat, LuckChance, LuckStatChance, LuckMaxStat;
-    public byte CurseChance;
-    public byte SlotChance, SlotStatChance, SlotMaxStat;
+    public byte MaxDuraChance { get; set; }
+    public byte MaxDuraStatChance { get; set; }
+    public byte MaxDuraMaxStat { get; set; }
+    public byte MaxAcChance { get; set; }
+    public byte MaxAcStatChance { get; set; }
+    public byte MaxAcMaxStat { get; set; }
+    public byte MaxMacChance { get; set; }
+    public byte MaxMacStatChance { get; set; }
+    public byte MaxMacMaxStat { get; set; }
+    public byte MaxDcChance { get; set; }
+    public byte MaxDcStatChance { get; set; }
+    public byte MaxDcMaxStat { get; set; }
+    public byte MaxMcChance { get; set; }
+    public byte MaxMcStatChance { get; set; }
+    public byte MaxMcMaxStat { get; set; }
+    public byte MaxScChance { get; set; }
+    public byte MaxScStatChance { get; set; }
+    public byte MaxScMaxStat { get; set; }
+    public byte AccuracyChance { get; set; }
+    public byte AccuracyStatChance { get; set; }
+    public byte AccuracyMaxStat { get; set; }
+    public byte AgilityChance { get; set; }
+    public byte AgilityStatChance { get; set; }
+    public byte AgilityMaxStat { get; set; }
+    public byte HpChance { get; set; }
+    public byte HpStatChance { get; set; }
+    public byte HpMaxStat { get; set; }
+    public byte MpChance { get; set; }
+    public byte MpStatChance { get; set; }
+    public byte MpMaxStat { get; set; }
+    public byte StrongChance { get; set; }
+    public byte StrongStatChance { get; set; }
+    public byte StrongMaxStat { get; set; }
+    public byte MagicResistChance { get; set; }
+    public byte MagicResistStatChance { get; set; }
+    public byte MagicResistMaxStat { get; set; }
+    public byte PoisonResistChance { get; set; }
+    public byte PoisonResistStatChance { get; set; }
+    public byte PoisonResistMaxStat { get; set; }
+    public byte HpRecovChance { get; set; }
+    public byte HpRecovStatChance { get; set; }
+    public byte HpRecovMaxStat { get; set; }
+    public byte MpRecovChance { get; set; }
+    public byte MpRecovStatChance { get; set; }
+    public byte MpRecovMaxStat { get; set; }
+    public byte PoisonRecovChance { get; set; }
+    public byte PoisonRecovStatChance { get; set; }
+    public byte PoisonRecovMaxStat { get; set; }
+    public byte CriticalRateChance { get; set; }
+    public byte CriticalRateStatChance { get; set; }
+    public byte CriticalRateMaxStat { get; set; }
+    public byte CriticalDamageChance { get; set; }
+    public byte CriticalDamageStatChance { get; set; }
+    public byte CriticalDamageMaxStat { get; set; }
+    public byte FreezeChance { get; set; }
+    public byte FreezeStatChance { get; set; }
+    public byte FreezeMaxStat { get; set; }
+    public byte PoisonAttackChance { get; set; }
+    public byte PoisonAttackStatChance { get; set; }
+    public byte PoisonAttackMaxStat { get; set; }
+    public byte AttackSpeedChance { get; set; }
+    public byte AttackSpeedStatChance { get; set; }
+    public byte AttackSpeedMaxStat { get; set; }
+    public byte LuckChance { get; set; }
+    public byte LuckStatChance { get; set; }
+    public byte LuckMaxStat { get; set; }
+    public byte CurseChance { get; set; }
+    public byte SlotChance { get; set; }
+    public byte SlotStatChance { get; set; }
+    public byte SlotMaxStat { get; set; }
 
     public RandomItemStat(ItemType Type = ItemType.Book)
     {

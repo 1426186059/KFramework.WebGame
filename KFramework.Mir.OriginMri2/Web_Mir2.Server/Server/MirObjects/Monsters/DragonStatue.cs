@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -14,7 +14,7 @@ namespace Server.MirObjects.Monsters
 
         protected override bool CanMove { get { return false; } }
 
-        protected internal DragonStatue(MonsterInfo info)
+        protected internal DragonStatue(MonsterInfoTable info)
             : base(info)
         {
             Direction = (MirDirection)Math.Min((byte)5, (byte)Direction);

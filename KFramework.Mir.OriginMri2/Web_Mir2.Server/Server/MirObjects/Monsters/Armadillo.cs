@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
         protected bool _runAway;
 
-        protected internal Armadillo(MonsterInfo info)
+        protected internal Armadillo(MonsterInfoTable info)
             : base(info)
         {
         }

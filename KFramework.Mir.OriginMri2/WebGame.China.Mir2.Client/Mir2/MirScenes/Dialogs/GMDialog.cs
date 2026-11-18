@@ -55,7 +55,7 @@ namespace Client.MirScenes.Dialogs
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
         private MirScrollView2 ItemScrollView;   // 物品行虚拟化滚动列表（无限滚动，只创建视口内行）
-        private List<ItemTableDTO> _filteredCache = new List<ItemTableDTO>();  // 当前搜索过滤结果（bindRow 按索引取）
+        private List<ItemInfoTable> _filteredCache = new List<ItemInfoTable>();  // 当前搜索过滤结果（bindRow 按索引取）
         private int _lastItemsCount = -1;        // 上次见到的全量物品条数，用于后台加载完成后自动刷新
 
         // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀,参数以空格分隔。
@@ -388,7 +388,7 @@ namespace Client.MirScenes.Dialogs
         // GM 面板直接取 ExcelTableMgr.Items，不再自己异步拉表。若打开时还在加载，Update 监测到条数变化后自动刷新。
 
         // 按搜索词过滤：纯数字→按 Id(Index) 精确匹配；否则按名字包含(忽略大小写)
-        private List<ItemTableDTO> GetFilteredItems()
+        private List<ItemInfoTable> GetFilteredItems()
         {
             var all = ExcelTableMgr.Items;
             string q = _itemSearch.Trim();
@@ -518,8 +518,8 @@ namespace Client.MirScenes.Dialogs
             row.IconId = (int)info.Image;
             row.ItemName = info.Name;
             row.NameLabel.Text = info.Name;
-            row.GradeLabel.Text = "品质 " + info.Grade;
-            row.GradeLabel.ForeColour = GradeColour(info.Grade);
+            row.GradeLabel.Text = "品质 " + (int)info.Grade;
+            row.GradeLabel.ForeColour = GradeColour((int)info.Grade);
             row.ReqLabel.Text = "需求 " + info.RequiredAmount;
             row.QtyBox.Text = "1";
         }

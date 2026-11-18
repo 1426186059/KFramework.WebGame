@@ -2058,7 +2058,7 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        public void setNeedItems(ItemInfo[] Materials, byte[] MaterialsCount)
+        public void setNeedItems(ItemInfoTable[] Materials, byte[] MaterialsCount)
         {
             if (MaterialsCount[0] != 0)
             {

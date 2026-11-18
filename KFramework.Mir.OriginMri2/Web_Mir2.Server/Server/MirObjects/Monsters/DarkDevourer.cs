@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -8,7 +8,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class DarkDevourer : MonsterObject
     {
-        protected internal DarkDevourer(MonsterInfo info)
+        protected internal DarkDevourer(MonsterInfoTable info)
             : base(info)
         {
         }

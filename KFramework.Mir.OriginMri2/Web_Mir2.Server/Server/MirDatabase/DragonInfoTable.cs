@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Server.MirDatabase
 {
-    public class DragonInfo
+    public class DragonInfoTable
     {
         protected static Envir Envir
         {
@@ -15,16 +15,20 @@ namespace Server.MirDatabase
             get { return MessageQueue.Instance; }
         }
 
-        public bool Enabled;
-        public string MapFileName, MonsterName, BodyName;
-        public Point Location, DropAreaTop, DropAreaBottom;
-        public List<DropInfo>[] Drops = new List<DropInfo>[Globals.MaxDragonLevel];
-        public long[] Exps = new long[Globals.MaxDragonLevel - 1];
+        public bool Enabled { get; set; }
+        public string MapFileName { get; set; }
+        public string MonsterName { get; set; }
+        public string BodyName { get; set; }
+        public Point Location { get; set; }
+        public Point DropAreaTop { get; set; }
+        public Point DropAreaBottom { get; set; }
+        public List<DropInfo>[] Drops { get; set; } = new List<DropInfo>[Globals.MaxDragonLevel];
+        public long[] Exps { get; set; } = new long[Globals.MaxDragonLevel - 1];
 
-        public byte Level;
-        public long Experience;
+        public byte Level { get; set; }
+        public long Experience { get; set; }
 
-        public DragonInfo()
+        public DragonInfoTable()
         {
             //Default values
             Enabled = false;
@@ -46,7 +50,7 @@ namespace Server.MirDatabase
                 Drops[i] = new List<DropInfo>();
             }
         }
-        public DragonInfo(BinaryReader reader)
+        public DragonInfoTable(BinaryReader reader)
         {
             Enabled = reader.ReadBoolean();
             MapFileName = reader.ReadString();
@@ -144,10 +148,10 @@ namespace Server.MirDatabase
 
         public class DropInfo
         {
-            public int Chance;
-            public ItemInfo Item;
-            public uint Gold;
-            public byte level;
+            public int Chance { get; set; }
+            public ItemInfoTable Item { get; set; }
+            public uint Gold { get; set; }
+            public byte level { get; set; }
 
             public static DropInfo FromLine(string s)
             {
@@ -155,19 +159,23 @@ namespace Server.MirDatabase
 
                 DropInfo info = new DropInfo();
 
-                if (!int.TryParse(parts[0].Substring(2), out info.Chance)) return null;
+                if (!int.TryParse(parts[0].Substring(2), out int chance)) return null;
+                info.Chance = chance;
                 if (string.Compare(parts[1], "Gold", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     if (parts.Length < 4) return null;
-                    if (!uint.TryParse(parts[2], out info.Gold) || info.Gold == 0) return null;
-                    if (!byte.TryParse(parts[3], out info.level)) return null;
+                    if (!uint.TryParse(parts[2], out uint gold) || gold == 0) return null;
+                    info.Gold = gold;
+                    if (!byte.TryParse(parts[3], out byte level)) return null;
+                    info.level = level;
                 }
                 else
                 {
                     if (parts.Length < 3) return null;
                     info.Item = Envir.GetItemInfo(parts[1]);
                     if (info.Item == null) return null;
-                    if (!byte.TryParse(parts[2], out info.level)) return null;
+                    if (!byte.TryParse(parts[2], out byte level)) return null;
+                    info.level = level;
                 }
                 return info;
             }

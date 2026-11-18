@@ -3,7 +3,7 @@ using Server.MirEnvir;
 
 namespace Server.MirDatabase
 {
-    public class MapInfo
+    public class MapInfoTable
     {
         protected static Envir Envir
         {
@@ -15,36 +15,67 @@ namespace Server.MirDatabase
             get { return Envir.Edit; }
         }
 
-        public int Index;
-        public string FileName = string.Empty, Title = string.Empty;
-        public ushort MiniMap, BigMap, Music;
-        public LightSetting Light;
-        public byte MapDarkLight = 0, MineIndex = 0, GTIndex = 0;
+        public int Index { get; set; }
+        public string FileName { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public ushort MiniMap { get; set; }
+        public ushort BigMap { get; set; }
+        public ushort Music { get; set; }
+        public LightSetting Light { get; set; }
+        public byte MapDarkLight { get; set; } = 0;
+        public byte MineIndex { get; set; } = 0;
+        public byte GTIndex { get; set; } = 0;
 
-        public bool NoTeleport, NoReconnect, NoRandom, NoEscape, NoRecall, NoDrug, NoPosition, NoFight,
-            NoThrowItem, NoDropPlayer, NoDropMonster, NoNames, NoMount, NeedBridle, Fight, NeedHole, Fire, Lightning,
-            NoTownTeleport, NoReincarnation, GT, NoExperience, NoGroup = false, NoPets, NoIntelligentCreatures, NoHero, RequiredGroup = false, FireWallLimit;
+        public bool NoTeleport { get; set; }
+        public bool NoReconnect { get; set; }
+        public bool NoRandom { get; set; }
+        public bool NoEscape { get; set; }
+        public bool NoRecall { get; set; }
+        public bool NoDrug { get; set; }
+        public bool NoPosition { get; set; }
+        public bool NoFight { get; set; }
+        public bool NoThrowItem { get; set; }
+        public bool NoDropPlayer { get; set; }
+        public bool NoDropMonster { get; set; }
+        public bool NoNames { get; set; }
+        public bool NoMount { get; set; }
+        public bool NeedBridle { get; set; }
+        public bool Fight { get; set; }
+        public bool NeedHole { get; set; }
+        public bool Fire { get; set; }
+        public bool Lightning { get; set; }
+        public bool NoTownTeleport { get; set; }
+        public bool NoReincarnation { get; set; }
+        public bool GT { get; set; }
+        public bool NoExperience { get; set; }
+        public bool NoGroup { get; set; } = false;
+        public bool NoPets { get; set; }
+        public bool NoIntelligentCreatures { get; set; }
+        public bool NoHero { get; set; }
+        public bool RequiredGroup { get; set; } = false;
+        public bool FireWallLimit { get; set; }
 
-        public int RequiredGroupSize = 0, FireWallCount = 0;
+        public int RequiredGroupSize { get; set; } = 0;
+        public int FireWallCount { get; set; } = 0;
 
+        public string NoReconnectMap { get; set; } = string.Empty;
+        public int FireDamage { get; set; }
+        public int LightningDamage { get; set; }
 
-        public string NoReconnectMap = string.Empty;
-        public int FireDamage, LightningDamage;
+        public List<SafeZoneInfo> SafeZones { get; set; } = new List<SafeZoneInfo>();
+        public List<MovementInfo> Movements { get; set; } = new List<MovementInfo>();
+        public List<RespawnInfo> Respawns { get; set; } = new List<RespawnInfo>();
+        public List<NPCInfoTable> NPCs { get; set; } = new List<NPCInfoTable>();
+        public List<MineZone> MineZones { get; set; } = new List<MineZone>();
+        public List<Point> ActiveCoords { get; set; } = new List<Point>();
+        public WeatherSetting WeatherParticles { get; set; } = WeatherSetting.None;
 
-        public List<SafeZoneInfo> SafeZones = new List<SafeZoneInfo>();
-        public List<MovementInfo> Movements = new List<MovementInfo>();
-        public List<RespawnInfo> Respawns = new List<RespawnInfo>();
-        public List<NPCInfo> NPCs = new List<NPCInfo>();
-        public List<MineZone> MineZones = new List<MineZone>();
-        public List<Point> ActiveCoords = new List<Point>();
-        public WeatherSetting WeatherParticles = WeatherSetting.None;
-
-        public MapInfo()
+        public MapInfoTable()
         {
 
         }
 
-        public MapInfo(BinaryReader reader)
+        public MapInfoTable(BinaryReader reader)
         {
             Index = reader.ReadInt32();
             FileName = reader.ReadString();
@@ -198,7 +229,7 @@ namespace Server.MirDatabase
         {
             for (int j = 0; j < Envir.NPCInfoList.Count; j++)
             {
-                NPCInfo npc = Envir.NPCInfoList[j];
+                NPCInfoTable npc = Envir.NPCInfoList[j];
 
                 // 原始传奇 NPC：摆放点以 5config.mapnpc 表为准，一个定义可落在多张地图 / 多个坐标。
                 // 内嵌配置（OriginSettings）没有摆放点时，才退回旧的单个 MapIndex + Location。
@@ -244,7 +275,7 @@ namespace Server.MirDatabase
 
         public void CreateNPCInfo()
         {
-            NPCs.Add(new NPCInfo());
+            NPCs.Add(new NPCInfoTable());
         }
 
         public void CreateMovementInfo()
@@ -258,12 +289,14 @@ namespace Server.MirDatabase
 
             if (data.Length < 8) return;
 
-            MapInfo info = new MapInfo {FileName = data[0], Title = data[1]};
+            MapInfoTable info = new MapInfoTable {FileName = data[0], Title = data[1]};
 
 
-            if (!ushort.TryParse(data[2], out info.MiniMap)) return;
+            if (!ushort.TryParse(data[2], out ushort miniMap)) return;
+            info.MiniMap = miniMap;
 
-            if (!Enum.TryParse(data[3], out info.Light)) return;
+            if (!Enum.TryParse(data[3], out LightSetting light)) return;
+            info.Light = light;
             int sziCount, miCount, riCount, npcCount;
 
             if (!int.TryParse(data[4], out sziCount)) return;
@@ -281,9 +314,11 @@ namespace Server.MirDatabase
 
                 if (!int.TryParse(data[start + (i * 4)], out x)) return;
                 if (!int.TryParse(data[start + 1 + (i * 4)], out y)) return;
-                if (!ushort.TryParse(data[start + 2 + (i * 4)], out temp.Size)) return;
-                if (!bool.TryParse(data[start + 3 + (i * 4)], out temp.StartPoint)) return;
+                if (!ushort.TryParse(data[start + 2 + (i * 4)], out ushort size)) return;
+                if (!bool.TryParse(data[start + 3 + (i * 4)], out bool startPoint)) return;
 
+                temp.Size = size;
+                temp.StartPoint = startPoint;
                 temp.Location = new Point(x, y);
                 info.SafeZones.Add(temp);
             }
@@ -300,7 +335,8 @@ namespace Server.MirDatabase
                 if (!int.TryParse(data[start + 1 + (i * 5)], out y)) return;
                 temp.Source = new Point(x, y);
 
-                if (!int.TryParse(data[start + 2 + (i * 5)], out temp.MapIndex)) return;
+                if (!int.TryParse(data[start + 2 + (i * 5)], out int mapIndex)) return;
+                temp.MapIndex = mapIndex;
 
                 if (!int.TryParse(data[start + 3 + (i * 5)], out x)) return;
                 if (!int.TryParse(data[start + 4 + (i * 5)], out y)) return;
@@ -316,19 +352,28 @@ namespace Server.MirDatabase
                 RespawnInfo temp = new RespawnInfo();
                 int x, y;
 
-                if (!int.TryParse(data[start + (i * 7)], out temp.MonsterIndex)) return;
+                if (!int.TryParse(data[start + (i * 7)], out int monsterIndex)) return;
                 if (!int.TryParse(data[start + 1 + (i * 7)], out x)) return;
                 if (!int.TryParse(data[start + 2 + (i * 7)], out y)) return;
 
                 temp.Location = new Point(x, y);
 
-                if (!ushort.TryParse(data[start + 3 + (i * 7)], out temp.Count)) return;
-                if (!ushort.TryParse(data[start + 4 + (i * 7)], out temp.Spread)) return;
-                if (!ushort.TryParse(data[start + 5 + (i * 7)], out temp.Delay)) return;
-                if (!byte.TryParse(data[start + 6 + (i * 7)], out temp.Direction)) return;
-                if (!int.TryParse(data[start + 7 + (i * 7)], out temp.RespawnIndex)) return;
-                if (!bool.TryParse(data[start + 8 + (i * 7)], out temp.SaveRespawnTime)) return;
-                if (!ushort.TryParse(data[start + 9 + (i * 7)], out temp.RespawnTicks)) return;
+                if (!ushort.TryParse(data[start + 3 + (i * 7)], out ushort count)) return;
+                if (!ushort.TryParse(data[start + 4 + (i * 7)], out ushort spread)) return;
+                if (!ushort.TryParse(data[start + 5 + (i * 7)], out ushort delay)) return;
+                if (!byte.TryParse(data[start + 6 + (i * 7)], out byte direction)) return;
+                if (!int.TryParse(data[start + 7 + (i * 7)], out int respawnIndex)) return;
+                if (!bool.TryParse(data[start + 8 + (i * 7)], out bool saveRespawnTime)) return;
+                if (!ushort.TryParse(data[start + 9 + (i * 7)], out ushort respawnTicks)) return;
+
+                temp.MonsterIndex = monsterIndex;
+                temp.Count = count;
+                temp.Spread = spread;
+                temp.Delay = delay;
+                temp.Direction = direction;
+                temp.RespawnIndex = respawnIndex;
+                temp.SaveRespawnTime = saveRespawnTime;
+                temp.RespawnTicks = respawnTicks;
 
                 info.Respawns.Add(temp);
             }
@@ -337,7 +382,7 @@ namespace Server.MirDatabase
 
             for (int i = 0; i < npcCount; i++)
             {
-                NPCInfo temp = new NPCInfo { FileName = data[start + (i * 6)], Name = data[start + 1 + (i * 6)] };
+                NPCInfoTable temp = new NPCInfoTable { FileName = data[start + (i * 6)], Name = data[start + 1 + (i * 6)] };
                 int x, y;
 
                 if (!int.TryParse(data[start + 2 + (i * 6)], out x)) return;
@@ -345,8 +390,10 @@ namespace Server.MirDatabase
 
                 temp.Location = new Point(x, y);
 
-                if (!ushort.TryParse(data[start + 4 + (i * 6)], out temp.Rate)) return;
-                if (!ushort.TryParse(data[start + 5 + (i * 6)], out temp.Image)) return;
+                if (!ushort.TryParse(data[start + 4 + (i * 6)], out ushort rate)) return;
+                if (!ushort.TryParse(data[start + 5 + (i * 6)], out ushort image)) return;
+                temp.Rate = rate;
+                temp.Image = image;
 
                 info.NPCs.Add(temp);
             }

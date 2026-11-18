@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         public long FearTime;
         public byte AttackRange = 7;
 
-        protected internal TrollKing(MonsterInfo info)
+        protected internal TrollKing(MonsterInfoTable info)
             : base(info)
         {
         }

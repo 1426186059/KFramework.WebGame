@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
     {
         private int _attackCount = 0;
 
-        protected internal ManectricBlest(MonsterInfo info)
+        protected internal ManectricBlest(MonsterInfoTable info)
             : base(info)
         {
         }

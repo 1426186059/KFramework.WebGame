@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -21,7 +21,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal DarkOmaKing(MonsterInfo info) 
+        protected internal DarkOmaKing(MonsterInfoTable info) 
             : base(info)
         {
             _MassThunderTime = Envir.Time + 10000;

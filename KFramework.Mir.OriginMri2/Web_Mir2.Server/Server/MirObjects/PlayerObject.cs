@@ -283,7 +283,7 @@ namespace Server.MirObjects
             if (Info == null) return;
             var learnable = Envir.GetLearnableSkills(Info.Class);
 
-            foreach (MagicInfo info in learnable)
+            foreach (MagicInfoTable info in learnable)
             {
                 UserMagic magic = null;
                 for (int i = 0; i < Info.Magics.Count; i++)
@@ -1038,7 +1038,7 @@ namespace Server.MirObjects
                 return;
             }
         }
-        public void CheckQuestInfo(QuestInfo info)
+        public void CheckQuestInfo(QuestInfoTable info)
         {
             if (Connection.SentQuestInfo.Contains(info)) return;
             Enqueue(new S.NewQuestInfo { Info = info.CreateClientQuestInfo(this) });
@@ -1063,7 +1063,7 @@ namespace Server.MirObjects
             Enqueue(new S.NewRecipeInfo { Info = info.CreateClientRecipeInfo() });
             Connection.SentRecipeInfo.Add(info);
         }
-        public void CheckMapInfo(MapInfo mapInfo)
+        public void CheckMapInfo(MapInfoTable mapInfo)
         {
             if (!Connection.WorldMapSetupSent)
             {
@@ -1117,7 +1117,7 @@ namespace Server.MirObjects
         {
             SafeZoneInfo szi = null;
 
-            MapInfo home = Envir.MapInfoList.FirstOrDefault(m => m.Index == HomeMapIndex);
+            MapInfoTable home = Envir.MapInfoList.FirstOrDefault(m => m.Index == HomeMapIndex);
             if (home != null)
             {
                 szi = home.SafeZones.FirstOrDefault(z => z.StartPoint);
@@ -2532,7 +2532,7 @@ namespace Server.MirObjects
                         {
                             if ((!IsGM && !Settings.TestServer) || parts.Length < 2) return;
 
-                            ItemInfo iInfo;
+                            ItemInfoTable iInfo;
                             int itemIndex = 0;
 
                             if (Int32.TryParse(parts[1], out itemIndex))
@@ -3151,7 +3151,7 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        MonsterInfo mInfo = null;
+                        MonsterInfoTable mInfo = null;
                         int monsterIndex = 0;
 
                         if (Int32.TryParse(parts[1], out monsterIndex))
@@ -3212,7 +3212,7 @@ namespace Server.MirObjects
                     case "RECALLMOB":
                         if ((!IsGM && !Settings.TestServer) || parts.Length < 2) return;
 
-                        MonsterInfo mInfo2 = null;
+                        MonsterInfoTable mInfo2 = null;
                         int monsterIndex2 = 0;
 
                         if (Int32.TryParse(parts[1], out monsterIndex2))
@@ -3758,7 +3758,7 @@ namespace Server.MirObjects
                             {
                                 if (temp == null) continue;
 
-                                ItemInfo realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
+                                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
                                 if (realItem.Type == type)
                                 {
@@ -3797,7 +3797,7 @@ namespace Server.MirObjects
                             {
                                 if (temp == null) continue;
 
-                                ItemInfo realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
+                                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
                                 if (realItem.Type == type)
                                 {
@@ -5653,7 +5653,7 @@ namespace Server.MirObjects
 
             if (items.Count == 0) return;
 
-            // 1) 同类可堆叠合并：同一 ItemInfo、未满堆，把后面的数量并进前面的堆，腾出格子
+            // 1) 同类可堆叠合并：同一 ItemInfoTable、未满堆，把后面的数量并进前面的堆，腾出格子
             for (int i = 0; i < items.Count; i++)
             {
                 UserItem dst = items[i];
@@ -5662,7 +5662,7 @@ namespace Server.MirObjects
                 for (int j = i + 1; j < items.Count && dst.Count < dst.Info.StackSize; j++)
                 {
                     UserItem src = items[j];
-                    // 按 Index 判定同类（GetRealItem 可能对同一配置生成不同 ItemInfo 实例）
+                    // 按 Index 判定同类（GetRealItem 可能对同一配置生成不同 ItemInfoTable 实例）
                     if (src == null || src.Info == null || src.Info.Index != dst.Info.Index) continue;
 
                     int take = Math.Min(dst.Info.StackSize - dst.Count, (int)src.Count);
@@ -5678,7 +5678,7 @@ namespace Server.MirObjects
             // 2) 排序：大类聚拢，同类按品质→需求等级→Index→数量
             items.Sort((a, b) =>
             {
-                ItemInfo ia = a.Info, ib = b.Info;
+                ItemInfoTable ia = a.Info, ib = b.Info;
                 if (ia == null || ib == null) return 0;
 
                 int c = ((int)ia.Type).CompareTo((int)ib.Type);          // 物品大类
@@ -6153,14 +6153,14 @@ namespace Server.MirObjects
                 return;
             }
 
-            // 原始传奇技能书：SkillBookInfo 映射（物品 id → 技能/目标等级），转换器产出 Type=0 不走 ItemType.Book。
-            SkillBookInfo book = SkillBookInfo.Find(item.Info.Index);
+            // 原始传奇技能书：SkillBookInfoTable 映射（物品 id → 技能/目标等级），转换器产出 Type=0 不走 ItemType.Book。
+            SkillBookInfoTable book = SkillBookInfoTable.Find(item.Info.Index);
             if (book != null)
             {
-                MagicInfo learned = null;
+                MagicInfoTable learned = null;
                 for (int i = 0; i < Envir.MagicInfoList.Count; i++)
                 {
-                    MagicInfo info = Envir.MagicInfoList[i];
+                    MagicInfoTable info = Envir.MagicInfoList[i];
                     if (info != null && info.OriginId == book.SkillId) { learned = info; break; }
                 }
 
@@ -8343,7 +8343,7 @@ namespace Server.MirObjects
 
             AddQuestItem(item);
         }
-        public void TakeQuestItem(ItemInfo uItem, ushort count)
+        public void TakeQuestItem(ItemInfoTable uItem, ushort count)
         {
             for (int o = 0; o < Info.QuestInventory.Length; o++)
             {
@@ -9535,7 +9535,7 @@ namespace Server.MirObjects
 
                 if (Info.AccountInfo.Gold >= item.DisassemblePrice())
                 {
-                    List<ItemInfo> dropList = new List<ItemInfo>();
+                    List<ItemInfoTable> dropList = new List<ItemInfoTable>();
                     foreach (DropInfo drop in Envir.AwakeningDrops)
                     {
                         if (drop.Item.Grade == item.Info.Grade - 1 ||
@@ -9651,9 +9651,9 @@ namespace Server.MirObjects
                             idx++;
                         }
 
-                        ItemInfo[] materials = new ItemInfo[2];
+                        ItemInfoTable[] materials = new ItemInfoTable[2];
 
-                        foreach (ItemInfo info in Envir.ItemInfoList)
+                        foreach (ItemInfoTable info in Envir.ItemInfoList)
                         {
                             if (item.Info.Grade == info.Grade &&
                                 info.Type == ItemType.Awakening)
@@ -10185,7 +10185,7 @@ namespace Server.MirObjects
             }
 
             bool passedItemCheck = true;
-            ItemInfo itemInfo = Envir.GetItemInfo(Settings.HeroSealItemName);
+            ItemInfoTable itemInfo = Envir.GetItemInfo(Settings.HeroSealItemName);
             if (itemInfo != null && FreeSpace(Info.Inventory) == 0)
                 passedItemCheck = false;
 
@@ -11602,7 +11602,7 @@ namespace Server.MirObjects
             {
                 if (temp == null) continue;
 
-                ItemInfo realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
+                ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
 
                 switch (realItem.Type)
                 {
@@ -11839,7 +11839,7 @@ namespace Server.MirObjects
 
             if (CurrentQuests.Exists(e => e.Index == index)) return; //e.Info.NpcIndex == npcIndex && 
 
-            QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
 
             EnsureQuestNPC(info);
@@ -11909,7 +11909,7 @@ namespace Server.MirObjects
             }
 
             //check previous chained quests have been completed
-            QuestInfo tempInfo = info;
+            QuestInfoTable tempInfo = info;
             while (tempInfo != null && tempInfo.RequiredQuest != 0)
             {
                 if (!CompletedQuests.Contains(tempInfo.RequiredQuest))
@@ -11974,10 +11974,10 @@ namespace Server.MirObjects
         }
 
         // 确保任务已解析出起始/交付 NPC 的运行时信息（NpcInfo 引用 + 世界唯一索引 ObjectID）。
-        // 若任务写在某 NPC 脚本 [Quests] 段，ParseQuests 已写入；否则按配置索引(NpcIndex/FinishNpcIndex) 反查 NPCInfo，
+        // 若任务写在某 NPC 脚本 [Quests] 段，ParseQuests 已写入；否则按配置索引(NpcIndex/FinishNpcIndex) 反查 NPCInfoTable，
         // 再从已生成的 NPC 实例中取运行时 ObjectID，供客户端按 ObjectID 匹配、以及服务端反查 NPC 实例使用。
         // 不依赖任务是否登记在脚本里，避免 NpcIndex=0 时"寻找NPC"整体失效（任务追踪栏只是回退显示任务名）。
-        private void EnsureQuestNPC(QuestInfo info)
+        private void EnsureQuestNPC(QuestInfoTable info)
         {
             if (info == null) return;
 
@@ -12003,12 +12003,12 @@ namespace Server.MirObjects
 
         // 按已链接的发放 NPC 信息反查运行时 NPC 实例。
         // NpcIndex/FinishNpcIndex 实际存的是"运行时世界唯一索引"(NPCObject.ObjectID)，故优先按 ObjectID 查找；
-        // 另用 info.NpcInfo 引用做精确兜底（ParseQuests 写入），再退而按配置表索引(NPCInfo.Index) 兜底。
-        private NPCObject GetQuestStartNPC(QuestInfo info)
+        // 另用 info.NpcInfo 引用做精确兜底（ParseQuests 写入），再退而按配置表索引(NPCInfoTable.Index) 兜底。
+        private NPCObject GetQuestStartNPC(QuestInfoTable info)
         {
             if (info == null) return null;
 
-            // 1. 已链接的 NPCInfo 引用（ParseQuests 写入，最精确）
+            // 1. 已链接的 NPCInfoTable 引用（ParseQuests 写入，最精确）
             if (info.NpcInfo != null)
             {
                 foreach (var ob in Envir.NPCs)
@@ -12022,7 +12022,7 @@ namespace Server.MirObjects
                 NPCObject byId = NPCObject.Get(info.NpcIndex);
                 if (byId != null) return byId;
 
-                // 3. 兜底：按配置表索引匹配 NPCInfo.Index（若某处写入的是配置索引）
+                // 3. 兜底：按配置表索引匹配 NPCInfoTable.Index（若某处写入的是配置索引）
                 foreach (var ob in Envir.NPCs)
                     if (ob is NPCObject npc && npc.Info != null && npc.Info.Index == (int)info.NpcIndex)
                         return npc;
@@ -12156,7 +12156,7 @@ namespace Server.MirObjects
             if (index <= 0) return;
             if (CurrentQuests.Exists(e => e.Index == index)) return;
 
-            QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
             if (CompletedQuests.Contains(index)) return;
             if (!info.CanAccept(this)) return;
@@ -12181,7 +12181,7 @@ namespace Server.MirObjects
             if (OfferedQuests.Contains(index)) return;
             if (CompletedQuests.Contains(index)) return;
 
-            QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
             if (!info.CanAccept(this)) return;
 
@@ -12194,7 +12194,7 @@ namespace Server.MirObjects
 
             Enqueue(new S.ChangeQuest
             {
-                Quest = new ClientQuestProgress { Id = info.Index, QuestInfo = cqi },
+                Quest = new ClientQuestProgress { Id = info.Index, QuestInfoTable = cqi },
                 QuestState = QuestState.Offered
             });
         }
@@ -12231,7 +12231,7 @@ namespace Server.MirObjects
             }
         }
 
-        public void CheckGroupQuestKill(MonsterInfo mInfo)
+        public void CheckGroupQuestKill(MonsterInfoTable mInfo)
         {
             if (GroupMembers != null)
             {
@@ -12315,7 +12315,7 @@ namespace Server.MirObjects
 
             return false;
         }
-        public void CheckNeedQuestKill(MonsterInfo mInfo)
+        public void CheckNeedQuestKill(MonsterInfoTable mInfo)
         {
             foreach (QuestProgressInfo quest in CurrentQuests.
                     Where(e => e.KillTaskCount.Count > 0).
@@ -12761,7 +12761,7 @@ namespace Server.MirObjects
             {
                 if (Info.IntelligentCreatures[i].PetType != pType) continue;
 
-                MonsterInfo mInfo = Envir.GetMonsterInfo(64, (byte)pType);
+                MonsterInfoTable mInfo = Envir.GetMonsterInfo(64, (byte)pType);
                 if (mInfo == null) return;
 
                 MonsterObject monster = MonsterObject.GetMonster(mInfo);
@@ -12981,7 +12981,7 @@ namespace Server.MirObjects
         }
         public bool IntelligentCreatureProduceBlackStone()
         {
-            ItemInfo iInfo = Envir.GetItemInfo(Settings.CreatureBlackStoneName);
+            ItemInfoTable iInfo = Envir.GetItemInfo(Settings.CreatureBlackStoneName);
             if (iInfo == null) return false;
 
             UserItem item = Envir.CreateDropItem(iInfo);
@@ -14441,7 +14441,7 @@ namespace Server.MirObjects
 
         #region Gameshop
 
-        public void GameShopStock(GameShopItem item)
+        public void GameShopStock(GameShopItemTable item)
         {
             int purchased;
             int StockLevel;
@@ -14467,8 +14467,8 @@ namespace Server.MirObjects
         {
             if (Quantity < 1 || Quantity > 99) return;
 
-            List<GameShopItem> shopList = Envir.GameShopList;
-            GameShopItem Product = null;
+            List<GameShopItemTable> shopList = Envir.GameShopList;
+            GameShopItemTable Product = null;
 
             int purchased;
             bool stockAvailable = false;
@@ -15332,7 +15332,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            ItemInfo itemInfo = Envir.GetItemInfo(Settings.HeroSealItemName);
+            ItemInfoTable itemInfo = Envir.GetItemInfo(Settings.HeroSealItemName);
             if (itemInfo == null) return;
 
             if (Hero != null)

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -16,7 +16,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal IcePhantom(MonsterInfo info)
+        protected internal IcePhantom(MonsterInfoTable info)
             : base(info)
         {
         }

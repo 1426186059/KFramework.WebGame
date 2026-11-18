@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects.Monsters
 {
@@ -22,7 +22,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanAttack { get { return false; } }
         protected override bool CanMove { get { return false; } }
 
-        protected internal EvilMirBody(MonsterInfo info)
+        protected internal EvilMirBody(MonsterInfoTable info)
             : base(info)
         {
             DragonLink = true;

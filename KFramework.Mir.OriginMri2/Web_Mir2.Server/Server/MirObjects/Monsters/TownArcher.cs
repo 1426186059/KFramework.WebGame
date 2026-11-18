@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -17,7 +17,7 @@ namespace Server.MirObjects.Monsters
             get { return Route.Count > 0 && !Dead && Envir.Time > MoveTime && Envir.Time > ActionTime && Envir.Time > ShockTime; }
         }
 
-        protected internal TownArcher(MonsterInfo info) : base(info) { }
+        protected internal TownArcher(MonsterInfoTable info) : base(info) { }
 
         public override bool IsAttackTarget(MonsterObject attacker) { return false; }
 

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -12,7 +12,7 @@ namespace Server.MirObjects.Monsters
         protected int RemainingSkinCount;
         private List<UserItem> _drops;
 
-        protected internal HarvestMonster(MonsterInfo info)
+        protected internal HarvestMonster(MonsterInfoTable info)
             : base(info)
         {
             RemainingSkinCount = 2;

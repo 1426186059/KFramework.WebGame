@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         public byte AttackRange = 6;
 
-        protected internal AvengingWarrior(MonsterInfo info)
+        protected internal AvengingWarrior(MonsterInfoTable info)
             : base(info)
         {
         }

@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects.Monsters
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     {
         public virtual byte TeleportEffect { get { return 4; } }
 
-        protected internal GlacierWarrior(MonsterInfo info)
+        protected internal GlacierWarrior(MonsterInfoTable info)
             : base(info)
         {
         }

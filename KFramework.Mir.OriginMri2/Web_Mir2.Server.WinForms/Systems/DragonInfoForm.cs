@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server
@@ -14,7 +14,7 @@ namespace Server
 
         private void UpdateInterface()
         {
-            DragonInfo info = Envir.DragonInfo;
+            DragonInfoTable info = Envir.DragonInfoTable;
             if (info == null) return;
 
             EnableDragonCheckBox.CheckState = info.Enabled ? CheckState.Checked : CheckState.Unchecked;
@@ -58,7 +58,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            Envir.DragonInfo.MapFileName = ActiveControl.Text;
+            Envir.DragonInfoTable.MapFileName = ActiveControl.Text;
         }
 
         private void XTextBox_TextChanged(object sender, EventArgs e)
@@ -74,7 +74,9 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.Location.X = temp;
+            Point location = Envir.DragonInfoTable.Location;
+            location.X = temp;
+            Envir.DragonInfoTable.Location = location;
         }
 
         private void YTextBox_TextChanged(object sender, EventArgs e)
@@ -90,21 +92,23 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.Location.Y = temp;
+            Point location = Envir.DragonInfoTable.Location;
+            location.Y = temp;
+            Envir.DragonInfoTable.Location = location;
         }
 
         private void MonsterNameTextBox_TextChanged(object sender, EventArgs e)
         {
             if (ActiveControl != sender) return;
 
-            Envir.DragonInfo.MonsterName = ActiveControl.Text;
+            Envir.DragonInfoTable.MonsterName = ActiveControl.Text;
         }
 
         private void BodyNameTextBox_TextChanged(object sender, EventArgs e)
         {
             if (ActiveControl != sender) return;
 
-            Envir.DragonInfo.BodyName = ActiveControl.Text;
+            Envir.DragonInfoTable.BodyName = ActiveControl.Text;
         }
 
         private void DragonInfoForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -115,7 +119,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            Envir.DragonInfo.Enabled = EnableDragonCheckBox.Checked;
+            Envir.DragonInfoTable.Enabled = EnableDragonCheckBox.Checked;
             UpdateInterface();
         }
 
@@ -132,7 +136,9 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.DropAreaTop.X = temp;
+            Point area = Envir.DragonInfoTable.DropAreaTop;
+            area.X = temp;
+            Envir.DragonInfoTable.DropAreaTop = area;
         }
 
         private void DropAreaTopYTextBox_TextChanged(object sender, EventArgs e)
@@ -148,7 +154,9 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.DropAreaTop.Y = temp;
+            Point area = Envir.DragonInfoTable.DropAreaTop;
+            area.Y = temp;
+            Envir.DragonInfoTable.DropAreaTop = area;
         }
 
         private void DropAreaBottomXTextBox_TextChanged(object sender, EventArgs e)
@@ -164,7 +172,9 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.DropAreaBottom.X = temp;
+            Point area = Envir.DragonInfoTable.DropAreaBottom;
+            area.X = temp;
+            Envir.DragonInfoTable.DropAreaBottom = area;
         }
 
         private void DropAreaBottomYTextBox_TextChanged(object sender, EventArgs e)
@@ -180,7 +190,9 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.DropAreaBottom.Y = temp;
+            Point area = Envir.DragonInfoTable.DropAreaBottom;
+            area.Y = temp;
+            Envir.DragonInfoTable.DropAreaBottom = area;
         }
 
         private void Level1ExpTextBox_TextChanged(object sender, EventArgs e)
@@ -196,7 +208,7 @@ namespace Server
             ActiveControl.BackColor = SystemColors.Window;
 
 
-            Envir.DragonInfo.Exps[Convert.ToInt32(ActiveControl.Tag)] = temp;
+            Envir.DragonInfoTable.Exps[Convert.ToInt32(ActiveControl.Tag)] = temp;
         }
     }
 }

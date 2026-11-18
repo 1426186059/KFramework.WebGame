@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -30,7 +30,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal GeneralMeowMeow(MonsterInfo info)
+        protected internal GeneralMeowMeow(MonsterInfoTable info)
             : base(info)
         {
             ShieldUpDuration = Settings.Second * 30;

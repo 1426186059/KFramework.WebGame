@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -17,7 +17,7 @@ namespace Server.MirObjects.Monsters
             }
         }
 
-        protected internal SeedingsGeneral(MonsterInfo info)
+        protected internal SeedingsGeneral(MonsterInfoTable info)
             : base(info)
         {
         }

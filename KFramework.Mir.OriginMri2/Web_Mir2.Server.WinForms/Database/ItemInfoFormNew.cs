@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -225,7 +225,7 @@ namespace Server.Database
                 Table.Columns.Add(col.DataPropertyName, col.ValueType);
             }
 
-            foreach (ItemInfo item in Envir.ItemInfoList)
+            foreach (ItemInfoTable item in Envir.ItemInfoList)
             {
                 DataRow row = Table.NewRow();
 
@@ -332,11 +332,11 @@ namespace Server.Database
                     continue;
                 }
 
-                ItemInfo item;
+                ItemInfoTable item;
 
                 if (string.IsNullOrEmpty((string)row.Cells["ItemIndex"].FormattedValue))
                 {
-                    Envir.ItemInfoList.Add(item = new ItemInfo());
+                    Envir.ItemInfoList.Add(item = new ItemInfoTable());
 
                     item.Index = ++lastIndex;
                 }

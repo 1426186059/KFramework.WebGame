@@ -2958,7 +2958,7 @@ namespace Server.MirObjects
                 byte tempByte;
                 Packet p;
 
-                MonsterInfo monInfo;
+                MonsterInfoTable monInfo;
 
                 NPCActions act = acts[i];
                 List<string> param = act.Params.ToList();

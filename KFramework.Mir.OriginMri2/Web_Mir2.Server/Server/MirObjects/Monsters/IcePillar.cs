@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using S = ServerPackets;
 
 namespace Server.MirObjects.Monsters
@@ -11,7 +11,7 @@ namespace Server.MirObjects.Monsters
         protected override bool CanMove { get { return false; } }
         protected override bool CanRegen { get { return false; } }
 
-        protected internal IcePillar(MonsterInfo info)
+        protected internal IcePillar(MonsterInfoTable info)
             : base(info)
         {
             Direction = MirDirection.Up;

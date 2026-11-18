@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using S = ServerPackets;
@@ -10,7 +10,7 @@ namespace Server.MirObjects.Monsters
     /// </summary>
     public class CrystalSpider : MonsterObject
     {
-        protected internal CrystalSpider(MonsterInfo info)
+        protected internal CrystalSpider(MonsterInfoTable info)
             : base(info)
         {
         }

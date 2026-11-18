@@ -40,7 +40,7 @@ namespace Server.MirObjects
             int cand = completedIndex + 1;
             while (cand <= maxIndex)
             {
-                QuestInfo q = list.FirstOrDefault(d => d.Index == cand);
+                QuestInfoTable q = list.FirstOrDefault(d => d.Index == cand);
                 if (q == null)                       // 空洞：越过并重置计数
                 {
                     classSkipRun = 0;
@@ -90,7 +90,7 @@ namespace Server.MirObjects
         /// 该任务对当前玩家是否“职业符合”。用位掩码判断，与 RequiredClass 的值（1/2/4/8/16/31）一致。
         /// RequiredClass == 0 视为无职业限制。
         /// </summary>
-        private bool IsClassEligible(QuestInfo q)
+        private bool IsClassEligible(QuestInfoTable q)
         {
             int rc = (int)q.RequiredClass;
             if (rc == 0) return true;
