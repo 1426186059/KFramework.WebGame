@@ -4,6 +4,7 @@ using EngineRect = KFramework.MonoGame.Rectangle;
 using EngineRich = KFramework.MonoGame.RichTextObject;
 using EngineText = KFramework.MonoGame.TextRenderer;
 using EngineTextStyle = KFramework.MonoGame.TextStyle;
+using EngineVector2 = KFramework.MonoGame.Vector2;
 
 public static class TextRenderer
 {
@@ -49,11 +50,9 @@ public static class TextRenderer
             outlineMode);
     }
 
-    /// <summary>超链接点击回调：命中超链接时返回其 url，否则 null。</summary>
-    public static string GetLinkAt(EngineRich rich, Rectangle bounds, EngineTextStyle style, int x, int y)
+    /// <summary>超链接命中：只传世界坐标，布局已记在 TextInfo（绘制时确定）。命中返回 url，否则 null。</summary>
+    public static string FindIntersectingLink(EngineRich rich, EngineVector2 worldPos)
     {
-        return rich.GetLinkAt(
-            new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-            style.Anchor, style.HorizontalWrap, style.VerticalWrap, x, y);
+        return rich.FindIntersectingLink(worldPos);
     }
 }

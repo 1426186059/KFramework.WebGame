@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
     {
         private string _text = string.Empty;
         private IFont _font;
-        private RichTextDocument _doc;   // 解析缓存：Text 变化时才重建
+        private RichTextDocument? _doc;   // 解析缓存：Text 变化时才重建
         private Texture2D _whitePixel;   // 下划线用的 1x1 白纹（按需创建）
 
         // 排版缓存：runs 坐标相对 (0,0)，绘制/命中时按 bounds.X/Y 平移。
@@ -21,8 +21,21 @@ namespace KFramework.MonoGame
         private TextAnchor _layoutAnchor;
         private HorizontalWrapMode _layoutHWrap;
         private VerticalWrapMode _layoutVWrap;
-        private List<RichTextRun> _layoutRuns;
-        private List<float> _layoutLineTops;   // 各行行顶 Y（相对原点），供画辅助线
+
+        private List<RichTextRun> _layoutRuns = null;
+        private List<float> _layoutLineTops = null;   // 各行行顶 Y（相对原点），供画辅助线
+        private RichTextInfo _textInfo;               // 对标 TMP textInfo，排版时构建
+        private Color _lastForeColor = Color.White;   // 最近一次绘制的前景色，用于构建字符最终色
+
+        /// <summary>排版结果（逐字符/逐行/逐链接）。对标 TMP_Text.textInfo。
+        /// 在 Draw / Measure / GetLineTops 触发排版后可读；Text/Font 变化时会重建。</summary>
+        public RichTextInfo TextInfo
+        {
+            get
+            {
+                return _textInfo;
+            }
+        }
 
         public RichTextObject()
         {
@@ -74,9 +87,15 @@ namespace KFramework.MonoGame
                 return;
             }
             _text = text ?? string.Empty;
-            _doc = Parse(text);
+
+            // 唯一解析入口：无标签直接返回 null，Draw/Measure 走纯文本快路径。
+            _doc = _text.IndexOf('<') < 0
+                   ? null
+                   : RichTextDocument.Parse(_text);
+
             _layoutRuns = null;   // 文本变了：解析与排版都失效
             _layoutLineTops = null;
+            _textInfo = null;
         }
 
         public void SetFont(IFont font)
@@ -88,15 +107,7 @@ namespace KFramework.MonoGame
             _font = font;
             _layoutRuns = null;   // 字体变了：字宽/行高变了，排版失效
             _layoutLineTops = null;
-        }
-
-        private static RichTextDocument Parse(string text)
-        {
-            if (string.IsNullOrEmpty(text) || text.IndexOf('<') < 0)
-            {
-                return null;   // 无标签：交回普通路径，无需富文本文档
-            }
-            return RichTextDocument.Parse(text);
+            _textInfo = null;
         }
 
         // ---------------- 度量 ----------------
@@ -108,7 +119,6 @@ namespace KFramework.MonoGame
             {
                 return Size.Empty;
             }
-            EnsureDoc();
 
             string plain = _doc != null ? _doc.PlainText : _text;
             if (string.IsNullOrEmpty(plain))
@@ -152,7 +162,7 @@ namespace KFramework.MonoGame
             {
                 return;
             }
-            EnsureDoc();
+            _lastForeColor = foreColor;
 
             if (_doc != null)
             {
@@ -177,50 +187,31 @@ namespace KFramework.MonoGame
 
         // ---------------- 超链接命中 ----------------
 
-        /// <summary>超链接点击回调：传入与绘制时相同的排版参数与鼠标坐标，命中某个 &lt;link&gt;/&lt;a href&gt; 段时返回 url，否则 null。
-        /// 复用与 Draw 相同的排版缓存，命中区与画面一致。</summary>
-        public string GetLinkAt(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                                float x, float y)
+        /// <summary>强制按给定矩形排版并生成 TextInfo，对标 TMP_Text.ForceMeshUpdate 的排版部分。
+        /// 正常绘制无需调用（Draw 内部已排版）；仅在「未绘制就要命中/取字符信息」时显式调用。</summary>
+        public void Layout(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
         {
-            if (_font == null || string.IsNullOrEmpty(_text))
+            if (_font == null)
+            {
+                return;
+            }
+            LayoutRich(bounds, anchor, hWrap, vWrap);
+        }
+
+        /// <summary>超链接命中便捷版（返回 url，否则 null）。只传鼠标位置——布局与参数 Draw/Layout 时已记在 TextInfo 里。
+        /// TMP 签名的静态版在 <see cref="RichTextUtil.FindIntersectingLink"/>（返回 link 索引）。</summary>
+        public string FindIntersectingLink(Vector2 worldPos)
+        {
+            RichTextInfo info = _textInfo;
+            if (info == null || info.LinkCount == 0)
             {
                 return null;
             }
-            EnsureDoc();
-            if (_doc == null)
-            {
-                return null;   // 无标签，不可能有链接
-            }
-            List<RichTextRun> runs = LayoutRich(bounds, anchor, hWrap, vWrap);
-            foreach (RichTextRun run in runs)
-            {
-                if (run.Style.Link == null)
-                {
-                    continue;
-                }
-                // 命中区与绘制区用同一份 run 基线数据，保证点击范围和画面一致。
-                float rx = run.X + bounds.X;
-                float baselineY = run.BaselineY + bounds.Y;
-                float top = baselineY - run.Ascent;
-                float bottom = baselineY + run.Descent;
-                if (x >= rx && x <= rx + run.Width && y >= top && y <= bottom)
-                {
-                    return run.Style.Link;
-                }
-            }
-            return null;
+            int idx = RichTextUtil.FindIntersectingLink(this, worldPos);
+            return idx >= 0 ? info.Links[idx].Url : null;
         }
 
         // ---------------- 内部 ----------------
-
-        private void EnsureDoc()
-        {
-            if (_doc == null && _text.IndexOf('<') >= 0)
-            {
-                _doc = RichTextDocument.Parse(_text);
-            }
-        }
-
         /// <summary>富文本排版：逐字符折行 → 对齐 → 逐样式段切分，产出每段的文本、样式与矩形。
         /// 结果以 (0,0) 为原点缓存；Text/Font 或尺寸、对齐、折行方式变化时才重算。
         /// 注意 bounds.X/bounds.Y 只作为绘制/命中的平移量，不进缓存 key——描边偏移 1px 也能命中同一份布局。</summary>
@@ -341,7 +332,7 @@ namespace KFramework.MonoGame
                     // 后续绘制、命中、下划线只消费 run 自带值，不再回查字体。
                     float segAsc = fontAscent * st.Scale;
                     float segDesc = fontDescent * st.Scale;
-                    runs.Add(new RichTextRun(seg, st, tx, segW, segAsc + segDesc, baseY, segAsc, segDesc));
+                    runs.Add(new RichTextRun(seg, st, tx, segW, segAsc + segDesc, baseY, segAsc, segDesc, i));
                     tx += segW;
                     i = j;
                 }
@@ -358,7 +349,96 @@ namespace KFramework.MonoGame
             _layoutVWrap = vWrap;
             _layoutRuns = runs;
             _layoutLineTops = lineTops;
+            BuildTextInfo(bounds, runs, lineTops);
             return runs;
+        }
+
+        /// <summary>把 run 列表展开成逐字符信息（对标 TMP 的 characterInfo），并汇总行/链接。</summary>
+        private void BuildTextInfo(RectangleF bounds, List<RichTextRun> runs, List<float> lineTops)
+        {
+            _textInfo = _textInfo ?? new RichTextInfo();
+            RichTextInfo info = _textInfo;
+            info.Clear();
+            info.Bounds = bounds;
+
+            // url -> link 索引，同一 url 跨行/分段合并为一条 RichLinkInfo
+            var linkIndex = new Dictionary<string, int>();
+
+            foreach (RichTextRun run in runs)
+            {
+                RichTextStyle st = run.Style;
+                int linkIdx = -1;
+                if (!string.IsNullOrEmpty(st.Link))
+                {
+                    if (!linkIndex.TryGetValue(st.Link, out linkIdx))
+                    {
+                        linkIdx = info.AddLink(new RichLinkInfo(st.Link, info.CharacterCount, info.CharacterCount));
+                        linkIndex[st.Link] = linkIdx;
+                    }
+                }
+
+                float cx = run.X;
+                int charStart = info.CharacterCount;
+                for (int k = 0; k < run.Text.Length; k++)
+                {
+                    char ch = run.Text[k];
+                    float cw = _font.MeasureString(ch.ToString()).X * st.Scale;
+                    // 行号：行顶 <= 该字符基线 - Ascent 的最后一个行
+                    int line = 0;
+                    float glyphTop = run.BaselineY - run.Ascent;
+                    for (int li = lineTops.Count - 1; li >= 0; li--)
+                    {
+                        if (glyphTop >= lineTops[li] - 0.5f)
+                        {
+                            line = li;
+                            break;
+                        }
+                    }
+                    info.AddCharacter(new RichCharacterInfo(
+                        ch,
+                        run.TextIndexBase + k,
+                        line,
+                        cx,
+                        cw,
+                        run.BaselineY,
+                        run.Ascent,
+                        run.Descent,
+                        st.EffectiveColor(_lastForeColor),
+                        linkIdx));
+                    cx += cw;
+                }
+
+                if (linkIdx >= 0)
+                {
+                    info.ExtendLink(linkIdx, charStart, info.CharacterCount);
+                }
+            }
+
+            // 行信息：用行顶和下一行行顶（或最后行高）算 [start,end) 字符范围
+            for (int li = 0; li < lineTops.Count; li++)
+            {
+                int start = -1;
+                for (int ci = 0; ci < info.CharacterCount; ci++)
+                {
+                    if (info.Characters[ci].Line == li)
+                    {
+                        start = ci;
+                        break;
+                    }
+                }
+                if (start < 0)
+                {
+                    continue;
+                }
+                int end = start;
+                while (end < info.CharacterCount && info.Characters[end].Line == li)
+                {
+                    end++;
+                }
+                float top = lineTops[li];
+                float height = li + 1 < lineTops.Count ? lineTops[li + 1] - top : _font.LineSpacing;
+                info.AddLine(new RichLineInfo(start, end, top, height));
+            }
         }
 
         /// <summary>用排版结果逐段绘制（颜色/超链接/下划线/字号）。</summary>

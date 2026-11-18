@@ -16,7 +16,9 @@ namespace KFramework.MonoGame
             mStringBuilder.Append('[');
             Span<char> ts = stackalloc char[32];
             if (DateTime.Now.TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
+            {
                 mStringBuilder.Append(ts.Slice(0, w));
+            }
             mStringBuilder.Append(']');
             if (data1 != null) { mStringBuilder.Append(data1); mStringBuilder.Append(ConcatStr.AsSpan()); }
             if (data2 != null) { mStringBuilder.Append(data2); mStringBuilder.Append(ConcatStr.AsSpan()); }
@@ -27,12 +29,6 @@ namespace KFramework.MonoGame
             if (data7 != null) { mStringBuilder.Append(data7); mStringBuilder.Append(ConcatStr.AsSpan()); }
             if (data8 != null) { mStringBuilder.Append(data8); mStringBuilder.Append(ConcatStr.AsSpan()); }
             if (data9 != null) { mStringBuilder.Append(data9); mStringBuilder.Append(ConcatStr.AsSpan()); }
-        }
-
-        private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            return mStringBuilder.ToString();
         }
 
         [Conditional(MacroConst.DEBUG)]

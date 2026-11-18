@@ -8,8 +8,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
     /// 富文本（RichText）测试：验证 KRichLabel 的 Unity 风格标签子集 —— 颜色、超链接、粗/斜/下划线、字号。
     /// 五个页签：
     /// ① 标签总览：颜色（#RRGGBB / #RRGGBBAA / 命名色 / 嵌套 / 恢复默认）与样式标签，旁边给非富文本的原始串对照。
-    /// ② 超链接命中：&lt;link="url"&gt; 与 &lt;a href="url"&gt; 两种写法，悬停 / 点击时调 KRichLabel.GetLinkAt 直接取回 URL。
-    /// ③ 自动断言：用 Measure 验证标签确实被剥离、原样度量更宽；用 GetLinkAt 在链接文字坐标上采样，断言返回正确 URL。
+    /// ② 超链接命中：&lt;link="url"&gt; 与 &lt;a href="url"&gt; 两种写法，悬停 / 点击时调 KRichLabel.FindIntersectingLink 直接取回 URL。
+    /// ③ 自动断言：用 Measure 验证标签确实被剥离、原样度量更宽；用 FindIntersectingLink 在链接文字坐标上采样，断言返回正确 URL。
     /// ④ 随机样本对照：按按钮随机生成 1~3 行、覆盖全部标签类型的富文本，上格显示原始串、下格显示渲染结果。
     /// ⑤ 自动换行：标签内容被折行拆开时，颜色/下划线/字号/链接是否延续到下一行（窄/中/宽框切换）。
     /// 富文本一律走 KRichLabel（内部持有 RichTextObject，解析 + 排版缓存复用），原始串对照走 TextRenderer 普通文本 API。
@@ -48,6 +48,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         // 页⑤：自动换行测试（标签内容被折行拆开时，颜色/链接/下划线是否延续到下一行）。
         private string _wrapSample = string.Empty;
         private int _wrapWidth = 420;
+        private Rectangle _wrapRect;                       // 富文本块矩形，Update 命中和 Draw 共用
+        private string _wrapHoverUrl = string.Empty;       // 鼠标当前悬停的链接（只在鼠标位置查一次）
 
         // 富文本控件：内部持有 RichTextObject，解析与排版缓存复用；测试页只管设 Text / 调 DrawTo。
         private readonly KRichLabel _colorRich = new KRichLabel(ColorSample);
@@ -128,13 +130,29 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             base.Update();
             Layout();
 
-            if (ClickButtons() || _page != Page.Links)
+            if (ClickButtons())
             {
                 return;
             }
 
             Vector2 p = Input_Mouse.Position;
-            _hoverUrl = GetLink(LinkSample, _linkRect, p.X, p.Y) ?? string.Empty;
+            if (_page == Page.Links)
+            {
+                _hoverUrl = GetLink(LinkSample, _linkRect, p.X, p.Y) ?? string.Empty;
+            }
+            else if (_page == Page.Wrap)
+            {
+                // TMP 风格：静态工具查 TextInfo 返回 link 索引，再从 TextInfo 取 URL。
+                // 只查鼠标一点，不每帧网格扫描整块矩形（那会把帧率拖到 8 FPS）。
+                int linkIdx = RichTextUtil.FindIntersectingLink(_wrapRich.RichObject, p);
+                _wrapHoverUrl = (linkIdx >= 0 && linkIdx < _wrapRich.TextInfo.LinkCount)
+                                ? _wrapRich.TextInfo.Links[linkIdx].Url
+                                : string.Empty;
+            }
+            else
+            {
+                return;
+            }
 
             if (Input_Mouse.GetButtonDown(MouseButton.Left))
             {
@@ -144,13 +162,13 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             }
         }
 
-        /// <summary>用与链接页绘制相同的排版参数调 KRichLabel.GetLinkAt。</summary>
+        /// <summary>用与链接页绘制相同的排版参数：先 Layout 生成 TextInfo，再按位置命中。</summary>
         private string GetLink(string text, Rectangle bounds, float x, float y)
         {
             _queryRich.Text = text;
-            return _queryRich.GetLinkAt(bounds,
-                                        TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow,
-                                        x, y);
+            _queryRich.Layout(bounds, TextAnchor.UpperLeft,
+                              HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+            return _queryRich.FindIntersectingLink(new Vector2(x, y));
         }
 
         protected override void DrawBody(SpriteBatch batch, Vector2 origin)
@@ -214,7 +232,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             float y = ContentTop;
             float width = Device.Viewport.Width - x * 2f;
 
-            y += DrawSection(batch, "超链接：<link=\"url\"> / <a href=\"url\"> —— 蓝色下划线，调用 GetLinkAt 直接取回 URL", new Vector2(x, y));
+            y += DrawSection(batch, "超链接：<link=\"url\"> / <a href=\"url\"> —— 蓝色下划线，调用 FindIntersectingLink 直接取回 URL", new Vector2(x, y));
             y += DrawLine(batch, Font, "鼠标悬停高亮，点击显示 URL（测试里不打开浏览器）",
                           new Vector2(x, y), new Color(190, 205, 230));
 
@@ -280,7 +298,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                 empty.Width == 0 && empty.Height == 0,
                 empty.Width + "x" + empty.Height);
 
-            // GetLinkAt：把被测串画出来，在每个字符中心采样，验证点击回调直接返回 url。
+            // FindIntersectingLink：把被测串画出来，在每个字符中心采样，验证点击回调直接返回 url。
             const string probeText = "<link=\"urlA\">甲</link>X<a href=\"urlB\">乙</a>";
             Rectangle probe = new((int)x, (int)y, (int)MathF.Min(width, 700f), 40);
             DrawRect(batch, probe, new Color(18, 23, 36));
@@ -296,11 +314,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             string atB = GetLink(probeText, probe, probe.X + wA + wX + wA / 2f, sampleY);
             string atOut = GetLink(probeText, probe, probe.Right - 2f, sampleY);
 
-            Add(rows, "GetLinkAt 命中 link 段返回 urlA", atA == "urlA", "got=" + (atA ?? "null"));
-            Add(rows, "GetLinkAt 命中 a href 段返回 urlB", atB == "urlB", "got=" + (atB ?? "null"));
-            Add(rows, "GetLinkAt 非链接字符返回 null", atX == null, "got=" + (atX ?? "null"));
-            Add(rows, "GetLinkAt 文字外空白返回 null", atOut == null, "got=" + (atOut ?? "null"));
-            Add(rows, "GetLinkAt 无标签文本返回 null",
+            Add(rows, "FindIntersectingLink 命中 link 段返回 urlA", atA == "urlA", "got=" + (atA ?? "null"));
+            Add(rows, "FindIntersectingLink 命中 a href 段返回 urlB", atB == "urlB", "got=" + (atB ?? "null"));
+            Add(rows, "FindIntersectingLink 非链接字符返回 null", atX == null, "got=" + (atX ?? "null"));
+            Add(rows, "FindIntersectingLink 文字外空白返回 null", atOut == null, "got=" + (atOut ?? "null"));
+            Add(rows, "FindIntersectingLink 无标签文本返回 null",
                 GetLink("普通文字", probe, probe.X + wA / 2f, sampleY) == null, "got=null");
 
             int pass = 0;
@@ -469,6 +487,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
 
             // 右：富文本渲染，并画每行高度辅助线（按最大字号行的行高，贴近放大字真实占位）
             Rectangle richRect = new((int)colX2, (int)boxY, (int)colW, boxH);
+            _wrapRect = richRect;   // 供 Update 在鼠标位置做命中查询
             DrawRect(batch, richRect, new Color(18, 23, 36));
             _wrapRich.DrawTo(batch, richRect, Color.White,
                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
@@ -482,31 +501,11 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             }
             y = boxY + boxH + 14f;
 
-            // 链接跨行命中验证：在富文本块上按网格采样 GetLinkAt，统计唯一 URL 与命中行数。
-            int hitRows = 0;
-            string hitUrl = null;
-            for (int py = richRect.Y + 2; py < richRect.Bottom - 2; py += 4)
-            {
-                bool rowHit = false;
-                for (int px = richRect.X + 2; px < richRect.Right - 2; px += 6)
-                {
-                    string url = _wrapRich.GetLinkAt(richRect,
-                                      TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow, px, py);
-                    if (url != null)
-                    {
-                        hitUrl = url;
-                        rowHit = true;
-                        break;
-                    }
-                }
-                if (rowHit)
-                {
-                    hitRows++;
-                }
-            }
-            y += DrawLine(batch, Font, "链接跨行命中：URL=" + (hitUrl ?? "（未命中）") + "  命中扫描行数≈" + hitRows,
-                          new Vector2(x, y), hitUrl != null ? new Color(160, 220, 255) : new Color(235, 90, 90));
-            y += DrawLine(batch, Font, "（命中行数>1 说明链接被折行拆到多行，且各行都能取回同一 URL，属正确）",
+            // 链接跨行命中：鼠标悬停到右侧富文本的链接上，只查当前位置一点。
+            bool wrapHover = _wrapHoverUrl.Length > 0;
+            y += DrawLine(batch, Font, "链接跨行命中：鼠标悬停右侧文字 → URL=" + (wrapHover ? _wrapHoverUrl : "（无）"),
+                          new Vector2(x, y), wrapHover ? new Color(160, 220, 255) : new Color(150, 170, 200));
+            y += DrawLine(batch, Font, "把鼠标移到蓝色下划线的超链接上；折到多行后每行都应返回同一个 URL。",
                           new Vector2(x, y), new Color(150, 170, 200));
 
             // 顺带列出 MeasureText（Wrap）量出的行数，核对高度是否随折行增长。

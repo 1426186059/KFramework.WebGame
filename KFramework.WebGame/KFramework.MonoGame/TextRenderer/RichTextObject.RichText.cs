@@ -20,7 +20,8 @@ namespace KFramework.MonoGame
             float Height,
             float BaselineY,   // 该段字形基线 Y（已按 scale 落到行基线）
             float Ascent,      // 该段缩放后的基线→字顶距离
-            float Descent);    // 该段缩放后的基线→字底距离
+            float Descent,     // 该段缩放后的基线→字底距离
+            int TextIndexBase);// 段首字符在 PlainText 中的索引
 
         /// <summary>
         /// 轻量富文本解析（Unity UGUI/TextMeshPro 风格标签的子集），供 <see cref="RichTextObject"/> 使用。

@@ -219,13 +219,13 @@ namespace Client.MirControls
             }
 
             Point loc = DisplayLocation;
-            KFramework.MonoGame.TextStyle format = new KFramework.MonoGame.TextStyle(
-                _drawFormat.Anchor,
-                _drawFormat.HorizontalWrap,
-                KFramework.MonoGame.VerticalWrapMode.Overflow);
             SyncRich();
-            url = TextRenderer.GetLinkAt(_rich, new Rectangle(1, 1, Size.Width, Size.Height),
-                                         format, x - loc.X, y - loc.Y);
+            // 保证 TextInfo 按当前绘制参数排版（与 CreateTexture 的绘制矩形一致）。
+            _rich.Layout(new KFramework.MonoGame.RectangleF(1, 1, Size.Width, Size.Height),
+                         _drawFormat.Anchor, _drawFormat.HorizontalWrap,
+                         KFramework.MonoGame.VerticalWrapMode.Overflow);
+            url = TextRenderer.FindIntersectingLink(_rich,
+                new KFramework.MonoGame.Vector2(x - loc.X, y - loc.Y));
             return url != null;
         }
 

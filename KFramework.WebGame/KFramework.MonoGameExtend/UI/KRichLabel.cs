@@ -3,16 +3,6 @@ using KFramework.MonoGame;
 
 namespace KFramework.MonoGameExtend
 {
-    /// <summary>
-    /// 富文本控件：内部持有 <see cref="RichTextObject"/>，标签解析与排版结果都缓存，
-    /// 只有 Text/Font 变化才重解析，尺寸/对齐/折行变化才重排。
-    /// <para>
-    /// 矩形约定与 <see cref="KLabel"/> 一致（<see cref="Bounds"/>）。另提供 <see cref="DrawTo"/> /
-    /// <see cref="Measure"/> / <see cref="GetLinkAt"/> 三个立即模式入口，便于在自绘 UI（如测试页）
-    /// 里直接指定矩形使用，而不必自己持有 RichTextObject。
-    /// </para>
-    /// 支持 &lt;color&gt; / &lt;b&gt; / &lt;i&gt; / &lt;u&gt; / &lt;size&gt; / &lt;link&gt; / &lt;a href&gt;。
-    /// </summary>
     public class KRichLabel : KWidget
     {
         private readonly RichTextObject _rich = new RichTextObject();
@@ -95,13 +85,24 @@ namespace KFramework.MonoGameExtend
             return _rich.Measure(proposedSize, hWrap);
         }
 
-        /// <summary>超链接命中：传与绘制一致的矩形与排版参数。</summary>
-        public string GetLinkAt(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap,
-                                VerticalWrapMode vWrap, float x, float y)
+        /// <summary>强制排版（对标 TMP_Text.ForceMeshUpdate）；仅未绘制就要命中/取字符信息时调用。</summary>
+        public void Layout(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
         {
             EnsureFont();
-            return _rich.GetLinkAt(bounds, anchor, hWrap, vWrap, x, y);
+            _rich.Layout(bounds, anchor, hWrap, vWrap);
         }
+
+        /// <summary>超链接命中：只传世界坐标，布局已记在 TextInfo。命中返回 url，否则 null。</summary>
+        public string FindIntersectingLink(Vector2 worldPos)
+        {
+            return _rich.FindIntersectingLink(worldPos);
+        }
+
+        /// <summary>内部富文本对象，供 RichTextUtil 等静态工具查询（对标 TMP 里传 TMP_Text 内核）。</summary>
+        public RichTextObject RichObject => _rich;
+
+        /// <summary>排版结果（逐字符/逐行/逐链接），对标 TMP_Text.textInfo。绘制后可读。</summary>
+        public RichTextInfo TextInfo => _rich.TextInfo;
 
         /// <summary>各真实行顶 Y（相对绘制矩形），供画行辅助线；放大字行更高，行距不均匀。</summary>
         public List<float> GetLineTops(RectangleF bounds, TextAnchor anchor,
