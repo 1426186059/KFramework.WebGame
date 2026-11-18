@@ -209,9 +209,14 @@ namespace KFramework.MonoGame
         private List<RichTextRun> LayoutRich(RectangleF bounds, TextAnchor anchor,
                                              HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
         {
-            if (_layoutRuns != null && ReferenceEquals(_layoutText, _text) && _layoutFont == _font &&
-                _layoutWidth == bounds.Width && _layoutHeight == bounds.Height &&
-                _layoutAnchor == anchor && _layoutHWrap == hWrap && _layoutVWrap == vWrap)
+            if (_layoutRuns != null && 
+                ReferenceEquals(_layoutText, _text) && 
+                _layoutFont == _font &&
+                _layoutWidth == bounds.Width && 
+                _layoutHeight == bounds.Height &&
+                _layoutAnchor == anchor && 
+                _layoutHWrap == hWrap && 
+                _layoutVWrap == vWrap)
             {
                 return _layoutRuns;
             }
