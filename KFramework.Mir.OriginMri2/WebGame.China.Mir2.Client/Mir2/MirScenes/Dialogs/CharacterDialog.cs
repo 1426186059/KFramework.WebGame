@@ -237,6 +237,7 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true,
                     Visible = false,
                     SizeScale = Mir2OriginUIModel.Scale,
+                    UseUISampler = true, // 仅立绘小图放大用线性采样；全局保持 Point 保证文字清晰
                 };
                 // pos.json 可能比图片晚到、图片本身也异步解码；纹理就绪后重算一次坐标（居中回落需要真实尺寸）。
                 node.RemoteImageLoaded += (o, e) => ApplyModelLayerPosition(captured, node);

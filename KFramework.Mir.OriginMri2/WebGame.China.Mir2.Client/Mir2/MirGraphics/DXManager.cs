@@ -96,30 +96,43 @@ namespace Client.MirGraphics
 
         private static readonly Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material> _materials
             = new Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material>();
+        // UI 放大图（如角色立绘）专用采样材质，与全局 Point 隔离，避免小图放大成像素块。
+        private static readonly Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material> _uiMaterials
+            = new Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material>();
 
-        /// <summary>【全局统一】纹理采样器：所有精灵/瓦片/UI 绘制共用。改这一个变量即可全局切换平滑度。
-        /// 默认 Linear：对齐原版 Egret/WebGL 的平滑放大（角色立绘等小图放大不走样）；
-        /// 设回 SamplerState.Point 则恢复像素风（最近邻，放大不糊但会有像素块）。</summary>
-        public static KFramework.MonoGame.SamplerState GlobalSampler = KFramework.MonoGame.SamplerState.Linear;
+        /// <summary>【UI 立绘专用】采样器：仅放大的小图（角色立绘等）用线性平滑。
+        /// 默认 Linear；设回 SamplerState.Point 则立绘也恢复像素风。文字/地图/精灵一律不受影响，始终用 Point（保持字形清晰）。</summary>
+        public static KFramework.MonoGame.SamplerState UISampler = KFramework.MonoGame.SamplerState.Linear;
 
-        private static KFramework.MonoGame.Material BuildMaterial(KFramework.MonoGame.BlendState blend)
+        private static KFramework.MonoGame.Material BuildMaterial(KFramework.MonoGame.BlendState blend, KFramework.MonoGame.SamplerState sampler)
         {
             return new KFramework.MonoGame.Material
             {
                 Blend = blend,
-                Sampler = GlobalSampler,
+                Sampler = sampler,
                 DepthStencil = KFramework.MonoGame.DepthStencilState.None,
                 Rasterizer = KFramework.MonoGame.RasterizerState.CullNone,
             };
         }
 
-        /// <summary>全局材质；GlobalSampler 变更时自动重建（无需清缓存）。</summary>
+        /// <summary>全局材质：固定最近邻 Point，保证文字/精灵锐利（线性采样会让字形发糊）。</summary>
         public static KFramework.MonoGame.Material GetMaterial(KFramework.MonoGame.BlendState blend)
         {
-            if (!_materials.TryGetValue(blend, out var mat) || !ReferenceEquals(mat.Sampler, GlobalSampler))
+            if (!_materials.TryGetValue(blend, out var mat))
             {
-                mat = BuildMaterial(blend);
+                mat = BuildMaterial(blend, KFramework.MonoGame.SamplerState.Point);
                 _materials[blend] = mat;
+            }
+            return mat;
+        }
+
+        /// <summary>UI 放大图专用材质；UISampler 变更时自动重建。</summary>
+        private static KFramework.MonoGame.Material GetUIMaterial(KFramework.MonoGame.BlendState blend)
+        {
+            if (!_uiMaterials.TryGetValue(blend, out var mat) || !ReferenceEquals(mat.Sampler, UISampler))
+            {
+                mat = BuildMaterial(blend, UISampler);
+                _uiMaterials[blend] = mat;
             }
             return mat;
         }
@@ -332,6 +345,16 @@ void main()
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture, destRect,
                 sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
+            CMain.DPSCounter++;
+        }
+
+        /// <summary>用 UISampler（见该变量）绘制纹理，仅供放大的 UI 小图（角色立绘）平滑显示。
+        /// 用独立材质实例，BeginSprite 自动切批，不影响全局 Point 的文字/精灵绘制。</summary>
+        public static void DrawWithUISampler(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null, KFramework.MonoGame.SpriteEffects effects = KFramework.MonoGame.SpriteEffects.None)
+        {
+            if (texture == null) return;
+            BeginSprite(GetUIMaterial(ResolveBlend(blendState)), RenderTransform);
+            Batch.Draw(texture, destRect, sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
             CMain.DPSCounter++;
         }
 
