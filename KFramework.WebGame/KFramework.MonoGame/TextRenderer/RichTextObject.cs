@@ -22,6 +22,7 @@ namespace KFramework.MonoGame
         private HorizontalWrapMode _layoutHWrap;
         private VerticalWrapMode _layoutVWrap;
         private List<RichTextRun> _layoutRuns;
+        private List<float> _layoutLineTops;   // 各行行顶 Y（相对原点），供画辅助线
 
         public RichTextObject()
         {
@@ -75,6 +76,7 @@ namespace KFramework.MonoGame
             _text = text ?? string.Empty;
             _doc = Parse(text);
             _layoutRuns = null;   // 文本变了：解析与排版都失效
+            _layoutLineTops = null;
         }
 
         public void SetFont(IFont font)
@@ -85,6 +87,7 @@ namespace KFramework.MonoGame
             }
             _font = font;
             _layoutRuns = null;   // 字体变了：字宽/行高变了，排版失效
+            _layoutLineTops = null;
         }
 
         private static RichTextDocument Parse(string text)
@@ -161,6 +164,15 @@ namespace KFramework.MonoGame
             }
             // 无标签：仍按富文本路径画（逐字符折行），但样式全默认，等效普通文本。
             DrawRichCore(batch, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
+        }
+
+        /// <summary>返回各行的行顶 Y（相对 bounds 原点），供测试/调试画行辅助线。
+        /// 与 Draw 共用排版缓存；放大字所在行行高更大，行顶间距并不均匀。</summary>
+        public List<float> GetLineTops(RectangleF bounds, TextAnchor anchor,
+                                       HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        {
+            LayoutRich(bounds, anchor, hWrap, vWrap);   // 命中缓存 / 触发排版
+            return _layoutLineTops ?? new List<float>();
         }
 
         // ---------------- 超链接命中 ----------------
@@ -282,6 +294,7 @@ namespace KFramework.MonoGame
 
             // 3) 逐行、逐样式段切分
             var runs = new List<RichTextRun>();
+            var lineTops = new List<float>();
             foreach (var span in spans)
             {
                 float rowH = lineH * span.maxScale;
@@ -289,6 +302,7 @@ namespace KFramework.MonoGame
                 {
                     break;
                 }
+                lineTops.Add(startY);
                 float tx = 0f;
                 if (col == 1)
                 {
@@ -316,9 +330,13 @@ namespace KFramework.MonoGame
                     }
                     string seg = text.Substring(i, j - i);
                     float segW = _font.MeasureString(seg).X * st.Scale;
+                    float segH = lineH * st.Scale;
+                    // 同一行内不同字号按「底部对齐」：run 底边统一贴到行底（startY + rowH）。
+                    // 若一律顶部对齐，放大字（scale>1）的字形会向下压到同排普通字/下划线的位置，
+                    // 表现为放大段首个字与相邻下划线重叠、甚至被盖住。
+                    float segY = startY + (rowH - segH);
                     // Height 存该段自身缩放后的高度：下划线与命中区都按各自字号贴字。
-                    // 行与行的间距另用 rowH（该行最大缩放）控制，互不干扰。
-                    runs.Add(new RichTextRun(seg, st, tx, startY, segW, lineH * st.Scale));
+                    runs.Add(new RichTextRun(seg, st, tx, segY, segW, segH));
                     tx += segW;
                     i = j;
                 }
@@ -334,6 +352,7 @@ namespace KFramework.MonoGame
             _layoutHWrap = hWrap;
             _layoutVWrap = vWrap;
             _layoutRuns = runs;
+            _layoutLineTops = lineTops;
             return runs;
         }
 

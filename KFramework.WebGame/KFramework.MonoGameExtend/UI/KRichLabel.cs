@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using KFramework.MonoGame;
 
 namespace KFramework.MonoGameExtend
@@ -100,6 +101,14 @@ namespace KFramework.MonoGameExtend
         {
             EnsureFont();
             return _rich.GetLinkAt(bounds, anchor, hWrap, vWrap, x, y);
+        }
+
+        /// <summary>各真实行顶 Y（相对绘制矩形），供画行辅助线；放大字行更高，行距不均匀。</summary>
+        public List<float> GetLineTops(RectangleF bounds, TextAnchor anchor,
+                                       HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        {
+            EnsureFont();
+            return _rich.GetLineTops(bounds, anchor, hWrap, vWrap);
         }
 
         public int GetWidth() => Measure(new Size(int.MaxValue, int.MaxValue), HorizontalWrap).Width;

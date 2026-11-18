@@ -443,37 +443,44 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                              new Vector2(x, y));
             y += DrawLine(batch, Font, "标签在解析阶段已剥离成逐字符样式，折行按纯文本做，再按样式切段——理论上跨行应正确。",
                           new Vector2(x, y), new Color(190, 205, 230));
-            y += DrawLine(batch, Font, "当前框宽 " + _wrapWidth + "px（用上方按钮切换，越窄折行越多）。",
+            // 横向对照：左=原始串（标签当字符），右=富文本渲染。两列并排，避免纵向堆叠超出屏幕。
+            // 每列宽度由上方「窄/中/宽」按钮决定，但不超过半屏宽——宽框在窄屏上自动收敛。
+            const float gap = 18f;
+            float maxColW = (fullW - gap) / 2f;
+            float colW = Math.Min(_wrapWidth, maxColW);
+            float colX2 = x + colW + gap;
+            y += DrawLine(batch, Font, "当前每列框宽 " + (int)colW + "px（用上方按钮切换，越窄折行越多；上限半屏）。",
                           new Vector2(x, y), new Color(190, 205, 230));
 
-            // 上：原始串（标签当字符，同样折行，作对照）
-            Size rawSize = TextRenderer.MeasureText(_wrapSample, Font, new Size(_wrapWidth, int.MaxValue),
+            // 两块用同一框宽 colW 量高，取较大者，保证左右底边对齐。
+            Size rawSize = TextRenderer.MeasureText(_wrapSample, Font, new Size((int)colW, int.MaxValue),
                                                     HorizontalWrapMode.Wrap);
-            int rawH = Math.Max(40, rawSize.Height + 12);
-            DrawSection(batch, "原始文本（标签原样，richText=false）", new Vector2(x, y));
-            y += Font.LineSpacing + 6f;
-            Rectangle rawRect = new((int)x, (int)y, _wrapWidth, rawH);
+            Size richSize = _wrapRich.Measure(new Size((int)colW, int.MaxValue), HorizontalWrapMode.Wrap);
+            int boxH = Math.Max(40, Math.Max(rawSize.Height, richSize.Height) + 12);
+            float boxY = y + Font.LineSpacing + 6f;
+
+            // 左：原始串
+            DrawSection(batch, "原始文本（标签原样显示）", new Vector2(x, y));
+            DrawSection(batch, "富文本渲染（标签生效，横线=行辅助）", new Vector2(colX2, y));
+            Rectangle rawRect = new((int)x, (int)boxY, (int)colW, boxH);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, _wrapSample, Font, rawRect, new Color(255, 215, 170),
                                   TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
-            y += rawH + 16f;
 
-            // 下：富文本渲染（标签生效），并画每行高度辅助线
-            Size richSize = _wrapRich.Measure(new Size(_wrapWidth, int.MaxValue), HorizontalWrapMode.Wrap);
-            int richH = Math.Max(40, richSize.Height + 12);
-            DrawSection(batch, "富文本渲染（richText=true，横线=每行基线辅助，观察折行点）", new Vector2(x, y));
-            y += Font.LineSpacing + 6f;
-            Rectangle richRect = new((int)x, (int)y, _wrapWidth, richH);
+            // 右：富文本渲染，并画每行高度辅助线（按最大字号行的行高，贴近放大字真实占位）
+            Rectangle richRect = new((int)colX2, (int)boxY, (int)colW, boxH);
             DrawRect(batch, richRect, new Color(18, 23, 36));
             _wrapRich.DrawTo(batch, richRect, Color.White,
                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
-            int lineCount = Math.Max(1, (int)MathF.Ceiling(richSize.Height / Font.LineSpacing));
+            List<float> lineTops = _wrapRich.GetLineTops(richRect, TextAnchor.UpperLeft,
+                                       HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+            int lineCount = lineTops.Count;
             for (int i = 1; i < lineCount; i++)
             {
-                int ly = richRect.Y + (int)(i * Font.LineSpacing);
+                int ly = richRect.Y + (int)lineTops[i];
                 DrawRect(batch, new Rectangle(richRect.X, ly, richRect.Width, 1), new Color(45, 60, 90));
             }
-            y += richH + 14f;
+            y = boxY + boxH + 14f;
 
             // 链接跨行命中验证：在富文本块上按网格采样 GetLinkAt，统计唯一 URL 与命中行数。
             int hitRows = 0;
