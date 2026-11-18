@@ -1964,7 +1964,7 @@ namespace Client.MirScenes.Dialogs
 
             // 整行前景保持白色：坐标用它；状态词用富文本标签单独上色。
             LocationLabel.ForeColour = Color.White;
-            return safe ? "<color=green>安全区域</color>" : "<color=red>危险区域</color>";
+            return safe ? "<color=lime>安全区域</color>" : "<color=red>危险区域</color>";
         }
     }
 
