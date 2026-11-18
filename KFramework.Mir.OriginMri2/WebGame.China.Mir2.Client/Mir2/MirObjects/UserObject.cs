@@ -154,6 +154,9 @@ namespace Client.MirObjects
             RefreshLevelStats();
             RefreshBagWeight();
             RefreshEquipmentStats();
+            // 装备穿脱/换取后经此统一入口重算地图外观模型号（_pgArmour/_pgWeapon/斗笠…）：
+            // 几乎所有换装包最后都会调 User.RefreshStats()，这里一处覆盖，避免在每个包里重复补调用。
+            SetUserOriginModels(Equipment);
             RefreshItemSetStats();
             RefreshMirSetStats();
             RefreshSkills();

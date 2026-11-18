@@ -64,12 +64,39 @@ namespace Client.MirObjects
         // 翅膀/装扮等本服务端未在下发的 UserInformation 中追踪，回落 0（不绘制）。仅按传入 Equipment 解算；装备变化(SetSlots)时再次调用刷新。
         protected void SetUserOriginModels(UserItem[] equipment)
         {
-            _pgArmour = equipment[(int)EquipmentSlot.Armour]?.Info?.Index ?? 0;   // 身体（穿盔甲用其模型，否则裸身）
-            _pgWeapon = equipment[(int)EquipmentSlot.Weapon]?.Info?.Index ?? 0;  // 武器层
-            _pgMount  = equipment[(int)EquipmentSlot.Mount]?.Info?.Index ?? 0;   // 坐骑层
+            int armour = equipment != null && (int)EquipmentSlot.Armour < equipment.Length ? equipment[(int)EquipmentSlot.Armour]?.Info?.Index ?? 0 : 0;
+            int weapon = equipment != null && (int)EquipmentSlot.Weapon < equipment.Length ? equipment[(int)EquipmentSlot.Weapon]?.Info?.Index ?? 0 : 0;
+            int mount  = equipment != null && (int)EquipmentSlot.Mount  < equipment.Length ? equipment[(int)EquipmentSlot.Mount]?.Info?.Index ?? 0 : 0;
+            // 装饰层：斗笠/面纱/玉佩/勋章/疗伤石也有装备槽，必须与服务端 ObjectPlayer.Origin*ID 同口径，
+            // 否则自己的这些层恒为 0 被 DrawLayer 跳过（别人却能看到）。
+            int douLi    = equipment != null && (int)EquipmentSlot.DouLi     < equipment.Length ? equipment[(int)EquipmentSlot.DouLi]?.Info?.Index ?? 0 : 0;
+            int mianSha  = equipment != null && (int)EquipmentSlot.MianSha   < equipment.Length ? equipment[(int)EquipmentSlot.MianSha]?.Info?.Index ?? 0 : 0;
+            int yuPei    = equipment != null && (int)EquipmentSlot.YuPei     < equipment.Length ? equipment[(int)EquipmentSlot.YuPei]?.Info?.Index ?? 0 : 0;
+            int xunZhang = equipment != null && (int)EquipmentSlot.XunZhang  < equipment.Length ? equipment[(int)EquipmentSlot.XunZhang]?.Info?.Index ?? 0 : 0;
+            int liaoShang= equipment != null && (int)EquipmentSlot.LiaoShang < equipment.Length ? equipment[(int)EquipmentSlot.LiaoShang]?.Info?.Index ?? 0 : 0;
+
+            bool changed = armour != _pgArmour || weapon != _pgWeapon || mount != _pgMount
+                        || douLi != _pgDouLi || mianSha != _pgMianSha || yuPei != _pgYuPei
+                        || xunZhang != _pgXunZhang || liaoShang != _pgLiaoShang;
+
+            _pgArmour = armour;
+            _pgWeapon = weapon;
+            _pgMount  = mount;
+            _pgDouLi = douLi;
+            _pgMianSha = mianSha;
+            _pgYuPei = yuPei;
+            _pgXunZhang = xunZhang;
+            _pgLiaoShang = liaoShang;
             _originModel = PlayerBodyModelResolved();
-            PreloadSelfModels();   // 出场（Loading）/换装即开始预载自己全部装备层（急队列，不等待绘制）
+
+            // 装备没变则不重复预载（RefreshStats 调用频繁），变了才重新走急队列预载新装备层。
+            if (changed || !_selfModelsPreloded)
+            {
+                PreloadSelfModels();
+                _selfModelsPreloded = true;
+            }
         }
+        private bool _selfModelsPreloded;
 
         /// <summary>后台静默预载「自己」的全部装备层（身体/头发/护肩/武器/坐骑/装饰…），对齐原始 ActionLoader 的急队列：
         /// 出场即开始加载，不等待绘制；装备变化(SetSlots)时再次刷新。仅对 User 调用（this != User 直接返回）。</summary>
@@ -3531,13 +3558,11 @@ namespace Client.MirObjects
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir, pr);
                     Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx, standX: sx, standY: sy);
                 }
-                // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)
-                DrawLayer(PlayerZhenfaModel());    // 法阵（type5，地面法阵）
-                DrawLayer(PlayerFootModel());      // 足迹（type2，脚下痕迹）
-                DrawLayer(PlayerMountModel());     // 坐骑（底）
-                DrawLayer(PlayerWingModel());      // 翅膀（后）
-                // 身体层：主模型（盔甲/时装，由 _originModel 给出）若在 CDN 确认缺失，回落裸身 9001/9002。
-                // 仍走 origin 独立图集（非旧 .Lib），保证玩家始终可见，而不是整人消失。
+                // 地图玩家部件对齐原始传奇 UIModelUtil.setFirstPlayerModel/showPlayerModel，只显示：
+                //   Body(衣服) + Weapon(武器) + Head(斗笠) + Miansha(面纱)。
+                // 原版本就没有护肩/玉佩/勋章/披风/疗伤石；护盾(Shield)原版虽有但本项目不需要，一并去掉。
+                // 法阵/足迹/坐骑/翅膀/旋光/称号/徽记等特效层也不绘制。
+                // 身体层主模型（盔甲/时装，由 _originModel 给出）若在 CDN 确认缺失，回落裸身 9001/9002。
                 int bodyModel = _originModel;
                 if (Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Player, bodyModel, action, dir))
                 {
@@ -3549,34 +3574,19 @@ namespace Client.MirObjects
                     }
                     bodyModel = naked;
                 }
-                // 角色主体层（身体/头发/头部饰品）以【身体】为枢轴基准对齐角色点（身体为准，头发跟随）。
-                // 身体优先用自己的 stand；装备铠甲(9027)等缺 stand 时回落裸身 9001/9002 的 stand（必有），
-                // 避免回落画布中心导致身体歪、而头发用自己的 stand 又与身体错开。
-                // 头发/头部饰品（斗笠/面纱）跟随身体枢轴；披风为背后独立层，用自身枢轴（强制共用会让披风/武器错开、模型散架）。
+                // 枢轴：身体优先用自身 stand，缺则回落裸身 9001/9002；斗笠/武器等部件无自身 stand，
+                // 跟随身体角色锚点（原版 getModelConfig 对玩家部件回落到 ≈536/530，非画布中心）。
                 int baseBody = Gender == MirGender.Female ? 9002 : 9001;
                 int charSx, charSy;
                 if (!Mir2OriginObjectLibrary.TryGetStand(bodyModel, action, out charSx, out charSy)
                     && !Mir2OriginObjectLibrary.TryGetStand(baseBody, action, out charSx, out charSy))
                 {
-                    // 裸身也缺（如女性 9002 不在 stand 表）：用男裸身 9001 的枢轴作通用兜底（同虚拟画布，脚底基准一致）。
                     Mir2OriginObjectLibrary.TryGetStand(9001, action, out charSx, out charSy);
                 }
-                int hairModel = PlayerHairModel();
-                DrawLayer(PlayerPiFengModel());                    // 披风（自身枢轴，不跟随身体）
-                DrawLayer(bodyModel, charSx, charSy);              // 身体（中，含装扮覆盖）
-                // 头发/护肩/玉佩/勋章/斗笠/面纱/武器/护盾：各自用自身 standx/standy，与身体按角色点自然对齐。
-                DrawLayer(hairModel, charSx, charSy);              // 头发（叠在光头身体之上，位于斗笠/面纱之下）
-                DrawLayer(PlayerHuJianModel());    // 护肩
-                DrawLayer(PlayerYuPeiModel());     // 玉佩
-                DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
-                DrawLayer(PlayerDouLiModel(), charSx, charSy);     // 斗笠（头部，与身体同画布）
-                DrawLayer(PlayerMianShaModel(), charSx, charSy);   // 面纱（面部，与身体同画布）
-                DrawLayer(PlayerWeaponModel());    // 武器（前，含幻武覆盖）
-                DrawLayer(PlayerHuDunModel());     // 护盾（副手）
-                DrawLayer(PlayerLiaoShangModel()); // 疗伤石（无精灵，保留）— 自身枢轴
-                DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）— 自身枢轴
-                DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）— 自身枢轴
-                DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）— 自身枢轴
+                DrawLayer(bodyModel, charSx, charSy);              // Body 衣服（身体，含装扮覆盖）——命中框也据此计算
+                DrawLayer(PlayerMianShaModel(), charSx, charSy);   // Miansha 面纱（面部）
+                DrawLayer(PlayerDouLiModel(), charSx, charSy);     // Head 斗笠（头部）
+                DrawLayer(PlayerWeaponModel(), charSx, charSy);    // Weapon 武器（前，含幻武覆盖）
 
                 // 鼠标命中框/血条定位用：与“身体实际绘制”用完全相同的参数（同 action / 同帧 / 同镜像 / 身体自己的枢轴）。
                 // 各层已恢复各自 standx/standy，身体层用的就是它自己的注册点，命中框据此计算即贴合身体。
