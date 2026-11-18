@@ -137,8 +137,12 @@ namespace KFramework.MonoGame
 
         /// <summary>富文本绘制；batch 必须处于 Begin / End 之间。
         /// outlineMode=true 时只画去标签的纯文本、忽略段颜色（供描边用统一色）。</summary>
-        public void Draw(SpriteBatch batch, RectangleF bounds, Color foreColor,
-                         TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
+        public void Draw(SpriteBatch batch, 
+                         RectangleF bounds, 
+                         Color foreColor,
+                         TextAnchor anchor, 
+                         HorizontalWrapMode hWrap, 
+                         VerticalWrapMode vWrap,
                          bool outlineMode = false)
         {
             if (batch == null || _font == null || string.IsNullOrEmpty(_text))
