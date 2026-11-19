@@ -3584,8 +3584,12 @@ namespace Client.MirObjects
                     Mir2OriginObjectLibrary.TryGetStand(9001, action, out charSx, out charSy);
                 }
                 DrawLayer(bodyModel, charSx, charSy);              // Body 衣服（身体，含装扮覆盖）——命中框也据此计算
+                // 原始传奇 UIModelUtil.setFirstPlayerModel：无斗笠/头盔时 Head 层回落到头发
+                // （男 9498 / 女 9499）。女裸身 9002 少了头发就会被误看成男裸模。
+                int headModel = PlayerDouLiModel();
+                if (headModel <= 0) headModel = PlayerHairModel();
+                DrawLayer(headModel, charSx, charSy);              // Head 斗笠/头盔，缺省为头发
                 DrawLayer(PlayerMianShaModel(), charSx, charSy);   // Miansha 面纱（面部）
-                DrawLayer(PlayerDouLiModel(), charSx, charSy);     // Head 斗笠（头部）
                 DrawLayer(PlayerWeaponModel(), charSx, charSy);    // Weapon 武器（前，含幻武覆盖）
 
                 // 鼠标命中框/血条定位用：与“身体实际绘制”用完全相同的参数（同 action / 同帧 / 同镜像 / 身体自己的枢轴）。
