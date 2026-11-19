@@ -241,7 +241,9 @@ namespace Server.MirObjects
                 ItemInfoTable info = Envir.StartItems[i];
                 if (!CorrectStartItem(info)) continue;
 
-                AddItem(Envir.CreateFreshItem(info));
+                UserItem item = Envir.CreateFreshItem(info);
+                item.Count = (ushort)Math.Min(Math.Max(info.StartItemCount, 1), ushort.MaxValue);
+                AddItem(item);
             }
         }
         public long GetDelayTime(long original)

@@ -28,6 +28,8 @@ public class ItemInfoTable
     public ushort StackSize { get; set; } = 1;
 
     public bool StartItem { get; set; }
+    // 新角色赠送数量；默认 1，与服务端配置保持同构。
+    public int StartItemCount { get; set; } = 1;
     public byte Effect { get; set; }
 
     public bool NeedIdentify { get; set; }

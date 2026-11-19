@@ -23,6 +23,8 @@ public class ItemInfoTable
     public ushort StackSize { get; set; } = 1;
 
     public bool StartItem { get; set; }
+    // 新角色赠送数量；默认 1，回城卷等可通过配置表改成 100。
+    public int StartItemCount { get; set; } = 1;
     public byte Effect { get; set; }
 
     public bool NeedIdentify { get; set; }
