@@ -35101,7 +35101,7 @@
   {
     "Index": 4636,
     "Name": "强效金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35131,14 +35131,16 @@
     "ToolTip": "+90HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 90
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4637,
     "Name": "强效魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35168,14 +35170,16 @@
     "ToolTip": "+150MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 150
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4638,
     "Name": "特效金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35205,14 +35209,16 @@
     "ToolTip": "+140HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 140
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4639,
     "Name": "特效魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35242,14 +35248,16 @@
     "ToolTip": "+220MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 220
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4640,
     "Name": "终极金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35279,14 +35287,16 @@
     "ToolTip": "+200HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 200
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4641,
     "Name": "终极魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -35316,7 +35326,9 @@
     "ToolTip": "+300MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 300
+      }
     },
     "OriginModel": ""
   },
@@ -35434,13 +35446,13 @@
   {
     "Index": 4645,
     "Name": "超级金创药",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4645,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -35471,13 +35483,13 @@
   {
     "Index": 4646,
     "Name": "超级魔法药",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4646,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -35508,13 +35520,13 @@
   {
     "Index": 4647,
     "Name": "特效金创药(包)",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4647,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -35545,13 +35557,13 @@
   {
     "Index": 4648,
     "Name": "特效魔法药(包)",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4648,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -35582,13 +35594,13 @@
   {
     "Index": 4649,
     "Name": "终极金创药(包)",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4649,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -35619,13 +35631,13 @@
   {
     "Index": 4650,
     "Name": "终极魔法药(包)",
-    "Type": 13,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4650,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36552,7 +36564,7 @@
   {
     "Index": 4680,
     "Name": "巅峰魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36582,14 +36594,16 @@
     "ToolTip": "+390MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 390
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4681,
     "Name": "极限魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36619,20 +36633,22 @@
     "ToolTip": "+480MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 480
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4682,
     "Name": "巅峰魔法药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4682,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36663,13 +36679,13 @@
   {
     "Index": 4683,
     "Name": "极限魔法药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4683,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36700,7 +36716,7 @@
   {
     "Index": 4684,
     "Name": "无极魔法药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36730,20 +36746,22 @@
     "ToolTip": "+580MP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 580
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4685,
     "Name": "无极魔法药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4685,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36774,7 +36792,7 @@
   {
     "Index": 4686,
     "Name": "巅峰金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36804,14 +36822,16 @@
     "ToolTip": "+270HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 270
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4687,
     "Name": "极限金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36841,20 +36861,22 @@
     "ToolTip": "+350HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 350
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4688,
     "Name": "巅峰金创药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4688,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36885,13 +36907,13 @@
   {
     "Index": 4689,
     "Name": "极限金创药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4689,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -36922,7 +36944,7 @@
   {
     "Index": 4690,
     "Name": "无极金创药",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -36952,20 +36974,22 @@
     "ToolTip": "+450HP\n已绑定",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 450
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 4691,
     "Name": "无极金创药(包)",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 4691,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -43545,7 +43569,7 @@
   {
     "Index": 8100,
     "Name": "金创药(小量)",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -43575,14 +43599,16 @@
     "ToolTip": "+20HP\n可交易◆可掉落",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 20
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 8101,
     "Name": "魔法药(小量)",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -43612,7 +43638,9 @@
     "ToolTip": "+30MP\n可交易◆可掉落",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 30
+      }
     },
     "OriginModel": ""
   },
@@ -43767,7 +43795,7 @@
   {
     "Index": 8127,
     "Name": "金创药(中量)",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -43797,14 +43825,16 @@
     "ToolTip": "+50HP\n可交易◆可掉落",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "HP": 50
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 8128,
     "Name": "魔法药(中量)",
-    "Type": 0,
+    "Type": 13,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -43834,14 +43864,16 @@
     "ToolTip": "+80MP\n可交易◆可掉落",
     "Slots": 0,
     "Stats": {
-      "Values": {}
+      "Values": {
+        "MP": 80
+      }
     },
     "OriginModel": ""
   },
   {
     "Index": 8135,
     "Name": "回城卷",
-    "Type": 0,
+    "Type": 17,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -44976,13 +45008,13 @@
   {
     "Index": 8195,
     "Name": "金创药(小)包",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 8195,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -44991,7 +45023,6 @@
     "Price": 8100,
     "StackSize": 1,
     "StartItem": true,
-    "UseReward": "8100#6",
     "Effect": 0,
     "NeedIdentify": false,
     "ShowGroupPickup": false,
@@ -45014,13 +45045,13 @@
   {
     "Index": 8196,
     "Name": "魔法药(小)包",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 8196,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -45051,13 +45082,13 @@
   {
     "Index": 8197,
     "Name": "金创药(中)包",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 8197,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,
@@ -45088,13 +45119,13 @@
   {
     "Index": 8198,
     "Name": "魔法药(中)包",
-    "Type": 0,
+    "Type": 21,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
     "RequiredGender": 3,
     "Set": 0,
-    "Shape": 0,
+    "Shape": 8198,
     "Weight": 0,
     "Light": 0,
     "RequiredAmount": 0,

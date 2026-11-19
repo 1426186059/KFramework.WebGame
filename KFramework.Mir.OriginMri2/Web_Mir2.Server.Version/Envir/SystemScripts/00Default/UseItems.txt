@@ -105,3 +105,68 @@ GIVEGOLD 10000000
 LocalMessage "获得1000万金币" Hint
 #ELSEACT
 GIVEITEM 金箱 1
+
+;;药包拆包脚本：脚本号 = 物品行 Index，一一对应（Type=Script, Shape=Index）
+[@_UseItem(4645)]
+#ACT
+GIVEITEM 强效金创药 6
+
+[@_UseItem(4646)]
+#ACT
+GIVEITEM 强效魔法药 6
+
+[@_UseItem(4647)]
+#ACT
+GIVEITEM 特效金创药 6
+
+[@_UseItem(4648)]
+#ACT
+GIVEITEM 特效魔法药 6
+
+[@_UseItem(4649)]
+#ACT
+GIVEITEM 终极金创药 6
+
+[@_UseItem(4650)]
+#ACT
+GIVEITEM 终极魔法药 6
+
+[@_UseItem(4682)]
+#ACT
+GIVEITEM 巅峰魔法药 6
+
+[@_UseItem(4683)]
+#ACT
+GIVEITEM 极限魔法药 6
+
+[@_UseItem(4685)]
+#ACT
+GIVEITEM 无极魔法药 6
+
+[@_UseItem(4688)]
+#ACT
+GIVEITEM 巅峰金创药 6
+
+[@_UseItem(4689)]
+#ACT
+GIVEITEM 极限金创药 6
+
+[@_UseItem(4691)]
+#ACT
+GIVEITEM 无极金创药 6
+
+[@_UseItem(8195)]
+#ACT
+GIVEITEM 金创药(小量) 6
+
+[@_UseItem(8196)]
+#ACT
+GIVEITEM 魔法药(小量) 6
+
+[@_UseItem(8197)]
+#ACT
+GIVEITEM 金创药(中量) 6
+
+[@_UseItem(8198)]
+#ACT
+GIVEITEM 魔法药(中量) 6
