@@ -398,7 +398,6 @@ namespace Client.MirScenes.Dialogs
 
             ParentDialog.CurrentRecord = currentRecord;
             int index = currentRecord.MapInfo.BigMap;
-
             if (index <= 0 && ParentDialog.TargetMapIndex == GameScene.Scene.MapControl.Index)
             {
                 index = GameScene.Scene.MapControl.MapImg;
@@ -413,7 +412,10 @@ namespace Client.MirScenes.Dialogs
             {
                 _bigMapLoadedIdx = index;
                 _bigMapTexture = null;
-                if (index > 0) LoadBigMapTexture(index);
+                if (index > 0)
+                {
+                    LoadBigMapTexture(index);
+                }
             }
 
             MouseMove += UpdateBigMapCoordinates;
