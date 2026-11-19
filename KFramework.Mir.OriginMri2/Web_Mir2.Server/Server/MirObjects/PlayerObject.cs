@@ -6740,6 +6740,33 @@ namespace Server.MirObjects
                         return;
                     }
                     break;
+                case ItemType.Nothing:
+                    if (string.IsNullOrEmpty(item.Info.UseReward))
+                    {
+                        Enqueue(p);
+                        return;
+                    }
+
+                    string[] rewardParts = item.Info.UseReward.Split('#');
+                    if (rewardParts.Length != 2 ||
+                        !int.TryParse(rewardParts[0], out int rewardIndex) ||
+                        !int.TryParse(rewardParts[1], out int rewardCount) ||
+                        rewardIndex <= 0 || rewardCount <= 0)
+                    {
+                        Enqueue(p);
+                        return;
+                    }
+
+                    ItemInfoTable rewardInfo = Envir.GetItemInfo(rewardIndex);
+                    if (rewardInfo == null)
+                    {
+                        Enqueue(p);
+                        return;
+                    }
+
+                    for (int i = 0; i < rewardCount; i++)
+                        AddItem(Envir.CreateFreshItem(rewardInfo));
+                    break;
                 default:
                     return;
             }

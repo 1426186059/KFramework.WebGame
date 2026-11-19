@@ -44991,6 +44991,7 @@
     "Price": 8100,
     "StackSize": 1,
     "StartItem": true,
+    "UseReward": "8100#6",
     "Effect": 0,
     "NeedIdentify": false,
     "ShowGroupPickup": false,
