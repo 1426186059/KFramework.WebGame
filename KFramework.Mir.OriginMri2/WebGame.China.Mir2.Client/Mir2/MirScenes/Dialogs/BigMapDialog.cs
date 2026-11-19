@@ -315,7 +315,8 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = "y_homeUI-sheet#y_map_p_1",
                 Parent = this,
                 Visible = false,
-                NotControl = true
+                NotControl = true,
+                Size = new Size(9, 9)
             };
 
             Players = new MirImageControl[Globals.MaxGroup];
@@ -385,8 +386,15 @@ namespace Client.MirScenes.Dialogs
         {
             if (!Parent.Visible) return;
 
-            if (ParentDialog == null) ParentDialog = Parent as BigMapDialog;
-            if (ParentDialog == null) return;
+            if (ParentDialog == null)
+            {
+                ParentDialog = Parent as BigMapDialog;
+            }
+
+            if (ParentDialog == null)
+            {
+                return;
+            }
 
             MouseMove -= UpdateBigMapCoordinates;
 
@@ -439,9 +447,13 @@ namespace Client.MirScenes.Dialogs
                 (int)(ScaleY * MapObject.User.CurrentLocation.Y) - viewRect.Height / 2);
 
             if (viewRect.Right >= Size.Width)
+            {
                 viewRect.X = Size.Width - viewRect.Width;
+            }
             if (viewRect.Bottom >= Size.Height)
+            {
                 viewRect.Y = Size.Height - viewRect.Height;
+            }
 
             if (viewRect.X < 0) viewRect.X = 0;
             if (viewRect.Y < 0) viewRect.Y = 0;
@@ -460,31 +472,8 @@ namespace Client.MirScenes.Dialogs
             var map = GameScene.Scene.MapControl;
             if (ParentDialog.TargetMapIndex == map.Index)
             {
-                float x;
-                float y;
-                foreach (var ob in  MapControl.Objects.Values)
-                {
-                    if (ob.Race == ObjectType.Item || ob.Dead || ob.Race == ObjectType.Spell || ob.ObjectID == MapObject.User.ObjectID) continue;
-                    x = ((ob.CurrentLocation.X - startPointX) * ScaleX) + DisplayLocation.X;
-                    y = ((ob.CurrentLocation.Y - startPointY) * ScaleY) + DisplayLocation.Y;
-
-                    Color colour;
-
-                    if (GroupDialog.GroupList.Contains(ob.Name) || ob.Name.EndsWith(string.Format("({0})", MapObject.User.Name)))
-                        colour = Color.FromArgb(0, 0, 255);
-                    else
-                        if (ob is PlayerObject)
-                        colour = Color.FromArgb(255, 255, 255);
-                    else if (ob is NPCObject || ob.AI == 6)
-                        colour = Color.FromArgb(0, 255, 50);
-                    else
-                        colour = Color.FromArgb(255, 0, 0);
-
-                    DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
-                }
-
-                x = MapObject.User.CurrentLocation.X * ScaleX;
-                y = MapObject.User.CurrentLocation.Y * ScaleY;
+                float x = MapObject.User.CurrentLocation.X * ScaleX;
+                float y = MapObject.User.CurrentLocation.Y * ScaleY;
                 var s = UserRadarDot.Size;
                 UserRadarDot.Location = new Point((int)x - s.Width / 2, (int)y - s.Height / 2);
 
@@ -532,21 +521,17 @@ namespace Client.MirScenes.Dialogs
             {
                 var movementInfo = record.Key;
                 var label = record.Value;
-
                 float x = movementInfo.Location.X * ScaleX;
                 float y = movementInfo.Location.Y * ScaleY;
-
                 var s = label.Size;
-
                 label.Location = new Point((int)x - s.Width / 2, (int)y - s.Height / 2);
             }
 
-            // 大地图点击后的寻路路线（白色点点点）：读取 MapControl.CurrentPath，
-            // 按屏幕最小间距取样绘制，避免过密连成线；随角色走动实时缩短。
-            if (GameScene.Scene.MapControl.AutoPath && GameScene.Scene.MapControl.CurrentPath != null)
+            if (GameScene.Scene.MapControl.AutoPath && 
+                GameScene.Scene.MapControl.CurrentPath != null)
             {
                 var mc = GameScene.Scene.MapControl;
-                float minDist = 12F; // 相邻点的最小屏幕间距（像素）
+                float minDist = 12F;
                 float lastX = float.MinValue, lastY = float.MinValue;
                 for (int i = 0; i < mc.CurrentPath.Count; i++)
                 {
@@ -561,6 +546,7 @@ namespace Client.MirScenes.Dialogs
                     }
                 }
             }
+
         }
     }
 
