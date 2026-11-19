@@ -4,16 +4,19 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using SlimDX;
-using MirEngine;
 using C = ClientPackets;
-using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
     public sealed class BigMapDialog : MirImageControl
     {
+        private const string MapSheet = "y_mappanel-sheet";
+        private const int SkinW = 818, SkinH = 536;
+        private const int MapAreaX = 156, MapAreaY = 53, MapAreaW = 604, MapAreaH = 442;
+
         MirLabel CoordinateLabel, TitleLabel;
         public MirButton CloseButton, MyLocationButton;
+        private readonly MirButton[] _actionButtons = new MirButton[4];
 
         public int TargetMapIndex;
 
@@ -41,7 +44,6 @@ namespace Client.MirScenes.Dialogs
                 if (currentRecord == value) return;
                 SetButtonsVisibility(false);
                 currentRecord = value;
-                TitleLabel.Text = currentRecord != null ? currentRecord.MapInfo.Title : string.Empty;
                 ViewPort.UserRadarDot.Visible = currentRecord != null && currentRecord.Index == GameScene.Scene.MapControl.Index;
                 SetButtonsVisibility(true);
             }
@@ -49,68 +51,141 @@ namespace Client.MirScenes.Dialogs
 
         public BigMapDialog()
         {
-            Index = 820;
-            Library = Libraries.Title;
-            Sort = true;
-            // 浏览器端资源异步加载，MirImageControl 在 AutoSize 下 GetTrueSize 可能返回 0，
-            // 导致对话框 Size 为 0、整个窗口收不到鼠标（关闭按钮与地图点击全部失效）。
-            // 显式关闭 AutoSize 并给出确定尺寸：优先用真实贴图尺寸，否则用经典大地图框尺寸兜底。
             AutoSize = false;
-            Size = (Library != null && Index >= 0) ? Library.GetTrueSize(Index) : Size.Empty;
-            if (Size.IsEmpty) Size = new Size(596, 460);
+            Size = new Size(SkinW, SkinH);
             Location = Center;
             NotControl = false;
+            DrawImage = false;
+            Sort = true;
 
-            MyLocationButton = new MirButton
+            // 背景：原始传奇 common_bg.png（gameui4/jpg，走 manifest 哈希布局解析）
+            var bg = new MirImageControl
             {
-                Index = 824,
-                HoverIndex = 825,
-                PressedIndex = 826,
-                Location = new Point(400, Size.Height - 33),
-                Library = Libraries.Title,
                 Parent = this,
+                ImageKey = "resource/assets/gameui4/jpg/common_bg.png",
+                Location = new Point(0, 0),
+                NotControl = true,
+                Size = new Size(790, 536),
+            };
+
+            // 标题 "地图"（mapSkin _Group1 14,13 / txt_title x=20 style233）
+            TitleLabel = new MirLabel
+            {
+                ForeColour = Color.FromArgb(255, 240, 200, 120),
+                Parent = this,
+                AutoSize = false,
+                Size = new Size(208, 37),
+                NotControl = true,
+                Location = new Point(34, 13),
+                Font = new Font(Settings.FontName, 14F, KFramework.MonoGame.FontStyle.Bold),
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
+                Text = "地图",
+                OutLine = true
+            };
+
+            var nameBar = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = MapSheet,
+                AtlasFrame = "y_map_bg1",
+                Location = new Point(MapAreaX + MapAreaW / 2 - 60, MapAreaY - 3),
+                Size = new Size(120, 30),
+                NotControl = true,
+            };
+
+            AddLegend(30 + 35, 53 + 10, "y_map_icon0", "死亡掉装");
+            AddLegend(30 + 35, 53 + 80, "y_map_icon1", "击杀红名");
+
+            string[] btnLabels = { "行会召集", "随机", "回城", "队伍召集" };
+            int[] btnY = { 354, 265, 309, 398 };
+            for (int i = 0; i < _actionButtons.Length; i++)
+            {
+                int k = i;
+                var b = new MirButton
+                {
+                    Parent = this,
+                    Location = new Point(30 + 3, 53 + btnY[i]),
+                    Size = new Size(115, 36),
+                    AtlasNameKey = "y_common-sheet",
+                    AtlasFrame = "com_z_btn_1",
+                    HoverAtlasFrame = "com_z_btn_1_1",
+                    PressedAtlasFrame = "com_z_btn_1_1",
+                    Sound = SoundList.ButtonA,
+                };
+                b.Label.Text = btnLabels[i];
+                b.Label.ForeColour = Color.FromArgb(255, 245, 220, 160);
+                b.CenterText = true;
+                b.Click += (o, e) => OnActionButton(k);
+                _actionButtons[i] = b;
+            }
+
+            // 关闭按钮（mapSkin btn_close 768,2，50×50，com_btn_close0/1）
+            CloseButton = new MirButton
+            {
+                Parent = this,
+                Location = new Point(780, 10),
+                AtlasNameKey = "y_common-sheet#com_btn_close0",
+                PressedAtlasFrame = "com_btn_close1",
+                HoverAtlasFrame = "com_btn_close1",
                 Sound = SoundList.ButtonA,
             };
-            MyLocationButton.Click += (o, e) => TargetMyLocation();
+            CloseButton.Click += (o, e) => Hide();
 
-
+            // 地图视口（保留经典地图渲染/标记/寻路），放到 mapSkin 的地图区
             ViewPort = new BigMapViewPort()
             {
-                Parent = this
+                Parent = this,
+                Location = new Point(MapAreaX, MapAreaY),
             };
 
+            // 坐标显示（页游 grp_endP 风格：y_map_bg0 底 + 文本）
             CoordinateLabel = new MirLabel
             {
                 AutoSize = true,
                 ForeColour = Color.White,
-                Location = new Point(519, 435),
+                OutLine = true,
+                Location = new Point(MapAreaX + 8, MapAreaY + MapAreaH - 22),
                 Parent = this,
                 NotControl = true,
             };
+        }
 
-            TitleLabel = new MirLabel
+        private void AddLegend(int x, int y, string frame, string text)
+        {
+            var icon = new MirImageControl
             {
-                ForeColour = Color.White,
                 Parent = this,
-                AutoSize = false,
-                Size = new Size(699, 20),
+                AtlasNameKey = MapSheet,
+                AtlasFrame = frame,
+                Location = new Point(x, y),
+                Size = new Size(28, 28),
                 NotControl = true,
-                Location = new Point(19, 6),
-                Font = new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Bold),
-                DrawFormat = new TextStyle(TextAnchor.UpperCenter)
             };
-
-            CloseButton = new MirButton
+            var label = new MirLabel
             {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(Size.Width - 25, 3),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 362,
-                Sound = SoundList.ButtonA,
+                Text = text,
+                AutoSize = true,
+                ForeColour = Color.Red,
+                Location = new Point(x - 10, y + 30),
+                NotControl = true,
             };
-            CloseButton.Click += (o, e) => Hide();
+        }
+
+        // 原始传奇 4 按钮：本服务端无"行会召集/随机/队伍召集"道具传送，仅"回城"接现有回城逻辑；
+        // 其余保留外观，点击给提示，不做无效传送。
+        private void OnActionButton(int index)
+        {
+            switch (index)
+            {
+                case 2: // 回城
+                    if (MapObject.User != null)
+                        Network.Enqueue(new C.TownRevive());
+                    break;
+                default:
+                    GameScene.Scene.ChatDialog.ReceiveChat("该功能暂未开放", ChatType.System);
+                    break;
+            }
         }
 
         private void MakeCoordinateLabel()
@@ -232,12 +307,12 @@ namespace Client.MirScenes.Dialogs
             // Sort=false：防止点地图时基类 OnMouseDown 调 TrySort() 把这个大面积视口置顶，
             // 从而盖住关闭按钮导致“点过地图后关不掉”。置顶逻辑仍对对话框本身生效（保持大地图在最前）。
             Sort = false;
-            Size = new Size(568, 380);
+            Size = new Size(604, 442);
 
+            // 原始传奇地图点：自己 y_map_p_1 / 队友 y_map_p_0，均出自 PC Web 的 y_homeUI-sheet（9×9）
             UserRadarDot = new MirImageControl
             {
-                Library = Libraries.Prguse2,
-                Index = 1350,
+                AtlasNameKey = "y_homeUI-sheet#y_map_p_1",
                 Parent = this,
                 Visible = false,
                 NotControl = true
@@ -248,8 +323,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Players[i] = new MirImageControl
                 {
-                    Index = 1350,
-                    Library = Libraries.Prguse2,
+                    AtlasNameKey = "y_homeUI-sheet#y_map_p_0",
                     Parent = this,
                     NotControl = false,
                     Visible = false,
@@ -311,7 +385,6 @@ namespace Client.MirScenes.Dialogs
         {
             if (!Parent.Visible) return;
 
-            // ParentDialog 由 ParentChanged 事件赋值，事件可能晚于首次绘制触发，此处从非空的 Parent 兜底解析，避免 NRE。
             if (ParentDialog == null) ParentDialog = Parent as BigMapDialog;
             if (ParentDialog == null) return;
 
@@ -319,19 +392,23 @@ namespace Client.MirScenes.Dialogs
 
             BigMapRecord currentRecord;
             if (!GameScene.MapInfoList.TryGetValue(ParentDialog.TargetMapIndex, out currentRecord))
+            {
                 return;
+            }
 
             ParentDialog.CurrentRecord = currentRecord;
             int index = currentRecord.MapInfo.BigMap;
-            // 原始传奇大地图与小地图共用 assets/resource/minimap/{img}.jpg 同一张图（CDN 无 bigmap/ 目录）；
-            // PC 地图 BigMap 多为 0，查看当前地图时回退到瓦片 img（即正在显示的小地图同一张图）。
+
             if (index <= 0 && ParentDialog.TargetMapIndex == GameScene.Scene.MapControl.Index)
+            {
                 index = GameScene.Scene.MapControl.MapImg;
+            }
 
             if (index <= 0)
+            {
                 return;
+            }
 
-            // 大地图远程整图：按 BigMap id 从 CDN 取（替代本地 Libraries.MiniMap），缓存避免重复下载。
             if (index != _bigMapLoadedIdx)
             {
                 _bigMapLoadedIdx = index;
@@ -340,12 +417,11 @@ namespace Client.MirScenes.Dialogs
             }
 
             MouseMove += UpdateBigMapCoordinates;
-
             Size = _bigMapTexture != null ? new Size(_bigMapTexture.Width, _bigMapTexture.Height) : Libraries.MiniMap.GetSize(index);
-            Rectangle viewRect = new Rectangle(0, 0, Math.Min(568, Size.Width), Math.Min(380, Size.Height));
+            Rectangle viewRect = new Rectangle(0, 0, Math.Min(604, Size.Width), Math.Min(442, Size.Height));
 
-            viewRect.X = 14 + (568 - viewRect.Width) / 2;
-            viewRect.Y = 52 + (380 - viewRect.Height) / 2;
+            viewRect.X = 156 + (604 - viewRect.Width) / 2;
+            viewRect.Y = 53 + (442 - viewRect.Height) / 2;
 
             Location = viewRect.Location;
             Size = viewRect.Size.ToSize();
@@ -369,12 +445,12 @@ namespace Client.MirScenes.Dialogs
             if (viewRect.Y < 0) viewRect.Y = 0;
 
             if (_bigMapTexture != null)
+            {
                 DXManager.Draw(_bigMapTexture,
-                    new KFramework.MonoGame.Rectangle(0, 0, _bigMapTexture.Width, _bigMapTexture.Height),
-                    new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height),
+                    new Rectangle(0, 0, _bigMapTexture.Width, _bigMapTexture.Height),
+                    new Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height),
                     Color.White);
-            else
-                Libraries.MiniMap.Draw(index, DisplayLocation, Size, Color.FromArgb(255, 255, 255));
+            }
 
             int startPointX = (int)(viewRect.X / ScaleX);
             int startPointY = (int)(viewRect.Y / ScaleY);
@@ -429,7 +505,7 @@ namespace Client.MirScenes.Dialogs
                                     Players[i].Visible = true;
 
                                 Players[i].Hint = groupMemberLocation.Key;
-                                Players[i].Location = new Point((int)(alteredX - 0.5F) - 3, (int)(alteredY - 0.5F) - 3);
+                                Players[i].Location = new Point((int)(alteredX - 0.5F) - 4, (int)(alteredY - 0.5F) - 4);
                             }
                         }
                     }
@@ -441,11 +517,6 @@ namespace Client.MirScenes.Dialogs
                         Players[i].Visible = false;
                     }
                 }
-
-
-
-
-
             }
             else
             {

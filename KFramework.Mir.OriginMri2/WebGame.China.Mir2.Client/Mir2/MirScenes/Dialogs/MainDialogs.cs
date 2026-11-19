@@ -1706,7 +1706,7 @@ namespace Client.MirScenes.Dialogs
     /// 皮肤 120×144：标题栏 y_h_map0(120×25) + 地图窗 y_h_map2(120×119) + 视口 scroller(140×140*0.85)
     /// + mapImg(604×442) + 覆盖 y_h_map1 + 底条 y_h_msbg + 跨服标 y_map_kua
     /// + 点位 y_map_p_0(怪)/_1(玩家)/_3(NPC) + txt_name/txt_info。
-    /// 本工程图集为高清版 y_H5HomeUI-sheet（帧约 142px 宽），按帧原生尺寸等比放大。
+    /// 本工程图集为高清版 y_homeUI-sheet（帧约 142px 宽），按帧原生尺寸等比放大。
     /// ★Anchor=TopRight 固定在右上角。
     /// </summary>
     public sealed class MiniMapDialog : MirImageControl
