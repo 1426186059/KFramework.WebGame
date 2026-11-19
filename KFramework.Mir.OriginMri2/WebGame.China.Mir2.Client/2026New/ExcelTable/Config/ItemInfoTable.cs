@@ -52,10 +52,6 @@ public class ItemInfoTable
 
     public Stats Stats { get; set; }
 
-    public bool IsConsumable
-    {
-        get { return Type == ItemType.Potion || Type == ItemType.Scroll || Type == ItemType.Food || Type == ItemType.Transform || Type == ItemType.Script || Type == ItemType.SealedHero; }
-    }
     public bool IsFishingRod
     {
         get { return Globals.FishingRodShapes.Contains(Shape); }
@@ -267,16 +263,6 @@ public class ItemInfoTable
         if (ToolTip != null)
             writer.Write(ToolTip);
 
-    }
-
-    public static ItemInfoTable FromText(string text)
-    {
-        return null;
-    }
-
-    public string ToText()
-    {
-        return null;
     }
 
     public override string ToString()
