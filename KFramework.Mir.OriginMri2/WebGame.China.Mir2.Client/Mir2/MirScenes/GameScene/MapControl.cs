@@ -1634,20 +1634,20 @@ public sealed class MapControl : MirControl
                 return;                             // 节流中/失败：本帧不动，避免乱走
             }
 
-            Node currentNode = CurrentPath.First(x => x.Location == User.CurrentLocation);
-            while (true)
+            // 关键：绝不在这里删除路径节点。QueuedAction 只是“预约”，真正移动由
+            // PlayerObject.SetAction 消费，而且受 MapControl.NextAction 锁（走路后 +2500ms，
+            // 要等服务端 S.UserLocation 回包才清零）。如果动作还没执行就删掉当前节点，
+            // 下一帧 CurrentLocation 还在原地却已不在路径里，会被误判“脱节”反复重规划
+            // —— 表现就是跑一步停一步。改成按真实位置查索引，动作执行后索引自然前移。
+            int pathIndex = CurrentPath.FindIndex(x => x.Location == User.CurrentLocation);
+            if (pathIndex < 0 || pathIndex + 1 >= CurrentPath.Count)
             {
-                Node first = CurrentPath.First();
-                CurrentPath.Remove(first);
-                if (first == currentNode)
-                {
-                    break;
-                }
+                if (ReplanAutoPath(dest)) return;
+                return;
             }
 
-            if (CurrentPath.Count > 0)
             {
-                MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, CurrentPath.First().Location);
+                MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, CurrentPath[pathIndex + 1].Location);
 
                 // 情况二：下一节点出现怪物/动态障碍（A* 快照里可走、现在被占），
                 // CanRun/CanWalk 都失败 → 立刻重规划绕开，绝不原地停住。
@@ -1657,13 +1657,33 @@ public sealed class MapControl : MirControl
                     return;
                 }
 
-                if (GameScene.CanRun && CanRun(dir) && CMain.Time > GameScene.NextRunTime && User.HP >= 10 && CurrentPath.Count > (User.RidingMount ? 2 : 1))
+                // 与手动移动（本文件 MouseButtons.Left/Right 分支）以及 PlayerObject.SetAction 的
+                // steps = (Sprint && !Sneaking ? 3 : 2) 完全对齐：落点步数漏掉 Sprint 时，
+                // 服务端实际跑 3 格、客户端只预测 2 格，S.UserLocation 会不断把人拉回，
+                // 路径节点全部对不上 → 一走一停 → 最终被服务端判为异常移动而掉线。
+                int runDistance = (User.RidingMount || (User.Sprint && !User.Sneaking)) ? 3 : 2;
+                if (GameScene.CanRun && CanRun(dir) && CMain.Time > GameScene.NextRunTime && User.HP >= 10
+                    && (!User.Sneaking || (User.Sneaking && User.Sprint))
+                    && (CurrentPath.Count - pathIndex - 1) > runDistance)
                 {
-                    User.QueuedAction = new QueuedAction { Action = MirAction.Running, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, User.RidingMount ? 3 : 2) };
-                    return;
+                    // 手动移动会逐格检查门，自动寻路也必须检查：门未开时服务端拒绝移动。
+                    bool doorBlocked = false;
+                    for (int i = 0; i <= runDistance; i++)
+                    {
+                        if (!CheckDoorOpen(Functions.PointMove(User.CurrentLocation, dir, i)))
+                        {
+                            doorBlocked = true;
+                            break;
+                        }
+                    }
+                    if (!doorBlocked)
+                    {
+                        User.QueuedAction = new QueuedAction { Action = MirAction.Running, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, runDistance) };
+                        return;
+                    }
                 }
 
-                if (CanWalk(dir))
+                if (CanWalk(dir) && CheckDoorOpen(Functions.PointMove(User.CurrentLocation, dir, 1)))
                 {
                     User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, 1) };
                     return;
