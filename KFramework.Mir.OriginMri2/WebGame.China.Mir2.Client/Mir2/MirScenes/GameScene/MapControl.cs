@@ -368,16 +368,23 @@ public sealed class MapControl : MirControl
 
     public static bool AutoHit;
 
-    // ===== 自动战斗（原始传奇 autoFightType=1）=====
-    // 开启后：扫描 50 格内怪物自动追击攻击；无怪则朝一个方向巡逻，避免原地往返。
+    // ========================================================================
+    //  自动战斗 · 可调参数（全部集中在这里，直接改数值即可，无需动下面的逻辑）
+    //  （原始传奇 autoFightType=1）
+    // ========================================================================
+    public const int AutoFightSearchRange = 50;      // 搜索怪物的最大距离（格）：超过这个距离的怪不追
+    public const int AutoWanderMaxSteps = 12;        // 无怪时朝一个方向连续跑动的最大步数（每步跑 2~3 格），跑满后换方向
+    public const int AutoFightScanInterval = 400;     // 每隔多少毫秒重新扫描一次怪物（越小反应越快、越费性能）
+    public const long AutoFightGroundHintWindow = 5000; // 点地面提示后，多少秒内再点可解除自动战斗
+    // ========================================================================
+
+    // 自动战斗运行时状态：
+    // 开启后：扫描 AutoFightSearchRange 格内怪物自动追击攻击；无怪则朝一个方向巡逻，避免原地往返。
     public bool AutoFight;
     private static long _autoFightNextScan;          // 下次扫描怪物的时间
     private static MirDirection _autoWanderDir = MirDirection.Up; // 无怪巡逻方向
     private static int _autoWanderSteps;              // 当前方向已走步数
-    private const int AutoFightSearchRange = 50;
-    private const int AutoWanderMaxSteps = 12;        // 同一方向最多走多少步再换
-    private static long _autoFightGroundHintTime;     // 首次点击地面、提示"再次点击解除"的时间；5 秒内的第二次点击解除自动战斗
-    private const long AutoFightGroundHintWindow = 5000;
+    private static long _autoFightGroundHintTime;     // 首次点击地面、提示"再次点击解除"的时间
 
     public int AnimationCount;
 
@@ -1611,7 +1618,7 @@ public sealed class MapControl : MirControl
     }
 
     /// <summary>
-    /// 自动战斗核心：50 格内找最近可攻击怪 → 追击并攻击；无怪则定向巡逻（防原地往返）。
+    /// 自动战斗核心：AutoFightSearchRange 格内找最近可攻击怪 → 追击并攻击；无怪则定向巡逻（防原地往返）。
     /// 由 CheckInput 在手动输入之前调用；一切移动/攻击仍走引擎标准 QueuedAction 流程。
     /// </summary>
     private void ProcessAutoFight()
@@ -1625,11 +1632,11 @@ public sealed class MapControl : MirControl
         // 限频会让指令在角色尚未走完当前步时被清空、下一步丢失，表现为“走一步卡一下”。
         // 攻击频率另有 GameScene.AttackTime 约束，怪物扫描另有 _autoFightNextScan 约束，均不会每帧执行。
 
-        // 定时（400ms）重新扫描/确认目标，避免每帧遍历全部对象。
+        // 定时重新扫描/确认目标，避免每帧遍历全部对象。
         MapObject target = MapObject.CanAttackTargetObject;
         if (CMain.Time >= _autoFightNextScan || target == null || target.Dead)
         {
-            _autoFightNextScan = CMain.Time + 400;
+            _autoFightNextScan = CMain.Time + AutoFightScanInterval;
             target = FindAutoFightTarget();
             if (target != null)
                 MapObject.SelectTarget(target); // 统一设置攻击目标+法术目标+脚底环
@@ -1654,12 +1661,10 @@ public sealed class MapControl : MirControl
                 return;
             }
 
-            // 未在攻击范围 → 朝目标走一步（用 next/previous 方向绕开障碍）。
+            // 未在攻击范围 → 朝目标跑/走一步（用 next/previous 方向绕开障碍）。
             MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
             if (CanWalk(dir, out dir))
-            {
-                User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, 1) };
-            }
+                AutoMoveStep(dir);
             return;
         }
 
@@ -1667,7 +1672,7 @@ public sealed class MapControl : MirControl
         AutoWander();
     }
 
-    /// <summary>扫描 50 格内最近的可攻击怪物，排除宝宝/宠物/特殊 AI。</summary>
+    /// <summary>扫描 AutoFightSearchRange 格内最近的可攻击怪物，排除宝宝/宠物/特殊 AI。</summary>
     private MapObject FindAutoFightTarget()
     {
         MapObject best = null;
@@ -1713,13 +1718,41 @@ public sealed class MapControl : MirControl
 
         if (CanWalkDir(_autoWanderDir))
         {
+            AutoMoveStep(_autoWanderDir);
+            _autoWanderSteps--;
+        }
+    }
+
+    /// <summary>
+    /// 自动战斗移动一步：能跑就跑（与手动寻路 AutoPath 完全相同的跑步条件），否则走一格。
+    /// 跑步距离非骑乘 2 格 / 骑乘 3 格，与引擎 Running 动作一致。
+    /// </summary>
+    private void AutoMoveStep(MirDirection dir)
+    {
+        // 必须和服务端 HumanObject.Run 的 steps 一致：RidingMount || ActiveSwiftFeet(客户端 Sprint) ? 3 : 2。
+        // 少算 Sprint 时服务端跑 3 格、客户端只预测 2 格 → 每次都被 S.UserLocation 拉回并锁输入 400ms。
+        int runDistance = (User.RidingMount || (User.Sprint && !User.Sneaking)) ? 3 : 2;
+        // 条件与手动寻路 AutoPath 完全一致（含 GameScene.CanRun 的跑/走节奏锁）：
+        // 少任何一项都会让客户端预测格数与服务端判定不一致，服务端回 S.UserLocation 把人拉回原位。
+        if (GameScene.CanRun && CanRun(dir) && CMain.Time > GameScene.NextRunTime && User.HP >= 10)
+        {
+            User.QueuedAction = new QueuedAction
+            {
+                Action = MirAction.Running,
+                Direction = dir,
+                Location = Functions.PointMove(User.CurrentLocation, dir, runDistance)
+            };
+            return;
+        }
+
+        if (CanWalk(dir))
+        {
             User.QueuedAction = new QueuedAction
             {
                 Action = MirAction.Walking,
-                Direction = _autoWanderDir,
-                Location = Functions.PointMove(User.CurrentLocation, _autoWanderDir, 1)
+                Direction = dir,
+                Location = Functions.PointMove(User.CurrentLocation, dir, 1)
             };
-            _autoWanderSteps--;
         }
     }
 

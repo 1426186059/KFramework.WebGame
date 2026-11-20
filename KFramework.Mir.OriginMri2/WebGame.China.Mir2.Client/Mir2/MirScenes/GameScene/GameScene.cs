@@ -2249,6 +2249,10 @@ namespace Client.MirScenes
             MapControl.NextAction = 0;
             if (User.CurrentLocation == p.Location && User.Direction == p.Direction) return;
 
+            // 临时诊断：自动战斗跑动被服务端校正时，打印本地预测位置 vs 服务端位置。
+            if (GameScene.Scene != null && GameScene.Scene.MapControl != null && GameScene.Scene.MapControl.AutoFight)
+                PrintTool.Log($"DBG:AutoFight校正 本地预测={User.CurrentLocation} 服务端={p.Location} 动作={User.CurrentAction} 本地朝向={User.Direction} 服务端朝向={p.Direction}");
+
             MapControl.RemoveObject(User);
             User.CurrentLocation = p.Location;
             User.MapLocation = p.Location;
