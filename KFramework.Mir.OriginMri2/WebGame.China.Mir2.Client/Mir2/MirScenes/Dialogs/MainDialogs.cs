@@ -370,7 +370,6 @@ namespace Client.MirScenes.Dialogs
                 bool on = GameScene.Scene.MapControl.AutoFight;
                 MapControl.ResetAutoFightGroundHint();
                 SetAutoFightSpin(on);
-                GameScene.Scene.ChatDialog.ReceiveChat(on ? "自动战斗：开启" : "自动战斗：关闭", ChatType.System);
             };
 
             var quitBtn = new MirButton

@@ -252,6 +252,9 @@ namespace WebGame.Mir2.MonoGame.Client
                 MirScene.ActiveScene.Process();
             }
 
+            // 冒泡提示统一由主机逻辑帧驱动动画推进与安全释放（不依赖当前场景，也不放绘制栈）。
+            MirBubbleToast.Process();
+
             // 加载蒙层（进图期间存在）：每帧推进进度；完成即释放。不挂场景树，由 CMain.Draw 在场景之后单独绘制。
             UpdateLoadingDialog();
 

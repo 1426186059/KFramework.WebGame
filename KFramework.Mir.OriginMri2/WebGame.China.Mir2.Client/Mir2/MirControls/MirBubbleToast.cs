@@ -6,7 +6,8 @@ namespace Client.MirControls
     /// 统一的"冒泡提示"：一行文字从屏幕中下方浮出、上移一段后停留 2 秒，再淡出消失。
     /// 非阻塞、不拦截鼠标（NotControl），与 MirMessageBox 的模态提示互补。
     /// 用法：MirBubbleToast.Show("文字")；多条同时出现时自动向上错开，互不覆盖。
-    /// <para>每帧驱动走 AfterDraw（与 ChatNoticeDialog / TaskCompleteEffect 一致），无需改 GameScene.Process。</para>
+    /// <para>每帧由 GameScene.Process() 调 MirBubbleToast.Process() 推进动画与释放，Draw 只负责绘制；
+    /// 绝不在 AfterDraw（Draw 调用栈内）改状态或释放纹理，否则会闪出黑矩形。</para>
     /// </summary>
     public sealed class MirBubbleToast : MirControl
     {
@@ -17,6 +18,7 @@ namespace Client.MirControls
         private const int TotalDuration = RiseDuration + HoldDuration + FadeDuration;
 
         private static readonly List<MirBubbleToast> Active = new List<MirBubbleToast>();
+        private static readonly List<MirBubbleToast> PendingDispose = new List<MirBubbleToast>();
 
         private readonly MirLabel _label;
         private readonly long _startTime;
@@ -62,8 +64,6 @@ namespace Client.MirControls
 
             Location = new Point(0, _baseY);
             Opacity = 0F;
-
-            AfterDraw += OnAfterDraw;
         }
 
         /// <summary>显示一行冒泡提示（白色，12 号普通字体）。</summary>
@@ -84,7 +84,29 @@ namespace Client.MirControls
             toast.TrySort();
         }
 
-        private void OnAfterDraw(object sender, System.EventArgs e)
+        /// <summary>每帧由 GameScene.Process() 调用：推进所有提示动画，再统一释放已结束的提示。</summary>
+        public static void Process()
+        {
+            // 先推进动画（Update 内部可能把结束的提示移入 PendingDispose）。
+            // 用快照遍历，避免 Finish() 从 Active 移除自己导致索引错位。
+            if (Active.Count > 0)
+            {
+                MirBubbleToast[] snapshot = Active.ToArray();
+                for (int i = 0; i < snapshot.Length; i++)
+                    snapshot[i].Update();
+            }
+
+            // 再统一释放；此处在 Process（游戏逻辑帧）而非 Draw 调用栈内，释放纹理安全。
+            if (PendingDispose.Count > 0)
+            {
+                MirBubbleToast[] pending = PendingDispose.ToArray();
+                PendingDispose.Clear();
+                for (int i = 0; i < pending.Length; i++)
+                    pending[i].Dispose();
+            }
+        }
+
+        private void Update()
         {
             if (_finished)
                 return;
@@ -121,17 +143,17 @@ namespace Client.MirControls
         private void Finish()
         {
             _finished = true;
-            AfterDraw -= OnAfterDraw;
+            Visible = false;
             Active.Remove(this);
-            Dispose(true);
+            PendingDispose.Add(this);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                AfterDraw -= OnAfterDraw;
                 Active.Remove(this);
+                PendingDispose.Remove(this);
             }
             base.Dispose(disposing);
         }
