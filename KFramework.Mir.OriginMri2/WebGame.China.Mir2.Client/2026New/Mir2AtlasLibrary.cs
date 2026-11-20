@@ -190,6 +190,7 @@ public static class Mir2AtlasLibrary
             var pngKey = SheetPngKey(key, pngFile);
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
             // readable=true：图集页保留 CPU 像素副本，供 MirImageControl 的 alpha 命中检测（透明像素不触发点击）。
+            var texture = await Mir2OriginResource.GetTextureAsync(pngPath, priority, CancellationToken.None, readable: true);
             if (texture == null)
             {
                 KFramework.MonoGame.PrintTool.LogError(
