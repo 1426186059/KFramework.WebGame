@@ -1046,6 +1046,7 @@ public sealed class MapControl : MirControl
     public static void ResetAutoFightGroundHint()
     {
         _autoFightGroundHintTime = 0;
+        _autoFightNextScan = 0;
     }
 
     private static void OnMouseClick(object sender, EventArgs e)
@@ -1619,8 +1620,10 @@ public sealed class MapControl : MirControl
         // 安全区不自动打怪（避免站桩），但也不动。
         if (M2CellInfo == null) return;
 
-        // 攻击/移动节奏统一受 NextAction 约束，避免每帧压队列。
-        if (CMain.Time < NextAction) return;
+        // 移动/攻击指令每帧重新压入 QueuedAction（与手动寻路一致）。
+        // 绝不能限频（如 120ms）：UserObject.ProcessFrames 在动画每推进一帧就会清掉 QueuedAction，
+        // 限频会让指令在角色尚未走完当前步时被清空、下一步丢失，表现为“走一步卡一下”。
+        // 攻击频率另有 GameScene.AttackTime 约束，怪物扫描另有 _autoFightNextScan 约束，均不会每帧执行。
 
         // 定时（400ms）重新扫描/确认目标，避免每帧遍历全部对象。
         MapObject target = MapObject.CanAttackTargetObject;
@@ -1647,7 +1650,6 @@ public sealed class MapControl : MirControl
                 {
                     MirDirection face = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
                     User.QueuedAction = new QueuedAction { Action = MirAction.Attack1, Direction = face, Location = User.CurrentLocation };
-                    NextAction = CMain.Time + 120;
                 }
                 return;
             }
@@ -1657,7 +1659,6 @@ public sealed class MapControl : MirControl
             if (CanWalk(dir, out dir))
             {
                 User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, 1) };
-                NextAction = CMain.Time + 120;
             }
             return;
         }
@@ -1719,7 +1720,6 @@ public sealed class MapControl : MirControl
                 Location = Functions.PointMove(User.CurrentLocation, _autoWanderDir, 1)
             };
             _autoWanderSteps--;
-            NextAction = CMain.Time + 150;
         }
     }
 
