@@ -326,9 +326,11 @@ namespace Client.MirControls
         }
 
         // 逐像素命中：true 时点中透明像素不算命中（透明区穿透），false 时整框都算命中。
+        // 老 .Lib 库与静态 atlas 帧均生效；public 以便对话框按需给单个控件开启。
         private bool _pixelDetect;
-        protected bool PixelDetect
+        public bool PixelDetect
         {
+            get { return _pixelDetect; }
             set
             {
                 if (_pixelDetect == value)
@@ -697,9 +699,48 @@ namespace Client.MirControls
         {
             if (!base.IsMouseOver(p)) return false;
             if (!_pixelDetect) return true;
-            // 图集(atlas)模式下 Library 为空：无逐像素检测数据，退回包围盒命中。
-            if (Library != null)
-                return Library.VisiblePixel(Index, p.Subtract(DisplayLocation), true) || Moving;
+            // 静态图集帧：把鼠标点按 DrawControl 相同的缩放/偏移/翻转数学映射回帧内像素，读 alpha。
+            // 仅覆盖普通 atlas 帧；MovieClip / 九宫格 / 填充裁剪的坐标换算较复杂，退回包围盒命中（保持旧行为）。
+            if (AtlasSheet != null && !AtlasSheet.IsMovieClip && !string.IsNullOrEmpty(AtlasFrame)
+                && DrawMode != MirImageDrawMode.NineGrid
+                && FillAmount >= 1f
+                && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var atlasSprite))
+            {
+                var src = atlasSprite.SourceRectangle;
+                if (src.Width > 0 && src.Height > 0)
+                {
+                    Size drawSize;
+                    float offsetScaleX, offsetScaleY;
+                    if (AtlasFrameNativeSize)
+                    {
+                        drawSize = new Size((int)Math.Round(src.Width * AtlasFrameScale),
+                                            (int)Math.Round(src.Height * AtlasFrameScale));
+                        offsetScaleX = offsetScaleY = AtlasFrameScale;
+                    }
+                    else
+                    {
+                        drawSize = Size;
+                        offsetScaleX = src.Width > 0 ? (float)drawSize.Width / src.Width : 0f;
+                        offsetScaleY = src.Height > 0 ? (float)drawSize.Height / src.Height : 0f;
+                    }
+
+                    int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+                    int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+                    if (FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0)
+                    {
+                        px += (int)(FrameDrawOffset.X * offsetScaleX);
+                        py += (int)(FrameDrawOffset.Y * offsetScaleY);
+                    }
+
+                    int localX = offsetScaleX > 0 ? (int)((p.X - px) / offsetScaleX) : 0;
+                    int localY = offsetScaleY > 0 ? (int)((p.Y - py) / offsetScaleY) : 0;
+                    // DXManager.Draw 的翻转在采样阶段生效，映射回源像素要取反。
+                    if (FlipX) localX = src.Width - 1 - localX;
+                    if (FlipY) localY = src.Height - 1 - localY;
+
+                    return AtlasSheet.IsPixelOpaque(AtlasFrame, localX, localY) || Moving;
+                }
+            }
             return true;
         }
 

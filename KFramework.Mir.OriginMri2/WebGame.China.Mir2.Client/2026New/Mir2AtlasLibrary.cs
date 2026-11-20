@@ -189,7 +189,7 @@ public static class Mir2AtlasLibrary
             if (string.IsNullOrEmpty(pngFile)) pngFile = Path.GetFileNameWithoutExtension(key) + ".png";
             var pngKey = SheetPngKey(key, pngFile);
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
-            var texture = await Mir2OriginResource.GetTextureAsync(pngPath, priority, CancellationToken.None);
+            // readable=true：图集页保留 CPU 像素副本，供 MirImageControl 的 alpha 命中检测（透明像素不触发点击）。
             if (texture == null)
             {
                 KFramework.MonoGame.PrintTool.LogError(
@@ -235,7 +235,7 @@ public static class Mir2AtlasLibrary
         var text = await Mir2OriginResource.GetTextAsync(jsonRelativePath, ct: ct);
         if (string.IsNullOrEmpty(text)) return null;
         var sheet = Mir2AtlasSheet.Parse(text);
-        var texture = await Mir2OriginResource.GetTextureAsync(pngRelativePath, ct: ct);
+        var texture = await Mir2OriginResource.GetTextureAsync(pngRelativePath, ct: ct, readable: true);
         sheet.Build(texture);
         //PrintTool.Log($"[Mir2Atlas] 已加载直链图集 {jsonRelativePath}：{sheet.Frames.Count} 帧");
         return sheet;

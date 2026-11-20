@@ -130,6 +130,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "bg_zhukuang_1_tx",
                 Location = new Point(0, 0),
                 Parent = this,
+                PixelDetect = true,
             };
 
             InventoryButton = new MirButton

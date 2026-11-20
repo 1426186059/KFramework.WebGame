@@ -120,9 +120,10 @@ namespace KFramework.MonoGame
         public string LoadText(string name, bool strict = true) => ContentFunc.DecodeUtf8(LoadAsset(name, strict));
 
         /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。
-        /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
+        /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。
+        /// <paramref name="readable"/> 为 true 时保留 CPU 像素副本以支持 GetData（如 alpha 命中检测），默认 false。</summary>
         /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
-        public Texture2D LoadTexture(string name, bool strict = true)
+        public Texture2D LoadTexture(string name, bool strict = true, bool readable = false)
         {
             GraphicsDevice device = Game.Current.GraphicsDevice;
             AssetBundleEntry? info = GetAssetInfo(name, strict);
@@ -150,7 +151,7 @@ namespace KFramework.MonoGame
             {
                 throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
             }
-            return device.CreateTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat);
+            return device.CreateTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat, readable);
         }
         
         public async Task DecodeTexturesAsync()

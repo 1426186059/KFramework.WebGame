@@ -108,9 +108,12 @@ public static class Mir2OriginResource
     /// <summary>按相对路径取纹理（浏览器原生解码 jpg/png → RGBA Texture2D）。
     /// 走 _texCache：同一 URL 只在首次下载+解码，之后 GetOrAdd 复用同一份，所有调用方共享；
     /// 引用计数 +1（上层不再需要时调 ReleaseTexture）；超预算且引用归零的纹理由 TrimTextureCache 释放。</summary>
-    public static Task<Texture2D> GetTextureAsync(string relativePath, int priority = 0, CancellationToken ct = default)
+    public static Task<Texture2D> GetTextureAsync(string relativePath, int priority = 0, CancellationToken ct = default, bool readable = false)
     {
-        string key = Norm(relativePath);
+        // readable=true 会保留 CPU 像素副本（供图集 alpha 命中检测），内存成本更高且 GetData 可用；
+        // 用后缀区分缓存键，避免与同一 URL 的普通（不可读）纹理串到同一份。
+        string path = Norm(relativePath);
+        string key = readable ? path + "#R" : path;
         var entry = _texCache.GetOrAdd(key, k => new TexEntry
         {
             // 缓存的 Task 绝不能绑定某一次调用的 ct：技能栏多个 MirImageControl 共享同一 URL 的缓存项，
@@ -118,7 +121,7 @@ public static class Mir2OriginResource
             // 就被永久缓存在 _texCache，之后所有取该图标的地方 await 都抛 OperationCanceledException，
             // 图标再也出不来（日志里 icon/skills/*.png 的 TaskCanceledException 正是此因）。
             // 下载本身不被单个控件取消；ct 只用于“本次等待是否提前返回”，见下方 AwaitWithCancellation。
-            Task = _imageContent.LoadTexture2DAsync(k, Cache, priority),
+            Task = _imageContent.LoadTexture2DAsync(path, Cache, priority, readable: readable),
             LastAccess = Environment.TickCount64,
             RefCount = 0,
         });

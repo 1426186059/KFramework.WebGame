@@ -818,7 +818,7 @@ namespace KFramework.MonoGame
         /// 压缩格式会先按「宽高 × 压缩块大小」校验 <paramref name="data"/> 长度；压缩纹理为不可变 GPU 数据，
         /// 过滤固定为 LINEAR + CLAMP_TO_EDGE（不支持 generateMipmap / SetData 局部更新）。
         /// </summary>
-        public Texture2D CreateTexture(int width, int height, byte[] data, SurfaceFormat format = SurfaceFormat.Color)
+        public Texture2D CreateTexture(int width, int height, byte[] data, SurfaceFormat format = SurfaceFormat.Color, bool readable = false)
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
             ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
@@ -839,7 +839,8 @@ namespace KFramework.MonoGame
             }
 
             // 照 MonoGame 的「构造 + SetData」流程：构造时创建 GL 纹理，再由 SetData 上传像素。
-            var texture = new Texture2D(this, width, height, mipmap: false, format);
+            // readable=true 时纹理会保留一份 CPU 副本，供 GetData 同步读回（如 UI 图集的 alpha 命中检测）。
+            var texture = new Texture2D(this, width, height, mipmap: false, format, readable);
             texture.SetData(data);
 
             int error = Backend.GetError();

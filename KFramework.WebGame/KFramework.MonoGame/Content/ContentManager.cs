@@ -116,19 +116,19 @@ namespace KFramework.MonoGame
             return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
+        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, Caching mCacheInstance = null, int priority = 0, bool readable = false, CancellationToken cancellationToken = default)
         {
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
             // 下载返回 null（资源缺失/404/网络错）：直接返回 null，交给上层 LoadSheetAsync 走 tex==null 的
             // 404 优雅处理（标记缺失 + 回落），而不是在下面的 new ArraySegment<byte>(data) 抛 ArgumentNull("array")。
             if (data == null) return null;
-            return await LoadTexture2DAsync(data).ConfigureAwait(false);
+            return await LoadTexture2DAsync(data, readable).ConfigureAwait(false);
         }
 
         // 全局自增 token：JS 端 _decodeCache 是跨所有 C# 实例共享的全局 Map，token 必须全局唯一，
         // 否则不同实例从 0 自增会撞 key；用 static 计数器保证每请求一个唯一 token，隔离 decode/getImageData 配对。
         private static int _decodeTexture2DToken;
-        public async Task<Texture2D> LoadTexture2DAsync(byte[] data)
+        public async Task<Texture2D> LoadTexture2DAsync(byte[] data, bool readable = false)
         {
             int token = ++_decodeTexture2DToken;
             int packed = await JSBind_Texture.DecodeImageToRgbaAsync1(new ArraySegment<byte>(data), token).ConfigureAwait(false);
@@ -139,7 +139,7 @@ namespace KFramework.MonoGame
             if (w <= 0 || h <= 0) throw new InvalidOperationException("图片解码失败：尺寸无效。");
             byte[] pixels = JSBind_Texture.GetImageData(token);
             GraphicsDevice device = Game.Current.GraphicsDevice;
-            return device.CreateTexture(w, h, pixels);
+            return device.CreateTexture(w, h, pixels, readable: readable);
         }
 
         public void Dispose()

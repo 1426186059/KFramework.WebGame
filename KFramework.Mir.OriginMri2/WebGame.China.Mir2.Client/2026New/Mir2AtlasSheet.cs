@@ -92,6 +92,51 @@ public sealed class Mir2AtlasSheet
     {
         Atlas.Build(texture);
         MovieClip?.RebuildLayouts(Atlas);
+        _framePixels?.Clear(); // 换贴图后旧 alpha 缓存作废
+    }
+
+    // 每帧 RGBA 像素缓存：图集页以 readable:true 加载，CPU 副本常驻；首次命中检测时按帧读一次，
+    // 之后 IsPixelOpaque 只做数组索引，零开销。只缓存真正被命中检测过的帧，内存按需增长。
+    private Dictionary<string, byte[]> _framePixels;
+
+    /// <summary>
+    /// 判断某静态帧内局部像素是否不透明（alpha>0）。供 UI 逐像素命中检测：透明边角不响应点击。
+    /// <para>纹理未开启 readable 或取数失败时一律返回 true（视为不透明），保持旧的包围盒行为、零回归。</para>
+    /// </summary>
+    /// <param name="AtlasFrame">图集帧名（对应控件的 AtlasFrame，即 Frames 的键）。</param>
+    /// <param name="localX">帧内局部 X（0..帧宽-1）。</param>
+    /// <param name="localY">帧内局部 Y（0..帧高-1）。</param>
+    public bool IsPixelOpaque(string AtlasFrame, int localX, int localY)
+    {
+        var tex = Texture;
+        if (tex == null || !tex.IsReadable || Frames == null || string.IsNullOrEmpty(AtlasFrame))
+            return true; // 无法检测 → 当作不透明，保持旧行为
+        if (!Frames.TryGetValue(AtlasFrame, out var sprite))
+            return true;
+
+        var src = sprite.SourceRectangle;
+        if (src.Width <= 0 || src.Height <= 0) return true;
+        if (localX < 0 || localY < 0 || localX >= src.Width || localY >= src.Height)
+            return true; // 帧外：交给包围盒判定，不当作透明
+
+        _framePixels ??= new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        if (!_framePixels.TryGetValue(AtlasFrame, out var rgba))
+        {
+            rgba = new byte[src.Width * src.Height * 4];
+            try
+            {
+                // SurfaceFormat.Color = RGBA8，每像素 4 字节；elementCount 即字节数。
+                tex.GetData(0, new Rectangle(src.X, src.Y, src.Width, src.Height), rgba, 0, rgba.Length);
+            }
+            catch
+            {
+                return true; // 读回异常 → 当作不透明，不影响点击
+            }
+            _framePixels[AtlasFrame] = rgba;
+        }
+
+        // RGBA8：每像素第 4 字节是 alpha，>0 即视为可见。
+        return rgba[(localY * src.Width + localX) * 4 + 3] != 0;
     }
 
     // ── MovieClip 时序层 ────────────────────────────────────────────────
