@@ -434,6 +434,20 @@ namespace Client.MirControls
                 NotControlChanged.Invoke(this, EventArgs.Empty);
         }
 
+        private bool _raycastTargetOnlyMe = true;
+        /// <summary>
+        /// 命中判定范围开关（名称借用 Unity UGUI，语义按本工程定义）：
+        /// true（默认）——判断本控件是否命中，只按根节点自身的显示区域判定，与原有行为一致。
+        /// false ——判断本控件是否命中，按「根节点 + 整棵子树」的整体判定：自身区域命中算命中，
+        ///          子树里任意子控件命中也算本控件命中（如子控件探出父矩形，或父是透明背景容器）。
+        /// 默认 true，零回归；只在需要"父按整体参与命中"的容器上设 false。
+        /// </summary>
+        public bool RaycastTarget_OnlyMe
+        {
+            get { return _raycastTargetOnlyMe; }
+            set { _raycastTargetOnlyMe = value; }
+        }
+
         private float _opacity;
         public float Opacity
         {
@@ -486,10 +500,7 @@ namespace Client.MirControls
         }
 
 
-// ReSharper disable InconsistentNaming
         protected Size _size;
-// ReSharper restore InconsistentNaming
-
         public virtual Size Size
         {
             get { return _size; }
@@ -933,34 +944,64 @@ namespace Client.MirControls
         {
             DoubleClick.Invoke(this, e);
         }
+        /// <summary>
+        /// 子树内是否存在命中的控件（本控件自身不算）。沿子控件链逐层下钻：
+        /// 每层先看自身 IsMouseOver，未命中但 RaycastTarget_OnlyMe=false 的容器继续往里找。
+        /// 不要求父矩形盖住子矩形。
+        /// </summary>
+        private bool SubtreeHits(Point p)
+        {
+            if (Controls == null)
+                return false;
+
+            for (int i = Controls.Count - 1; i >= 0; i--)
+            {
+                MirControl c = Controls[i];
+                if (c == null || !c.Visible)
+                    continue;
+
+                if (c.IsMouseOver(p))
+                    return true;
+
+                if (!c.RaycastTarget_OnlyMe && c.SubtreeHits(p))
+                    return true;
+            }
+            return false;
+        }
+
         public virtual void OnMouseMove(MouseEventArgs e)
         {
             if (!_enabled && !AllowDisabledMouseOver)
+            {
                 return;
-
+            }
 
             if (Moving)
             {
-                // 直接用整数分量计算位移（等价于 Point.Subtract 扩展方法）。
-                // 之前"拖不动"的根因不是这里清零，而是父容器 TrueSize 恒为 (0,0)，
-                // 导致下面 Parent.TrueSize 钳制把位置钳到 (0,0)。现已随场景重构（父为 MirScene）修正。
                 Point tempPoint = new Point(CMain.MPoint.X - _movePoint.X, CMain.MPoint.Y - _movePoint.Y);
-
                 if (Parent == null)
                 {
                     if (tempPoint.Y + TrueSize.Height > Settings.ScreenHeight)
+                    {
                         tempPoint.Y = Settings.ScreenHeight - TrueSize.Height - 1;
+                    }
 
                     if (tempPoint.X + TrueSize.Width > Settings.ScreenWidth)
+                    {
                         tempPoint.X = Settings.ScreenWidth - TrueSize.Width - 1;
+                    }
                 }
                 else
                 {
                     if (tempPoint.Y + TrueSize.Height > Parent.TrueSize.Height)
+                    {
                         tempPoint.Y = Parent.TrueSize.Height - TrueSize.Height;
+                    }
 
                     if (tempPoint.X + TrueSize.Width > Parent.TrueSize.Width)
+                    {
                         tempPoint.X = Parent.TrueSize.Width - TrueSize.Width;
+                    }
                 }
 
                 if (tempPoint.X < 0)
@@ -974,19 +1015,38 @@ namespace Client.MirControls
                 return;
             }
 
+            //先判断是否能命中子节点
             if (Controls != null)
+            {
                 for (int i = Controls.Count - 1; i >= 0; i--)
-                    if (Controls[i].IsMouseOver(CMain.MPoint))
+                {
+                    MirControl child = Controls[i];
+                    if (child == null)
+                        continue;
+
+                    bool hit = child.IsMouseOver(CMain.MPoint);
+                    // RaycastTarget_OnlyMe=false 的容器：自身虽不命中，只要子树里有命中的控件，就把事件下派进去，
+                    // 让最深处命中的控件经自己的 Highlight() 成为 MouseControl（容器自己不抢）。
+                    if (!hit && !child.RaycastTarget_OnlyMe)
+                        hit = child.SubtreeHits(CMain.MPoint);
+
+                    if (hit)
                     {
-                        Controls[i].OnMouseMove(e);
+                        child.OnMouseMove(e);
                         return;
                     }
+                }
+            }
 
+            //如果子节点都不能命中，自己命中就高亮
             Highlight();
 
             if (MouseMove != null)
+            {
                 MouseMove.Invoke(this, e);
+            }
         }
+
         public virtual void OnMouseDown(MouseEventArgs e)
         {
             if (!_enabled)
