@@ -28,7 +28,6 @@ namespace Client.MirScenes.Dialogs
         // 原始传奇主界面「自动战斗/自动寻路」序列帧提示（auto_eff/zdzhandou、zdxunlu）。
         // 位置：原始传奇 PC 布局 x=屏宽/2-110、y=屏高-290；MainDialog 为底部居中(1151×237)，故相对=(465,-53)。
         private MirAnimatedAtlasControl mAutoFightEff, mAutoPathEff;
-        private bool mAutoFightReady, mAutoPathReady;
         private bool mLastAutoFight, mLastAutoPath;
         private const string AutoFightSheetKey = "resource/assets/auto_eff/zdzhandou.json";
         private const string AutoPathSheetKey = "resource/assets/auto_eff/zdxunlu.json";
@@ -466,6 +465,8 @@ namespace Client.MirScenes.Dialogs
 
             // 原始传奇主界面自动状态序列帧：位置 x=屏宽/2-110、y=屏高-290（PC）。
             // MainDialog 底部居中(1151×237)，故相对坐标 x≈465、y=-53（血条上方）。
+            // 直接设 AtlasNameKey 让控件自动异步加载图集（同血条动画），无需手动 GetSheetAsync。
+            // 帧序：原始传奇 auto_eff mc 时间线 00000_png..00008_png，frameRate=9 → 约111ms/帧。
             mAutoFightEff = new MirAnimatedAtlasControl
             {
                 Parent = this,
@@ -476,6 +477,7 @@ namespace Client.MirScenes.Dialogs
                 Animated = false,
                 Visible = false,
                 NotControl = true,
+                AtlasNameKey = AutoFightSheetKey,
             };
             mAutoPathEff = new MirAnimatedAtlasControl
             {
@@ -487,27 +489,8 @@ namespace Client.MirScenes.Dialogs
                 Animated = false,
                 Visible = false,
                 NotControl = true,
+                AtlasNameKey = AutoPathSheetKey,
             };
-            _ = LoadAutoEffSheetAsync(mAutoFightEff, AutoFightSheetKey, true);
-            _ = LoadAutoEffSheetAsync(mAutoPathEff, AutoPathSheetKey, false);
-        }
-
-        private async Task LoadAutoEffSheetAsync(MirAnimatedAtlasControl clip, string key, bool fight)
-        {
-            try
-            {
-                var sheet = await Mir2AtlasLibrary.GetSheetAsync(key, CancellationToken.None);
-                if (sheet == null) return;
-                if (clip.SetMovieClip(sheet, 1f))
-                {
-                    if (fight) mAutoFightReady = true;
-                    else mAutoPathReady = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                KFramework.MonoGame.PrintTool.LogError("[MainDialog] 自动状态特效加载失败 " + key + ": " + ex.Message);
-            }
         }
 
         private static void SetAutoEff(MirAnimatedAtlasControl clip, bool on)
@@ -572,8 +555,8 @@ namespace Client.MirScenes.Dialogs
             {
                 mLastAutoFight = autoFight;
                 mLastAutoPath = autoPath;
-                bool showFight = autoFight && mAutoFightReady;
-                bool showPath = autoPath && mAutoPathReady && !showFight;
+                bool showFight = autoFight;
+                bool showPath = autoPath && !showFight;
                 SetAutoEff(mAutoFightEff, showFight);
                 SetAutoEff(mAutoPathEff, showPath);
             }

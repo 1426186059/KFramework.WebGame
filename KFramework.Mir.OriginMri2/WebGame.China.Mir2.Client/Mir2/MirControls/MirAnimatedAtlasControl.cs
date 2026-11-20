@@ -8,6 +8,27 @@ namespace Client.MirControls
     /// </summary>
     public class MirAnimatedAtlasControl : MirAnimatedBase
     {
+        /// <summary>
+        /// 设 true 时，AtlasNameKey 自动加载完成后若图集是白鹭 MovieClip（mc/res 时间线），
+        /// 自动调用 SetMovieClip 装配帧序/帧率/布局，外部无需再手动 SetFrames/AnimationDelay。
+        /// 普通图集（无 MovieClip）不受影响，仍按外部 SetFrames 的帧名列表播放。
+        /// </summary>
+        public bool AutoSetupMovieClip { get; set; } = true;
+
+        public MirAnimatedAtlasControl()
+        {
+            // 图集异步加载完成后（基类已赋值 AtlasSheet），若是 MovieClip 则自动装配。
+            AtlasLoaded += (s, e) =>
+            {
+                if (!AutoSetupMovieClip) return;
+                if (AtlasSheet != null && AtlasSheet.MovieClip != null)
+                {
+                    SetMovieClip(AtlasSheet);
+                    Redraw();
+                }
+            };
+        }
+
         // 逐帧帧名列表；设值时自动把 AnimationCount 设为帧数（与 OffSet 循环对齐）。
         private List<string> _atlasAnimationFrames;
         public List<string> AtlasAnimationFrames
