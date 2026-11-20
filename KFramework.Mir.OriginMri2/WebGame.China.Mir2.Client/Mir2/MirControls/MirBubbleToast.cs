@@ -16,7 +16,7 @@ namespace Client.MirControls
         private const int FadeDuration = 420;       // 淡出耗时(ms)
         private const int TotalDuration = RiseDuration + HoldDuration + FadeDuration;
 
-        private static readonly System.Collections.Generic.List<MirBubbleToast> Active = new System.Collections.Generic.List<MirBubbleToast>();
+        private static readonly List<MirBubbleToast> Active = new List<MirBubbleToast>();
 
         private readonly MirLabel _label;
         private readonly long _startTime;
@@ -31,8 +31,13 @@ namespace Client.MirControls
             // 同时多条时，越晚出现的整体越往下错开，避免文字重叠。
             int stackIndex = 0;
             for (int i = 0; i < Active.Count; i++)
+            {
                 if (Active[i]._startTime > _startTime - 1)
+                {
                     stackIndex++;
+                }
+            }
+
             _baseY = Settings.ScreenHeight / 2 + RiseDistance + stackIndex * 34;
 
             NotControl = true;                       // 纯提示，绝不吃鼠标
