@@ -1,7 +1,6 @@
-using Client.MirControls;
 using WebGame.Mir2.MonoGame.Client;
 
-namespace Client.MirScenes.Dialogs
+namespace Client.MirControls
 {
     /// <summary>
     /// 统一的"冒泡提示"：一行文字从屏幕中下方浮出、上移一段后停留 2 秒，再淡出消失。
@@ -119,7 +118,7 @@ namespace Client.MirScenes.Dialogs
             _finished = true;
             AfterDraw -= OnAfterDraw;
             Active.Remove(this);
-            Dispose();
+            Dispose(true);
         }
 
         protected override void Dispose(bool disposing)
