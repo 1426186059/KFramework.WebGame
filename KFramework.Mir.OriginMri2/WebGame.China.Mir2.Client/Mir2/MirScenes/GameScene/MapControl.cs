@@ -184,8 +184,8 @@ public sealed class MapControl : MirControl
             // 离开寻路态时清掉路径，避免残留路径被下一帧消费。
             if (old == EUserAutoMode.AutoPath && _mode != EUserAutoMode.AutoPath)
                 CurrentPath = null;
-            // 任何模式切换都清掉绕墙追击缓存。
-            _chasePath = null;
+            // 任何模式切换都清掉追击路径。
+            ClearChasePath();
         }
     }
 
@@ -1696,18 +1696,22 @@ public sealed class MapControl : MirControl
         // 限频会让指令在角色尚未走完当前步时被清空、下一步丢失，表现为“走一步卡一下”。
         // 攻击频率另有 GameScene.AttackTime 约束，怪物扫描另有 _autoFightNextScan 约束，均不会每帧执行。
 
-        // 定时重新扫描/确认目标，避免每帧遍历全部对象。
+        // ===== 目标锁定 =====
+        // 只要当前目标还活着、且在搜索范围内，就一直打它，绝不因为“附近有更近的怪”而换目标。
+        // 换目标会清掉追击路径；在墙边绕路时换目标正是来回震荡的元凶。
+        // 只有目标丢失/死亡/超出搜索范围，或 A* 反复判定不可达（见 ChaseTarget）时才重选。
         MapObject target = MapObject.CanAttackTargetObject;
-        if (CMain.Time >= _autoFightNextScan || target == null || target.Dead)
+        if (target == null || target.Dead ||
+            !Functions.InRange(target.CurrentLocation, User.CurrentLocation, AutoFightSearchRange))
         {
-            _autoFightNextScan = CMain.Time + AutoFightScanInterval;
             target = FindAutoFightTarget();
             if (target != null)
                 MapObject.SelectTarget(target); // 统一设置攻击目标+法术目标+脚底环
             else
             {
-                // 无怪：清掉攻击目标，进入巡逻
+                // 无怪：清掉攻击目标与追击路径，进入巡逻
                 MapObject.SelectTarget(null);
+                ClearChasePath();
             }
         }
 
@@ -1725,102 +1729,202 @@ public sealed class MapControl : MirControl
                 return;
             }
 
-            // 未在攻击范围 → 先试直线（含左右偏一格绕小障碍）。
-            MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
-            if (CanWalk(dir, out dir))
-            {
-                AutoMoveStep(dir);
-                return;
-            }
-
-            // 直线被墙/死角挡住（怪在墙对面）：用 A* 找一条绕墙路径走第一步，而不是卡在墙边。
-            // A* 的 Node.Walkable 走 EmptyCell，会自动绕开墙和怪；走不通(真不可达)则清目标重新扫描。
-            ChaseAroundObstacle(target);
+            // 未在攻击范围 → 统一交给 ChaseTarget：用一条有记忆的 A* 路径追到底，
+            // 不再每帧用无记忆的 CanWalk 贪心贴墙（那会在墙角左右偏交替、两格间来回震荡）。
+            ChaseTarget(target);
             return;
         }
 
-        // ===== 无怪：定向巡逻，避免来回走（死机观感）=====
+        // ===== 无怪：清掉追击路径并定向巡逻（防原地往返）=====
+        ClearChasePath();
         AutoWander();
     }
 
-    /// <summary>
-    /// 追击时直线被墙/死角挡住（怪在墙对面）→ 用 A* 找一条绕墙路径并【缓存】，
-    /// 之后沿这条路径走，直到走完或目标换掉才重算。
-    /// 不能每走一步就重算：终点在同一只怪的多个可达邻格间切换会让路径在墙两侧来回翻转，
-    /// 表现为“沿墙走一段又反向、无限循环”。
-    /// </summary>
-    private System.Collections.Generic.List<Point> _chasePath;
-    private uint _chaseTargetId;
-    private long _chasePathNextAllow;   // 重算节流
+    // ===== 自动战斗追击路径（有记忆，杜绝墙角来回震荡）=====
+    private System.Collections.Generic.List<Point> _chasePath;   // 到目标的路径点（不含起点）
+    private uint _chaseTargetId;                                // 当前路径对应的目标
+    private long _chaseNextBuild;                               // 下次允许重算路径的时间（节流）
 
-    private void ChaseAroundObstacle(MapObject target)
+    private void ClearChasePath()
     {
-        if (PathFinder == null || target == null) return;
+        _chasePath = null;
+        _chaseTargetId = 0;
+    }
+
+    /// <summary>
+    /// 自动战斗追击：用一条有记忆的 A* 路径走到底。
+    /// 路径一旦建立就锁定走完，不因玩家/怪的小幅移动而重算（重算会让墙两侧路径翻转 → 来回走）。
+    /// 只有三种情况重算：目标变了、路径走完、路径下一格被堵。
+    /// A* 一次即可判断有无路：有路就走；无路（真不可达）才由外层换目标。
+    /// </summary>
+    private void ChaseTarget(MapObject target)
+    {
+        if (PathFinder == null || target == null || target.Dead) return;
         Point me = User.CurrentLocation;
-        Point targetLocation = target.CurrentLocation;
 
-        // 目标换了 → 丢弃旧路径。
-        if (_chasePath == null || _chaseTargetId != target.ObjectID)
+        // 目标变了 → 丢弃旧路径。
+        if (_chaseTargetId != target.ObjectID)
+            ClearChasePath();
+
+        // 沿已有路径走（优先于任何 CanWalk）。
+        if (_chasePath != null)
         {
-            _chasePath = null;
-            _chaseTargetId = target.ObjectID;
-        }
-
-        // 已有缓存路径：剔除已走过的点，取当前该走的下一格。
-        if (_chasePath != null && _chasePath.Count > 0)
-        {
-            while (_chasePath.Count > 0 && _chasePath[0] == me)
-                _chasePath.RemoveAt(0);
-
-            if (_chasePath.Count == 0)
+            // 找到 me 在路径中的位置，剔除它及之前所有点。
+            // 跑 2 格会一次跳过 2 个节点，第 1 个节点不会被 me 精确命中，必须按索引整体剔除，
+            // 否则残留的旧节点会让人往回走（沿墙来回）。
+            int reached = -1;
+            for (int i = 0; i < _chasePath.Count; i++)
             {
-                // 走到路径终点（怪的邻格）后清掉，下一帧走正常攻击/追击判定。
-                _chasePath = null;
-                return;
+                if (_chasePath[i] == me) { reached = i; break; }
             }
 
-            MirDirection step = Functions.DirectionFromPoint(me, _chasePath[0]);
-            if (CanWalk(step, out step))
+            if (reached >= 0)
             {
-                AutoMoveStep(step);
-                return;
+                _chasePath.RemoveRange(0, reached + 1);
             }
-            // 下一格突然被占 → 清掉路径，稍后重算。
-            _chasePath = null;
+            // 若 me 未精确命中任何节点，但【紧邻】路径首点（下一步就能走到），也算有效，继续走。
+            // 只有 me 离路径首点 > 1 格（服务端拉回/跑动严重脱节）才判定脱节、清路径重算，
+            // 避免墙边因斜向节点与正交实际位置差一格而频繁重算、卡在节流上。
+            else if (_chasePath.Count > 0 &&
+                     Math.Max(Math.Abs(_chasePath[0].X - me.X), Math.Abs(_chasePath[0].Y - me.Y)) > 1)
+            {
+                ClearChasePath();
+            }
+
+            if (_chasePath != null && _chasePath.Count == 0)
+            {
+                ClearChasePath();
+                return;   // 到达怪邻格，下一帧走正常攻击判定
+            }
+
+            if (_chasePath != null && _chasePath.Count > 0)
+            {
+                Point next = _chasePath[0];
+                if (EmptyCell(next))
+                {
+                    ChaseMoveAlongPath(me);
+                    return;
+                }
+                // 下一格被动态对象占了 → 清掉，稍后重算。
+                ClearChasePath();
+            }
         }
 
-        // 需要（重）算路径：带节流。
-        if (CMain.Time < _chasePathNextAllow) return;
-        _chasePathNextAllow = CMain.Time + AutoPathReplanInterval;
+        // 需要建路径：带节流，A* 一次判断有无路。
+        if (CMain.Time < _chaseNextBuild) return;
+        _chaseNextBuild = CMain.Time + AutoPathReplanInterval;
 
-        // 在怪的 8 邻格里找【离我最近】的可走格作为寻路终点
-        // （怪本身那格被占，Walkable=false，直接寻路会失败）。
-        Point best = new Point(-1, -1);
-        int bestDist = int.MaxValue;
+        _chasePath = BuildPathToMonster(me, target.CurrentLocation);
+        _chaseTargetId = target.ObjectID;
+
+        if (_chasePath == null || _chasePath.Count == 0)
+        {
+            // 真不可达（A* 找不到路）→ 换目标，让下次扫描换一只，不在这里死磕。
+            MapObject.SelectTarget(null);
+            ClearChasePath();
+            return;
+        }
+
+        ChaseMoveAlongPath(me);
+    }
+
+    /// <summary>
+    /// 沿追击路径移动一步：能跑就跑（跨 runDistance 格），否则走一格。
+    /// 注意：这里【不主动删除路径节点】。动作要下一帧才执行、CurrentLocation 才会更新；
+    /// 路径节点的剔除统一由 ChaseTarget 开头的 while(_chasePath[0]==me) 根据实际位置驱动，
+    /// 跑 2 格后下一帧会自动剔除 2 个节点，走 1 格剔除 1 个，始终与实际落点对齐。
+    /// </summary>
+    private void ChaseMoveAlongPath(Point me)
+    {
+        if (_chasePath == null || _chasePath.Count == 0) return;
+
+        Point next = _chasePath[0];
+        MirDirection dir = Functions.DirectionFromPoint(me, next);
+        int runDistance = (User.RidingMount || (User.Sprint && !User.Sneaking)) ? 3 : 2;
+
+        // 能跑：引擎节奏允许 + 前方 runDistance 格都是空且沿同一方向（路径直线段），
+        // 且落点正好是路径第 runDistance 个节点——这样下一帧按实际位置剔除不会错位。
+        if (GameScene.CanRun && CMain.Time > GameScene.NextRunTime && User.HP >= 10
+            && CanRun(dir) && _chasePath.Count >= runDistance)
+        {
+            bool straight = true;
+            for (int i = 0; i < runDistance; i++)
+            {
+                if (_chasePath[i] != Functions.PointMove(me, dir, i + 1) || !EmptyCell(_chasePath[i]))
+                {
+                    straight = false;
+                    break;
+                }
+            }
+            if (straight)
+            {
+                User.QueuedAction = new QueuedAction
+                {
+                    Action = MirAction.Running,
+                    Direction = dir,
+                    Location = Functions.PointMove(me, dir, runDistance)
+                };
+                return;
+            }
+        }
+
+        // 走一格（同样不删节点，由 while 按实际位置剔除）。
+        if (CanWalk(dir))
+        {
+            User.QueuedAction = new QueuedAction
+            {
+                Action = MirAction.Walking,
+                Direction = dir,
+                Location = Functions.PointMove(me, dir, 1)
+            };
+        }
+    }
+
+    /// <summary>
+    /// 建一条从 from 到怪物某个可走邻格的路径（不含起点）；A* 不可达返回 null。
+    /// 终点优先选“朝向玩家”那一侧的邻格：怪物不动时该格固定，重算不会在墙两侧翻转。
+    /// </summary>
+    private System.Collections.Generic.List<Point> BuildPathToMonster(Point from, Point monsterCell)
+    {
+        // 按“离 from 最近的优先”收集所有可走邻格作为候选。
+        System.Collections.Generic.List<Point> candidates = new System.Collections.Generic.List<Point>();
         for (int dx = -1; dx <= 1; dx++)
         {
             for (int dy = -1; dy <= 1; dy++)
             {
                 if (dx == 0 && dy == 0) continue;
-                Point cell = new Point(targetLocation.X + dx, targetLocation.Y + dy);
+                Point cell = new Point(monsterCell.X + dx, monsterCell.Y + dy);
                 if (!EmptyCell(cell)) continue;
-                int d = Math.Max(Math.Abs(cell.X - me.X), Math.Abs(cell.Y - me.Y));
-                if (d < bestDist) { bestDist = d; best = cell; }
+                candidates.Add(cell);
             }
         }
-        if (best.X < 0) return;   // 怪四周全被堵死
+        if (candidates.Count == 0) return null;   // 怪四周全被堵死
 
-        var path = PathFinder.FindPath(me, best, 20);
-        if (path == null || path.Count <= 1) return;   // 到不了/已在相邻格
+        // 依次尝试候选邻格做 A*，取第一条能走通的路径（A* 一次成功即返回）。
+        // 先试朝向玩家那个方向，让终点稳定、少绕路。
+        MirDirection towardMe = Functions.DirectionFromPoint(monsterCell, from);
+        candidates.Sort((a, b) =>
+        {
+            int dirA = (int)Functions.DirectionFromPoint(monsterCell, a);
+            int dirB = (int)Functions.DirectionFromPoint(monsterCell, b);
+            int da = Math.Min(Math.Abs(dirA - (int)towardMe), 8 - Math.Abs(dirA - (int)towardMe));
+            int db = Math.Min(Math.Abs(dirB - (int)towardMe), 8 - Math.Abs(dirB - (int)towardMe));
+            if (da != db) return da.CompareTo(db);
+            return Math.Max(Math.Abs(a.X - from.X), Math.Abs(a.Y - from.Y))
+                 .CompareTo(Math.Max(Math.Abs(b.X - from.X), Math.Abs(b.Y - from.Y)));
+        });
 
-        // 缓存剩余路径（path[0] 是起点，剔除），后续沿它走，不再每步重算。
-        _chasePath = new System.Collections.Generic.List<Point>();
-        for (int i = 1; i < path.Count; i++)
-            _chasePath.Add(path[i].Location);
+        foreach (Point goal in candidates)
+        {
+            var pathPoints = PathFinder.FindPath(from, goal, 20);
+            if (pathPoints == null || pathPoints.Count <= 1) continue;
 
-        MirDirection firstStep = Functions.DirectionFromPoint(me, _chasePath[0]);
-        if (CanWalk(firstStep, out firstStep))
-            AutoMoveStep(firstStep);
+            var list = new System.Collections.Generic.List<Point>();
+            for (int i = 1; i < pathPoints.Count; i++)
+                list.Add(pathPoints[i].Location);
+            return list;
+        }
+        return null;   // 所有邻格都不可达 → 真无路
     }
 
     /// <summary>扫描 AutoFightSearchRange 格内最近的可攻击怪物，排除宝宝/宠物/特殊 AI。</summary>
