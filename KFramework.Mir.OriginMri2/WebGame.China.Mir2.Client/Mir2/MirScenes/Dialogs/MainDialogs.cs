@@ -33,6 +33,7 @@ namespace Client.MirScenes.Dialogs
         private const string AutoPathSheetKey = "resource/assets/auto_eff/zdxunlu.json";
 
         public MirButton RankBtn, GuildBtn, HeChengBtn, QiangXingBtn, ZhuangBanBtn, RongLuBtn, SheJiaoBtn, TianShenBtn, ShenChongBtn;
+        public MirButton AutoFightButton;   // 自动战斗开关按钮（原始传奇 btn_auto）
 
         public bool HPOnly
         {
@@ -336,6 +337,25 @@ namespace Client.MirScenes.Dialogs
                   GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                   );
 
+            // 自动战斗开关按钮（原始传奇 btn_auto）：左侧空位，点击切换 MapControl.AutoFight。
+            AutoFightButton = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_btn6",
+                Size = new Size(34, 18),
+                Location = new Point(300, -20),
+                Parent = this,
+                Sound = SoundList.ButtonC,
+                Hint = "自动战斗",
+            };
+            AutoFightButton.Label.Text = "自动";
+            AutoFightButton.Label.ForeColour = Color.FromArgb(255, 120, 255, 120);
+            AutoFightButton.Click += (o, e) =>
+            {
+                GameScene.Scene.MapControl.AutoFight = !GameScene.Scene.MapControl.AutoFight;
+                GameScene.Scene.ChatDialog.ReceiveChat(GameScene.Scene.MapControl.AutoFight ? "自动战斗：开启" : "自动战斗：关闭", ChatType.System);
+            };
+
             var quitBtn = new MirButton
             {
                 AtlasNameKey = "y_homeUI-sheet",
@@ -548,8 +568,8 @@ namespace Client.MirScenes.Dialogs
 
         public void Process()
         {
-            // 原始传奇主界面自动状态提示：自动寻路跟随 MapControl.AutoPath；自动战斗本引擎暂无，留扩展。
-            bool autoFight = false;
+            // 原始传奇主界面自动状态提示：自动战斗/自动寻路分别跟随 MapControl 上的开关。
+            bool autoFight = GameScene.Scene.MapControl != null && GameScene.Scene.MapControl.AutoFight;
             bool autoPath = GameScene.Scene.MapControl != null && GameScene.Scene.MapControl.AutoPath;
             if (autoFight != mLastAutoFight || autoPath != mLastAutoPath)
             {

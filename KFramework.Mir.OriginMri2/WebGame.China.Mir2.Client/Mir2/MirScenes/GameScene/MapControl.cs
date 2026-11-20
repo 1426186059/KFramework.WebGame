@@ -368,6 +368,15 @@ public sealed class MapControl : MirControl
 
     public static bool AutoHit;
 
+    // ===== 自动战斗（原始传奇 autoFightType=1）=====
+    // 开启后：扫描 50 格内怪物自动追击攻击；无怪则朝一个方向巡逻，避免原地往返。
+    public bool AutoFight;
+    private static long _autoFightNextScan;          // 下次扫描怪物的时间
+    private static MirDirection _autoWanderDir = MirDirection.Up; // 无怪巡逻方向
+    private static int _autoWanderSteps;              // 当前方向已走步数
+    private const int AutoFightSearchRange = 50;
+    private const int AutoWanderMaxSteps = 12;        // 同一方向最多走多少步再换
+
     public int AnimationCount;
 
     public static List<Effect> Effects = new List<Effect>();
@@ -1221,6 +1230,13 @@ public sealed class MapControl : MirControl
 
         if (CMain.Time < InputDelay || User.Poison.HasFlag(PoisonType.Paralysis) || User.Poison.HasFlag(PoisonType.LRParalysis) || User.Poison.HasFlag(PoisonType.Frozen) || User.Fishing) return;
 
+        // 自动战斗接管移动/攻击（在手动输入之前），避免与鼠标操作冲突。
+        if (AutoFight)
+        {
+            ProcessAutoFight();
+            return;
+        }
+
         if (User.NextMagic != null && !User.RidingMount)
         {
             UseMagic(User.NextMagic, User);
@@ -1554,6 +1570,125 @@ public sealed class MapControl : MirControl
         if (!CanWalk(direction, out direction)) return;
 
         User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = direction, Location = Functions.PointMove(User.CurrentLocation, direction, 1) };
+    }
+
+    /// <summary>
+    /// 自动战斗核心：50 格内找最近可攻击怪 → 追击并攻击；无怪则定向巡逻（防原地往返）。
+    /// 由 CheckInput 在手动输入之前调用；一切移动/攻击仍走引擎标准 QueuedAction 流程。
+    /// </summary>
+    private void ProcessAutoFight()
+    {
+        if (User == null || User.Dead || User.RidingMount) { AutoFight = false; return; }
+        // 安全区不自动打怪（避免站桩），但也不动。
+        if (M2CellInfo == null) return;
+
+        // 攻击/移动节奏统一受 NextAction 约束，避免每帧压队列。
+        if (CMain.Time < NextAction) return;
+
+        // 定时（400ms）重新扫描/确认目标，避免每帧遍历全部对象。
+        MapObject target = MapObject.CanAttackTargetObject;
+        if (CMain.Time >= _autoFightNextScan || target == null || target.Dead)
+        {
+            _autoFightNextScan = CMain.Time + 400;
+            target = FindAutoFightTarget();
+            if (target != null)
+                MapObject.SelectTarget(target); // 统一设置攻击目标+法术目标+脚底环
+            else
+            {
+                // 无怪：清掉攻击目标，进入巡逻
+                MapObject.SelectTarget(null);
+            }
+        }
+
+        if (target != null && !target.Dead && Functions.InRange(target.CurrentLocation, User.CurrentLocation, AutoFightSearchRange))
+        {
+            // 已在攻击范围（近战 1 格 / 弓手最大射程）→ 面向目标并攻击。
+            int attackRange = (User.Class == MirClass.Archer && User.HasClassWeapon) ? Globals.MaxAttackRange : 1;
+            if (Functions.InRange(target.CurrentLocation, User.CurrentLocation, attackRange))
+            {
+                if (CMain.Time > GameScene.AttackTime)
+                {
+                    MirDirection face = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
+                    User.QueuedAction = new QueuedAction { Action = MirAction.Attack1, Direction = face, Location = User.CurrentLocation };
+                    NextAction = CMain.Time + 120;
+                }
+                return;
+            }
+
+            // 未在攻击范围 → 朝目标走一步（用 next/previous 方向绕开障碍）。
+            MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
+            if (CanWalk(dir, out dir))
+            {
+                User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, 1) };
+                NextAction = CMain.Time + 120;
+            }
+            return;
+        }
+
+        // ===== 无怪：定向巡逻，避免来回走（死机观感）=====
+        AutoWander();
+    }
+
+    /// <summary>扫描 50 格内最近的可攻击怪物，排除宝宝/宠物/特殊 AI。</summary>
+    private MapObject FindAutoFightTarget()
+    {
+        MapObject best = null;
+        int bestDist = int.MaxValue;
+        Point me = User.CurrentLocation;
+        foreach (var ob in ObjectsList)
+        {
+            if (!(ob is MonsterObject monster) || monster.Dead) continue;
+            if (monster.AI == 64 || monster.AI == 70 || monster.AI == 6) continue; // 宠物/宝宝/特殊
+            if (monster.MasterObjectId != 0) continue;                            // 有主人的召唤物不打
+            if (monster.Name != null && monster.Name.EndsWith(")")) continue;    // 宝宝类命名（如"神兽(宝宝)"）
+            int d = Math.Max(Math.Abs(monster.CurrentLocation.X - me.X), Math.Abs(monster.CurrentLocation.Y - me.Y));
+            if (d > AutoFightSearchRange || d >= bestDist) continue;
+            bestDist = d;
+            best = monster;
+        }
+        return best;
+    }
+
+    /// <summary>无怪巡逻：同一方向连续走若干步再换方向，换方向时排除反方向，杜绝原地来回。</summary>
+    private void AutoWander()
+    {
+        // 当前方向走满步数 -> 换一个非反方向的新方向。
+        // 从当前方向左右偏转找可走方向，明显排除正后方（反方向），杜绝 A→B→A 来回。
+        if (_autoWanderSteps <= 0 || !CanWalkDir(_autoWanderDir))
+        {
+            int cur = (int)_autoWanderDir;
+            int opposite = (cur + 4) % 8;
+            // 优先小角度偏转（±1、±2、±3），最后才考虑其它。
+            int[] offsets = { -1, 1, -2, 2, -3, 3 };
+            MirDirection pick = _autoWanderDir;
+            bool found = false;
+            for (int i = 0; i < offsets.Length; i++)
+            {
+                int nd = (cur + offsets[i] + 8) % 8;
+                if (nd == opposite) continue;              // 绝不走回头路
+                if (CanWalkDir((MirDirection)nd)) { pick = (MirDirection)nd; found = true; break; }
+            }
+            if (!found) pick = _autoWanderDir;             // 极端全堵：原地保持（下一步仍会被阻挡，不会来回）
+            _autoWanderDir = pick;
+            _autoWanderSteps = CMain.Random.Next(6, AutoWanderMaxSteps + 1);
+        }
+
+        if (CanWalkDir(_autoWanderDir))
+        {
+            User.QueuedAction = new QueuedAction
+            {
+                Action = MirAction.Walking,
+                Direction = _autoWanderDir,
+                Location = Functions.PointMove(User.CurrentLocation, _autoWanderDir, 1)
+            };
+            _autoWanderSteps--;
+            NextAction = CMain.Time + 150;
+        }
+    }
+
+    private bool CanWalkDir(MirDirection dir)
+    {
+        return !User.InTrapRock && EmptyCell(Functions.PointMove(User.CurrentLocation, dir, 1));
     }
 
     /// <summary>攻击类技能必须点击选中目标：NeedTarget（服务端按原始 releaseType==1 计算）或旧引擎单体攻击技能。</summary>
