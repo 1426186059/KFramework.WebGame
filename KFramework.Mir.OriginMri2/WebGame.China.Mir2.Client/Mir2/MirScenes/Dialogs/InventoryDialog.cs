@@ -231,10 +231,10 @@ namespace Client.MirScenes.Dialogs
                     ItemSlot = InventoryLayout.BeltSlots + idx,
                     GridType = MirGridType.Inventory,
                     Parent = this,
-                    Size = new Size(60, 60),
+                    Size = new Size(55, 55),
                     // 60x60 格子 + 3px 间距（对齐原始传奇 BagPopSkin _TileLayout1）。
                     // 两页复用同一显示区，y % BagRows 让第二页回到顶部。
-                    Location = new Point(x * 63 + 20, y % InventoryLayout.BagRows * 63 + 20),
+                    Location = new Point(x * 63 + 26, y % InventoryLayout.BagRows * 64 + 20),
                     Visible = false,
                 };
             }
@@ -601,6 +601,7 @@ namespace Client.MirScenes.Dialogs
     {
         public MirLabel[] Key = new MirLabel[5];
         public MirItemCell[] Grid;
+        public readonly string[] KeyStringList = new string[] { "Q", "W", "E", "R", "T" };
 
         public BeltDialog()
         {
@@ -637,23 +638,23 @@ namespace Client.MirScenes.Dialogs
                 Key[i] = new MirLabel
                 {
                     Parent = this,
-                    Size = new Size(26, 14),
+                    Size = new Size(26, 20),
                     Location = new Point(8 + i * 57, 2),
-                    Text = (i + 1).ToString()
+                    Text = KeyStringList[i],
+                    NotControl = true
                 };
             }
 
             Grid = new MirItemCell[5];
-
             for (int x = 0; x < Grid.Length; x++)
             {
                 Grid[x] = new MirItemCell
                 {
+                    Size = new Size(48, 48),
                     ItemSlot = x,
                     GridType = MirGridType.Inventory,
-                    Library = Libraries.Items,
                     Parent = this,
-                    Location = new Point(x * 63 + 12, 3),
+                    Location = new Point(x * 57 + 5, 5),
                 };
             }
 

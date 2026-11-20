@@ -96,7 +96,7 @@ namespace Client.MirScenes.Dialogs
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
-                Location = new Point(0, 20),
+                Location = new Point(5, 25),
                 Size = new Size(300, 20),
                 NotControl = true,
             };
@@ -320,7 +320,7 @@ namespace Client.MirScenes.Dialogs
                     Parent = CharacterPage,
                     Location = new Point(0, 0),
                     // 装备槽按原始 equip_grid 尺寸 60×60 显示（覆盖 MirItemCell 默认 36×32）。
-                    Size = new Size(60, 60),
+                    Size = new Size(55, 55),
                     Visible = false,
                 };
             }
@@ -329,7 +329,7 @@ namespace Client.MirScenes.Dialogs
             for (int i = 0; i < visibleSlots.Length; i++)
             {
                 MirItemCell cell = Grid[(int)visibleSlots[i]];
-                cell.Location = slotGridPoints[i];
+                cell.Location = slotGridPoints[i] + new Point(2, 2);
                 cell.Visible = true;
             }
         }

@@ -148,6 +148,7 @@ namespace Client
             Reader.AutoPersist = false;
             Load();                  // 从已加载内容填充 Keylist
             MigrateSkillbarKeys();   // 旧存档把第一列绑成 F1..F8，迁移为 数字1..8 / F1..F8
+            MigrateBeltKeys();       // 旧存档快捷栏是 数字1..5，迁移为 Q/W/E/R/T，并废弃冲突功能键
             Reader.AutoPersist = true;
         }
 
@@ -175,6 +176,44 @@ namespace Client
                 cur.RequireCtrl = def.RequireCtrl;
                 cur.RequireTilde = def.RequireTilde;
             }
+            Save(Keylist);   // 持久化迁移结果
+        }
+
+        /// <summary>
+        /// 快捷栏历史绑定是数字 1..5（Belt1..Belt5 = Digit1..5），现改为 Q/W/E/R/T；
+        /// 同时 Q/E/R/T 原本被 任务/宠物/技能栏/交易 占用，这几个功能键直接废弃(None)。
+        /// 只在明确识别到旧布局时迁移，不覆盖玩家其它自定义绑定。
+        /// </summary>
+        private void MigrateBeltKeys()
+        {
+            KeyBind[] beltSlots =
+            {
+                Keylist.SingleOrDefault(x => x.function == KeybindOptions.Belt1),
+                Keylist.SingleOrDefault(x => x.function == KeybindOptions.Belt2),
+                Keylist.SingleOrDefault(x => x.function == KeybindOptions.Belt3),
+                Keylist.SingleOrDefault(x => x.function == KeybindOptions.Belt4),
+                Keylist.SingleOrDefault(x => x.function == KeybindOptions.Belt5),
+            };
+            // 只有 1 号格仍是旧的数字键才算旧存档（1 号原本=1，任意自定义过就不动）。
+            if (beltSlots[0] == null || beltSlots[0].Key != Keys.Digit1) return;
+
+            Keys[] newKeys = { Keys.KeyQ, Keys.KeyW, Keys.KeyE, Keys.KeyR, Keys.KeyT };
+            for (int i = 0; i < beltSlots.Length; i++)
+            {
+                if (beltSlots[i] != null) beltSlots[i].Key = newKeys[i];
+            }
+
+            // 废弃占用 Q/E/R/T 的功能键。
+            KeybindOptions[] abandoned =
+            {
+                KeybindOptions.Quests, KeybindOptions.Creature, KeybindOptions.Skillbar, KeybindOptions.Trade, KeybindOptions.Exit
+            };
+            foreach (KeybindOptions function in abandoned)
+            {
+                KeyBind key = Keylist.SingleOrDefault(x => x.function == function);
+                if (key != null) key.Key = Keys.None;
+            }
+
             Save(Keylist);   // 持久化迁移结果
         }
 
@@ -240,13 +279,13 @@ namespace Client
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HeroSkillsOpenClose), function = KeybindOptions.HeroSkills, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 1, Key = Keys.KeyS };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CreaturesOpenClose), function = KeybindOptions.Creature, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyE };
+            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CreaturesOpenClose), function = KeybindOptions.Creature, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MountOpenClose), function = KeybindOptions.MountWindow, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyJ };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.FishingOpenClose), function = KeybindOptions.Fishing, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyN };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarOpenClose), function = KeybindOptions.Skillbar, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyR };
+            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillbarOpenClose), function = KeybindOptions.Skillbar, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MentorOpenClose), function = KeybindOptions.Mentor, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
@@ -258,7 +297,7 @@ namespace Client
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GameshopOpenClose), function = KeybindOptions.GameShop, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyY };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.QuestDiaryOpenClose), function = KeybindOptions.Quests, RequireAlt = 0, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyQ };
+            InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.QuestDiaryOpenClose), function = KeybindOptions.Quests, RequireAlt = 0, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Dialogs", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OptionsOpenClose), function = KeybindOptions.Options, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.F12 };
             list.Add(InputKey);
@@ -335,23 +374,23 @@ namespace Client
 
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RotateBelt), function = KeybindOptions.BeltFlip, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 1, Key = Keys.KeyZ };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),1), function = KeybindOptions.Belt1, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Digit1 };
+            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),1), function = KeybindOptions.Belt1, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyQ };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlotAlt),1), function = KeybindOptions.Belt1Alt, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Numpad1 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),2), function = KeybindOptions.Belt2, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Digit2 };
+            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),2), function = KeybindOptions.Belt2, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyW };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlotAlt),2), function = KeybindOptions.Belt2Alt, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Numpad2 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),3), function = KeybindOptions.Belt3, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Digit3 };
+            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),3), function = KeybindOptions.Belt3, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyE };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlotAlt),3), function = KeybindOptions.Belt3Alt, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Numpad3 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),4), function = KeybindOptions.Belt4, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Digit4 };
+            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),4), function = KeybindOptions.Belt4, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyR };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlotAlt),4), function = KeybindOptions.Belt4Alt, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Numpad4 };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),5), function = KeybindOptions.Belt5, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Digit5 };
+            InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlot),5), function = KeybindOptions.Belt5, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyT };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "Belt", Description = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BeltSlotAlt),5), function = KeybindOptions.Belt5Alt, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.Numpad5 };
             list.Add(InputKey);
@@ -370,7 +409,7 @@ namespace Client
 
             InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Logout), function = KeybindOptions.Logout, RequireAlt = 1, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyX };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Exit), function = KeybindOptions.Exit, RequireAlt = 1, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyQ };
+            InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Exit), function = KeybindOptions.Exit, RequireAlt = 1, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MountDismount), function = KeybindOptions.Mount, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyM };
             list.Add(InputKey);
@@ -380,7 +419,7 @@ namespace Client
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CreatureAutoPickup), function = KeybindOptions.CreatureAutoPickup, RequireAlt = 1, RequireShift = 2, RequireTilde = 2, RequireCtrl = 0, Key = Keys.KeyA };
             list.Add(InputKey);
-            InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequestTrade), function = KeybindOptions.Trade, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.KeyT };
+            InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequestTrade), function = KeybindOptions.Trade, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 2, Key = Keys.None };
             list.Add(InputKey);
             InputKey = new KeyBind { Group = "General", Description = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RecruitGroupMember), function = KeybindOptions.AddGroupMember, RequireAlt = 2, RequireShift = 2, RequireTilde = 2, RequireCtrl = 1, Key = Keys.KeyG };
             list.Add(InputKey);

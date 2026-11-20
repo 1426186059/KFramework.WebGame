@@ -178,7 +178,8 @@ namespace Client.MirControls
 
         public MirItemCell()
         {
-            Size = new Size(60, 60);
+            AutoSize = false;
+            Size = new Size(55, 55);
             GridType = MirGridType.None;
             DrawImage = false;
             BorderColour = Color.Lime;

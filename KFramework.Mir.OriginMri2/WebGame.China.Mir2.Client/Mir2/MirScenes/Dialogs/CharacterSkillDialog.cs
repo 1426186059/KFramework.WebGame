@@ -565,7 +565,9 @@ namespace Client.MirScenes.Dialogs
         public override void Show()
         {
             if (Visible) return;
-            if (!HasSkill) return;
+            // 技能栏是常驻 UI 容器：新角色 1 级还没学任何技能（原始传奇第一个技能 7 级才解锁），
+            // HasSkill 为 false。若在这里 return，整个技能栏就不显示，玩家看不到空栏和快捷键位。
+            // 空栏时 UpdateUI 只是把各格清空，不会出错，所以不再用 HasSkill 拦截显示。
             Settings.SkillBar = true;
             Visible = true;
             UpdateUI();
