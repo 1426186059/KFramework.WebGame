@@ -352,7 +352,7 @@ namespace Client.MirScenes.Dialogs
             mAutoFightSpin = new MirAnimatedAtlasControl
             {
                 Parent = AutoFightButton,
-                Location = new Point(-8, -8),   // 让约 70×65 的转圈居中覆盖在 34×18 的按钮上
+                Location = new Point(-6, -8),   // 让约 70×65 的转圈居中覆盖在 34×18 的按钮上
                 Loop = true,
                 ForeColour = Color.White,
                 Animated = false,

@@ -859,10 +859,11 @@ namespace Client.MirControls
             // 拖拽状态（如滑块 _captured）卡死。
             if (ActiveControl != null && ActiveControl != this) return;
 
+            // NotControl 控件只绘制、不参与鼠标命中：绝不能把自己设为 MouseControl，
+            // 否则会抢占父按钮/下层控件的 hover 与点击（如按钮上的转圈特效挡住按钮点击）。
             if (NotControl)
-            {
+                return;
 
-            }
             if (MouseControl != null)
                 MouseControl.Dehighlight();
 
