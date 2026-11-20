@@ -34,6 +34,7 @@ namespace Client.MirScenes.Dialogs
 
         public MirButton RankBtn, GuildBtn, HeChengBtn, QiangXingBtn, ZhuangBanBtn, RongLuBtn, SheJiaoBtn, TianShenBtn, ShenChongBtn;
         public MirButton AutoFightButton;   // 自动战斗开关按钮（原始传奇 btn_auto）
+        private MirAnimatedAtlasControl mAutoFightSpin; // 按钮上的转圈特效（原始传奇 autoFightEff，x=-6,y=-7，ADD）
 
         public bool HPOnly
         {
@@ -342,18 +343,30 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "y_h_btn6",
-                Size = new Size(34, 18),
-                Location = new Point(300, -20),
+                Size = new Size(59, 59),
+                Location = new Point(900, -40),
                 Parent = this,
                 Sound = SoundList.ButtonC,
-                Hint = "自动战斗",
             };
-            AutoFightButton.Label.Text = "自动";
-            AutoFightButton.Label.ForeColour = Color.FromArgb(255, 120, 255, 120);
+
+            mAutoFightSpin = new MirAnimatedAtlasControl
+            {
+                Parent = AutoFightButton,
+                Location = new Point(-8, -8),   // 让约 70×65 的转圈居中覆盖在 34×18 的按钮上
+                Loop = true,
+                ForeColour = Color.White,
+                Animated = false,
+                Visible = false,
+                NotControl = true,                // 不拦截按钮点击
+                AtlasNameKey = "resource/assets/gameui4/movieClip/autoFightEff.json",
+            };
+
             AutoFightButton.Click += (o, e) =>
             {
                 GameScene.Scene.MapControl.AutoFight = !GameScene.Scene.MapControl.AutoFight;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameScene.Scene.MapControl.AutoFight ? "自动战斗：开启" : "自动战斗：关闭", ChatType.System);
+                bool on = GameScene.Scene.MapControl.AutoFight;
+                SetAutoFightSpin(on);
+                GameScene.Scene.ChatDialog.ReceiveChat(on ? "自动战斗：开启" : "自动战斗：关闭", ChatType.System);
             };
 
             var quitBtn = new MirButton
@@ -532,6 +545,11 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
+        private void SetAutoFightSpin(bool on)
+        {
+            SetAutoEff(mAutoFightSpin, on);
+        }
+
         private MirButton RankBtnStyle(
             string LabelImageAtlasFrame,
             int nIndex, string Hint)
@@ -578,6 +596,7 @@ namespace Client.MirScenes.Dialogs
                 bool showFight = autoFight;
                 bool showPath = autoPath && !showFight;
                 SetAutoEff(mAutoFightEff, showFight);
+                SetAutoFightSpin(autoFight);   // 按钮上的转圈（原始传奇 autoFightEff）
                 SetAutoEff(mAutoPathEff, showPath);
             }
 
