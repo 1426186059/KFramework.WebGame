@@ -376,6 +376,8 @@ public sealed class MapControl : MirControl
     private static int _autoWanderSteps;              // 当前方向已走步数
     private const int AutoFightSearchRange = 50;
     private const int AutoWanderMaxSteps = 12;        // 同一方向最多走多少步再换
+    private static long _autoFightGroundHintTime;     // 首次点击地面、提示"再次点击解除"的时间；5 秒内的第二次点击解除自动战斗
+    private const long AutoFightGroundHintWindow = 5000;
 
     public int AnimationCount;
 
@@ -1013,6 +1015,38 @@ public sealed class MapControl : MirControl
 
 
 
+    /// <summary>
+    /// 自动战斗中点击地面：首次点击冒泡提示"再次点击解除"，5 秒内的第二次点击真正解除自动战斗。
+    /// 通过 GameScene.Scene.MapControl 访问实例字段 AutoFight（本类多处逻辑为 static）。
+    /// </summary>
+    private static void HandleAutoFightGroundClick()
+    {
+        MapControl map = GameScene.Scene == null ? null : GameScene.Scene.MapControl;
+        if (map == null || !map.AutoFight)
+        {
+            _autoFightGroundHintTime = 0;
+            return;
+        }
+
+        long now = CMain.Time;
+        if (_autoFightGroundHintTime > 0 && now - _autoFightGroundHintTime <= AutoFightGroundHintWindow)
+        {
+            // 5 秒内第二次点击地面 → 解除
+            map.AutoFight = false;
+            _autoFightGroundHintTime = 0;
+        }
+
+        // 首次点击：冒泡提示并记录时间
+        _autoFightGroundHintTime = now;
+        MirBubbleToast.Show("再次点击地面，解除自动战斗状态");
+    }
+
+    /// <summary>开关自动战斗时调用，清掉"再次点击地面解除"的计时，避免下次开启后残留计时误触。</summary>
+    public static void ResetAutoFightGroundHint()
+    {
+        _autoFightGroundHintTime = 0;
+    }
+
     private static void OnMouseClick(object sender, EventArgs e)
     {
         if (!(e is MouseEventArgs me)) return;
@@ -1033,6 +1067,7 @@ public sealed class MapControl : MirControl
                     GameScene.Scene.MapControl.AutoPath = false;
                     if (MapObject.MouseObject == null)
                     {
+                        HandleAutoFightGroundClick();
                         // 但落点特效要照放：原版这个特效挂在"右键 + Settings.NewMove"的寻路分支里，
                         // 而 NewMove 默认 false，等于平时点地面完全没有反馈；网页版靠它确认"点到了哪一格"。
                         if (GameScene.Scene != null && GameScene.Scene.MapControl != null)
@@ -1079,6 +1114,7 @@ public sealed class MapControl : MirControl
                     AutoRun = false;
                     if (MapObject.MouseObject == null)
                     {
+                        HandleAutoFightGroundClick();
                         if (GameScene.Scene != null && GameScene.Scene.MapControl != null)
                             GameScene.Scene.MapControl.TryAutoPath();
                         return;
