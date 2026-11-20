@@ -106,8 +106,9 @@ namespace Client.MirControls
             }
         }
 
-        private void Update()
+        public override void Update()
         {
+            base.Update();
             if (_finished)
                 return;
 
