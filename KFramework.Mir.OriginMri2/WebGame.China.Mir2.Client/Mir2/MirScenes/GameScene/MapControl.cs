@@ -234,9 +234,31 @@ public sealed class MapControl : MirControl
 
         GameScene.Scene.MapControl.CurrentPath = path;
         GameScene.Scene.MapControl.AutoPath = true;
+        _autoPathNextReplan = 0;   // 新的一次寻路，允许遇阻时立即重规划
         LogMove("开始寻路: " + from + " -> " + target + "，路径点数=" + path.Count);
 
         ShowClickEffect(target);
+    }
+
+    /// <summary>
+    /// 自动寻路受阻/脱节时，从当前真实位置重新寻路到原目标。带节流避免每帧跑 A*。
+    /// PathFinder 的 Node.Walkable 走 Map.EmptyCell（含怪/NPC 动态阻挡），所以重规划会自动绕开障碍。
+    /// </summary>
+    private bool ReplanAutoPath(Point dest)
+    {
+        if (PathFinder == null || dest == User.CurrentLocation) return false;
+        if (CMain.Time < _autoPathNextReplan) return false;
+        _autoPathNextReplan = CMain.Time + AutoPathReplanInterval;
+
+        var path = PathFinder.FindPath(User.CurrentLocation, dest, 20);
+        if (path == null || path.Count == 0)
+        {
+            AutoPath = false;   // 目标被占/不可达，停下，避免原地抽动
+            return false;
+        }
+
+        CurrentPath = path;     // RetracePath 含起点，下一帧由 while 剔除
+        return true;
     }
 
     // 落点特效（Magic3 第 500 帧起的 10 帧动画，画在鼠标所指格子上）。
@@ -376,12 +398,14 @@ public sealed class MapControl : MirControl
     public const int AutoWanderMaxSteps = 12;        // 无怪时朝一个方向连续跑动的最大步数（每步跑 2~3 格），跑满后换方向
     public const int AutoFightScanInterval = 400;     // 每隔多少毫秒重新扫描一次怪物（越小反应越快、越费性能）
     public const long AutoFightGroundHintWindow = 5000; // 点地面提示后，多少秒内再点可解除自动战斗
+    public const int AutoPathReplanInterval = 200;      // 自动寻路遇障碍重规划的最小间隔(ms)，防止每帧跑 A*
     // ========================================================================
 
     // 自动战斗运行时状态：
     // 开启后：扫描 AutoFightSearchRange 格内怪物自动追击攻击；无怪则朝一个方向巡逻，避免原地往返。
     public bool AutoFight;
     private static long _autoFightNextScan;          // 下次扫描怪物的时间
+    private static long _autoPathNextReplan;         // 下次允许自动寻路重规划的时间（节流）
     private static MirDirection _autoWanderDir = MirDirection.Up; // 无怪巡逻方向
     private static int _autoWanderSteps;              // 当前方向已走步数
     private static long _autoFightGroundHintTime;     // 首次点击地面、提示"再次点击解除"的时间
@@ -1568,26 +1592,47 @@ public sealed class MapControl : MirControl
             }
 
             // 自动寻路：路径只在“点击时”算一次（见 BigMapViewPort.OnMouseClick / TryAutoPath），
-            // 这里每帧只做轻量工作——剔除已走过的节点、算到下一节点的方向与距离并前进，
-            // 绝不再每帧跑 FindPath（那才是长路径卡顿的根因）。
+            // 这里每帧只做轻量工作——剔除已走过的节点、算到下一节点的方向并前进。
+            // 仅在“预测落点脱离路径”或“前方被动态阻挡”时才重算（有节流，不会每帧跑 A*）。
 
-            Node currentNode = CurrentPath.SingleOrDefault(x => User.CurrentLocation == x.Location);
-            if (currentNode != null)
+            // 原目标始终是路径最后一个节点，重规划都朝它。
+            Point dest = CurrentPath[CurrentPath.Count - 1].Location;
+            if (dest == User.CurrentLocation)
             {
-                while (true)
+                AutoPath = false;   // 到达终点
+                return;
+            }
+
+            // 情况一：跑步跨 2 格转弯落点不在逐格节点上 / 被服务端 S.UserLocation 拉回，
+            // 当前位置已不在路径里。继续朝旧路径头走会指向身后 → 短距离来回跑，必须重规划。
+            if (!CurrentPath.Any(x => x.Location == User.CurrentLocation))
+            {
+                if (ReplanAutoPath(dest)) return;   // 本帧只重算，下一帧再走
+                return;                             // 节流中/失败：本帧不动，避免乱走
+            }
+
+            Node currentNode = CurrentPath.First(x => x.Location == User.CurrentLocation);
+            while (true)
+            {
+                Node first = CurrentPath.First();
+                CurrentPath.Remove(first);
+                if (first == currentNode)
                 {
-                    Node first = CurrentPath.First();
-                    CurrentPath.Remove(first);
-                    if (first == currentNode)
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
 
             if (CurrentPath.Count > 0)
             {
                 MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, CurrentPath.First().Location);
+
+                // 情况二：下一节点出现怪物/动态障碍（A* 快照里可走、现在被占），
+                // CanRun/CanWalk 都失败 → 立刻重规划绕开，绝不原地停住。
+                if (!CanWalk(dir) && !CanRun(dir))
+                {
+                    ReplanAutoPath(dest);
+                    return;
+                }
 
                 if (GameScene.CanRun && CanRun(dir) && CMain.Time > GameScene.NextRunTime && User.HP >= 10 && CurrentPath.Count > (User.RidingMount ? 2 : 1))
                 {
