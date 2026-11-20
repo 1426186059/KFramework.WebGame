@@ -271,7 +271,11 @@ public sealed class MapControl : MirControl
         if (CMain.Time < _autoPathNextReplan) return false;
         _autoPathNextReplan = CMain.Time + AutoPathReplanInterval;
 
-        var path = PathFinder.FindPath(User.CurrentLocation, dest, 20);
+        // 必须与“启动寻路”的规划参数一致：大地图点击用的是 FindPath(start, dest)
+        // （MaxNodes=0，不限制长度，见 BigMapViewPort.OnMouseClick），这里传 20 会让
+        // 任何剩余路程 >=20 格的长路径重规划直接返回 null，紧接着下面的分支把 AutoPath
+        // 关掉 —— 表现就是“大地图点远处，走两步自动寻路自己没了”。
+        var path = PathFinder.FindPath(User.CurrentLocation, dest);
         if (path == null || path.Count == 0)
         {
             AutoPath = false;   // 目标被占/不可达，停下，避免原地抽动
