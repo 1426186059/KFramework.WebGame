@@ -1034,6 +1034,7 @@ public sealed class MapControl : MirControl
             // 5 秒内第二次点击地面 → 解除
             map.AutoFight = false;
             _autoFightGroundHintTime = 0;
+            return;
         }
 
         // 首次点击：冒泡提示并记录时间
