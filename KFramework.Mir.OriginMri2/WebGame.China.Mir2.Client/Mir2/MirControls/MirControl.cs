@@ -414,7 +414,16 @@ namespace Client.MirControls
         }
 
         private bool _notControl;
-        // 只绘制、不拦截鼠标：为 true 时点击/悬停穿透到下层控件（见 IsMouseOver / Highlight）。
+        /// <summary>
+        /// 只绘制、完全不参与鼠标命中（默认 false）。为 true 时本控件及其整棵子树都不命中，
+        /// 点击/悬停直接穿透到下层控件（见 IsMouseOver / Highlight）。
+        /// <para>三个命中开关的区别：</para>
+        /// <list type="bullet">
+        /// <item>NotControl —— 砍掉【自身 + 整棵子树】的命中，连子控件一起不响应（如按钮上的转圈特效）。</item>
+        /// <item>RaycastTarget_OnlyMe —— 命中判定范围：false 时把子树纳入整体的命中判定。</item>
+        /// <item>HitSelf —— 只排除【自身】的命中，子控件仍照常参与。</item>
+        /// </list>
+        /// </summary>
         public bool NotControl
         {
             private get { return _notControl; }
@@ -441,11 +450,29 @@ namespace Client.MirControls
         /// false ——判断本控件是否命中，按「根节点 + 整棵子树」的整体判定：自身区域命中算命中，
         ///          子树里任意子控件命中也算本控件命中（如子控件探出父矩形，或父是透明背景容器）。
         /// 默认 true，零回归；只在需要"父按整体参与命中"的容器上设 false。
+        /// <para>与另两个开关的区别：NotControl 连子树一起砍；HitSelf 只排除自身；
+        /// 本开关则是把子树纳入命中范围（自身仍参与）。三者可组合使用。</para>
         /// </summary>
         public bool RaycastTarget_OnlyMe
         {
             get { return _raycastTargetOnlyMe; }
             set { _raycastTargetOnlyMe = value; }
+        }
+
+        private bool _hitSelf = true;
+        /// <summary>
+        /// 自身是否可命中（默认 true，零回归）。设为 false 时，本控件自身的显示区域不算命中。
+        /// <para>继续向下判断子控件是否命中的前提是 RaycastTarget_OnlyMe=true：即把「只按自身矩形
+        /// 判定」这一模式下自身那一份命中排除掉，改由子控件顶上（子命中即算本控件命中）。
+        /// 例如在透明背景容器上只让子控件算命中。</para>
+        /// <para>与另两个开关的区别：NotControl 连子树一起砍；RaycastTarget_OnlyMe=false 把子树
+        /// 纳入命中范围（自身仍参与）；本开关在 RaycastTarget_OnlyMe=true 前提下排除自身、
+        /// 改由子控件参与。三者可组合使用。</para>
+        /// </summary>
+        public bool HitSelf
+        {
+            get { return _hitSelf; }
+            set { _hitSelf = value; }
         }
 
         private float _opacity;
@@ -875,6 +902,10 @@ namespace Client.MirControls
             if (NotControl)
                 return;
 
+            // HitSelf=false：自身被排除出命中判定，绝不能把自己设为 MouseControl（子控件仍可命中）。
+            if (!HitSelf)
+                return;
+
             if (MouseControl != null)
                 MouseControl.Dehighlight();
 
@@ -887,7 +918,7 @@ namespace Client.MirControls
             // p 已是 UI(逻辑)坐标，不能再做 ScreenToWorldPos —— 所有调用点传的都是 CMain.MPoint，
             // 而它在输入入口已转换过一次（CMain_MouseMove / OnMouseDown / OnMouseUp），
             // DisplayRectangle 也是 UI 坐标；此处再转一次会重复扣减视口原点。
-            return Visible && (DisplayRectangle.Contains(p) || Moving || Modal) && !NotControl;
+            return HitSelf && Visible && (DisplayRectangle.Contains(p) || Moving || Modal) && !NotControl;
         }
 
         protected virtual void OnMouseEnter()
@@ -945,8 +976,9 @@ namespace Client.MirControls
             DoubleClick.Invoke(this, e);
         }
         /// <summary>
-        /// 子树内是否存在命中的控件（本控件自身不算）。沿子控件链逐层下钻：
-        /// 每层先看自身 IsMouseOver，未命中但 RaycastTarget_OnlyMe=false 的容器继续往里找。
+        /// 子树内是否存在命中的控件（本控件自身不算）。沿子控件链逐层下钻：每层先看自身 IsMouseOver，
+        /// 未命中时仅两种情况才继续往里找——该层是整体判定（RaycastTarget_OnlyMe=false），
+        /// 或该层只判自身但自身被排除（RaycastTarget_OnlyMe=true 且 HitSelf=false）。
         /// 不要求父矩形盖住子矩形。
         /// </summary>
         private bool SubtreeHits(Point p)
@@ -963,7 +995,9 @@ namespace Client.MirControls
                 if (c.IsMouseOver(p))
                     return true;
 
-                if (!c.RaycastTarget_OnlyMe && c.SubtreeHits(p))
+                // 下钻两种来源：整体判定（OnlyMe=false）；或自身被排除（OnlyMe=true 为前提，HitSelf=false）。
+                bool descendUnder = !c.RaycastTarget_OnlyMe || (c.RaycastTarget_OnlyMe && !c.HitSelf);
+                if (descendUnder && c.SubtreeHits(p))
                     return true;
             }
             return false;
@@ -1025,9 +1059,11 @@ namespace Client.MirControls
                         continue;
 
                     bool hit = child.IsMouseOver(CMain.MPoint);
-                    // RaycastTarget_OnlyMe=false 的容器：自身虽不命中，只要子树里有命中的控件，就把事件下派进去，
+                    // 自身没命中时下钻两种来源：整体判定（OnlyMe=false）；或自身被排除
+                    // （OnlyMe=true 为前提，HitSelf=false）。子树里有命中就把事件下派进去，
                     // 让最深处命中的控件经自己的 Highlight() 成为 MouseControl（容器自己不抢）。
-                    if (!hit && !child.RaycastTarget_OnlyMe)
+                    bool descendUnder = !child.RaycastTarget_OnlyMe || (child.RaycastTarget_OnlyMe && !child.HitSelf);
+                    if (!hit && descendUnder)
                         hit = child.SubtreeHits(CMain.MPoint);
 
                     if (hit)

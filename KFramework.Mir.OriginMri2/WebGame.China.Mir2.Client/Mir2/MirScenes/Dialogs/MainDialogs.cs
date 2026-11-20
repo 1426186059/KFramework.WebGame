@@ -45,6 +45,7 @@ namespace Client.MirScenes.Dialogs
         {
             PixelDetect = true;
             RaycastTarget_OnlyMe = false; // 按「自身 + 整棵子树」整体判定命中（子控件探出本容器矩形时仍算命中）
+            HitSelf = false;
 
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, 0);
