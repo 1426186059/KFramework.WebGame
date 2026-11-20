@@ -24,12 +24,7 @@ namespace Client.MirControls
         // 默认 false：全局保持 Point 最近邻，文字/精灵锐利；仅立绘这类被放大的小图控件置 true。
         public bool UseUISampler { get; set; } = false;
 
-        // 白鹭 MovieClip 原生帧对齐：开启后图集帧按【子图原始尺寸】绘制（不拉伸到 Size），
-        // 且逐帧偏移用下面的统一缩放换算。默认关闭，其它控件行为不变。
-        // 由 MirAnimatedAtlasControl.SetMovieClip 统一装配，外部不要逐个赋值。
-        protected bool AtlasFrameNativeSize { get; set; }
-
-        // AtlasFrameNativeSize 开启时，帧尺寸与逐帧偏移共用的统一缩放系数（如界面 ScaleF）。
+        // MovieClip 绘制共用的统一缩放系数（如界面 ScaleF），由 MirAnimatedAtlasControl.SetMovieClip 装配。
         protected float AtlasFrameScale { get; set; } = 1f;
 
         // 填充裁剪（类似 Unity Image.fillAmount）：FillAmount<1 时只绘制图像的指定比例部分，不拉伸图像。
@@ -502,18 +497,8 @@ namespace Client.MirControls
                 {
                     // 非 MovieClip 的普通图集帧：按 Size 绘制，沿用旧的比例换算与逐帧偏移。
                     drawSize = Size;
-                    float offsetScaleX, offsetScaleY;
-                    if (AtlasFrameNativeSize && srcFull.Width > 0 && srcFull.Height > 0)
-                    {
-                        drawSize = new Size((int)Math.Round(srcFull.Width * AtlasFrameScale),
-                                            (int)Math.Round(srcFull.Height * AtlasFrameScale));
-                        offsetScaleX = offsetScaleY = AtlasFrameScale;
-                    }
-                    else
-                    {
-                        offsetScaleX = srcFull.Width > 0 ? (float)drawSize.Width / srcFull.Width : 1f;
-                        offsetScaleY = srcFull.Height > 0 ? (float)drawSize.Height / srcFull.Height : 1f;
-                    }
+                    float offsetScaleX = srcFull.Width > 0 ? (float)drawSize.Width / srcFull.Width : 1f;
+                    float offsetScaleY = srcFull.Height > 0 ? (float)drawSize.Height / srcFull.Height : 1f;
                     px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                     py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
 
@@ -709,20 +694,9 @@ namespace Client.MirControls
                 var src = atlasSprite.SourceRectangle;
                 if (src.Width > 0 && src.Height > 0)
                 {
-                    Size drawSize;
-                    float offsetScaleX, offsetScaleY;
-                    if (AtlasFrameNativeSize)
-                    {
-                        drawSize = new Size((int)Math.Round(src.Width * AtlasFrameScale),
-                                            (int)Math.Round(src.Height * AtlasFrameScale));
-                        offsetScaleX = offsetScaleY = AtlasFrameScale;
-                    }
-                    else
-                    {
-                        drawSize = Size;
-                        offsetScaleX = src.Width > 0 ? (float)drawSize.Width / src.Width : 0f;
-                        offsetScaleY = src.Height > 0 ? (float)drawSize.Height / src.Height : 0f;
-                    }
+                    Size drawSize = Size;
+                    float offsetScaleX = src.Width > 0 ? (float)drawSize.Width / src.Width : 0f;
+                    float offsetScaleY = src.Height > 0 ? (float)drawSize.Height / src.Height : 0f;
 
                     int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                     int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
