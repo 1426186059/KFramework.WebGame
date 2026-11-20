@@ -164,21 +164,42 @@ public sealed class MapControl : MirControl
         FloorValid = false;
     }
 
-    private bool _autoPath;
-    public bool AutoPath
+    // ===== 自动运行模式：自动战斗 / 自动寻路 / 关闭，三者互斥，统一由 Mode 管理 =====
+    public enum EUserAutoMode
     {
-        get
-        {
-            return _autoPath;
-        }
+        AutoOff,    // 都关闭
+        AutoFight,  // 自动战斗
+        AutoPath,   // 自动寻路（大地图/点地面）
+    }
+
+    private EUserAutoMode _mode = EUserAutoMode.AutoOff;
+    public EUserAutoMode Mode
+    {
+        get { return _mode; }
         set
         {
-            if (_autoPath == value) return;
-            _autoPath = value;
-
-            if (!_autoPath)
+            if (_mode == value) return;
+            EUserAutoMode old = _mode;
+            _mode = value;
+            // 离开寻路态时清掉路径，避免残留路径被下一帧消费。
+            if (old == EUserAutoMode.AutoPath && _mode != EUserAutoMode.AutoPath)
                 CurrentPath = null;
+            // 任何模式切换都清掉绕墙追击缓存。
+            _chasePath = null;
         }
+    }
+
+    // 兼容包装：现有代码大量读写 AutoFight / AutoPath，统一转发到 Mode。
+    // 设为 true 会把另一种模式自动关掉（天然互斥）。
+    public bool AutoFight
+    {
+        get { return _mode == EUserAutoMode.AutoFight; }
+        set { if (value) Mode = EUserAutoMode.AutoFight; else if (_mode == EUserAutoMode.AutoFight) Mode = EUserAutoMode.AutoOff; }
+    }
+    public bool AutoPath
+    {
+        get { return _mode == EUserAutoMode.AutoPath; }
+        set { if (value) Mode = EUserAutoMode.AutoPath; else if (_mode == EUserAutoMode.AutoPath) Mode = EUserAutoMode.AutoOff; }
     }
 
     // 限频输出移动诊断日志：每次点击只打一条，便于判断是"点击没送到"、
@@ -401,9 +422,7 @@ public sealed class MapControl : MirControl
     public const int AutoPathReplanInterval = 200;      // 自动寻路遇障碍重规划的最小间隔(ms)，防止每帧跑 A*
     // ========================================================================
 
-    // 自动战斗运行时状态：
-    // 开启后：扫描 AutoFightSearchRange 格内怪物自动追击攻击；无怪则朝一个方向巡逻，避免原地往返。
-    public bool AutoFight;
+    // 自动战斗运行时状态：Mode==Fight 时扫描 AutoFightSearchRange 格内怪物自动追击攻击；无怪则定向巡逻。
     private static long _autoFightNextScan;          // 下次扫描怪物的时间
     private static long _autoPathNextReplan;         // 下次允许自动寻路重规划的时间（节流）
     private static MirDirection _autoWanderDir = MirDirection.Up; // 无怪巡逻方向
@@ -1706,15 +1725,102 @@ public sealed class MapControl : MirControl
                 return;
             }
 
-            // 未在攻击范围 → 朝目标跑/走一步（用 next/previous 方向绕开障碍）。
+            // 未在攻击范围 → 先试直线（含左右偏一格绕小障碍）。
             MirDirection dir = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
             if (CanWalk(dir, out dir))
+            {
                 AutoMoveStep(dir);
+                return;
+            }
+
+            // 直线被墙/死角挡住（怪在墙对面）：用 A* 找一条绕墙路径走第一步，而不是卡在墙边。
+            // A* 的 Node.Walkable 走 EmptyCell，会自动绕开墙和怪；走不通(真不可达)则清目标重新扫描。
+            ChaseAroundObstacle(target);
             return;
         }
 
         // ===== 无怪：定向巡逻，避免来回走（死机观感）=====
         AutoWander();
+    }
+
+    /// <summary>
+    /// 追击时直线被墙/死角挡住（怪在墙对面）→ 用 A* 找一条绕墙路径并【缓存】，
+    /// 之后沿这条路径走，直到走完或目标换掉才重算。
+    /// 不能每走一步就重算：终点在同一只怪的多个可达邻格间切换会让路径在墙两侧来回翻转，
+    /// 表现为“沿墙走一段又反向、无限循环”。
+    /// </summary>
+    private System.Collections.Generic.List<Point> _chasePath;
+    private uint _chaseTargetId;
+    private long _chasePathNextAllow;   // 重算节流
+
+    private void ChaseAroundObstacle(MapObject target)
+    {
+        if (PathFinder == null || target == null) return;
+        Point me = User.CurrentLocation;
+        Point targetLocation = target.CurrentLocation;
+
+        // 目标换了 → 丢弃旧路径。
+        if (_chasePath == null || _chaseTargetId != target.ObjectID)
+        {
+            _chasePath = null;
+            _chaseTargetId = target.ObjectID;
+        }
+
+        // 已有缓存路径：剔除已走过的点，取当前该走的下一格。
+        if (_chasePath != null && _chasePath.Count > 0)
+        {
+            while (_chasePath.Count > 0 && _chasePath[0] == me)
+                _chasePath.RemoveAt(0);
+
+            if (_chasePath.Count == 0)
+            {
+                // 走到路径终点（怪的邻格）后清掉，下一帧走正常攻击/追击判定。
+                _chasePath = null;
+                return;
+            }
+
+            MirDirection step = Functions.DirectionFromPoint(me, _chasePath[0]);
+            if (CanWalk(step, out step))
+            {
+                AutoMoveStep(step);
+                return;
+            }
+            // 下一格突然被占 → 清掉路径，稍后重算。
+            _chasePath = null;
+        }
+
+        // 需要（重）算路径：带节流。
+        if (CMain.Time < _chasePathNextAllow) return;
+        _chasePathNextAllow = CMain.Time + AutoPathReplanInterval;
+
+        // 在怪的 8 邻格里找【离我最近】的可走格作为寻路终点
+        // （怪本身那格被占，Walkable=false，直接寻路会失败）。
+        Point best = new Point(-1, -1);
+        int bestDist = int.MaxValue;
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                if (dx == 0 && dy == 0) continue;
+                Point cell = new Point(targetLocation.X + dx, targetLocation.Y + dy);
+                if (!EmptyCell(cell)) continue;
+                int d = Math.Max(Math.Abs(cell.X - me.X), Math.Abs(cell.Y - me.Y));
+                if (d < bestDist) { bestDist = d; best = cell; }
+            }
+        }
+        if (best.X < 0) return;   // 怪四周全被堵死
+
+        var path = PathFinder.FindPath(me, best, 20);
+        if (path == null || path.Count <= 1) return;   // 到不了/已在相邻格
+
+        // 缓存剩余路径（path[0] 是起点，剔除），后续沿它走，不再每步重算。
+        _chasePath = new System.Collections.Generic.List<Point>();
+        for (int i = 1; i < path.Count; i++)
+            _chasePath.Add(path[i].Location);
+
+        MirDirection firstStep = Functions.DirectionFromPoint(me, _chasePath[0]);
+        if (CanWalk(firstStep, out firstStep))
+            AutoMoveStep(firstStep);
     }
 
     /// <summary>扫描 AutoFightSearchRange 格内最近的可攻击怪物，排除宝宝/宠物/特殊 AI。</summary>

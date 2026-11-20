@@ -376,6 +376,9 @@ namespace Client.MirScenes.Dialogs
             }
             else
             {
+                // 大地图自动寻路与自动战斗互斥：开寻路就关掉自动战斗。
+                map.AutoFight = false;
+                MapControl.ResetAutoFightGroundHint();
                 map.CurrentPath = path;
                 map.AutoPath = true;
             }

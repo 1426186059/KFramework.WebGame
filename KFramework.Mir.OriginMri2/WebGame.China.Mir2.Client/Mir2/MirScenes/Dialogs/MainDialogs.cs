@@ -366,8 +366,13 @@ namespace Client.MirScenes.Dialogs
 
             AutoFightButton.Click += (o, e) =>
             {
-                GameScene.Scene.MapControl.AutoFight = !GameScene.Scene.MapControl.AutoFight;
-                bool on = GameScene.Scene.MapControl.AutoFight;
+                bool on = !GameScene.Scene.MapControl.AutoFight;
+                GameScene.Scene.MapControl.AutoFight = on;
+                if (on)
+                {
+                    // 自动战斗与自动寻路互斥：开启战斗就停掉大地图/点地面的寻路。
+                    GameScene.Scene.MapControl.AutoPath = false;
+                }
                 MapControl.ResetAutoFightGroundHint();
                 SetAutoFightSpin(on);
             };
