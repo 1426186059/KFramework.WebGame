@@ -13,6 +13,8 @@ public class ItemInfoOut
 {
     public int Index;
     public string Name = "";
+    // 原始传奇品质框：col9，1~9 显示 ngrid_<Quality>，>=10 普通无框。
+    public int Quality;
     public int Type;
     public int Grade;
     public int RequiredType;
@@ -238,6 +240,9 @@ public static class Program
                 }
 
                 var outItem = new ItemInfoOut { Index = index, Name = name };
+
+                // Quality <- col9（原始传奇品质框 ngrid_<1..9>；>=10 普通无框）
+                if (TryGetInt(item, "9", out int quality)) outItem.Quality = quality;
 
                 // Type <- Category(col5)
                 string cat = GetStr(item, "5").Trim();

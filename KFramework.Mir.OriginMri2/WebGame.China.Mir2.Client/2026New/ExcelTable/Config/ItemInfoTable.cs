@@ -9,6 +9,10 @@ public class ItemInfoTable
     // 由 ItemInfo.json 的 OriginModel 列反序列化；无该列的旧数据为空串，渲染时回落裸身。
     public string OriginModel { get; set; } = string.Empty;
 
+    // 原始传奇品质（1config.item[col9]）：1~9 显示 ngrid_<Quality> 品质框，>=10 为普通无框。
+    // 用于物品格背景着色；由 ItemInfo.json 的 Quality 列反序列化，旧数据缺列时为 0（不显示框）。
+    public int Quality { get; set; }
+
     public ItemType Type { get; set; }
     public ItemGrade Grade { get; set; }
     public RequiredType RequiredType { get; set; } = RequiredType.Level;

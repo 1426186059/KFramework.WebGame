@@ -262,8 +262,12 @@ namespace Client.MirScenes.Dialogs
                 return p;
             }
 
-            // 装备槽底图：原始 RolePop 的 EquipItemRenderSkin.bgImg.source = "equip_grid"（60×60），
-            // 取自 gameui4 图集 y_ngrid-sheet。逐槽垫在槽位下方（位置与下方 Grid[] 创建顺序/坐标一致），NotControl 不挡点击。
+            // 原始传奇 EquipItemRender 是两层底图：
+            //   1) equip_grid 通用灰框（EquipItemRenderSkin.bgImg）
+            //   2) grid_<N> 部位轮廓（bgImg0，按槽位画手镯/戒指/腰带等暗色剪影）
+            // 这里逐槽叠两层；位置与下方 Grid[] 创建顺序/坐标一致，NotControl 不挡点击。
+            // 轮廓帧映射来自 JS：项链 grid_3 / 勋章 grid_403 / 手镯 grid_4（左右共用）/
+            // 戒指 grid_6（左右共用）/ 玉佩 grid_404 / 腰带 grid_8 / 鞋子 grid_9 / 疗伤石 grid_405。
             var slotGridPoints = new Point[]
             {
                 GetGridPos(0, 3), // 项链
@@ -278,9 +282,24 @@ namespace Client.MirScenes.Dialogs
                 GetGridPos(4, 3), // 疗伤石
             };
 
-            foreach (var gp in slotGridPoints)
+            string[] outlineFrames =
             {
-                new MirImageControl
+                "grid_3",    // 项链
+                "grid_403",  // 荣誉勋章
+                "grid_4",    // 左手镯
+                "grid_4",    // 右手镯（JS: clientIndex 5→4，左右手共用 grid_4）
+                "grid_6",    // 左戒指
+                "grid_6",    // 右戒指（JS: clientIndex 7→6，共用 grid_6）
+                "grid_404",  // 玉佩
+                "grid_8",    // 腰带
+                "grid_9",    // 鞋子
+                "grid_405",  // 疗伤石
+            };
+
+            for (int i = 0; i < slotGridPoints.Length; i++)
+            {
+                Point gp = slotGridPoints[i];
+                var mBg = new MirImageControl
                 {
                     Parent = CharacterPage,
                     AtlasNameKey = "y_ngrid-sheet#equip_grid",
@@ -288,6 +307,17 @@ namespace Client.MirScenes.Dialogs
                     Location = gp,
                     Size = new Size(cellWidth, cellHeigth),
                     AutoSize = false,
+                };
+                var mCaoAnBg = new MirImageControl
+                {
+                    Parent = mBg,
+                    AtlasNameKey = "y_ngrid-sheet#" + outlineFrames[i],
+                    NotControl = true,
+                    SizeScale = 1.0f
+                };
+                mCaoAnBg.AtlasLoaded += (object? sender, EventArgs e) =>
+                {
+                    mCaoAnBg.Location = mCaoAnBg.Center;
                 };
             }
 

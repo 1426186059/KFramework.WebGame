@@ -4,6 +4,8 @@ public class ItemInfoTable
 {
     public int Index { get; set; }
     public string Name { get; set; } = string.Empty;
+    // 原始传奇品质（1config.item[col9]），客户端物品格品质框用；服务器不参与逻辑，仅保持配置表同构。
+    public int Quality { get; set; }
     public ItemType Type { get; set; }
     public ItemGrade Grade { get; set; }
     public RequiredType RequiredType { get; set; } = RequiredType.Level;

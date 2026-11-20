@@ -2492,6 +2492,37 @@ namespace Client.MirControls
             return true;
         }
 
+        // ===== 原始传奇品质框（ngrid_<1..9>，图集 y_ngrid-sheet）=====
+        // 品质来自 1config.item[col9]，已随 ItemInfo.json 落到本地表；服务端协议不带此字段，
+        // 故按 ItemIndex 查本地表补全（与 OriginModel/大图标号同一套补全机制）。
+        private static bool _qualitySheetRequested;
+        private static void EnsureQualitySheet()
+        {
+            if (_qualitySheetRequested) return;
+            _qualitySheetRequested = true;
+            _ = Mir2AtlasLibrary.GetSheetAsync("y_ngrid-sheet");
+        }
+
+        private void DrawQualityFrame(UserItem item)
+        {
+            if (item == null) return;
+            int quality = 0;
+            // 优先本地表（含 col9 品质）；本地表未就绪时退回服务器下发对象（若以后协议带上 Quality）。
+            if (ExcelTableMgr.TryGetItem(item.ItemIndex, out var local) && local != null)
+                quality = local.Quality;
+            if (quality <= 0 || quality > 9) return;   // 1~9 才有品质框，>=10/0 普通无框
+
+            EnsureQualitySheet();
+            string frame = "ngrid_" + quality;
+            if (!Mir2AtlasLibrary.TryGetFrame("y_ngrid-sheet", frame, out var sprite) || sprite?.Texture == null)
+                return;
+
+            var src = sprite.SourceRectangle;
+            // 按格子尺寸拉伸（与原 equip_grid 60×60 底图同尺寸），画在 DisplayLocation 作为物品背景。
+            var dst = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
+            DXManager.Draw(sprite.Texture, src, dst, KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState());
+        }
+
         // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfoTable.Image 是原始传奇 1config.item 的 col19
         // 图标号，对应 assets/resource/icon/tool/{图标号}.png（col19 有 46% 超过 ushort，必须用 uint）。
         // 注意：这里绝不能依赖 Library != null —— 背包 / 角色装备格子并没有配置 .Lib 图库，
@@ -2527,6 +2558,9 @@ namespace Client.MirControls
 
         protected internal override void DrawControl()
         {
+            // 品质框画在物品图标下层（此处先画，随后各分支 DrawItemIcon 覆盖其上）。
+            DrawQualityFrame(Item);
+
             if (Item != null && GameScene.SelectedCell != this && Locked != true)
             {
                 CreateDisposeLabel();
