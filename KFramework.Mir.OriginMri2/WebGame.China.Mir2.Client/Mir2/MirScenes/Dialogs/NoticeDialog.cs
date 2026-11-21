@@ -8,6 +8,14 @@ using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
+    /// <summary>
+    /// 公告页面（游戏内公告面板）。
+    /// 对应《原始传奇》页游：福利面板 FuliPanel 的“公告”子页 FuliPopAnnouncement（皮肤 FuliPopAnnouncementSkin），
+    /// 外层弹窗为 PopCommonSkin（背景 common_bg.png + 标题栏 + 关闭按钮）。
+    /// 数据来源：服务端 S.UpdateNotice → GameScene.ShowNotice → NoticeDialog.Update(p.Notice)，
+    /// 而不是像原版那样从 lang 表 Lang.getId(1000) 取静态 HTML —— 数据源保持服务端下发，仅 UI 外观对齐原版。
+    /// 富文本：Notice.Message 中 {文字/#RRGGBB} 着色、(文字/http链接) 超链接，解析逻辑沿用经典 Mir2。
+    /// </summary>
     public sealed class NoticeDialog : MirImageControl
     {
         public static Regex C = new Regex(@"{((.*?)\/(.*?))}");
@@ -21,55 +29,65 @@ namespace Client.MirScenes.Dialogs
 
         public Notice Notice = new Notice();
 
-        Font font = new Font(Settings.FontName, 10F);
+        // —— 原始传奇公告页皮肤几何（PopCommonSkin 818×536 + FuliPopAnnouncementSkin 606×446）——
+        // 背景走 manifest 哈希路径，避免 404；按钮帧用 gameui4 现成的 com_btn_close0 替代线上 com_btn_close。
+        private const string NoticeSheet = "y_common-sheet";
+        private const string NoticeBgUrl = "resource/assets/gameui4/jpg/common_bg.png";
+        private const int PanelW = 818, PanelH = 536;
+        private const int TextX = 40, TextY = 70;       // 正文区左上（对齐原版 group_page x=29,y=52 + scroller y=22）
+        private const int TextW = 600;                  // 原版 scroller/viewport 宽 570，这里略放宽
+        private const int LineH = 22;                   // 原版 style46 行距 12 + 字高，约 22
+        private const int ScrollX = 786;                // 右侧滚动条（原版 barGro x=588 相对内容页 606 宽 → 靠右）
+        private const int ScrollTop = 70, ScrollBottom = 452;
+        private const int BarMinY = 96, BarMaxY = 430;
+        private const int BarTravel = BarMaxY - BarMinY;
+
+        Font font = new Font(Settings.FontName, 11F);
 
         public List<string> CurrentLines = new List<string>();
         private int _index = 0;
-        public int MaximumLines = 19;
+        public int MaximumLines = 17;                   // (ScrollBottom-ScrollTop)/LineH ≈ 17 行
 
         public NoticeDialog()
         {
-            Index = 961;
-            Library = Libraries.Prguse;
+            _ = SetManifestImageAsync(NoticeBgUrl);    // 背景走 manifest 解析（CDN 哈希布局），避免 404
+            Size = new Size(PanelW, PanelH);
             Location = new Point((Settings.ScreenWidth - Size.Width) / 2, (Settings.ScreenHeight - Size.Height) / 3);
-            TextLabel = new MirLabel[40];
+            TextLabel = new MirLabel[64];
             TextButtons = new List<MirLabel>();
 
             MouseWheel += LoginNoticeDialog_MouseWheel;
 
             Sort = true;
 
+            // 标题栏（原版 PopCommonSkin.titleGro/txt_title：x=14,y=13，style233 居中标题）
             NameLabel = new MirLabel
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.BurlyWood,
-                Location = new Point(30, 6),
+                Location = new Point(34, 20),
                 AutoSize = true
             };
 
+            // 关闭按钮（原版 PopCommonSkin.btn_close x=768,y=2；本工程用 com_btn_close0 替代，放右上角内角并置顶）
             CloseButton = new MirButton
             {
-                Index = 360,
-                HoverIndex = 361,
-                PressedIndex = 362,
-                Library = Libraries.Prguse2,
+                AtlasNameKey = NoticeSheet + "#com_btn_close0",
                 Parent = this,
-                Location = new Point(289, 3),
+                Location = new Point(PanelW - 30, 6),
+                Size = new Size(26, 26),
                 Sound = SoundList.ButtonA,
             };
             CloseButton.Click += (o, e) => Hide();
 
+            // 原始传奇公告页无确定按钮（仅右上关闭），保留 OkButton 字段但不显示，避免破坏外部引用。
             OkButton = new MirButton
             {
-                Enabled = true,
-                HoverIndex = 194,
-                Index = 193,
-                Library = Libraries.Title,
-                Location = new Point(120, 436),
+                Enabled = false,
+                Visible = false,
                 Parent = this,
-                PressedIndex = 195,
             };
             OkButton.Click += (o, e) => Hide();
 
@@ -81,7 +99,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse2,
                 Parent = this,
                 Size = new Size(16, 14),
-                Location = new Point(293, 33),
+                Location = new Point(ScrollX, ScrollTop - 16),
                 Sound = SoundList.ButtonA,
                 Visible = false
             };
@@ -103,7 +121,7 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 475,
                 Parent = this,
                 Size = new Size(16, 14),
-                Location = new Point(293, 418),
+                Location = new Point(ScrollX, ScrollBottom),
                 Sound = SoundList.ButtonA,
                 Visible = true
             };
@@ -123,7 +141,7 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 206,
                 PressedIndex = 206,
                 Library = Libraries.Prguse2,
-                Location = new Point(293, 46),
+                Location = new Point(ScrollX, BarMinY),
                 Parent = this,
                 Movable = true,
                 Sound = SoundList.None,
@@ -134,14 +152,14 @@ namespace Client.MirScenes.Dialogs
 
         private void PositionBar_OnMoving(object sender, MouseEventArgs e)
         {
-            int x = 293;
+            int x = ScrollX;
             int y = PositionBar.Location.Y;
 
-            if (y >= 399) y = 399;
-            if (y <= 46) y = 46;
+            if (y >= BarMaxY) y = BarMaxY;
+            if (y <= BarMinY) y = BarMinY;
 
-            int location = y - 46;
-            int interval = 400 / (CurrentLines.Count - MaximumLines);
+            int location = y - BarMinY;
+            int interval = Math.Max(1, BarTravel / (CurrentLines.Count - MaximumLines));
 
             double yPoint = location / interval;
 
@@ -174,13 +192,13 @@ namespace Client.MirScenes.Dialogs
         {
             if (CurrentLines.Count <= MaximumLines) return;
 
-            int interval = 400 / (CurrentLines.Count - MaximumLines);
+            int interval = Math.Max(1, BarTravel / (CurrentLines.Count - MaximumLines));
 
-            int x = 293;
-            int y = 46 + (_index * interval);
+            int x = ScrollX;
+            int y = BarMinY + (_index * interval);
 
-            if (y >= 399) y = 399;
-            if (y <= 46) y = 46;
+            if (y >= BarMaxY) y = BarMaxY;
+            if (y <= BarMinY) y = BarMinY;
 
             PositionBar.Location = new Point(x, y);
         }
@@ -220,7 +238,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Index != -1)
                 {
-                    MaximumLines = 19;
+                    MaximumLines = 17;
                     if (lines.Count > MaximumLines)
                     {
                         UpButton.Visible = true;
@@ -236,7 +254,7 @@ namespace Client.MirScenes.Dialogs
                 }
                 else
                 {
-                    MaximumLines = 19;
+                    MaximumLines = 17;
                     UpButton.Visible = false;
                     DownButton.Visible = false;
                     PositionBar.Visible = false;
@@ -268,8 +286,8 @@ namespace Client.MirScenes.Dialogs
                     DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
-                    Size = new Size(420, 20),
-                    Location = new Point(25, 50 + (i - _index) * 20),
+                    Size = new Size(TextW, LineH),
+                    Location = new Point(TextX, TextY + (i - _index) * LineH),
                     NotControl = true
                 };
 
