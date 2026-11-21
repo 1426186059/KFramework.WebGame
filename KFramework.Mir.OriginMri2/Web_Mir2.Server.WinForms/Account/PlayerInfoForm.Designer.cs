@@ -405,16 +405,17 @@
             // 
             // LegendCoinLabel
             // 
-            LegendCoinLabel.AutoSize = true;
+            LegendCoinLabel.AutoSize = false;
             LegendCoinLabel.Location = new Point(10, 191);
             LegendCoinLabel.Name = "LegendCoinLabel";
-            LegendCoinLabel.Size = new Size(58, 15);
+            LegendCoinLabel.Size = new Size(70, 20);
             LegendCoinLabel.TabIndex = 26;
             LegendCoinLabel.Text = "传奇币 : ";
             // 
             // LegendCoinTextBox
             // 
-            LegendCoinTextBox.Location = new Point(70, 188);
+            // “传奇币 : ”是 3 个中文字，比其它行标签宽，AutoSize 后会向右盖住输入框左边缘，故右移避开
+            LegendCoinTextBox.Location = new Point(82, 188);
             LegendCoinTextBox.Name = "LegendCoinTextBox";
             LegendCoinTextBox.Size = new Size(116, 23);
             LegendCoinTextBox.TabIndex = 27;

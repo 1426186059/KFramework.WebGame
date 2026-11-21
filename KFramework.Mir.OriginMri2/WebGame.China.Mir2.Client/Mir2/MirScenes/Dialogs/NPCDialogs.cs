@@ -1024,7 +1024,8 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
             GameScene.Scene.TrustMerchantDialog.Hide();
             GameScene.Scene.QuestListDialog.Hide();
-            GameScene.Scene.InventoryDialog.Location = new Point(0, 0);
+            // 关闭 NPC 面板时直接关闭背包，不再改背包位置（位置交给各功能自行管理）
+            GameScene.Scene.InventoryDialog.Hide();
             GameScene.Scene.RollControl.Hide();
             GameScene.Scene.GuildTerritoryDialog.Hide();
             BigButtonDialog.Hide();
