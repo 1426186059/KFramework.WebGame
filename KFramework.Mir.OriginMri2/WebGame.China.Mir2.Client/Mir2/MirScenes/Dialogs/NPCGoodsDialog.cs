@@ -49,7 +49,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(0, 0),
                 ImageKey = "resource/assets/gameui4/jpg/npc_storebg.png",
-                Size = new Size(PanelW, PanelH);
+                Size = new Size(PanelW, PanelH)
             };
 
             // 关闭按钮：y_common-sheet#com_btn_close0（原始传奇 btn_close x323 y-9）
@@ -299,18 +299,18 @@ namespace Client.MirScenes.Dialogs
 
         public override void Show()
         {
-            // NPC 面板下方、左侧紧贴屏幕边沿（x=0，y=NPC 对话框高度）
             Location = new Point(0, GameScene.Scene.NPCDialog.Size.Height + 10);
             Visible = true;
             KFramework.MonoGame.PrintTool.Log($"[商店诊断] NPCGoodsDialog.Show Loc={Location} NPC高度={GameScene.Scene.NPCDialog.Size.Height} 行数={DisplayGoods.Count} PType={PType}");
-
             GameScene.Scene.InventoryDialog.Show();
         }
 
         public override void Draw()
         {
             if (Visible && _scroll != null)
+            {
                 _scroll.InvalidateTexture(); // 商品图标走 CDN 异步加载，加载完需重烘滚动视图才会显示
+            }
             base.Draw();
         }
     }
@@ -364,7 +364,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(74, 10),
                 Size = new Size(150, 24),
                 AutoSize = false,
-                Font = new Font(Settings.FontName, 14F),
+                Font = new Font(Settings.FontName, 12F),
                 ForeColour = Color.FromArgb(255, 230, 200),
                 BackColour = Color.Transparent,
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
@@ -374,9 +374,9 @@ namespace Client.MirScenes.Dialogs
             _costLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(71, 37),
+                Location = new Point(71, 35),
                 Size = new Size(150, 20),
-                Font = new Font(Settings.FontName, 14F),
+                Font = new Font(Settings.FontName, 12F),
                 ForeColour = Color.Gold,
                 BackColour = Color.Transparent,
                 NotControl = true,
@@ -396,7 +396,7 @@ namespace Client.MirScenes.Dialogs
             _buyButton = new MirButton
             {
                 Parent = this,
-                Location = new Point(228, 12),
+                Location = new Point(210, 15),
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet#store_z_btn_1_1",
                 PressedAtlasFrame = "store_z_btn_1",
