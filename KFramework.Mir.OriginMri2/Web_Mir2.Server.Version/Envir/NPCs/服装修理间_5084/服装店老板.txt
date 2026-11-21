@@ -1,13 +1,14 @@
 [@MAIN]
 #IF
-CHECKPKPOINT > 199
+看你的衣服，很像打了很多猎的勇士。
+以我的能力，能为你做的就是
+提供更多的衣物
+<购买/@BuySell>
+<离开/@exit>
 #SAY
-我不会帮助像你这样的恶人……
  
  
-<关闭/@exit>
 #ELSEACT
-GOTO @Main-1
 
 [@Main-1]
 #SAY

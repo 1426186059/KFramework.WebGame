@@ -1,0 +1,5 @@
+[@Main]
+#SAY
+你好，勇士！
+<购买/@BuySell>
+<离开/@exit>

@@ -439,3 +439,12 @@ Mir2Res/
 
 # 原始传奇配置迁移：转换器生成的预览表/报告/备份，体积大且不入库
 Tools/原始传奇-资源提取/migration-preview/
+
+# NPC 脚本生成器：dry-run 临时产物与报告（工具源码 Program.cs / *.csproj 保留入库）
+Tools/Mir2NPCScriptGen/_dryrun_existing/
+Tools/Mir2NPCScriptGen/_dryrun_scripts/
+Tools/Mir2NPCScriptGen/generated_report.txt
+Tools/Mir2NPCScriptGen/updated_existing_report.txt
+
+# NPC 脚本生成器对线上文件改动前的备份（NPCInfo 与老脚本）；工具本身保留
+*.npcscriptgen.bak

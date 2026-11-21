@@ -1,8 +1,7 @@
 [@Main]
-龙神商人：欢迎光临，勇士需要点什么？
-<购买/@BuySell>
-<出售/@Sell>
-<离开/@exit>
+高价回收魂力结晶★，童叟无欺
+<返回庄园/@exit>
+<龙神商店/@BuySell>
 
 [@BuySell]
 #SAY

@@ -1,13 +1,13 @@
 [@Main]
 #IF
-CHECKPKPOINT > 199
+这里保存着学徒们需要练习的各种书籍
+当然武功书籍也在其中，你需要什么书？
+<购买/@BuySell>
+<离开/@exit>
 #SAY
-我不会帮助像你这样的恶人……
  
  
-<关闭/@exit>
 #ELSEACT
-GOTO @Main-1
 
 [@Main-1]
 #SAY

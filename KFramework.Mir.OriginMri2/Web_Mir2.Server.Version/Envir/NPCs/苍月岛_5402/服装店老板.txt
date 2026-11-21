@@ -1,13 +1,13 @@
 [@MAIN]
 #IF
-CHECKPKPOINT > 199
+把你要卖的衣服给我看看，我会给你估个价。
+我们也经营头盔和帽子，所以你想买点什么?
+<购买/@BuySell>
+<离开/@exit>
 #SAY
-我不会帮助像你这样的恶人……
  
  
-<关闭/@exit>
 #ELSEACT
-GOTO @Main-1
 
 [@Main-1]
 #SAY
