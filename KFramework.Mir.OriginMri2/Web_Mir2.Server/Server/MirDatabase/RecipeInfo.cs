@@ -128,7 +128,7 @@ namespace Server.MirDatabase
                             if (data.Length >= 3)
                                 ushort.TryParse(data[2], out ingredient.CurrentDura);
 
-                            ingredient.Count = count > info.StackSizeUshort ? info.StackSizeUshort : count;
+                            ingredient.Count = count > info.StackSize ? (ushort)Math.Min(info.StackSize, ushort.MaxValue) : count;
 
                             Ingredients.Add(ingredient);
                         }

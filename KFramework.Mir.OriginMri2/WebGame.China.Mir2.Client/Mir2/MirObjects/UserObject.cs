@@ -761,7 +761,7 @@ namespace Client.MirObjects
                     continue;
                 }
 
-                int availableStack = inventoryItem.Info.StackSizeUshort - inventoryItem.Count;
+                int availableStack = (int)Math.Min(inventoryItem.Info.StackSize, int.MaxValue) - inventoryItem.Count;
 
                 if (availableStack == 0)
                 {

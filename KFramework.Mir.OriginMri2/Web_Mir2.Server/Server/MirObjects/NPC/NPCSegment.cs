@@ -3356,15 +3356,15 @@ namespace Server.MirObjects
                                     return;
                                 }
 
-                                if (item.Info.StackSizeUshort > count)
+                                if (item.Info.StackSize > count)
                                 {
                                     item.Count = count;
                                     count = 0;
                                 }
                                 else
                                 {
-                                    count -= item.Info.StackSizeUshort;
-                                    item.Count = item.Info.StackSizeUshort;
+                                    count -= (ushort)item.Info.StackSize;
+                                    item.Count = (ushort)item.Info.StackSize;
                                 }
 
                                 if (player.CanGainItem(item))
@@ -4038,15 +4038,15 @@ namespace Server.MirObjects
                                     return;
                                 }
 
-                                if (item.Info.StackSizeUshort > count)
+                                if (item.Info.StackSize > count)
                                 {
                                     item.Count = count;
                                     count = 0;
                                 }
                                 else
                                 {
-                                    count -= item.Info.StackSizeUshort;
-                                    item.Count = item.Info.StackSizeUshort;
+                                    count -= (ushort)item.Info.StackSize;
+                                    item.Count = (ushort)item.Info.StackSize;
                                 }
 
                                 mailInfo.Items.Add(item);

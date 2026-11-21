@@ -1578,20 +1578,20 @@ namespace Server.MirObjects
         }
         protected void AddItem(UserItem item)
         {
-            if (item.Info.StackSizeUshort > 1) //Stackable
+            if (item.Info.StackSize > 1) //Stackable
             {
                 for (int i = 0; i < Info.Inventory.Length; i++)
                 {
                     UserItem temp = Info.Inventory[i];
-                    if (temp == null || item.Info != temp.Info || temp.Count >= temp.Info.StackSizeUshort) continue;
+                    if (temp == null || item.Info != temp.Info || temp.Count >= temp.Info.StackSize) continue;
 
-                    if (item.Count + temp.Count <= temp.Info.StackSizeUshort)
+                    if (item.Count + temp.Count <= temp.Info.StackSize)
                     {
                         temp.Count += item.Count;
                         return;
                     }
-                    item.Count -= (ushort)(temp.Info.StackSizeUshort - temp.Count);
-                    temp.Count = temp.Info.StackSizeUshort;
+                    item.Count -= (ushort)(temp.Info.StackSize - temp.Count);
+                    temp.Count = (ushort)Math.Min(temp.Info.StackSize, ushort.MaxValue);
                 }
             }
 
@@ -7713,15 +7713,15 @@ namespace Server.MirObjects
 
                     if (bagItem == null || bagItem.Info != item.Info) continue;
 
-                    if (bagItem.Count + count <= bagItem.Info.StackSizeUshort) return true;
+                    if (bagItem.Count + count <= bagItem.Info.StackSize) return true;
 
-                    count -= (ushort)(bagItem.Info.StackSizeUshort - bagItem.Count);
+                    count -= (ushort)(bagItem.Info.StackSize - bagItem.Count);
                 }
 
                 return false;
             }
 
-            if (item.Info.StackSizeUshort > 1)
+            if (item.Info.StackSize > 1)
             {
                 ushort count = item.Count;
 
@@ -7731,9 +7731,9 @@ namespace Server.MirObjects
 
                     if (bagItem.Info != item.Info) continue;
 
-                    if (bagItem.Count + count <= bagItem.Info.StackSizeUshort) return true;
+                    if (bagItem.Count + count <= bagItem.Info.StackSize) return true;
 
-                    count -= (ushort)(bagItem.Info.StackSizeUshort - bagItem.Count);
+                    count -= (ushort)(bagItem.Info.StackSize - bagItem.Count);
                 }
             }
 
@@ -7750,7 +7750,7 @@ namespace Server.MirObjects
             {
                 if (items[i] == null) continue;
 
-                if (items[i].Info.StackSizeUshort > 1)
+                if (items[i].Info.StackSize > 1)
                 {
                     ushort count = items[i].Count;
 
@@ -7760,7 +7760,7 @@ namespace Server.MirObjects
 
                         if (bagItem == null || bagItem.Info != items[i].Info) continue;
 
-                        if (bagItem.Count + count > bagItem.Info.StackSizeUshort) stackOffset++;
+                        if (bagItem.Count + count > bagItem.Info.StackSize) stackOffset++;
 
                         break;
                     }

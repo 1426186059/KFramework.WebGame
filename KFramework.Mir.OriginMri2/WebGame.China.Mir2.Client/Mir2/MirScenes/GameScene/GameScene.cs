@@ -2648,7 +2648,7 @@ namespace Client.MirScenes
             else
             {
                 fromCell.Item.Count -= (ushort)(toCell.Item.Info.StackSize - toCell.Item.Count);
-                toCell.Item.Count = toCell.Item.Info.StackSizeUshort;
+                toCell.Item.Count = (ushort)Math.Min(toCell.Item.Info.StackSize, ushort.MaxValue);
             }
 
             User.RefreshStats();
@@ -6698,7 +6698,7 @@ namespace Client.MirScenes
                         return;
                     }
                     item.Count -= (ushort)(temp.Info.StackSize - temp.Count);
-                    temp.Count = temp.Info.StackSizeUshort;
+                    temp.Count = (ushort)Math.Min(temp.Info.StackSize, ushort.MaxValue);
                 }
             }
 
@@ -6838,7 +6838,7 @@ namespace Client.MirScenes
                         return;
                     }
                     item.Count -= (ushort)(temp.Info.StackSize - temp.Count);
-                    temp.Count = temp.Info.StackSizeUshort;
+                    temp.Count = (ushort)Math.Min(temp.Info.StackSize, ushort.MaxValue);
                 }
             }
 
