@@ -912,7 +912,16 @@ namespace Server.MirObjects
 
         private void Response(PlayerObject player, NPCPage page)
         {
-            player.Enqueue(new S.NPCResponse { Page = player.NPCSpeech });
+            // 原始传奇商店：点“购买”(@BuySell)时只弹商品列表，不把 NPC 面板换成 [@BuySell] 页
+            // （那页内容是“买回/返回”，会覆盖掉主对话框的“购买/出售/离开”）。
+            bool originStoreBuy = page.Key != null && page.Key.ToUpper() == BuySellKey;
+            if (originStoreBuy)
+            {
+                var callingNPC = NPCObject.Get(player.NPCObjectID);
+                originStoreBuy = callingNPC?.Info?.OriginSettings != null && callingNPC.Info.OriginSettings.StoreId > 0;
+            }
+            if (!originStoreBuy)
+                player.Enqueue(new S.NPCResponse { Page = player.NPCSpeech });
 
             ProcessSpecial(player, page);
         }
@@ -972,11 +981,6 @@ namespace Server.MirObjects
                     }
 
                     player.SendNPCGoods(sentGoods, PriceRate(player), PanelType.Buy, Settings.GoodsHideAddedStats);
-
-                    if (key == BuySellKey)
-                    {
-                        player.Enqueue(new S.NPCSell());
-                    }
                     break;
                 case BuyNewKey:
                 case BuySellNewKey:
@@ -986,11 +990,6 @@ namespace Server.MirObjects
                         player.CheckItem(Goods[i]);
 
                     player.SendNPCGoods(sentGoods, PriceRate(player), PanelType.Buy, Settings.GoodsHideAddedStats);
-
-                    if (key == BuySellNewKey)
-                    {
-                        player.Enqueue(new S.NPCSell());
-                    }
                     break;
                 case SellKey:
                     player.Enqueue(new S.NPCSell());

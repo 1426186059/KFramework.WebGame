@@ -224,9 +224,13 @@ namespace Client.MirScenes.Dialogs
 
         private void ButtonClicked(string action)
         {
-            if (action == "@Exit")
+            // 脚本里写的是 @exit（小写），以前只认 @Exit 导致走网络包、服务端 [@exit] 输出“慢走”变成下一页
+            if (string.Equals(action, "@Exit", StringComparison.OrdinalIgnoreCase))
             {
                 Hide();
+                GameScene.Scene.NPCGoodsDialog?.Hide();
+                GameScene.Scene.NPCSubGoodsDialog?.Hide();
+                GameScene.Scene.NPCCraftGoodsDialog?.Hide();
                 return;
             }
 

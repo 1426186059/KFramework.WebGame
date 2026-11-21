@@ -338,13 +338,28 @@ namespace Client.MirScenes.Dialogs
             // 不设 Sort：Sort=true 会在 OnVisibleChanged 里 Remove/Add 父控件 Controls 集合，
             // 而父级正 foreach 该集合，导致 InvalidOperation_EnumFailedVersion 崩溃。
 
-            // npc_storebg1（y_common-sheet，317x64，scale9）——裁到行高 60
+            // 行底：不用 npc_storebg1 图集帧（其纹理自带分段横线，左右 Y 不齐），改纯色底 + 底部一条统一横线
             _bg = new MirImageControl
             {
                 Parent = this,
                 Location = new Point(0, 0),
-                AtlasNameKey = "y_common-sheet#npc_storebg1",
                 Size = new Size(317, RowHeight),
+                BackColour = Color.FromArgb(30, 20, 20, 30),
+                NotControl = true,
+            };
+            new RowDivider
+            {
+                Parent = this,
+                Location = new Point(0, RowHeight - 1),
+                Size = new Size(317, 1),
+                NotControl = true,
+            };
+            // 竖线：把左侧图标区(x=1..61)与右侧名称/价格区分开
+            new RowDivider
+            {
+                Parent = this,
+                Location = new Point(62, 0),
+                Size = new Size(1, RowHeight - 1),
                 NotControl = true,
             };
 
@@ -451,6 +466,19 @@ namespace Client.MirScenes.Dialogs
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, iconId, priority: Mir2OriginObjectLibrary.PriorityItem);
             Mir2OriginObjectLibrary.DrawItemIconFit(iconId, DisplayLocation.X, DisplayLocation.Y,
                                                     Size.Width, Size.Height, Color.White);
+        }
+    }
+
+    /// <summary>
+    /// 商品行底部横线：1px 高的控件 + Border 画一条贯通整行的线，左右 Y 统一。
+    /// </summary>
+    public sealed class RowDivider : MirControl
+    {
+        public RowDivider()
+        {
+            BackColour = Color.FromArgb(255, 90, 80, 70);
+            Border = true;
+            BorderColour = Color.FromArgb(255, 90, 80, 70);
         }
     }
 }
