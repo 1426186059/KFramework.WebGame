@@ -1,10 +1,7 @@
 using Client.MirControls;
-using Client.MirGraphics;
 using Client.MirSounds;
-using System.Text.RegularExpressions;
 using System.Globalization;
-using System.Diagnostics;
-using WebGame.Mir2.MonoGame.Client;
+using System.Text.RegularExpressions;
 
 namespace Client.MirScenes.Dialogs
 {
