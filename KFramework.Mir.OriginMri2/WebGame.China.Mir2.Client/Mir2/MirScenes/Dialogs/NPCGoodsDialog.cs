@@ -42,15 +42,21 @@ namespace Client.MirScenes.Dialogs
 
             // 背景：原始传奇 npc_storebg.png（manifest 独立图）
             AutoSize = false;
-            Size = new Size(PanelW, PanelH);
-            ImageKey = "resource/assets/gameui4/jpg/npc_storebg.png";
-            Sort = true;
+            Size = new Size(PanelW + 20, PanelH);
+
+            var mBg = new MirImageControl
+            {
+                Parent = this,
+                Location = new Point(0, 0),
+                ImageKey = "resource/assets/gameui4/jpg/npc_storebg.png",
+                Size = new Size(PanelW, PanelH);
+            };
 
             // 关闭按钮：y_common-sheet#com_btn_close0（原始传奇 btn_close x323 y-9）
             CloseButton = new MirButton
             {
                 Parent = this,
-                Location = new Point(323, -9),
+                Location = new Point(PanelW, 3),
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet#com_btn_close0",
                 PressedAtlasFrame = "com_btn_close1",
@@ -294,7 +300,7 @@ namespace Client.MirScenes.Dialogs
         public override void Show()
         {
             // NPC 面板下方、左侧紧贴屏幕边沿（x=0，y=NPC 对话框高度）
-            Location = new Point(0, GameScene.Scene.NPCDialog.Size.Height);
+            Location = new Point(0, GameScene.Scene.NPCDialog.Size.Height + 10);
             Visible = true;
             KFramework.MonoGame.PrintTool.Log($"[商店诊断] NPCGoodsDialog.Show Loc={Location} NPC高度={GameScene.Scene.NPCDialog.Size.Height} 行数={DisplayGoods.Count} PType={PType}");
 
@@ -321,7 +327,7 @@ namespace Client.MirScenes.Dialogs
         public event EventHandler BuyClicked;
 
         private readonly MirImageControl _bg;
-        private readonly MirItemCell _itemCell;
+        private readonly StoreIcon _itemCell;
         private readonly MirLabel _nameLabel, _costLabel, _limitLabel;
         private readonly MirButton _buyButton;
 
@@ -329,7 +335,8 @@ namespace Client.MirScenes.Dialogs
         {
             Item = item;
             Size = new Size(317, RowHeight);
-            Sort = true;
+            // 不设 Sort：Sort=true 会在 OnVisibleChanged 里 Remove/Add 父控件 Controls 集合，
+            // 而父级正 foreach 该集合，导致 InvalidOperation_EnumFailedVersion 崩溃。
 
             // npc_storebg1（y_common-sheet，317x64，scale9）——裁到行高 60
             _bg = new MirImageControl
@@ -341,8 +348,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
             };
 
-            // 物品图标：MirItemCell 已支持原始传奇 Info.Image 图集绘制
-            _itemCell = new MirItemCell
+            // 物品图标：独立 StoreIcon 直接调原始传奇图集绘制（MirItemCell.Item setter 依赖 GridType→ItemArray，商店格子没有对应数组会抛异常）
+            _itemCell = new StoreIcon
             {
                 Parent = this,
                 Location = new Point(1, 0),
@@ -417,6 +424,33 @@ namespace Client.MirScenes.Dialogs
 
             _limitLabel.Text = MultipleAvailable ? "多件" : string.Empty;
             _bg.BackColour = Selected ? Color.FromArgb(60, 255, 255, 255) : Color.Transparent;
+            _itemCell.Item = Item;
+        }
+    }
+
+    /// <summary>
+    /// 商店商品图标：直接走原始传奇图集异步加载 + DrawItemIconFit，不依赖 MirItemCell 的 GridType/ItemArray。
+    /// </summary>
+    public sealed class StoreIcon : MirControl
+    {
+        private UserItem _item;
+        public UserItem Item
+        {
+            get { return _item; }
+            set { _item = value; Redraw(); }
+        }
+
+        protected internal override void DrawControl()
+        {
+            base.DrawControl();
+            if (_item?.Info == null) return;
+
+            int iconId = (int)_item.Info.Image; // Image 已是完整 uint（协议两端对齐）
+            if (iconId <= 0) return;
+
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, iconId, priority: Mir2OriginObjectLibrary.PriorityItem);
+            Mir2OriginObjectLibrary.DrawItemIconFit(iconId, DisplayLocation.X, DisplayLocation.Y,
+                                                    Size.Width, Size.Height, Color.White);
         }
     }
 }
