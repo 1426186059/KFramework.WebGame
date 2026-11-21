@@ -22,7 +22,10 @@ public class ItemInfoTable
     public ushort Durability { get; set; }
 
     public uint Price { get; set; }
-    public ushort StackSize { get; set; } = 1;
+    // 原始传奇 col16 堆叠上限可达 9999999，超出 ushort；配置/协议统一为 uint 承载原值。
+    public uint StackSize { get; set; } = 1;
+    // 运行时 UserItem.Count 仍是 ushort（协议不动），把堆叠上限钳到 ushort 范围使用。
+    public ushort StackSizeUshort => StackSize > ushort.MaxValue ? ushort.MaxValue : (ushort)StackSize;
 
     public bool StartItem { get; set; }
     // 新角色赠送数量；默认 1，回城卷等可通过配置表改成 100。
@@ -96,7 +99,7 @@ public class ItemInfoTable
 
         if (version <= 84)
         {
-            StackSize = (ushort)reader.ReadUInt32();
+            StackSize = reader.ReadUInt32();
         }
         else
         {
@@ -236,7 +239,10 @@ public class ItemInfoTable
         writer.Write(Image);
         writer.Write(Durability);
 
-        writer.Write(StackSize);
+        // 协议固定为 ushort：ItemInfoTable(BinaryReader) 默认 version>84 走 ReadUInt16。
+        // StackSize 数据层是 uint（容纳原始传奇 col16 的 9999999），发往客户端必须钳到 ushort，
+        // 否则多写 2 字节会让后续字段整体错位 → ReceivePacket 抛 InvalidDataException。
+        writer.Write(StackSizeUshort);
         writer.Write(Price);
 
         writer.Write(StartItem);

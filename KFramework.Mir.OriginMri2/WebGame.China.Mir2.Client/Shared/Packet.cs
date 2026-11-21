@@ -53,7 +53,9 @@ public abstract class Packet
         catch (Exception e)
         {
             PrintTool.LogError($"Packet.ReceivePacket: Exception while reading packet {p?.GetType().Name ?? "null"} (ID: {id})", e);
-            throw new InvalidDataException();
+            // 把真实原因带进异常消息：WASM 主循环日志会打印异常 ToString，
+            // 这样不用依赖 Conditional(DEBUG) 的 LogError 也能在控制台看到是哪个包、内层异常是什么。
+            throw new InvalidDataException($"Packet {p?.GetType().Name ?? "null"} (ID: {id}): {e.Message}", e);
         }
 
         rawBytes.RemoveRange(length);

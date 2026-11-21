@@ -1013,20 +1013,20 @@ namespace Server.MirObjects
         }
         private void AddQuestItem(UserItem item)
         {
-            if (item.Info.StackSize > 1) //Stackable
+            if (item.Info.StackSizeUshort > 1) //Stackable
             {
                 for (int i = 0; i < Info.QuestInventory.Length; i++)
                 {
                     UserItem temp = Info.QuestInventory[i];
-                    if (temp == null || item.Info != temp.Info || temp.Count >= temp.Info.StackSize) continue;
+                    if (temp == null || item.Info != temp.Info || temp.Count >= temp.Info.StackSizeUshort) continue;
 
-                    if (item.Count + temp.Count <= temp.Info.StackSize)
+                    if (item.Count + temp.Count <= temp.Info.StackSizeUshort)
                     {
                         temp.Count += item.Count;
                         return;
                     }
-                    item.Count -= (ushort)(temp.Info.StackSize - temp.Count);
-                    temp.Count = temp.Info.StackSize;
+                    item.Count -= (ushort)(temp.Info.StackSizeUshort - temp.Count);
+                    temp.Count = temp.Info.StackSizeUshort;
                 }
             }
 
@@ -2554,7 +2554,7 @@ namespace Server.MirObjects
 
                             while (itemCount > 0)
                             {
-                                if (iInfo.StackSize >= itemCount)
+                                if (iInfo.StackSizeUshort >= itemCount)
                                 {
                                     item = Envir.CreateDropItem(iInfo);
                                     item.GMMade = true;
@@ -2566,8 +2566,8 @@ namespace Server.MirObjects
                                 }
                                 item = Envir.CreateDropItem(iInfo);
                                 item.GMMade = true;
-                                item.Count = iInfo.StackSize;
-                                itemCount -= iInfo.StackSize;
+                                item.Count = iInfo.StackSizeUshort;
+                                itemCount -= iInfo.StackSizeUshort;
 
                                 if (!CanGainItem(item)) return;
                                 GainItem(item);
@@ -5657,15 +5657,15 @@ namespace Server.MirObjects
             for (int i = 0; i < items.Count; i++)
             {
                 UserItem dst = items[i];
-                if (dst == null || dst.Info == null || dst.Info.StackSize <= 1 || dst.Count >= dst.Info.StackSize) continue;
+                if (dst == null || dst.Info == null || dst.Info.StackSizeUshort <= 1 || dst.Count >= dst.Info.StackSizeUshort) continue;
 
-                for (int j = i + 1; j < items.Count && dst.Count < dst.Info.StackSize; j++)
+                for (int j = i + 1; j < items.Count && dst.Count < dst.Info.StackSizeUshort; j++)
                 {
                     UserItem src = items[j];
                     // 按 Index 判定同类（GetRealItem 可能对同一配置生成不同 ItemInfoTable 实例）
                     if (src == null || src.Info == null || src.Info.Index != dst.Info.Index) continue;
 
-                    int take = Math.Min(dst.Info.StackSize - dst.Count, (int)src.Count);
+                    int take = Math.Min(dst.Info.StackSizeUshort - dst.Count, (int)src.Count);
                     if (take <= 0) continue;
 
                     dst.Count += (ushort)take;
@@ -7031,7 +7031,7 @@ namespace Server.MirObjects
                 break;
             }
 
-            if (tempFrom == null || tempFrom.Info.StackSize == 1 || index == -1)
+            if (tempFrom == null || tempFrom.Info.StackSizeUshort == 1 || index == -1)
             {
                 Enqueue(p);
                 return;
@@ -7058,7 +7058,7 @@ namespace Server.MirObjects
                 break;
             }
 
-            if (tempTo == null || tempTo.Info != tempFrom.Info || tempTo.Count == tempTo.Info.StackSize)
+            if (tempTo == null || tempTo.Info != tempFrom.Info || tempTo.Count == tempTo.Info.StackSizeUshort)
             {
                 Enqueue(p);
                 return;
@@ -7085,15 +7085,15 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (tempFrom.Count <= tempTo.Info.StackSize - tempTo.Count)
+            if (tempFrom.Count <= tempTo.Info.StackSizeUshort - tempTo.Count)
             {
                 tempTo.Count += tempFrom.Count;
                 arrayFrom[index] = null;
             }
             else
             {
-                tempFrom.Count -= (ushort)(tempTo.Info.StackSize - tempTo.Count);
-                tempTo.Count = tempTo.Info.StackSize;
+                tempFrom.Count -= (ushort)(tempTo.Info.StackSizeUshort - tempTo.Count);
+                tempTo.Count = tempTo.Info.StackSizeUshort;
             }
 
             Report.ItemMerged(tempFrom, tempTo, index, toIndex, gridFrom, gridTo);
@@ -8313,7 +8313,7 @@ namespace Server.MirObjects
         {
             if (FreeSpace(Info.QuestInventory) > 0) return true;
 
-            if (item.Info.StackSize > 1)
+            if (item.Info.StackSizeUshort > 1)
             {
                 ushort count = item.Count;
 
@@ -8323,9 +8323,9 @@ namespace Server.MirObjects
 
                     if (bagItem.Info != item.Info) continue;
 
-                    if (bagItem.Count + count <= bagItem.Info.StackSize) return true;
+                    if (bagItem.Count + count <= bagItem.Info.StackSizeUshort) return true;
 
-                    count -= (ushort)(bagItem.Info.StackSize - bagItem.Count);
+                    count -= (ushort)(bagItem.Info.StackSizeUshort - bagItem.Count);
                 }
             }
 
@@ -8630,7 +8630,7 @@ namespace Server.MirObjects
                     return;
                 }
 
-                if (temp.Info.StackSize > 1 && count != temp.Count)
+                if (temp.Info.StackSizeUshort > 1 && count != temp.Count)
                 {
                     UserItem item = Envir.CreateFreshItem(temp.Info);
                     item.Count = count;
@@ -11937,15 +11937,15 @@ namespace Server.MirObjects
                     {
                         UserItem item = Envir.CreateFreshItem(carryItem.Item);
 
-                        if (item.Info.StackSize > count)
+                        if (item.Info.StackSizeUshort > count)
                         {
                             item.Count = count;
                             count = 0;
                         }
                         else
                         {
-                            count -= item.Info.StackSize;
-                            item.Count = item.Info.StackSize;
+                            count -= item.Info.StackSizeUshort;
+                            item.Count = item.Info.StackSizeUshort;
                         }
 
                         if (!CanGainQuestItem(item))
@@ -12062,15 +12062,15 @@ namespace Server.MirObjects
                 while (count > 0)
                 {
                     rewardItem = Envir.CreateFreshItem(reward.Item);
-                    if (reward.Item.StackSize >= count)
+                    if (reward.Item.StackSizeUshort >= count)
                     {
                         rewardItem.Count = count;
                         count = 0;
                     }
                     else
                     {
-                        rewardItem.Count = reward.Item.StackSize;
-                        count -= reward.Item.StackSize;
+                        rewardItem.Count = reward.Item.StackSizeUshort;
+                        count -= reward.Item.StackSizeUshort;
                     }
 
                     rewardItems.Add(rewardItem);
@@ -12086,15 +12086,15 @@ namespace Server.MirObjects
                 while (count > 0)
                 {
                     rewardItem = Envir.CreateFreshItem(selectReward.Item);
-                    if (selectReward.Item.StackSize >= count)
+                    if (selectReward.Item.StackSizeUshort >= count)
                     {
                         rewardItem.Count = count;
                         count = 0;
                     }
                     else
                     {
-                        rewardItem.Count = selectReward.Item.StackSize;
-                        count -= selectReward.Item.StackSize;
+                        rewardItem.Count = selectReward.Item.StackSizeUshort;
+                        count -= selectReward.Item.StackSizeUshort;
                     }
 
                     rewardItems.Add(rewardItem);
@@ -14494,7 +14494,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (((decimal)(Quantity * Product.Count) / Product.Info.StackSize) > 5) return;
+            if (((decimal)(Quantity * Product.Count) / Product.Info.StackSizeUshort) > 5) return;
 
             if (Product.Stock != 0)
             {
@@ -14610,7 +14610,7 @@ namespace Server.MirObjects
 
             ushort quantity = (ushort)(Quantity * Product.Count);
 
-            if (Product.Info.StackSize <= 1 || quantity == 1)
+            if (Product.Info.StackSizeUshort <= 1 || quantity == 1)
             {
                 for (int i = 0; i < Quantity; i++)
                 {
@@ -14625,7 +14625,7 @@ namespace Server.MirObjects
                 {
                     UserItem mailItem = Envir.CreateFreshItem(Envir.GetItemInfo(Product.Info.Index));
                     mailItem.Count = 0;
-                    for (int i = 0; i < mailItem.Info.StackSize; i++)
+                    for (int i = 0; i < mailItem.Info.StackSizeUshort; i++)
                     {
                         mailItem.Count++;
                         quantity--;

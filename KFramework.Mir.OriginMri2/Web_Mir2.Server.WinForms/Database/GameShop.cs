@@ -316,10 +316,10 @@ namespace Server
                 temp = 1;
                 ActiveControl.Text = "1";
             }
-            else if (temp > SelectedItems[0].Info.StackSize)
+            else if (temp > SelectedItems[0].Info.StackSizeUshort)
             {
-                temp = SelectedItems[0].Info.StackSize;
-                ActiveControl.Text = SelectedItems[0].Info.StackSize.ToString();
+                temp = SelectedItems[0].Info.StackSizeUshort;
+                ActiveControl.Text = SelectedItems[0].Info.StackSizeUshort.ToString();
             }
 
             ActiveControl.BackColor = SystemColors.Window;

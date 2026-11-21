@@ -1123,7 +1123,7 @@ namespace Client.MirScenes.Dialogs
             if (SelectedItem.Info.StackSize > 1)
             {
                 ushort tempCount = SelectedItem.Count;
-                ushort maxQuantity = SelectedItem.Info.StackSize;
+                ushort maxQuantity = SelectedItem.Info.StackSizeUshort;
 
                 SelectedItem.Count = maxQuantity;
 

@@ -361,7 +361,7 @@ namespace Server.Database
                 item.Image = (ushort)row.Cells["ItemImage"].Value;
                 item.Shape = (short)row.Cells["ItemShape"].Value;
                 item.Effect = (byte)row.Cells["ItemEffect"].Value;
-                item.StackSize = (ushort)row.Cells["ItemStackSize"].Value;
+                item.StackSize = (uint)row.Cells["ItemStackSize"].Value;
                 item.Slots = (byte)row.Cells["ItemSlots"].Value;
                 item.Weight = (byte)row.Cells["ItemWeight"].Value;
 
