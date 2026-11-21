@@ -558,7 +558,7 @@ namespace Client.MirScenes.Dialogs
 
         private void BuildBottomLinkButtons(List<(string Text, string Action)> links, int textLines)
         {
-            int y = Math.Max(TextStartY + Math.Min(textLines, MaximumLines) * TextLineHeight + 6, Size.Height - 30);
+            int y = Math.Max(TextStartY + Math.Min(textLines, MaximumLines) * TextLineHeight + 6, Size.Height - 35);
             int rows = (links.Count + BottomLinkCols - 1) / BottomLinkCols;
 
             for (int i = 0; i < links.Count; i++)
