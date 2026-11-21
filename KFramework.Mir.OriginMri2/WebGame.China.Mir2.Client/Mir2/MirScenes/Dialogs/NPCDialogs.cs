@@ -31,7 +31,10 @@ namespace Client.MirScenes.Dialogs
 
         public MirLabel NameLabel;
 
-        readonly Font font = new Font(Settings.FontName, 12F);
+        readonly Font font = new Font(Settings.FontName, 12F);          // 共用字体（底部按钮等）
+        readonly Font contentFont = new Font(Settings.FontName, 12F);   // 正文及叠加其上的内联链接专用
+        private const int TextLineHeight = 25; // 与原始传奇 txt_desc 行距一致
+        private const int TextStartY = 55;     // 正文起始 Y，与 17 号标题拉开距离
 
         private static readonly HashSet<int> PendingMapInfoRequests = new HashSet<int>();
 
@@ -99,16 +102,16 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
-            HelpButton = new MirButton
-            {
-                AtlasNameKey = "y_common-sheet",
-                AtlasFrame = "com_question",
-                PressedAtlasFrame = "com_question0",
-                Parent = this,
-                Location = new Point(500, 10),
-                Sound = SoundList.ButtonA,
-            };
-            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing));
+            //HelpButton = new MirButton
+            //{
+            //    AtlasNameKey = "y_common-sheet",
+            //    AtlasFrame = "com_question",
+            //    PressedAtlasFrame = "com_question0",
+            //    Parent = this,
+            //    Location = new Point(500, 10),
+            //    Sound = SoundList.ButtonA,
+            //};
+            //HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing));
 
             BigButtonDialog = new BigButtonDialog()
             {
@@ -360,12 +363,13 @@ namespace Client.MirScenes.Dialogs
             {
                 TextLabel[i] = new MirLabel
                 {
-                    Font = font,
                     DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
-                    Size = new Size(450, 22),
-                    Location = new Point(24, 46 + (i - _index) * 25), // 原始传奇 txt_desc x=24 y=46 size=15 lineSpacing=10
+                    Size = new Size(450, 18),
+                    Font = contentFont,
+                    OutLine = true,
+                    Location = new Point(24, TextStartY + (i - _index) * TextLineHeight),
                     NotControl = true
                 };
 
@@ -466,7 +470,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.Yellow,
                 UnderLine = true,
                 Sound = SoundList.ButtonC,
-                Font = font
+                Font = contentFont
             };
 
             temp.MouseEnter += (o, e) => temp.ForeColour = Color.Red;
@@ -509,7 +513,7 @@ namespace Client.MirScenes.Dialogs
                 Location = p,
                 Text = text,
                 ForeColour = textColour,
-                Font = font
+                Font = contentFont
             };
             temp.MouseWheel += NPCDialog_MouseWheel;
 
@@ -527,7 +531,7 @@ namespace Client.MirScenes.Dialogs
                 Text = text,
                 ForeColour = Color.Cyan,
                 UnderLine = true,
-                Font = font,
+                Font = contentFont,
                 NotControl = false // Make sure it can receive mouse events
             };
 
@@ -554,7 +558,7 @@ namespace Client.MirScenes.Dialogs
 
         private void BuildBottomLinkButtons(List<(string Text, string Action)> links, int textLines)
         {
-            int y = Math.Max(46 + Math.Min(textLines, MaximumLines) * 25 + 6, Size.Height - 30);
+            int y = Math.Max(TextStartY + Math.Min(textLines, MaximumLines) * TextLineHeight + 6, Size.Height - 30);
             int rows = (links.Count + BottomLinkCols - 1) / BottomLinkCols;
 
             for (int i = 0; i < links.Count; i++)
@@ -2390,6 +2394,7 @@ namespace Client.MirScenes.Dialogs
         }
 
     }
+
     public sealed class StorageDialog : MirImageControl
     {
         public MirItemCell[] Grid;
