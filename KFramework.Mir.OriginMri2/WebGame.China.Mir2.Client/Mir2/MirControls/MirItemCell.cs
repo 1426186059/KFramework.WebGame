@@ -2616,7 +2616,10 @@ namespace Client.MirControls
             if (Item == null && ShadowItem == null)
                 return;
 
-            if (Item != null && ShadowItem == null && Item.Info.StackSize <= 1)
+            // 数量标签按“实际数量 > 1”显示，而不是按 StackSize 配置判定：
+            // 随机传送卷等物品曾被配成 StackSize=1 却发 100 个，按旧判定会漏显数量。
+            // 真正数量只有 1 时才隐藏（此时 ShadowItem 也无意义）。
+            if (Item != null && ShadowItem == null && Item.Count <= 1)
             {
                 DisposeCountLabel();
                 return;

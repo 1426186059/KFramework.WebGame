@@ -119,6 +119,25 @@ namespace Client.MirObjects
             }
         }
 
+        /// <summary>
+        /// 场景销毁（退出到选人界面）时清空所有跨场景残留的静态选中状态。
+        /// 脚底选中环由 MapControl.DrawSelectionRing 每帧跟随 SelectionTarget/TargetObject 绘制，
+        /// 这些是 static 字段；Dispose 只把 MapControl=null 不会清它们，导致重进游戏后旧环仍被画出来。
+        /// 这里直接置字段与内部 ID，绕过各 ID setter 对 MapControl.Objects 的依赖（此时 MapControl 可能为 null）。
+        /// </summary>
+        public static void ClearSceneSelection()
+        {
+            SelectionTarget = null;
+            MouseObject = null;
+            TargetObject = null;
+            MagicObject = null;
+            mouseObjectID = 0;
+            targetObjectID = 0;
+            lastTargetObjectId = 0;
+            magicObjectID = 0;
+            bAutoAttackSelectTarget = false;
+        }
+
         public abstract ObjectType Race { get; }
         public abstract bool Blocking { get; }
 

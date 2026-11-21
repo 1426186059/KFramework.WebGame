@@ -10144,6 +10144,11 @@ namespace Client.MirScenes
                 Scene = null;
                 User = null;
 
+                // 清掉跨场景残留的静态选中状态（脚底选中环 SelectionTarget/TargetObject 等）。
+                // 必须在下面 MapControl=null 之前调用：ID setter 依赖 MapControl.Objects；
+                // 本方法直接置字段与 ID，不依赖 MapControl，但顺序放前面更稳妥。
+                MapObject.ClearSceneSelection();
+
                 MoveTime = 0;
                 AttackTime = 0;
                 NextRunTime = 0;

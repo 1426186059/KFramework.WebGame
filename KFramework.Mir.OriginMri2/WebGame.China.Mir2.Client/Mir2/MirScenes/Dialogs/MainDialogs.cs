@@ -389,7 +389,9 @@ namespace Client.MirScenes.Dialogs
             };
             quitBtn.Click += (o, e) =>
             {
-
+                // 返回选人界面：复用 GameScene.LogOut()（战斗冷却检查 + 二次确认 + 发 C.LogOut），
+                // 服务端回 S.LogOutSuccess 后由 GameScene 切到 SelectScene。
+                GameScene.Scene.LogOut();
             };
 
             var mLevel0 = new MirImageControl
