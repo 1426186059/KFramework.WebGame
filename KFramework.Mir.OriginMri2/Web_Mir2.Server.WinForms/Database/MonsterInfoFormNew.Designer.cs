@@ -309,7 +309,7 @@ namespace Server.Database
             rbtnViewAll.Size = new Size(39, 19);
             rbtnViewAll.TabIndex = 0;
             rbtnViewAll.TabStop = true;
-            rbtnViewAll.Text = "All";
+            rbtnViewAll.Text = "全部";
             rbtnViewAll.UseVisualStyleBackColor = true;
             rbtnViewAll.CheckedChanged += rbtnViewAll_CheckedChanged;
             // 
@@ -321,7 +321,7 @@ namespace Server.Database
             rbtnViewBasic.Name = "rbtnViewBasic";
             rbtnViewBasic.Size = new Size(52, 19);
             rbtnViewBasic.TabIndex = 1;
-            rbtnViewBasic.Text = "Basic";
+            rbtnViewBasic.Text = "基础";
             rbtnViewBasic.UseVisualStyleBackColor = true;
             rbtnViewBasic.CheckedChanged += rbtnViewBasic_CheckedChanged;
             // 

@@ -53,6 +53,7 @@ namespace Server.Account
                 item.SubItems.Add(characterPlayer);
                 item.SubItems.Add(accountName);
                 item.SubItems.Add(accountIP);
+                item.Tag = character;
 
                 CharactersList.Items.Add(item);
             }
@@ -61,6 +62,18 @@ namespace Server.Account
 
         #region Filter
         private List<ListViewItem> originalItems = new List<ListViewItem>();
+
+        // 双击角色条目 → 打开玩家基础信息编辑界面（在线/离线角色都支持）
+        private void CharactersList_DoubleClick(object sender, EventArgs e)
+        {
+            if (CharactersList.SelectedItems.Count == 0) return;
+            CharacterInfo character = CharactersList.SelectedItems[0].Tag as CharacterInfo;
+            if (character == null) return;
+
+            using (var form = new PlayerInfoForm(character))
+                form.ShowDialog(this);
+        }
+
         private void RefreshButton_Click(object sender, EventArgs e)
         {
             RefreshInterface();

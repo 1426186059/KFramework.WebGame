@@ -121,7 +121,7 @@
             label4.Name = "label4";
             label4.Size = new Size(35, 15);
             label4.TabIndex = 4;
-            label4.Text = "Tools";
+            label4.Text = "工具";
             // 
             // RecipeGroupBox
             // 
@@ -421,7 +421,7 @@
             OpenRecipeButton.Name = "OpenRecipeButton";
             OpenRecipeButton.Size = new Size(75, 23);
             OpenRecipeButton.TabIndex = 10;
-            OpenRecipeButton.Text = "Open";
+            OpenRecipeButton.Text = "打开";
             OpenRecipeButton.UseVisualStyleBackColor = true;
             OpenRecipeButton.Click += OpenRecipeButton_Click;
             // 
@@ -431,7 +431,7 @@
             SaveButton.Name = "SaveButton";
             SaveButton.Size = new Size(75, 23);
             SaveButton.TabIndex = 11;
-            SaveButton.Text = "Save";
+            SaveButton.Text = "保存";
             SaveButton.UseVisualStyleBackColor = true;
             SaveButton.Click += SaveButton_Click;
             // 
@@ -447,7 +447,7 @@
             groupBox1.Size = new Size(135, 168);
             groupBox1.TabIndex = 12;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Actions";
+            groupBox1.Text = "操作";
             // 
             // RecipeCountLabel
             // 
@@ -464,7 +464,7 @@
             DeleteButton.Name = "DeleteButton";
             DeleteButton.Size = new Size(75, 23);
             DeleteButton.TabIndex = 12;
-            DeleteButton.Text = "Delete";
+            DeleteButton.Text = "删除";
             DeleteButton.UseVisualStyleBackColor = true;
             DeleteButton.Click += DeleteButton_Click;
             // 

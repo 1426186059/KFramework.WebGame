@@ -235,7 +235,7 @@ namespace Server
             tabPage1.Padding = new Padding(4, 3, 4, 3);
             tabPage1.Size = new Size(622, 524);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "Info";
+            tabPage1.Text = "信息";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // label48
@@ -468,7 +468,7 @@ namespace Server
             tabPage6.Padding = new Padding(4, 3, 4, 3);
             tabPage6.Size = new Size(622, 524);
             tabPage6.TabIndex = 5;
-            tabPage6.Text = "Attributes";
+            tabPage6.Text = "属性";
             tabPage6.UseVisualStyleBackColor = true;
             // 
             // FireWallCount
@@ -870,7 +870,7 @@ namespace Server
             tabPage3.Name = "tabPage3";
             tabPage3.Size = new Size(622, 524);
             tabPage3.TabIndex = 2;
-            tabPage3.Text = "Safe Zones";
+            tabPage3.Text = "安全区";
             tabPage3.UseVisualStyleBackColor = true;
             // 
             // RemoveSZButton
@@ -891,7 +891,7 @@ namespace Server
             AddSZButton.Name = "AddSZButton";
             AddSZButton.Size = new Size(88, 27);
             AddSZButton.TabIndex = 7;
-            AddSZButton.Text = "Add";
+            AddSZButton.Text = "添加";
             AddSZButton.UseVisualStyleBackColor = true;
             AddSZButton.Click += AddSZButton_Click;
             // 
@@ -1032,7 +1032,7 @@ namespace Server
             RCopyButton.Name = "RCopyButton";
             RCopyButton.Size = new Size(88, 27);
             RCopyButton.TabIndex = 21;
-            RCopyButton.Text = "Copy";
+            RCopyButton.Text = "复制";
             RCopyButton.UseVisualStyleBackColor = true;
             // 
             // RemoveRButton
@@ -1053,7 +1053,7 @@ namespace Server
             AddRButton.Name = "AddRButton";
             AddRButton.Size = new Size(88, 27);
             AddRButton.TabIndex = 15;
-            AddRButton.Text = "Add";
+            AddRButton.Text = "添加";
             AddRButton.UseVisualStyleBackColor = true;
             AddRButton.Click += AddRButton_Click;
             // 
@@ -1108,7 +1108,7 @@ namespace Server
             chkrespawnsave.Name = "chkrespawnsave";
             chkrespawnsave.Size = new Size(176, 19);
             chkrespawnsave.TabIndex = 25;
-            chkrespawnsave.Text = "Save respawnticks on reboot";
+            chkrespawnsave.Text = "重启时保存刷新点";
             chkrespawnsave.UseVisualStyleBackColor = true;
             chkrespawnsave.CheckedChanged += chkrespawnsave_CheckedChanged;
             // 
@@ -1341,7 +1341,7 @@ namespace Server
             AddMButton.Name = "AddMButton";
             AddMButton.Size = new Size(88, 27);
             AddMButton.TabIndex = 11;
-            AddMButton.Text = "Add";
+            AddMButton.Text = "添加";
             AddMButton.UseVisualStyleBackColor = true;
             AddMButton.Click += AddMButton_Click;
             // 
@@ -1596,7 +1596,7 @@ namespace Server
             MZAddbutton.Name = "MZAddbutton";
             MZAddbutton.Size = new Size(88, 27);
             MZAddbutton.TabIndex = 11;
-            MZAddbutton.Text = "Add";
+            MZAddbutton.Text = "添加";
             MZAddbutton.UseVisualStyleBackColor = true;
             MZAddbutton.Click += MZAddbutton_Click;
             // 
@@ -1730,7 +1730,7 @@ namespace Server
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(88, 27);
             AddButton.TabIndex = 5;
-            AddButton.Text = "Add";
+            AddButton.Text = "添加";
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
             // 
@@ -1765,7 +1765,7 @@ namespace Server
             CopyMapButton.Name = "CopyMapButton";
             CopyMapButton.Size = new Size(88, 27);
             CopyMapButton.TabIndex = 23;
-            CopyMapButton.Text = "Copy";
+            CopyMapButton.Text = "复制";
             CopyMapButton.UseVisualStyleBackColor = true;
             // 
             // ImportMapInfoButton
@@ -1829,7 +1829,7 @@ namespace Server
             MapSearchButton.Name = "MapSearchButton";
             MapSearchButton.Size = new Size(75, 23);
             MapSearchButton.TabIndex = 33;
-            MapSearchButton.Text = "Search";
+            MapSearchButton.Text = "搜索";
             MapSearchButton.UseVisualStyleBackColor = true;
             MapSearchButton.Click += MapSearchButton_Click;
             // 

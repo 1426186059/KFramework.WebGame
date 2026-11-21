@@ -250,7 +250,7 @@
             this.Info_tab.Padding = new System.Windows.Forms.Padding(3);
             this.Info_tab.Size = new System.Drawing.Size(396, 216);
             this.Info_tab.TabIndex = 0;
-            this.Info_tab.Text = "Info";
+            this.Info_tab.Text = "信息";
             this.Info_tab.UseVisualStyleBackColor = true;
             // 
             // label34
@@ -320,7 +320,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 16);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Name";
+            this.label1.Text = "名称";
             // 
             // Name_textbox
             // 
@@ -383,7 +383,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(32, 16);
             this.label6.TabIndex = 49;
-            this.label6.Text = "Size";
+            this.label6.Text = "大小";
             // 
             // Size_textbox
             // 
@@ -421,7 +421,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 16);
             this.label3.TabIndex = 44;
-            this.label3.Text = "Location";
+            this.label3.Text = "位置";
             // 
             // LocX_textbox
             // 
@@ -551,7 +551,7 @@
             this.Sat_checkbox.Name = "Sat_checkbox";
             this.Sat_checkbox.Size = new System.Drawing.Size(70, 17);
             this.Sat_checkbox.TabIndex = 77;
-            this.Sat_checkbox.Text = "Saturday";
+            this.Sat_checkbox.Text = "星期六";
             this.Sat_checkbox.UseVisualStyleBackColor = true;
             this.Sat_checkbox.CheckedChanged += new System.EventHandler(this.Sat_checkbox_CheckedChanged);
             // 
@@ -562,7 +562,7 @@
             this.Sun_checkbox.Name = "Sun_checkbox";
             this.Sun_checkbox.Size = new System.Drawing.Size(62, 17);
             this.Sun_checkbox.TabIndex = 78;
-            this.Sun_checkbox.Text = "Sunday";
+            this.Sun_checkbox.Text = "星期日";
             this.Sun_checkbox.UseVisualStyleBackColor = true;
             this.Sun_checkbox.CheckedChanged += new System.EventHandler(this.Sun_checkbox_CheckedChanged);
             // 
@@ -573,7 +573,7 @@
             this.Fri_checkbox.Name = "Fri_checkbox";
             this.Fri_checkbox.Size = new System.Drawing.Size(56, 17);
             this.Fri_checkbox.TabIndex = 76;
-            this.Fri_checkbox.Text = "Friday";
+            this.Fri_checkbox.Text = "星期五";
             this.Fri_checkbox.UseVisualStyleBackColor = true;
             this.Fri_checkbox.CheckedChanged += new System.EventHandler(this.Fri_checkbox_CheckedChanged);
             // 
@@ -584,7 +584,7 @@
             this.Thu_checkbox.Name = "Thu_checkbox";
             this.Thu_checkbox.Size = new System.Drawing.Size(71, 17);
             this.Thu_checkbox.TabIndex = 75;
-            this.Thu_checkbox.Text = "Thursday";
+            this.Thu_checkbox.Text = "星期四";
             this.Thu_checkbox.UseVisualStyleBackColor = true;
             this.Thu_checkbox.CheckedChanged += new System.EventHandler(this.Thu_checkbox_CheckedChanged);
             // 
@@ -595,7 +595,7 @@
             this.Tue_checkbox.Name = "Tue_checkbox";
             this.Tue_checkbox.Size = new System.Drawing.Size(67, 17);
             this.Tue_checkbox.TabIndex = 73;
-            this.Tue_checkbox.Text = "Tuesday";
+            this.Tue_checkbox.Text = "星期二";
             this.Tue_checkbox.UseVisualStyleBackColor = true;
             this.Tue_checkbox.CheckedChanged += new System.EventHandler(this.Tue_checkbox_CheckedChanged);
             // 
@@ -606,7 +606,7 @@
             this.Wed_checkbox.Name = "Wed_checkbox";
             this.Wed_checkbox.Size = new System.Drawing.Size(83, 17);
             this.Wed_checkbox.TabIndex = 74;
-            this.Wed_checkbox.Text = "Wednesday";
+            this.Wed_checkbox.Text = "星期三";
             this.Wed_checkbox.UseVisualStyleBackColor = true;
             this.Wed_checkbox.CheckedChanged += new System.EventHandler(this.Wed_checkbox_CheckedChanged);
             // 
@@ -617,7 +617,7 @@
             this.Mon_checkbox.Name = "Mon_checkbox";
             this.Mon_checkbox.Size = new System.Drawing.Size(64, 17);
             this.Mon_checkbox.TabIndex = 71;
-            this.Mon_checkbox.Text = "Monday";
+            this.Mon_checkbox.Text = "星期一";
             this.Mon_checkbox.UseVisualStyleBackColor = true;
             this.Mon_checkbox.CheckedChanged += new System.EventHandler(this.Mon_checkbox_CheckedChanged);
             // 
@@ -758,7 +758,7 @@
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(32, 16);
             this.label28.TabIndex = 56;
-            this.label28.Text = "Size";
+            this.label28.Text = "大小";
             // 
             // ObSize_textbox
             // 
@@ -814,7 +814,7 @@
             this.control_tab.Name = "control_tab";
             this.control_tab.Size = new System.Drawing.Size(382, 184);
             this.control_tab.TabIndex = 3;
-            this.control_tab.Text = "Control";
+            this.control_tab.Text = "控制";
             this.control_tab.UseVisualStyleBackColor = true;
             // 
             // RemoveControl_button
@@ -853,7 +853,7 @@
             this.Control_gb.Size = new System.Drawing.Size(178, 172);
             this.Control_gb.TabIndex = 25;
             this.Control_gb.TabStop = false;
-            this.Control_gb.Text = "Edit";
+            this.Control_gb.Text = "编辑";
             // 
             // label44
             // 
@@ -881,7 +881,7 @@
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(41, 16);
             this.label48.TabIndex = 45;
-            this.label48.Text = "Name";
+            this.label48.Text = "名称";
             // 
             // ControlName_textbox
             // 
@@ -899,7 +899,7 @@
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(55, 16);
             this.label49.TabIndex = 44;
-            this.label49.Text = "Location";
+            this.label49.Text = "位置";
             // 
             // label50
             // 
@@ -1002,7 +1002,7 @@
             this.Archer_gb.Size = new System.Drawing.Size(185, 203);
             this.Archer_gb.TabIndex = 17;
             this.Archer_gb.TabStop = false;
-            this.Archer_gb.Text = "Edit";
+            this.Archer_gb.Text = "编辑";
             // 
             // label23
             // 
@@ -1030,7 +1030,7 @@
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(41, 16);
             this.label14.TabIndex = 45;
-            this.label14.Text = "Name";
+            this.label14.Text = "名称";
             // 
             // ArcherName_textbox
             // 
@@ -1058,7 +1058,7 @@
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(55, 16);
             this.label13.TabIndex = 44;
-            this.label13.Text = "Location";
+            this.label13.Text = "位置";
             // 
             // ArcherIndex_combo
             // 
@@ -1171,7 +1171,7 @@
             this.Gates_gb.Size = new System.Drawing.Size(185, 200);
             this.Gates_gb.TabIndex = 20;
             this.Gates_gb.TabStop = false;
-            this.Gates_gb.Text = "Edit";
+            this.Gates_gb.Text = "编辑";
             // 
             // label24
             // 
@@ -1199,7 +1199,7 @@
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(41, 16);
             this.label25.TabIndex = 49;
-            this.label25.Text = "Name";
+            this.label25.Text = "名称";
             // 
             // GateName_textbox
             // 
@@ -1227,7 +1227,7 @@
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(55, 16);
             this.label17.TabIndex = 44;
-            this.label17.Text = "Location";
+            this.label17.Text = "位置";
             // 
             // GateIndex_combo
             // 
@@ -1340,7 +1340,7 @@
             this.Walls_gb.Size = new System.Drawing.Size(185, 207);
             this.Walls_gb.TabIndex = 23;
             this.Walls_gb.TabStop = false;
-            this.Walls_gb.Text = "Edit";
+            this.Walls_gb.Text = "编辑";
             this.Walls_gb.Enter += new System.EventHandler(this.Walls_gb_Enter);
             // 
             // label26
@@ -1369,7 +1369,7 @@
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(41, 16);
             this.label27.TabIndex = 53;
-            this.label27.Text = "Name";
+            this.label27.Text = "名称";
             // 
             // WallName_textbox
             // 
@@ -1397,7 +1397,7 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(55, 16);
             this.label20.TabIndex = 44;
-            this.label20.Text = "Location";
+            this.label20.Text = "位置";
             // 
             // WallIndex_combo
             // 
@@ -1510,7 +1510,7 @@
             this.Siege_gb.Size = new System.Drawing.Size(185, 203);
             this.Siege_gb.TabIndex = 21;
             this.Siege_gb.TabStop = false;
-            this.Siege_gb.Text = "Edit";
+            this.Siege_gb.Text = "编辑";
             // 
             // label36
             // 
@@ -1538,7 +1538,7 @@
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(41, 16);
             this.label37.TabIndex = 45;
-            this.label37.Text = "Name";
+            this.label37.Text = "名称";
             // 
             // SiegeName_textbox
             // 
@@ -1566,7 +1566,7 @@
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(55, 16);
             this.label39.TabIndex = 44;
-            this.label39.Text = "Location";
+            this.label39.Text = "位置";
             // 
             // SiegeIndex_combo
             // 
@@ -1678,7 +1678,7 @@
             this.Flag_gb.Size = new System.Drawing.Size(185, 203);
             this.Flag_gb.TabIndex = 21;
             this.Flag_gb.TabStop = false;
-            this.Flag_gb.Text = "Edit";
+            this.Flag_gb.Text = "编辑";
             // 
             // label42
             // 
@@ -1706,7 +1706,7 @@
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(41, 16);
             this.label43.TabIndex = 45;
-            this.label43.Text = "Name";
+            this.label43.Text = "名称";
             // 
             // FlagName_textbox
             // 
@@ -1724,7 +1724,7 @@
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(55, 16);
             this.label45.TabIndex = 44;
-            this.label45.Text = "Location";
+            this.label45.Text = "位置";
             // 
             // label46
             // 

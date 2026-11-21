@@ -180,7 +180,7 @@
             tabPage1.Padding = new Padding(4, 3, 4, 3);
             tabPage1.Size = new Size(513, 266);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "Fishing";
+            tabPage1.Text = "钓鱼";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -196,7 +196,7 @@
             groupBox1.Size = new Size(498, 83);
             groupBox1.TabIndex = 12;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Monster";
+            groupBox1.Text = "怪物";
             // 
             // label6
             // 
@@ -346,7 +346,7 @@
             tabPage2.Padding = new Padding(4, 3, 4, 3);
             tabPage2.Size = new Size(513, 266);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "Mail";
+            tabPage2.Text = "邮件";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // label8
@@ -432,7 +432,7 @@
             MailAutoSendGoldCheckbox.Name = "MailAutoSendGoldCheckbox";
             MailAutoSendGoldCheckbox.Size = new Size(51, 19);
             MailAutoSendGoldCheckbox.TabIndex = 0;
-            MailAutoSendGoldCheckbox.Text = "Gold";
+            MailAutoSendGoldCheckbox.Text = "金币";
             MailAutoSendGoldCheckbox.UseVisualStyleBackColor = true;
             MailAutoSendGoldCheckbox.CheckedChanged += MailAutoSendGoldCheckbox_CheckedChanged;
             // 
@@ -450,7 +450,7 @@
             tabPage3.Name = "tabPage3";
             tabPage3.Size = new Size(513, 266);
             tabPage3.TabIndex = 2;
-            tabPage3.Text = "Goods";
+            tabPage3.Text = "商品";
             tabPage3.UseVisualStyleBackColor = true;
             // 
             // GoodsBuyBackMaxStoredTextBox
@@ -548,7 +548,7 @@
             tabPage4.Name = "tabPage4";
             tabPage4.Size = new Size(513, 266);
             tabPage4.TabIndex = 3;
-            tabPage4.Text = "Refining";
+            tabPage4.Text = "锻造";
             tabPage4.UseVisualStyleBackColor = true;
             // 
             // OreName_textbox
@@ -751,7 +751,7 @@
             tabPage5.Name = "tabPage5";
             tabPage5.Size = new Size(513, 266);
             tabPage5.TabIndex = 4;
-            tabPage5.Text = "Relationship";
+            tabPage5.Text = "关系";
             tabPage5.UseVisualStyleBackColor = true;
             // 
             // label24
@@ -861,7 +861,7 @@
             tabPage6.Name = "tabPage6";
             tabPage6.Size = new Size(513, 266);
             tabPage6.TabIndex = 5;
-            tabPage6.Text = "Mentor";
+            tabPage6.Text = "师徒";
             tabPage6.UseVisualStyleBackColor = true;
             // 
             // label29
@@ -981,7 +981,7 @@
             tabPage7.Padding = new Padding(4, 3, 4, 3);
             tabPage7.Size = new Size(513, 266);
             tabPage7.TabIndex = 6;
-            tabPage7.Text = "Gem";
+            tabPage7.Text = "宝石";
             tabPage7.UseVisualStyleBackColor = true;
             // 
             // GemStatCheckBox
@@ -1010,7 +1010,7 @@
             tabPage8.Padding = new Padding(4, 3, 4, 3);
             tabPage8.Size = new Size(513, 266);
             tabPage8.TabIndex = 7;
-            tabPage8.Text = "SpawnTick";
+            tabPage8.Text = "刷新点";
             tabPage8.UseVisualStyleBackColor = true;
             // 
             // panel1
@@ -1104,7 +1104,7 @@
             label30.Name = "label30";
             label30.Size = new Size(74, 15);
             label30.TabIndex = 0;
-            label30.Text = "Users online:";
+            label30.Text = "在线玩家:";
             // 
             // lbSpawnTickList
             // 
@@ -1135,7 +1135,7 @@
             btnSpawnTickAdd.Name = "btnSpawnTickAdd";
             btnSpawnTickAdd.Size = new Size(78, 27);
             btnSpawnTickAdd.TabIndex = 0;
-            btnSpawnTickAdd.Text = "Add";
+            btnSpawnTickAdd.Text = "添加";
             btnSpawnTickAdd.UseVisualStyleBackColor = true;
             btnSpawnTickAdd.Click += btnSpawnTickAdd_Click;
             // 
@@ -1151,7 +1151,7 @@
             tabPage9.Padding = new Padding(3);
             tabPage9.Size = new Size(513, 266);
             tabPage9.TabIndex = 8;
-            tabPage9.Text = "Heroes";
+            tabPage9.Text = "英雄";
             tabPage9.UseVisualStyleBackColor = true;
             // 
             // groupBox6
@@ -1249,7 +1249,7 @@
             groupBox4.Size = new Size(307, 116);
             groupBox4.TabIndex = 1;
             groupBox4.TabStop = false;
-            groupBox4.Text = "Settings";
+            groupBox4.Text = "设置";
             toolTip1.SetToolTip(groupBox4, "Common Settings for configuring the Heroes feature.");
             // 
             // label41

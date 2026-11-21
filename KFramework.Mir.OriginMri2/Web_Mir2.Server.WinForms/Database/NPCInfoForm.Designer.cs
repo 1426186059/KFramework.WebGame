@@ -138,7 +138,7 @@
             tabPage1.Padding = new Padding(4, 3, 4, 3);
             tabPage1.Size = new Size(813, 354);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "Info";
+            tabPage1.Text = "信息";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // NPCPreview
@@ -422,7 +422,7 @@
             tabPage2.Name = "tabPage2";
             tabPage2.Size = new Size(813, 354);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "Visibility";
+            tabPage2.Text = "可见性";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // ConquestVisible_checkbox
@@ -659,7 +659,7 @@
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(88, 31);
             AddButton.TabIndex = 13;
-            AddButton.Text = "Add";
+            AddButton.Text = "添加";
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
             // 
@@ -695,7 +695,7 @@
             CopyMButton.Name = "CopyMButton";
             CopyMButton.Size = new Size(88, 31);
             CopyMButton.TabIndex = 21;
-            CopyMButton.Text = "Copy";
+            CopyMButton.Text = "复制";
             CopyMButton.UseVisualStyleBackColor = true;
             CopyMButton.Click += CopyMButton_Click;
             // 

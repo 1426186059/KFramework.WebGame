@@ -914,7 +914,7 @@
             label15.Name = "label15";
             label15.Size = new Size(44, 15);
             label15.TabIndex = 5;
-            label15.Text = "Attack:";
+            label15.Text = "攻击 :";
             // 
             // label14
             // 
@@ -924,7 +924,7 @@
             label14.Name = "label14";
             label14.Size = new Size(24, 15);
             label14.TabIndex = 4;
-            label14.Text = "SC:";
+            label14.Text = "道术 :";
             // 
             // label13
             // 
@@ -934,7 +934,7 @@
             label13.Name = "label13";
             label13.Size = new Size(29, 15);
             label13.TabIndex = 3;
-            label13.Text = "MC:";
+            label13.Text = "魔法 :";
             // 
             // label12
             // 
@@ -944,7 +944,7 @@
             label12.Name = "label12";
             label12.Size = new Size(26, 15);
             label12.TabIndex = 2;
-            label12.Text = "DC:";
+            label12.Text = "攻击 :";
             // 
             // label11
             // 
@@ -964,7 +964,7 @@
             label10.Name = "label10";
             label10.Size = new Size(26, 15);
             label10.TabIndex = 0;
-            label10.Text = "AC:";
+            label10.Text = "防御 :";
             // 
             // label9
             // 
@@ -1053,7 +1053,7 @@
             BuffDelete.Name = "BuffDelete";
             BuffDelete.Size = new Size(88, 27);
             BuffDelete.TabIndex = 1;
-            BuffDelete.Text = "Delete";
+            BuffDelete.Text = "删除";
             BuffDelete.UseVisualStyleBackColor = true;
             BuffDelete.Click += BuffDelete_Click;
             // 
@@ -1064,7 +1064,7 @@
             BuffAdd.Name = "BuffAdd";
             BuffAdd.Size = new Size(88, 27);
             BuffAdd.TabIndex = 0;
-            BuffAdd.Text = "Add";
+            BuffAdd.Text = "添加";
             BuffAdd.UseVisualStyleBackColor = true;
             BuffAdd.Click += BuffAdd_Click;
             // 
@@ -1104,7 +1104,7 @@
             label4.Name = "label4";
             label4.Size = new Size(32, 15);
             label4.TabIndex = 5;
-            label4.Text = "Gold";
+            label4.Text = "金币";
             // 
             // label3
             // 

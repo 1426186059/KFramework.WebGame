@@ -8554,7 +8554,13 @@ namespace Server.MirObjects
                 String.Equals(NPCPage.Key, NPCScript.BuyUsedKey, StringComparison.CurrentCultureIgnoreCase) ||
                 String.Equals(NPCPage.Key, NPCScript.PearlBuyKey, StringComparison.CurrentCultureIgnoreCase) ||
                 String.Equals(NPCPage.Key, NPCScript.BuyNewKey, StringComparison.CurrentCultureIgnoreCase) ||
-                String.Equals(NPCPage.Key, NPCScript.BuySellNewKey, StringComparison.CurrentCultureIgnoreCase))) return;
+                String.Equals(NPCPage.Key, NPCScript.BuySellNewKey, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                MessageQueue.Enqueue($"[商店诊断] BuyItem 被白名单拦截 index={index} NPCPage={NPCPage?.Key ?? "null"}");
+                ReceiveChat("购买失败，当前对话不允许购买物品。", ChatType.System);
+                return;
+            }
+            MessageQueue.Enqueue($"[商店诊断] BuyItem 通过 index={index} count={count} NPCPage={NPCPage.Key}");
 
             for (int i = 0; i < CurrentMap.NPCs.Count; i++)
             {

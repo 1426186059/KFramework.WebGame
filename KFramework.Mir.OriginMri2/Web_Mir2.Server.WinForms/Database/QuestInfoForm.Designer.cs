@@ -94,7 +94,7 @@
             tabPage1.Padding = new Padding(4, 3, 4, 3);
             tabPage1.Size = new Size(694, 303);
             tabPage1.TabIndex = 0;
-            tabPage1.Text = "Info";
+            tabPage1.Text = "信息";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // QuestInfoPanel
@@ -441,7 +441,7 @@
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(88, 27);
             AddButton.TabIndex = 13;
-            AddButton.Text = "Add";
+            AddButton.Text = "添加";
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
             // 
@@ -476,7 +476,7 @@
             CopyMButton.Name = "CopyMButton";
             CopyMButton.Size = new Size(88, 27);
             CopyMButton.TabIndex = 21;
-            CopyMButton.Text = "Copy";
+            CopyMButton.Text = "复制";
             CopyMButton.UseVisualStyleBackColor = true;
             // 
             // ExportButton

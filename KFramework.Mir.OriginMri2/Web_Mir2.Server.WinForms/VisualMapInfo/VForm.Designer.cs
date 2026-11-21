@@ -343,7 +343,7 @@
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(242, 443);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Mining";
+            this.tabPage4.Text = "挖矿";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // MiningPanel

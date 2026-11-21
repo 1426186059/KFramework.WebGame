@@ -89,7 +89,7 @@
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(75, 23);
             this.updateButton.TabIndex = 59;
-            this.updateButton.Text = "Update";
+            this.updateButton.Text = "更新";
             this.updateButton.UseVisualStyleBackColor = true;
             this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
@@ -210,7 +210,7 @@
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(37, 13);
             this.label26.TabIndex = 116;
-            this.label26.Text = "Agility:";
+            this.label26.Text = "敏捷 :";
             // 
             // AccuracyTextBox
             // 
@@ -227,7 +227,7 @@
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(55, 13);
             this.label27.TabIndex = 115;
-            this.label27.Text = "Accuracy:";
+            this.label27.Text = "准确 :";
             // 
             // HPTextBox
             // 
@@ -491,7 +491,7 @@
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.SelectMonsterComboBox);
             this.Name = "MonsterTunerForm";
-            this.Text = "Monster Tuner";
+            this.Text = "怪物调校";
             this.ResumeLayout(false);
             this.PerformLayout();
 

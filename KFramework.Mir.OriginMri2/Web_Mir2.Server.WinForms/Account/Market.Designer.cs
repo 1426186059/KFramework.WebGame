@@ -67,7 +67,7 @@
             // 
             // ItemName
             // 
-            ItemName.Text = "Item";
+            ItemName.Text = "物品";
             ItemName.Width = 120;
             // 
             // AID
@@ -124,7 +124,7 @@
             SearchLabel.Name = "SearchLabel";
             SearchLabel.Size = new Size(42, 15);
             SearchLabel.TabIndex = 4;
-            SearchLabel.Text = "Search";
+            SearchLabel.Text = "搜索";
             // 
             // RefreshListings
             // 
@@ -132,7 +132,7 @@
             RefreshListings.Name = "RefreshListings";
             RefreshListings.Size = new Size(75, 23);
             RefreshListings.TabIndex = 5;
-            RefreshListings.Text = "Refresh";
+            RefreshListings.Text = "刷新";
             RefreshListings.UseVisualStyleBackColor = true;
             RefreshListings.Click += RefreshListings_Click;
             // 
@@ -191,7 +191,7 @@
             ActionsGroupBox.Size = new Size(562, 84);
             ActionsGroupBox.TabIndex = 7;
             ActionsGroupBox.TabStop = false;
-            ActionsGroupBox.Text = "Actions";
+            ActionsGroupBox.Text = "操作";
             // 
             // ReasonTextBox
             // 

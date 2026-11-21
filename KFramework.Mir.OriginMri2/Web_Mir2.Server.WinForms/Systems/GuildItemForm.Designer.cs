@@ -78,7 +78,7 @@
             // 
             // indexHeader
             // 
-            indexHeader.Text = "UID";
+            indexHeader.Text = "唯一ID";
             indexHeader.Width = 70;
             // 
             // PlaceHeader
@@ -88,12 +88,12 @@
             // 
             // nameHeader
             // 
-            nameHeader.Text = "Name";
+            nameHeader.Text = "名称";
             nameHeader.Width = 115;
             // 
             // countHeader
             // 
-            countHeader.Text = "Count";
+            countHeader.Text = "数量";
             countHeader.Width = 95;
             // 
             // DuraHeader
@@ -116,7 +116,7 @@
             // 
             // Members
             // 
-            Members.Text = "Members";
+            Members.Text = "成员";
             Members.Width = 160;
             // 
             // Rank
@@ -170,12 +170,12 @@
             // 
             // BuffName
             // 
-            BuffName.Text = "Name";
+            BuffName.Text = "名称";
             BuffName.Width = 140;
             // 
             // BuffActivity
             // 
-            BuffActivity.Text = "Status";
+            BuffActivity.Text = "状态";
             BuffActivity.Width = 80;
             // 
             // BuffTime
@@ -192,7 +192,7 @@
             GuildNoticeGroupBox.Size = new Size(413, 305);
             GuildNoticeGroupBox.TabIndex = 6;
             GuildNoticeGroupBox.TabStop = false;
-            GuildNoticeGroupBox.Text = "Notice";
+            GuildNoticeGroupBox.Text = "公告";
             // 
             // RefreshNoticeButton
             // 
@@ -287,7 +287,7 @@
             SendGuildMessageButton.Name = "SendGuildMessageButton";
             SendGuildMessageButton.Size = new Size(75, 23);
             SendGuildMessageButton.TabIndex = 11;
-            SendGuildMessageButton.Text = "Send";
+            SendGuildMessageButton.Text = "发送";
             SendGuildMessageButton.UseVisualStyleBackColor = true;
             SendGuildMessageButton.Click += SendGuildMessageButton_Click;
             // 

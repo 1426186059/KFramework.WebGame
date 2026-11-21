@@ -411,7 +411,7 @@ namespace Server.Database
             rBtnViewSpecial.Size = new Size(62, 19);
             rBtnViewSpecial.TabIndex = 4;
             rBtnViewSpecial.TabStop = true;
-            rBtnViewSpecial.Text = "Special";
+            rBtnViewSpecial.Text = "特殊";
             rBtnViewSpecial.UseVisualStyleBackColor = true;
             rBtnViewSpecial.CheckedChanged += rBtnViewSpecial_CheckedChanged;
             // 
@@ -425,7 +425,7 @@ namespace Server.Database
             rbtnViewAll.Size = new Size(39, 19);
             rbtnViewAll.TabIndex = 0;
             rbtnViewAll.TabStop = true;
-            rbtnViewAll.Text = "All";
+            rbtnViewAll.Text = "全部";
             rbtnViewAll.UseVisualStyleBackColor = true;
             rbtnViewAll.CheckedChanged += rbtnViewAll_CheckedChanged;
             // 
@@ -451,7 +451,7 @@ namespace Server.Database
             rbtnViewBasic.Size = new Size(52, 19);
             rbtnViewBasic.TabIndex = 1;
             rbtnViewBasic.TabStop = true;
-            rbtnViewBasic.Text = "Basic";
+            rbtnViewBasic.Text = "基础";
             rbtnViewBasic.UseVisualStyleBackColor = true;
             rbtnViewBasic.CheckedChanged += rbtnViewBasic_CheckedChanged;
             // 
@@ -464,7 +464,7 @@ namespace Server.Database
             rbtnViewStats.Size = new Size(50, 19);
             rbtnViewStats.TabIndex = 2;
             rbtnViewStats.TabStop = true;
-            rbtnViewStats.Text = "Stats";
+            rbtnViewStats.Text = "属性";
             rbtnViewStats.UseVisualStyleBackColor = true;
             rbtnViewStats.CheckedChanged += rbtnViewStats_CheckedChanged;
             // 

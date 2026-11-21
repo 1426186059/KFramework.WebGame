@@ -65,7 +65,7 @@
             NamelistsGroupBox.Size = new Size(230, 556);
             NamelistsGroupBox.TabIndex = 0;
             NamelistsGroupBox.TabStop = false;
-            NamelistsGroupBox.Text = "Namelists";
+            NamelistsGroupBox.Text = "名字库";
             // 
             // NamelistView
             // 
@@ -119,7 +119,7 @@
             groupBox1.Size = new Size(280, 79);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Search";
+            groupBox1.Text = "搜索";
             // 
             // FindPlayerBox
             // 
@@ -134,7 +134,7 @@
             RefreshButton.Name = "RefreshButton";
             RefreshButton.Size = new Size(75, 23);
             RefreshButton.TabIndex = 8;
-            RefreshButton.Text = "Refresh";
+            RefreshButton.Text = "刷新";
             RefreshButton.UseVisualStyleBackColor = true;
             RefreshButton.Click += RefreshButton_Click;
             // 
@@ -154,7 +154,7 @@
             label1.Name = "label1";
             label1.Size = new Size(39, 15);
             label1.TabIndex = 6;
-            label1.Text = "Player";
+            label1.Text = "玩家";
             // 
             // PlayerActionsGroupBox
             // 

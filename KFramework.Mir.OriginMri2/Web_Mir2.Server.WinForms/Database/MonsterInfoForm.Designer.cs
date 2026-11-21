@@ -120,7 +120,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(627, 304);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Info";
+            this.tabPage1.Text = "信息";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // MonsterInfoPanel
@@ -228,7 +228,7 @@
             this.AutoRevCheckBox.Name = "AutoRevCheckBox";
             this.AutoRevCheckBox.Size = new System.Drawing.Size(71, 17);
             this.AutoRevCheckBox.TabIndex = 87;
-            this.AutoRevCheckBox.Text = "Auto Rev";
+            this.AutoRevCheckBox.Text = "自动复活";
             this.AutoRevCheckBox.UseVisualStyleBackColor = true;
             this.AutoRevCheckBox.CheckedChanged += new System.EventHandler(this.AutoRevCheckBox_CheckedChanged);
             // 
@@ -452,7 +452,7 @@
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(37, 13);
             this.label26.TabIndex = 58;
-            this.label26.Text = "Agility:";
+            this.label26.Text = "敏捷 :";
             // 
             // AccuracyTextBox
             // 
@@ -470,7 +470,7 @@
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(55, 13);
             this.label27.TabIndex = 56;
-            this.label27.Text = "Accuracy:";
+            this.label27.Text = "准确 :";
             // 
             // HPTextBox
             // 
@@ -720,7 +720,7 @@
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(75, 23);
             this.AddButton.TabIndex = 13;
-            this.AddButton.Text = "Add";
+            this.AddButton.Text = "添加";
             this.AddButton.UseVisualStyleBackColor = true;
             this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
@@ -752,7 +752,7 @@
             this.CopyMButton.Name = "CopyMButton";
             this.CopyMButton.Size = new System.Drawing.Size(44, 23);
             this.CopyMButton.TabIndex = 21;
-            this.CopyMButton.Text = "Copy";
+            this.CopyMButton.Text = "复制";
             this.CopyMButton.UseVisualStyleBackColor = true;
             // 
             // DropBuilderButton
@@ -761,7 +761,7 @@
             this.DropBuilderButton.Name = "DropBuilderButton";
             this.DropBuilderButton.Size = new System.Drawing.Size(75, 23);
             this.DropBuilderButton.TabIndex = 26;
-            this.DropBuilderButton.Text = "Drop Builder";
+            this.DropBuilderButton.Text = "掉落编辑器";
             this.DropBuilderButton.UseVisualStyleBackColor = true;
             this.DropBuilderButton.Click += new System.EventHandler(this.DropBuilderButton_Click);
             // 

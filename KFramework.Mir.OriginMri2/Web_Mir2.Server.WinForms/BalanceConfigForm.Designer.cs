@@ -219,7 +219,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(102, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "MagicResist Weight";
+            this.label2.Text = "魔抗权重";
             // 
             // PoisonResistWeighttextbox
             // 
@@ -237,7 +237,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(105, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "PoisonResist Weight";
+            this.label3.Text = "毒抗权重";
             // 
             // CritialRateWeighttextbox
             // 
@@ -255,7 +255,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(98, 13);
             this.label5.TabIndex = 10;
-            this.label5.Text = "CriticalRate Weight";
+            this.label5.Text = "暴击率权重";
             // 
             // CriticalDamagetextbox
             // 
@@ -273,7 +273,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(97, 13);
             this.label7.TabIndex = 14;
-            this.label7.Text = "CriticalDmg Weight";
+            this.label7.Text = "暴伤权重";
             // 
             // tabControl1
             // 
@@ -297,7 +297,7 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(705, 705);
             this.tabPage3.TabIndex = 4;
-            this.tabPage3.Text = "Class";
+            this.tabPage3.Text = "职业";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // panel2
@@ -426,7 +426,7 @@
             this.tabHero.Padding = new System.Windows.Forms.Padding(3);
             this.tabHero.Size = new System.Drawing.Size(705, 705);
             this.tabHero.TabIndex = 5;
-            this.tabHero.Text = "Hero";
+            this.tabHero.Text = "英雄";
             this.tabHero.UseVisualStyleBackColor = true;
             // 
             // panelHeroLeft
@@ -570,7 +570,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(705, 705);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Itemstats";
+            this.tabPage2.Text = "物品属性";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // ManaRegenWeighttextBox
@@ -589,7 +589,7 @@
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(95, 13);
             this.label37.TabIndex = 31;
-            this.label37.Text = "MP Regen Weight";
+            this.label37.Text = "魔法恢复权重";
             // 
             // HealthRegenWeighttextBox
             // 
@@ -607,7 +607,7 @@
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(94, 13);
             this.label35.TabIndex = 27;
-            this.label35.Text = "HP Regen Weight";
+            this.label35.Text = "生命恢复权重";
             // 
             // groupBox2
             // 
@@ -619,7 +619,7 @@
             this.groupBox2.Size = new System.Drawing.Size(227, 94);
             this.groupBox2.TabIndex = 24;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Pvp only";
+            this.groupBox2.Text = "仅PVP";
             // 
             // CanFreezecheckBox
             // 
@@ -628,7 +628,7 @@
             this.CanFreezecheckBox.Name = "CanFreezecheckBox";
             this.CanFreezecheckBox.Size = new System.Drawing.Size(80, 17);
             this.CanFreezecheckBox.TabIndex = 2;
-            this.CanFreezecheckBox.Text = "Can Freeze";
+            this.CanFreezecheckBox.Text = "可冰冻";
             this.CanFreezecheckBox.UseVisualStyleBackColor = true;
             this.CanFreezecheckBox.CheckedChanged += new System.EventHandler(this.CanFreezecheckBox_CheckedChanged);
             // 
@@ -639,7 +639,7 @@
             this.CanResistPoisoncheckBox.Name = "CanResistPoisoncheckBox";
             this.CanResistPoisoncheckBox.Size = new System.Drawing.Size(112, 17);
             this.CanResistPoisoncheckBox.TabIndex = 1;
-            this.CanResistPoisoncheckBox.Text = "Can Resist Poison";
+            this.CanResistPoisoncheckBox.Text = "可抗毒";
             this.CanResistPoisoncheckBox.UseVisualStyleBackColor = true;
             this.CanResistPoisoncheckBox.CheckedChanged += new System.EventHandler(this.CanResistPoisoncheckBox_CheckedChanged);
             // 
@@ -650,7 +650,7 @@
             this.CanResistMagiccheckBox.Name = "CanResistMagiccheckBox";
             this.CanResistMagiccheckBox.Size = new System.Drawing.Size(109, 17);
             this.CanResistMagiccheckBox.TabIndex = 0;
-            this.CanResistMagiccheckBox.Text = "Can Resist Magic";
+            this.CanResistMagiccheckBox.Text = "可抗魔";
             this.CanResistMagiccheckBox.UseVisualStyleBackColor = true;
             this.CanResistMagiccheckBox.CheckedChanged += new System.EventHandler(this.CanResistMagiccheckBox_CheckedChanged);
             // 
@@ -670,7 +670,7 @@
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(92, 13);
             this.label11.TabIndex = 22;
-            this.label11.Text = "PoisonAtk Weight";
+            this.label11.Text = "毒攻权重";
             // 
             // FreezingWeighttextbox
             // 
@@ -688,7 +688,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(84, 13);
             this.label10.TabIndex = 18;
-            this.label10.Text = "Freezing Weight";
+            this.label10.Text = "冰冻权重";
             // 
             // tabPage4
             // 
@@ -702,7 +702,7 @@
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(705, 705);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Random Item Stats";
+            this.tabPage4.Text = "随机物品属性";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // RISDeleteIndexbutton
@@ -759,7 +759,7 @@
             this.groupBox3.Size = new System.Drawing.Size(600, 694);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Random settings";
+            this.groupBox3.Text = "随机设置";
             // 
             // label64
             // 
@@ -768,7 +768,7 @@
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(30, 13);
             this.label64.TabIndex = 40;
-            this.label64.Text = "Slots";
+            this.label64.Text = "格子";
             // 
             // label63
             // 
@@ -777,7 +777,7 @@
             this.label63.Name = "label63";
             this.label63.Size = new System.Drawing.Size(76, 13);
             this.label63.TabIndex = 39;
-            this.label63.Text = "Curse chance:";
+            this.label63.Text = "诅咒几率:";
             // 
             // label62
             // 
@@ -786,7 +786,7 @@
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(31, 13);
             this.label62.TabIndex = 38;
-            this.label62.Text = "Luck";
+            this.label62.Text = "幸运";
             // 
             // label61
             // 
@@ -795,7 +795,7 @@
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(72, 13);
             this.label61.TabIndex = 37;
-            this.label61.Text = "Attack Speed";
+            this.label61.Text = "攻击速度";
             // 
             // label60
             // 
@@ -804,7 +804,7 @@
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(73, 13);
             this.label60.TabIndex = 36;
-            this.label60.Text = "Poison Attack";
+            this.label60.Text = "毒素攻击";
             // 
             // label59
             // 
@@ -813,7 +813,7 @@
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(47, 13);
             this.label59.TabIndex = 35;
-            this.label59.Text = "Freezing";
+            this.label59.Text = "冰冻";
             // 
             // label58
             // 
@@ -822,7 +822,7 @@
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(81, 13);
             this.label58.TabIndex = 34;
-            this.label58.Text = "Critical Damage";
+            this.label58.Text = "暴击伤害";
             // 
             // label57
             // 
@@ -831,7 +831,7 @@
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(61, 13);
             this.label57.TabIndex = 33;
-            this.label57.Text = "CriticalRate";
+            this.label57.Text = "暴击率";
             // 
             // label56
             // 
@@ -840,7 +840,7 @@
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(88, 13);
             this.label56.TabIndex = 32;
-            this.label56.Text = "Poison Recovery";
+            this.label56.Text = "毒素恢复";
             // 
             // label55
             // 
@@ -849,7 +849,7 @@
             this.label55.Name = "label55";
             this.label55.Size = new System.Drawing.Size(83, 13);
             this.label55.TabIndex = 31;
-            this.label55.Text = "Mana Recovery";
+            this.label55.Text = "魔法恢复";
             // 
             // label54
             // 
@@ -858,7 +858,7 @@
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(87, 13);
             this.label54.TabIndex = 30;
-            this.label54.Text = "Health Recovery";
+            this.label54.Text = "生命恢复";
             // 
             // label53
             // 
@@ -867,7 +867,7 @@
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(71, 13);
             this.label53.TabIndex = 29;
-            this.label53.Text = "Poison Resist";
+            this.label53.Text = "毒素抵抗";
             // 
             // label52
             // 
@@ -876,7 +876,7 @@
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(68, 13);
             this.label52.TabIndex = 28;
-            this.label52.Text = "Magic Resist";
+            this.label52.Text = "魔法抵抗";
             // 
             // label51
             // 
@@ -885,7 +885,7 @@
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(38, 13);
             this.label51.TabIndex = 27;
-            this.label51.Text = "Strong";
+            this.label51.Text = "强化";
             // 
             // label50
             // 
@@ -894,7 +894,7 @@
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(45, 13);
             this.label50.TabIndex = 26;
-            this.label50.Text = "Max Mp";
+            this.label50.Text = "最大魔法值";
             // 
             // label49
             // 
@@ -903,7 +903,7 @@
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(44, 13);
             this.label49.TabIndex = 25;
-            this.label49.Text = "Max Hp";
+            this.label49.Text = "最大生命";
             // 
             // label48
             // 
@@ -912,7 +912,7 @@
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(57, 13);
             this.label48.TabIndex = 24;
-            this.label48.Text = "Max Agility";
+            this.label48.Text = "最大敏捷";
             // 
             // label47
             // 
@@ -921,7 +921,7 @@
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(75, 13);
             this.label47.TabIndex = 23;
-            this.label47.Text = "Max Accuracy";
+            this.label47.Text = "最大准确";
             // 
             // label46
             // 
@@ -930,7 +930,7 @@
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(43, 13);
             this.label46.TabIndex = 22;
-            this.label46.Text = "Max Sc";
+            this.label46.Text = "最大道术";
             // 
             // label45
             // 
@@ -939,7 +939,7 @@
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(45, 13);
             this.label45.TabIndex = 21;
-            this.label45.Text = "Max Mc";
+            this.label45.Text = "最大魔法";
             // 
             // label44
             // 
@@ -948,7 +948,7 @@
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(44, 13);
             this.label44.TabIndex = 20;
-            this.label44.Text = "Max Dc";
+            this.label44.Text = "最大攻击";
             // 
             // label43
             // 
@@ -957,7 +957,7 @@
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(51, 13);
             this.label43.TabIndex = 19;
-            this.label43.Text = "Max Mac";
+            this.label43.Text = "最大魔防";
             // 
             // label42
             // 
@@ -966,7 +966,7 @@
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(43, 13);
             this.label42.TabIndex = 18;
-            this.label42.Text = "Max Ac";
+            this.label42.Text = "最大防御";
             // 
             // label41
             // 
@@ -975,7 +975,7 @@
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(73, 13);
             this.label41.TabIndex = 17;
-            this.label41.Text = "Max Durability";
+            this.label41.Text = "最大耐久";
             // 
             // groupBox6
             // 
@@ -1007,7 +1007,7 @@
             this.groupBox6.Size = new System.Drawing.Size(95, 648);
             this.groupBox6.TabIndex = 3;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Maximum Stats";
+            this.groupBox6.Text = "最大属性";
             // 
             // RISSlotMaxStattextBox
             // 
@@ -1245,7 +1245,7 @@
             this.groupBox5.Size = new System.Drawing.Size(85, 648);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Chance/Stat";
+            this.groupBox5.Text = "几率/属性";
             // 
             // RISSlotStatChancetextBox
             // 
@@ -1484,7 +1484,7 @@
             this.groupBox4.Size = new System.Drawing.Size(106, 648);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Random chance:";
+            this.groupBox4.Text = "随机几率:";
             // 
             // RISCurseChancetextBox
             // 
@@ -1708,7 +1708,7 @@
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(79, 13);
             this.label40.TabIndex = 8;
-            this.label40.Text = "Random Index:";
+            this.label40.Text = "随机序号:";
             // 
             // RISIndexcomboBox
             // 
@@ -1727,7 +1727,7 @@
             this.lblClassStatExample.Name = "lblClassStatExample";
             this.lblClassStatExample.Size = new System.Drawing.Size(126, 13);
             this.lblClassStatExample.TabIndex = 17;
-            this.lblClassStatExample.Text = "Level 1-50 Stat Preview..";
+            this.lblClassStatExample.Text = "1-50级属性预览..";
             // 
             // lblHeroStatExample
             // 
@@ -1736,7 +1736,7 @@
             this.lblHeroStatExample.Name = "lblHeroStatExample";
             this.lblHeroStatExample.Size = new System.Drawing.Size(148, 13);
             this.lblHeroStatExample.TabIndex = 18;
-            this.lblHeroStatExample.Text = "Level 1-50 Hero Stat Preview..";
+            this.lblHeroStatExample.Text = "1-50级英雄属性预览..";
             this.lblHeroStatExample.Visible = false;
             // 
             // BalanceConfigForm
@@ -1748,7 +1748,7 @@
             this.Controls.Add(this.lblClassStatExample);
             this.Controls.Add(this.tabControl1);
             this.Name = "BalanceConfigForm";
-            this.Text = "BalanceConfigForm";
+            this.Text = "平衡配置";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.BalanceConfigForm_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);

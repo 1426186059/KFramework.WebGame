@@ -63,7 +63,7 @@ namespace Server
             }
             else
             {
-                tabControl1.TabPages[3].Text = "Special Stats";
+                tabControl1.TabPages[3].Text = "特殊属性";
                 ParalysischeckBox.Text = "Paralysis ring";
                 TeleportcheckBox.Text = "Teleport ring";
                 ClearcheckBox.Text = "Clear ring";

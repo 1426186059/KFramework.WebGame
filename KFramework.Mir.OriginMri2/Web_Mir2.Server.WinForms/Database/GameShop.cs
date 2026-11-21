@@ -92,7 +92,7 @@ namespace Server
                 GPPrice_textbox.Text = String.Empty;
                 Stock_textbox.Text = String.Empty;
                 Individual_checkbox.Checked = false;
-                Class_combo.Text = "All";
+                Class_combo.Text = "全部";
                 Category_textbox.Text = "";
                 TopItem_checkbox.Checked = false;
                 DealofDay_checkbox.Checked = false;

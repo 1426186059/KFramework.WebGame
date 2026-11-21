@@ -114,7 +114,7 @@
             this.MaximizeBox = false;
             this.Name = "MiningDetailForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Mining";
+            this.Text = "挖矿";
             this.ResumeLayout(false);
             this.PerformLayout();
 

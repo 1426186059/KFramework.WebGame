@@ -422,7 +422,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(601, 390);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "General";
+            this.tabPage1.Text = "常规";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // label57
@@ -967,7 +967,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(601, 390);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Basic Stats";
+            this.tabPage2.Text = "基础属性";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -1429,7 +1429,7 @@
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(55, 13);
             this.label27.TabIndex = 56;
-            this.label27.Text = "Accuracy:";
+            this.label27.Text = "准确 :";
             // 
             // PoisonResisttextBox
             // 
@@ -1465,7 +1465,7 @@
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(37, 13);
             this.label26.TabIndex = 58;
-            this.label26.Text = "Agility:";
+            this.label26.Text = "敏捷 :";
             // 
             // MagicResisttextBox
             // 
@@ -1501,7 +1501,7 @@
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(54, 13);
             this.label29.TabIndex = 60;
-            this.label29.Text = "A. Speed:";
+            this.label29.Text = "攻速 :";
             // 
             // HealthRecoveryTextbox
             // 
@@ -1855,7 +1855,7 @@
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Size = new System.Drawing.Size(601, 390);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Special Stats";
+            this.tabPage4.Text = "特殊属性";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // PickaxecheckBox
@@ -2017,7 +2017,7 @@
             this.AddButton.Name = "AddButton";
             this.AddButton.Size = new System.Drawing.Size(55, 23);
             this.AddButton.TabIndex = 8;
-            this.AddButton.Text = "Add";
+            this.AddButton.Text = "添加";
             this.AddButton.UseVisualStyleBackColor = true;
             this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
@@ -2052,7 +2052,7 @@
             this.CopyMButton.Name = "CopyMButton";
             this.CopyMButton.Size = new System.Drawing.Size(51, 23);
             this.CopyMButton.TabIndex = 23;
-            this.CopyMButton.Text = "Copy";
+            this.CopyMButton.Text = "复制";
             this.CopyMButton.UseVisualStyleBackColor = true;
             this.CopyMButton.Visible = false;
             this.CopyMButton.Click += new System.EventHandler(this.CopyMButton_Click);

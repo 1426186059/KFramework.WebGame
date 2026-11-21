@@ -1215,7 +1215,13 @@ namespace Server.MirObjects
                 }
             }
 
-            if (goods == null || count == 0 || count > goods.Info.StackSize) return;
+            if (goods == null || count == 0 || count > goods.Info.StackSize)
+            {
+                MessageQueue.Enqueue($"[商店诊断] Buy 找不到商品 index={index} count={count} goods={(goods == null ? "null" : goods.Info?.Name)} stack={goods?.Info?.StackSize} storeId={callingNPC?.Info?.OriginSettings?.StoreId}");
+                player.ReceiveChat("购买失败，该商品不存在或已下架。", ChatType.System);
+                return;
+            }
+            MessageQueue.Enqueue($"[商店诊断] Buy 找到商品 {goods.Info?.Name} price={goods.ShopPrice} cur={goods.ShopCurrencyType}");
 
             if ((isBuyBack || isUsed) && count > goods.Count)
                 count = goods.Count;
@@ -1236,13 +1242,28 @@ namespace Server.MirObjects
                 switch (goods.ShopCurrencyType)
                 {
                     case 1: // 元宝 Credit
-                        if (cost > player.Account.Credit) return;
+                        if (cost > player.Account.Credit)
+                        {
+                            MessageQueue.Enqueue($"[商店诊断] 元宝不足 cost={cost} have={player.Account.Credit}");
+                            player.ReceiveChat($"购买失败，元宝不足（需要 {cost:n0}）。", ChatType.System);
+                            return;
+                        }
                         break;
                     case 2: // 传奇币 LegendCoin
-                        if (cost > player.Account.LegendCoin) return;
+                        if (cost > player.Account.LegendCoin)
+                        {
+                            MessageQueue.Enqueue($"[商店诊断] 传奇币不足 cost={cost} have={player.Account.LegendCoin}");
+                            player.ReceiveChat($"购买失败，传奇币不足（需要 {cost:n0}）。", ChatType.System);
+                            return;
+                        }
                         break;
                     default: // 金币
-                        if (cost > player.Account.Gold) return;
+                        if (cost > player.Account.Gold)
+                        {
+                            MessageQueue.Enqueue($"[商店诊断] 金币不足 cost={cost} have={player.Account.Gold}");
+                            player.ReceiveChat($"购买失败，金币不足（需要 {cost:n0}）。", ChatType.System);
+                            return;
+                        }
                         break;
                 }
             }
@@ -1250,7 +1271,11 @@ namespace Server.MirObjects
             UserItem item = (isBuyBack || isUsed) ? goods : Envir.CreateFreshItem(goods.Info);
             item.Count = goods.Count;
 
-            if (!player.CanGainItem(item)) return;
+            if (!player.CanGainItem(item))
+            {
+                player.ReceiveChat("购买失败，背包空间不足，无法放入物品。", ChatType.System);
+                return;
+            }
 
             if (player.NPCPage.Key.ToUpper() == PearlBuyKey)
             {
@@ -1281,6 +1306,19 @@ namespace Server.MirObjects
             }
 
             player.GainItem(item);
+
+            // 购买成功提示（客户端左侧聊天框）
+            if (player.NPCPage.Key.ToUpper() != PearlBuyKey)
+            {
+                string currencyName;
+                switch (goods.ShopCurrencyType)
+                {
+                    case 1: currencyName = "元宝"; break;
+                    case 2: currencyName = "传奇币"; break;
+                    default: currencyName = "金币"; break;
+                }
+                player.ReceiveChat($"提示：消耗 {currencyName} {cost:n0}，获得 {item.Info.FriendlyName}", ChatType.System);
+            }
 
             if (isUsed)
             {

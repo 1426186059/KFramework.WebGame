@@ -339,7 +339,7 @@
             this.tabPageBells.Size = new System.Drawing.Size(468, 374);
             this.tabPageBells.TabIndex = 22;
             this.tabPageBells.Tag = "Bells";
-            this.tabPageBells.Text = "Bells";
+            this.tabPageBells.Text = "铃声";
             this.tabPageBells.UseVisualStyleBackColor = true;
             // 
             // listBoxBells
@@ -585,7 +585,7 @@
             this.tabPageGem.Size = new System.Drawing.Size(468, 356);
             this.tabPageGem.TabIndex = 16;
             this.tabPageGem.Tag = "Gem";
-            this.tabPageGem.Text = "Gem";
+            this.tabPageGem.Text = "宝石";
             this.tabPageGem.UseVisualStyleBackColor = true;
             // 
             // listBoxGem
@@ -832,7 +832,7 @@
             this.tabPageQuest.Size = new System.Drawing.Size(468, 338);
             this.tabPageQuest.TabIndex = 33;
             this.tabPageQuest.Tag = "Quest";
-            this.tabPageQuest.Text = "Quest";
+            this.tabPageQuest.Text = "任务";
             this.tabPageQuest.UseVisualStyleBackColor = true;
             // 
             // listBoxQuest
@@ -1250,7 +1250,7 @@
             this.buttonUpdateGold.Name = "buttonUpdateGold";
             this.buttonUpdateGold.Size = new System.Drawing.Size(124, 28);
             this.buttonUpdateGold.TabIndex = 21;
-            this.buttonUpdateGold.Text = "Update";
+            this.buttonUpdateGold.Text = "更新";
             this.buttonUpdateGold.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonUpdateGold.UseVisualStyleBackColor = true;
             this.buttonUpdateGold.Click += new System.EventHandler(this.buttonUpdateGold_Click);
@@ -1380,7 +1380,7 @@
             this.MaximizeBox = false;
             this.Name = "DropGenForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Drop Builder";
+            this.Text = "掉落编辑器";
             this.tabControlSeperateItems.ResumeLayout(false);
             this.tabPageAmulet.ResumeLayout(false);
             this.tabPageArmour.ResumeLayout(false);

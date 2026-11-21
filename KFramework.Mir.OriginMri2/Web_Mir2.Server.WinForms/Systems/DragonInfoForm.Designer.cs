@@ -130,7 +130,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(300, 185);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Config";
+            this.tabPage1.Text = "配置";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // label1

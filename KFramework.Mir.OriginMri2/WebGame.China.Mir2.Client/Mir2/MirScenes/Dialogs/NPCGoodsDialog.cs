@@ -127,87 +127,34 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            if (SelectedItem.Info.StackSize > 1)
+            // 原始传奇：点购买按钮直接买 1 件，不弹数量输入框。
+            // 按商店下发的货币类型/价格做本地校验（玉佩是传奇币 1000，不能用 Info.Price/Gold 判断）。
+            uint price = SelectedItem.ShopPrice > 0 ? SelectedItem.ShopPrice : SelectedItem.Price();
+            string currency;
+            uint owned;
+            switch (SelectedItem.ShopCurrencyType)
             {
-                ushort tempCount = SelectedItem.Count;
-                ushort maxQuantity = (ushort)Math.Min(SelectedItem.Info.StackSize, ushort.MaxValue);
-
-                SelectedItem.Count = maxQuantity;
-
-                if (UsePearls)
-                {
-                    if (SelectedItem.Price() > GameScene.User.PearlCount)
-                    {
-                        maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
-                        if (maxQuantity == 0)
-                        {
-                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotEnoughPearls), ChatType.System);
-                            return;
-                        }
-                    }
-                }
-
-                else if (SelectedItem.Price() > GameScene.Gold)
-                {
-                    maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
-                    if (maxQuantity == 0)
-                    {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
-                        return;
-                    }
-                }
-
-                MapObject.User.GetMaxGain(SelectedItem);
-
-                if (SelectedItem.Count == 0)
-                {
-                    SelectedItem.Count = tempCount;
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
-                    return;
-                }
-
-                if (SelectedItem.Count < maxQuantity)
-                {
-                    maxQuantity = SelectedItem.Count;
-                }
-
-                if (SelectedItem.Count > tempCount)
-                {
-                    SelectedItem.Count = tempCount;
-                }
-
-                MirAmountBox amountBox = new(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PurchaseAmount), SelectedItem.Image, maxQuantity, 0, SelectedItem.Count);
-
-                amountBox.OKButton.Click += (o, e) =>
-                {
-                    if (amountBox.Amount > 0)
-                    {
-                        Network.Enqueue(new C.BuyItem { ItemIndex = SelectedItem.UniqueID, Count = (ushort)amountBox.Amount, Type = PanelType.Buy });
-                    }
-                };
-
-                amountBox.Show();
+                case 1:
+                    currency = "元宝";
+                    owned = GameScene.Credit;
+                    break;
+                case 2:
+                    currency = "传奇币";
+                    owned = GameScene.LegendCoin;
+                    break;
+                default:
+                    currency = "金币";
+                    owned = GameScene.Gold;
+                    break;
             }
-            else
+
+            if (price > owned)
             {
-                if (SelectedItem.Info.Price > GameScene.Gold)
-                {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
-                    return;
-                }
-
-                for (int i = 0; i < MapObject.User.Inventory.Length; i++)
-                {
-                    if (MapObject.User.Inventory[i] == null) break;
-                    if (i == MapObject.User.Inventory.Length - 1)
-                    {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
-                        return;
-                    }
-                }
-
-                Network.Enqueue(new C.BuyItem { ItemIndex = SelectedItem.UniqueID, Count = 1, Type = PanelType.Buy });
+                GameScene.Scene.ChatDialog.ReceiveChat($"购买失败，{currency}不足（需要 {price:n0}）。", ChatType.System);
+                return;
             }
+
+            Network.Enqueue(new C.BuyItem { ItemIndex = SelectedItem.UniqueID, Count = 1, Type = PanelType.Buy });
         }
 
         private void Update()

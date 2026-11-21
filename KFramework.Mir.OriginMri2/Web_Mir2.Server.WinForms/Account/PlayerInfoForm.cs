@@ -33,6 +33,21 @@ namespace Server
             UpdateTabs();
         }
 
+        // 从角色列表（在线或离线）打开玩家信息编辑界面
+        public PlayerInfoForm(CharacterInfo character)
+        {
+            InitializeComponent();
+
+            Character = character;
+            if (Character == null)
+            {
+                Close();
+                return;
+            }
+
+            UpdateTabs();
+        }
+
         #region PlayerInfo
         private void UpdatePlayerInfo()
         {
@@ -42,6 +57,7 @@ namespace Server
             PKPointsTextBox.Text = Character.PKPoints.ToString();
             GoldTextBox.Text = $"{Character.AccountInfo.Gold:n0}";
             GameGoldTextBox.Text = String.Format("{0:n0}", Character.AccountInfo.Credit);
+            LegendCoinTextBox.Text = $"{Character.AccountInfo.LegendCoin:n0}";
 
 
             if (Character?.Player != null)
@@ -61,12 +77,12 @@ namespace Server
             }
             else
             {
-                CurrentMapLabel.Text = "OFFLINE";
-                CurrentXY.Text = "OFFLINE";
+                CurrentMapLabel.Text = "离线";
+                CurrentXY.Text = "离线";
             }
 
             CurrentIPLabel.Text = Character.AccountInfo.LastIP;
-            OnlineTimeLabel.Text = Character.LastLoginDate > Character.LastLogoutDate ? (SMain.Envir.Now - Character.LastLoginDate).TotalMinutes.ToString("##") + " minutes" : "Offline";
+            OnlineTimeLabel.Text = Character.LastLoginDate > Character.LastLogoutDate ? (SMain.Envir.Now - Character.LastLoginDate).TotalMinutes.ToString("##") + " 分钟" : "离线";
 
             ChatBanExpiryTextBox.Text = Character.ChatBanExpiryDate.ToString();
         }
@@ -281,12 +297,14 @@ namespace Server
 
             string tempGold = GoldTextBox.Text.Replace(",", "");
             string tempCredit = GameGoldTextBox.Text.Replace(",", "");
+            string tempLegendCoin = LegendCoinTextBox.Text.Replace(",", "");
 
             info.Name = NameTextBox.Text;
             info.Level = Convert.ToByte(LevelTextBox.Text);
             info.PKPoints = Convert.ToInt32(PKPointsTextBox.Text);
             info.AccountInfo.Gold = Convert.ToUInt32(tempGold);
             info.AccountInfo.Credit = Convert.ToUInt32(tempCredit);
+            info.AccountInfo.LegendCoin = Convert.ToUInt32(tempLegendCoin);
 
             UpdateTabs();
         }
@@ -505,7 +523,7 @@ namespace Server
                     {
                         Character.Flags[flagIndex] = true;
 
-                        selectedItem.SubItems[1].Text = "Active";
+                        selectedItem.SubItems[1].Text = "启用";
                         selectedItem.SubItems[1].ForeColor = Color.Green;
                     }
                     else
@@ -534,7 +552,7 @@ namespace Server
                     {
                         Character.Flags[flagIndex] = false;
 
-                        selectedItem.SubItems[1].Text = "Inactive";
+                        selectedItem.SubItems[1].Text = "停用";
                         selectedItem.SubItems[1].ForeColor = Color.Red;
                     }
                     else
@@ -625,8 +643,8 @@ namespace Server
             }
             else
             {
-                HeroCurrentMapLabel.Text = "OFFLINE";
-                HeroCurrentXY.Text = "OFFLINE";
+                HeroCurrentMapLabel.Text = "离线";
+                HeroCurrentXY.Text = "离线";
             }
         }
         private void UpdateHeroMagic()

@@ -193,7 +193,7 @@
             GoldOnlyBox.Name = "GoldOnlyBox";
             GoldOnlyBox.Size = new Size(51, 19);
             GoldOnlyBox.TabIndex = 119;
-            GoldOnlyBox.Text = "Gold";
+            GoldOnlyBox.Text = "金币";
             GoldOnlyBox.UseVisualStyleBackColor = true;
             GoldOnlyBox.CheckedChanged += GoldOnlyBox_CheckedChanged;
             // 
