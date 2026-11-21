@@ -39,6 +39,13 @@ namespace Client.MirScenes.Dialogs
         private int _index = 0;
         public int MaximumLines = 8;
 
+        // 底部按钮行：左对齐、紧凑排列（不再沿用原始传奇 list0 的 140 列宽/40 间距）
+        private const int BottomLinkX = 24;
+        private const int BottomLinkColWidth = 72;
+        private const int BottomLinkGap = 10;
+        private const int BottomLinkCols = 6; //最多 6个Button
+        private readonly List<MirLabel> _bottomLinkLabels = new List<MirLabel>();
+
         // Tooltip control for linked objects
         private MirControl _tooltipPanel;
         private MirImageControl _tooltipImage;
@@ -49,7 +56,7 @@ namespace Client.MirScenes.Dialogs
         {
             // 背景改用原始传奇资源（y_task_bg.png，manifest 解析为 resource/2a/2a3d3cc4_79142.png）
             AutoSize = false;
-            Size = new Size(600, 180);
+            Size = new Size(579, 172); // 原始传奇 NpcDialogSkin：$bs width=579 height=172
             DrawImage = false;
 
             // Hide tooltip when dialog is clicked
@@ -74,16 +81,17 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
-                ForeColour = Color.BurlyWood,
-                Location = new Point(20, 13),
+                Font = new Font(Settings.FontName, 13F),
+                ForeColour = Color.Yellow,
+                OutLine = true,
+                Location = new Point(24, 21), // 原始传奇 txt_name x=24 y=21 size=17
                 AutoSize = true
             };          
 
             CloseButton = new MirButton
             {
                 Parent = this,
-                Location = new Point(546, 3),
+                Location = new Point(546, 0), // 原始传奇 btn_close x=546 y=0
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet",
                 AtlasFrame = "com_btn_close0",
@@ -235,10 +243,30 @@ namespace Client.MirScenes.Dialogs
                 _index = 0;
                 CurrentLines = lines;
                 UpdatePositionBar();
+                for (int i = _bottomLinkLabels.Count - 1; i >= 0; i--)
+                {
+                    _bottomLinkLabels[i].Dispose();
+                }
+                _bottomLinkLabels.Clear();
+
+                var bottomLinks = new List<(string Text, string Action)>();
+                for (int i = lines.Count - 1; i >= 0; i--)
+                {
+                    if (!R.IsMatch(lines[i]) || !string.IsNullOrWhiteSpace(R.Replace(lines[i], "")))
+                    {
+                        continue;
+                    }
+
+                    foreach (Match m in R.Matches(lines[i]).Cast<Match>().OrderByDescending(o => o.Index))
+                    {
+                        bottomLinks.Insert(0, (m.Groups[2].Value, m.Groups[3].Value));
+                    }
+                    lines.RemoveAt(i);
+                }
+
                 for (int i = lines.Count - 1; i >= 0; i--)
                 {
                     string currentLine = lines[i];
-
                     List<Match> bigButtonSortedList = B.Matches(currentLine).Cast<Match>().OrderBy(o => o.Index).ToList();
 
                     for (int j = 0; j < bigButtonSortedList.Count; j++)
@@ -253,8 +281,9 @@ namespace Client.MirScenes.Dialogs
 
                         action = actionSplit[0];
                         if (actionSplit.Length > 1)
+                        {
                             colourString = actionSplit[1];
-
+                        }
                         Color color = ColorTranslator.FromHtml(colourString);
 
                         BigButton button = new BigButton
@@ -277,13 +306,13 @@ namespace Client.MirScenes.Dialogs
                     }
 
                     var bigButtonString = B.ToString();
-
                     var oldCurrentLine = currentLine;
-
                     currentLine = Regex.Replace(currentLine, bigButtonString, "");
 
                     if (string.IsNullOrWhiteSpace(currentLine) && oldCurrentLine != currentLine)
+                    {
                         lines.RemoveAt(i);
+                    }
                 }
 
                 if (BigButtons.Count > 0)
@@ -295,19 +324,32 @@ namespace Client.MirScenes.Dialogs
                         minimumButtons = 4;
                     }
                     else
+                    {
                         BigButtonDialog.Location = new Point(1, Size.Height - 33);
+                    }
 
                     BigButtonDialog.Show(BigButtons, minimumButtons);
                     Size = new Size(Size.Width, BigButtonDialog.Location.Y + BigButtonDialog.Size.Height);
                 }
-            }                     
+
+                if (bottomLinks.Count > 0 && BigButtons.Count == 0)
+                {
+                    BuildBottomLinkButtons(bottomLinks, lines.Count);
+                }
+
+            }
 
             for (int i = 0; i < TextButtons.Count; i++)
+            {
                 TextButtons[i].Dispose();
+            }
 
             for (int i = 0; i < TextLabel.Length; i++)
             {
-                if (TextLabel[i] != null) TextLabel[i].Text = "";
+                if (TextLabel[i] != null)
+                {
+                    TextLabel[i].Text = "";
+                }
             }
 
             TextButtons.Clear();
@@ -322,8 +364,8 @@ namespace Client.MirScenes.Dialogs
                     DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                     Visible = true,
                     Parent = this,
-                    Size = new Size(420, 20),
-                    Location = new Point(15, 34 + (i - _index) * 18),
+                    Size = new Size(450, 22),
+                    Location = new Point(24, 46 + (i - _index) * 25), // 原始传奇 txt_desc x=24 y=46 size=15 lineSpacing=10
                     NotControl = true
                 };
 
@@ -347,15 +389,12 @@ namespace Client.MirScenes.Dialogs
                 foreach (Match match in matchList.OrderBy(o => o.Index).ToList())
                 {
                     int offSet = oldLength - currentLine.Length;
-
-                    // Handle new link types FIRST (Monster, NPC, Item)
                     bool isMonsterLink = MonsterLink.Match(match.Value).Success;
                     bool isNPCLink = NPCLink.Match(match.Value).Success;
                     bool isItemLink = ItemLink.Match(match.Value).Success;
 
                     if (isMonsterLink || isNPCLink || isItemLink)
                     {
-                        // Extract the index from the link
                         string linkIdx = match.Groups["idx"].Captures.Count > 0 ? match.Groups["idx"].Captures[0].Value : match.Groups["idx"].Value;
                         string providedName = match.Groups["name"].Success ? match.Groups["name"].Captures[0].Value : null;
 
@@ -397,10 +436,6 @@ namespace Client.MirScenes.Dialogs
                         string action = match.Groups[3].Captures[0].Value;
 
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
-                        // 直接量“链接前文本”的真实宽度（与 TextRenderer.DrawText 同一 SpriteFont.MeasureString）作为
-                        // 叠层起点，去掉原先 -10 的近似补偿，避免中文名越长越往左偏。
-                        // 行首空格由 shim（KFramework.MonoGame/TextRenderer.WrapLines）保留为缩进，与 MeasureText 一致
-                        // （对齐 GDI：度量与绘制都含行首空格），故此处无需 TrimStart，链接按钮即可对齐底层文字。
                         string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
                         int prefixWidth = TextRenderer.MeasureText(prefixText, TextLabel[i].Font).Width;
 
@@ -429,6 +464,7 @@ namespace Client.MirScenes.Dialogs
                 Location = p,
                 Text = text,
                 ForeColour = Color.Yellow,
+                UnderLine = true,
                 Sound = SoundList.ButtonC,
                 Font = font
             };
@@ -490,6 +526,7 @@ namespace Client.MirScenes.Dialogs
                 Location = p,
                 Text = text,
                 ForeColour = Color.Cyan,
+                UnderLine = true,
                 Font = font,
                 NotControl = false // Make sure it can receive mouse events
             };
@@ -497,8 +534,6 @@ namespace Client.MirScenes.Dialogs
             temp.MouseEnter += (o, e) =>
             {
                 temp.ForeColour = Color.Orange;
-
-                // All link types (MONSTER, NPC, ITEM) now use the custom ShowTooltip method
                 ShowTooltip(linkType, linkName, temp.DisplayLocation);
             };
 
@@ -515,6 +550,40 @@ namespace Client.MirScenes.Dialogs
 
             temp.MouseWheel += NPCDialog_MouseWheel;
             TextButtons.Add(temp);
+        }
+
+        private void BuildBottomLinkButtons(List<(string Text, string Action)> links, int textLines)
+        {
+            int y = Math.Max(46 + Math.Min(textLines, MaximumLines) * 25 + 6, Size.Height - 30);
+            int rows = (links.Count + BottomLinkCols - 1) / BottomLinkCols;
+
+            for (int i = 0; i < links.Count; i++)
+            {
+                int col = i % BottomLinkCols;
+                int row = i / BottomLinkCols;
+                string action = links[i].Action;
+
+                MirLabel label = new MirLabel
+                {
+                    AutoSize = true,
+                    Visible = true,
+                    Parent = this,
+                    Location = new Point(BottomLinkX + col * (BottomLinkColWidth + BottomLinkGap), y + row * 24),
+                    Text = links[i].Text,
+                    ForeColour = Color.Yellow,
+                    UnderLine = true,
+                    Sound = SoundList.ButtonC,
+                    Font = font
+                };
+
+                label.MouseEnter += (o, e) => label.ForeColour = Color.Red;
+                label.MouseLeave += (o, e) => label.ForeColour = Color.Yellow;
+                label.Click += (o, e) => ButtonClicked(action);
+                label.MouseWheel += NPCDialog_MouseWheel;
+                _bottomLinkLabels.Add(label);
+            }
+
+            Size = new Size(Size.Width, Math.Max(Size.Height, y + rows * 24 + 8));
         }
 
         private void ShowTooltip(string linkType, string linkName, Point anchor)
@@ -832,7 +901,9 @@ namespace Client.MirScenes.Dialogs
         public static string GetDisplayNameForLink(string linkType, string linkIdx, string providedName = null)
         {
             if (!string.IsNullOrEmpty(providedName))
+            {
                 return providedName;
+            }
 
             if (int.TryParse(linkIdx, out int idx))
             {
@@ -868,25 +939,29 @@ namespace Client.MirScenes.Dialogs
 
         public static void ShowTooltipForLink(string linkType, string linkIdx, Point anchor)
         {
-            if (GameScene.Scene.NPCDialog == null) return;
+            if (GameScene.Scene.NPCDialog == null)
+            {
+                return;
+            }
             GameScene.Scene.NPCDialog.ShowTooltip(linkType, linkIdx, anchor);
         }
 
         public static void HideTooltipForLink()
         {
-            if (GameScene.Scene.NPCDialog == null) return;
+            if (GameScene.Scene.NPCDialog == null)
+            {
+                return;
+            }
             GameScene.Scene.NPCDialog.HideTooltip();
         }
 
         internal static Point CalculateLinkOffset(string text, MirLabel label)
         {
             if (label == null || string.IsNullOrEmpty(text))
+            {
                 return Point.Zero;
+            }
 
-            // 用整串前缀 MeasureText 量“链接前”宽度（与 TextRenderer.DrawText 同一度量），
-            // 而非逐字符累加（逐字符会漏算字间距/kerning，中文越长越往左偏）。
-            // canvas 渲染只按显式 \n 换行，不做自动换行：x 取最后一个 \n 之后的前缀宽度，y 按 \n 数累计。
-            // shim（TextRenderer.WrapLines）已保留行首空格为缩进，Measure 与 Draw 一致，故不 TrimStart。
             float lineH = TextRenderer.MeasureText("W", label.Font).Height;
 
             int lastNl = text.LastIndexOf('\n');
@@ -896,7 +971,13 @@ namespace Client.MirScenes.Dialogs
             float x = TextRenderer.MeasureText(linePrefix, label.Font).Width;
 
             int nl = 0;
-            foreach (char c in text) if (c == '\n') nl++;
+            foreach (char c in text)
+            {
+                if (c == '\n')
+                {
+                    nl++;
+                }
+            }
             float y = nl * lineH;
 
             return new Point((int)Math.Round(x), (int)Math.Round(y));
@@ -943,388 +1024,6 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
         }
 
-    }
-    public sealed class NPCGoodsDialog : MirImageControl
-    {
-        public PanelType PType;
-        public bool UsePearls;
-
-        public int StartIndex;
-        public UserItem SelectedItem;
-
-        public List<UserItem> Goods = new List<UserItem>();
-        public List<UserItem> DisplayGoods = new List<UserItem>();
-        public MirGoodsCell[] Cells;
-        public MirButton BuyButton, CloseButton;
-        public MirImageControl BuyLabel;
-
-        public MirButton UpButton, DownButton, PositionBar;
-
-        public NPCGoodsDialog(PanelType type)
-        {
-            PType = type;
-
-            Index = 1000;
-            Library = Libraries.Prguse;
-            Location = new Point(0, 224);
-            Cells = new MirGoodsCell[8];
-            Sort = true;
-
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Cells[i] = new MirGoodsCell
-                {
-                    Parent = this,
-                    Location = new Point(10, 34 + i * 33),
-                    Sound = SoundList.ButtonC
-                };
-                Cells[i].Click += (o, e) =>
-                {
-                    SelectedItem = ((MirGoodsCell)o).Item;
-                    Update();
-
-                    if (PType == PanelType.Craft)
-                    {
-                        GameScene.Scene.CraftDialog.ResetCells();
-                        GameScene.Scene.CraftDialog.RefreshCraftCells(SelectedItem);
-
-                        if (!GameScene.Scene.CraftDialog.Visible)
-                        {
-                            GameScene.Scene.CraftDialog.Show();
-                        }
-                    }
-                };
-                Cells[i].MouseWheel += NPCGoodsPanel_MouseWheel;
-                Cells[i].DoubleClick += (o, e) =>
-                {
-                    if (PType == PanelType.Craft) return;
-
-                    BuyItem();
-                };
-            }
-
-            CloseButton = new MirButton
-            {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(217, 3),
-                Library = Libraries.Prguse2,
-                Parent = this,
-                PressedIndex = 362,
-                Sound = SoundList.ButtonA,
-            };
-            CloseButton.Click += (o, e) => Hide();
-
-            BuyButton = new MirButton
-            {
-                HoverIndex = 313,
-                Index = 312,
-                Location = new Point(77, 304),
-                Library = Libraries.Title,
-                Parent = this,
-                PressedIndex = 314,
-                Sound = SoundList.ButtonA,
-            };
-            BuyButton.Click += (o, e) => BuyItem();
-
-            BuyLabel = new MirImageControl
-            {
-                Index = 27,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(20, 9),
-            };
-
-            if (PType == PanelType.Craft)
-            {
-                BuyLabel.Index = 12;
-                BuyButton.Visible = false;
-            }
-
-            UpButton = new MirButton
-            {
-                Index = 197,
-                HoverIndex = 198,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 35),
-                Parent = this,
-                PressedIndex = 199,
-                Sound = SoundList.ButtonA
-            };
-            UpButton.Click += (o, e) =>
-            {
-                if (StartIndex == 0) return;
-                StartIndex--;
-                Update();
-            };
-
-            DownButton = new MirButton
-            {
-                Index = 207,
-                HoverIndex = 208,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 284),
-                Parent = this,
-                PressedIndex = 209,
-                Sound = SoundList.ButtonA
-            };
-            DownButton.Click += (o, e) =>
-            {
-                if (DisplayGoods.Count <= 8) return;
-
-                if (StartIndex == DisplayGoods.Count - 8) return;
-                StartIndex++;
-                Update();
-            };
-
-            PositionBar = new MirButton
-            {
-                Index = 205,
-                HoverIndex = 206,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 49),
-                Parent = this,
-                PressedIndex = 206,
-                Movable = true,
-                Sound = SoundList.None
-            };
-            PositionBar.OnMoving += PositionBar_OnMoving;
-            PositionBar.MouseUp += (o, e) => Update();
-        }
-
-        private bool CheckSubGoods()
-        {
-            if (SelectedItem == null) return false;
-
-            if (PType == PanelType.Buy && !UsePearls)
-            {
-                var list = Goods.Where(x => x.Info.Index == SelectedItem.Info.Index).ToList();
-
-                if (list.Count > 1 || GameScene.Scene.NPCSubGoodsDialog.Visible)
-                {
-                    GameScene.Scene.NPCSubGoodsDialog.NewGoods(list);
-                    GameScene.Scene.NPCSubGoodsDialog.Show();
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void BuyItem()
-        {
-            if (SelectedItem == null) return;
-
-            if (CheckSubGoods())
-            {
-                return;
-            }
-
-            if (SelectedItem.Info.StackSize > 1)
-            {
-                ushort tempCount = SelectedItem.Count;
-                ushort maxQuantity = (ushort)Math.Min(SelectedItem.Info.StackSize, ushort.MaxValue);
-
-                SelectedItem.Count = maxQuantity;
-
-                if (UsePearls)
-                {
-                    if (SelectedItem.Price() > GameScene.User.PearlCount)
-                    {
-                        maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
-                        if (maxQuantity == 0)
-                        {
-                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotEnoughPearls), ChatType.System);
-                            return;
-                        }
-                    }
-                }
-
-                else if (SelectedItem.Price() > GameScene.Gold)
-                {
-                    maxQuantity = Math.Min(ushort.MaxValue, (ushort)(GameScene.Gold / (SelectedItem.Price() / SelectedItem.Count)));
-                    if (maxQuantity == 0)
-                    {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
-                        return;
-                    }
-                }
-
-                MapObject.User.GetMaxGain(SelectedItem);
-
-                if (SelectedItem.Count == 0)
-                {
-                    SelectedItem.Count = tempCount;
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
-                    return;
-                }
-
-                if (SelectedItem.Count < maxQuantity)
-                {
-                    maxQuantity = SelectedItem.Count;
-                }
-
-                if (SelectedItem.Count > tempCount)
-                {
-                    SelectedItem.Count = tempCount;
-                }
-
-                MirAmountBox amountBox = new(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PurchaseAmount), SelectedItem.Image, maxQuantity, 0, SelectedItem.Count);
-
-                amountBox.OKButton.Click += (o, e) =>
-                {
-                    if (amountBox.Amount > 0)
-                    {
-                        Network.Enqueue(new C.BuyItem { ItemIndex = SelectedItem.UniqueID, Count = (ushort)amountBox.Amount, Type = PanelType.Buy });
-                    }
-                };
-
-                amountBox.Show();
-            }
-            else
-            {
-                if (SelectedItem.Info.Price > GameScene.Gold)
-                {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
-                    return;
-                }
-
-                for (int i = 0; i < MapObject.User.Inventory.Length; i++)
-                {
-                    if (MapObject.User.Inventory[i] == null) break;
-                    if (i == MapObject.User.Inventory.Length - 1)
-                    {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNoBagSpace), ChatType.System);
-                        return;
-                    }
-                }
-
-                Network.Enqueue(new C.BuyItem { ItemIndex = SelectedItem.UniqueID, Count = 1, Type = PanelType.Buy });
-            }
-        }
-
-        private void NPCGoodsPanel_MouseWheel(object sender, MouseEventArgs e)
-        {
-            int count = e.Delta / SystemInformation.MouseWheelScrollDelta;
-
-            if (StartIndex == 0 && count >= 0) return;
-            if (StartIndex == DisplayGoods.Count - 1 && count <= 0) return;
-
-            StartIndex -= count;
-            Update();
-        }
-        private void Update()
-        {
-            if (StartIndex > DisplayGoods.Count - 8) StartIndex = DisplayGoods.Count - 8;
-            if (StartIndex <= 0) StartIndex = 0;
-
-            if (DisplayGoods.Count > 8)
-            {
-                PositionBar.Visible = true;
-                int h = 233 - PositionBar.Size.Height;
-                h = (int)((h / (float)(DisplayGoods.Count - 8)) * StartIndex);
-                PositionBar.Location = new Point(219, 49 + h);
-            }
-            else
-                PositionBar.Visible = false;
-
-
-            for (int i = 0; i < 8; i++)
-            {
-                if (i + StartIndex >= DisplayGoods.Count)
-                {
-                    Cells[i].Visible = false;
-                    continue;
-                }
-                Cells[i].Visible = true;
-
-                var matchingGoods = Goods.Where(x => x.Info.Index == Cells[i].Item.Info.Index);
-
-                Cells[i].Item = DisplayGoods[i + StartIndex];
-                Cells[i].MultipleAvailable = matchingGoods.Count() > 1 && matchingGoods.Any(x => x.IsShopItem == false);
-                Cells[i].Border = SelectedItem != null && Cells[i].Item == SelectedItem;
-                Cells[i].UsePearls = UsePearls;
-            }
-        }
-
-        private void PositionBar_OnMoving(object sender, MouseEventArgs e)
-        {
-            const int x = 219;
-            int y = PositionBar.Location.Y;
-            if (y >= 282 - PositionBar.Size.Height) y = 282 - PositionBar.Size.Height;
-            if (y < 49) y = 49;
-
-            int h = 233 - PositionBar.Size.Height;
-            h = (int)Math.Round(((y - 49) / (h / (float)(DisplayGoods.Count - 8))));
-
-            PositionBar.Location = new Point(x, y);
-
-            if (h == StartIndex) return;
-            StartIndex = h;
-            Update();
-        }
-
-        public void NewGoods(IEnumerable<UserItem> list)
-        {
-            Goods.Clear();
-            DisplayGoods.Clear();
-
-            AddGoods(list);
-        }
-
-        public void AddGoods(IEnumerable<UserItem> list)
-        {
-            if (PType == PanelType.BuySub)
-            {
-                StartIndex = 0;
-                SelectedItem = null;
-
-                list = list.OrderBy(x => x.Price());
-            }
-
-            foreach (UserItem item in list)
-            {
-                //Normal shops just want to show one of each item type
-                if (PType == PanelType.Buy && !UsePearls)
-                {
-                    Goods.Add(item);
-
-                    if (DisplayGoods.Any(x => x.Info.Index == item.Info.Index)) continue;
-                }
-
-                DisplayGoods.Add(item);
-            }
-
-            if (GameScene.Scene.NPCSubGoodsDialog.Visible)
-            {
-                CheckSubGoods();
-            }
-
-            Update();
-        }
-
-        public override void Hide()
-        {
-            Visible = false;
-
-            if (GameScene.Scene.CraftDialog.Visible)
-            {
-                GameScene.Scene.CraftDialog.Hide();
-            }
-        }
-
-        public override void Show()
-        {
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Cells[i].Recipe = PType == PanelType.Craft;
-            }
-
-            Location = new Point(Location.X, GameScene.Scene.NPCDialog.Size.Height);
-            Visible = true;
-
-            GameScene.Scene.InventoryDialog.Show();
-        }
     }
     public sealed class NPCDropDialog : MirImageControl
     {
