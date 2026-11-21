@@ -98,11 +98,6 @@ namespace Server
             MessageQueue.Enqueue(msg);
         }
 
-        private void configToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void InterfaceTimer_Tick(object sender, EventArgs e)
         {
             try
@@ -216,41 +211,6 @@ namespace Server
             Close();
         }
 
-        private void itemInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ItemInfoForm form = new ItemInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void monsterInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MonsterInfoForm form = new MonsterInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void nPCInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NPCInfoForm form = new NPCInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void balanceConfigToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            BalanceConfigForm form = new BalanceConfigForm();
-
-            form.ShowDialog();
-        }
-
-        private void questInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            QuestInfoForm form = new QuestInfoForm();
-
-            form.ShowDialog();
-        }
-
         private void serverToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ConfigForm form = new ConfigForm();
@@ -261,76 +221,6 @@ namespace Server
         private void balanceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BalanceConfigForm form = new BalanceConfigForm();
-
-            form.ShowDialog();
-        }
-
-        private void accountToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AccountInfoForm form = new AccountInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void mapInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MapInfoForm form = new MapInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void itemInfoToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            ItemInfoForm form = new ItemInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void monsterInfoToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            MonsterInfoForm form = new MonsterInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void nPCInfoToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            NPCInfoForm form = new NPCInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void questInfoToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            QuestInfoForm form = new QuestInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void dragonSystemToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DragonInfoForm form = new DragonInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void miningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MiningInfoForm form = new MiningInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void guildsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            GuildInfoForm form = new GuildInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void fishingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(0);
 
             form.ShowDialog();
         }
@@ -369,47 +259,6 @@ namespace Server
             e.NewWidth = PlayersOnlineListView.Columns[e.ColumnIndex].Width;
         }
 
-        private void mailToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(1);
-
-            form.ShowDialog();
-        }
-
-        private void goodsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(2);
-
-            form.ShowDialog();
-        }
-
-        private void relationshipToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(4);
-
-            form.ShowDialog();
-        }
-
-        private void refiningToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(3);
-
-            form.ShowDialog();
-        }
-
-        private void mentorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(5);
-
-            form.ShowDialog();
-        }
-
-        private void magicInfoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MagicInfoForm form = new MagicInfoForm();
-            form.ShowDialog();
-        }
-
         private void SMain_Load(object sender, EventArgs e)
         {
             var loaded = EditEnvir.LoadDB();
@@ -422,71 +271,9 @@ namespace Server
             AutoResize();
         }
 
-        private void gemToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(6);
-
-            form.ShowDialog();
-        }
-
-        private void conquestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConquestInfoForm form = new ConquestInfoForm();
-
-            form.ShowDialog();
-        }
-
         private void rebootServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Envir.Reboot();
-        }
-
-        private void respawnsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(7);
-
-            form.ShowDialog();
-        }
-
-        private void monsterTunerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!SMain.Envir.Running)
-            {
-                MessageBox.Show("Server must be running to tune monsters", "Notice",
-                MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                return;
-            }
-
-            MonsterTunerForm form = new MonsterTunerForm();
-
-            form.ShowDialog();
-        }
-
-        private void gameshopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            GameShop form = new GameShop();
-            form.ShowDialog();
-        }
-
-        private void itemNEWToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ItemInfoFormNew form = new ItemInfoFormNew();
-
-            form.ShowDialog();
-        }
-
-        private void monsterExperimentalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MonsterInfoFormNew form = new MonsterInfoFormNew();
-
-            form.ShowDialog();
-        }
-
-        private void dropBuilderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MirForms.DropBuilder.DropGenForm GenForm = new MirForms.DropBuilder.DropGenForm();
-
-            GenForm.ShowDialog();
         }
 
         private void clearBlockedIPsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -606,23 +393,9 @@ namespace Server
             ProcessGuildViewTab(true);
         }
 
-        private void heroesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SystemInfoForm form = new SystemInfoForm(8);
-
-            form.ShowDialog();
-        }
-
         private void CharacterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CharacterInfoForm form = new CharacterInfoForm();
-
-            form.ShowDialog();
-        }
-
-        private void recipeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RecipeInfoForm form = new RecipeInfoForm();
 
             form.ShowDialog();
         }

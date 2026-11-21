@@ -53,6 +53,10 @@ namespace Server.MirEnvir
 
         public static Envir Edit { get; } = new Envir();
 
+        // 编辑器实例(EditEnvir)与运行时实例(Main)都会 LoadDB 并把日志写进同一 MessageQueue，
+        // 用该标识区分两条看似重复的加载日志（不是 bug）。
+        private string InstanceTag => ReferenceEquals(this, Edit) ? "编辑器" : "运行时";
+
         protected static MessageQueue MessageQueue => MessageQueue.Instance;
 
         public static object AccountLock = new object();
@@ -1178,7 +1182,7 @@ namespace Server.MirEnvir
                 if (npc.OriginSettings?.Placements != null && npc.OriginSettings.Placements.Count > 0)
                     MapNpcPlacements[npc.Index] = npc.OriginSettings.Placements;
 
-            MessageQueue.Enqueue($"mapnpc 摆放点: {MapNpcPlacements.Sum(kv => kv.Value.Count)} 处 / {MapNpcPlacements.Count} 个 NPC（NPCInfo 内嵌）");
+            MessageQueue.Enqueue($"[{InstanceTag}] mapnpc 摆放点: {MapNpcPlacements.Sum(kv => kv.Value.Count)} 处 / {MapNpcPlacements.Count} 个 NPC（NPCInfo 内嵌）");
         }
 
         /// <summary>
@@ -1206,7 +1210,7 @@ namespace Server.MirEnvir
                     OriginStores[store.Key] = list;
                 }
 
-                MessageQueue.Enqueue($"原始传奇商店表: {OriginStores.Count} 个商店 / {OriginStores.Sum(kv => kv.Value.Count)} 条商品（4config.npcstore）");
+                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇商店表: {OriginStores.Count} 个商店 / {OriginStores.Sum(kv => kv.Value.Count)} 条商品（4config.npcstore）");
             }
             catch (Exception ex)
             {

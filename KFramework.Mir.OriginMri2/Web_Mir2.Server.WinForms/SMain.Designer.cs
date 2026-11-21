@@ -414,7 +414,8 @@ namespace Server
             // MainMenu
             // 
             MainMenu.BackColor = Color.Transparent;
-            MainMenu.Items.AddRange(new ToolStripItem[] { controlToolStripMenuItem, accountToolStripMenuItem, databaseFormsToolStripMenuItem, configToolStripMenuItem1, CharacterToolStripMenuItem, UpTimeLabel });
+            // 精简：移除 Database 菜单（本地配置表编辑器已无用途），仅保留 Control/Account/Config/Characters
+            MainMenu.Items.AddRange(new ToolStripItem[] { controlToolStripMenuItem, accountToolStripMenuItem, configToolStripMenuItem1, CharacterToolStripMenuItem, UpTimeLabel });
             MainMenu.Location = new Point(0, 0);
             MainMenu.Name = "MainMenu";
             MainMenu.Padding = new Padding(7, 2, 0, 2);
@@ -542,7 +543,6 @@ namespace Server
             mapInfoToolStripMenuItem.Name = "mapInfoToolStripMenuItem";
             mapInfoToolStripMenuItem.Size = new Size(203, 22);
             mapInfoToolStripMenuItem.Text = "Map";
-            mapInfoToolStripMenuItem.Click += mapInfoToolStripMenuItem_Click;
             // 
             // itemInfoToolStripMenuItem
             // 
@@ -551,7 +551,6 @@ namespace Server
             itemInfoToolStripMenuItem.Size = new Size(203, 22);
             itemInfoToolStripMenuItem.Text = "Item (OLD- HIDDEN)";
             itemInfoToolStripMenuItem.Visible = false;
-            itemInfoToolStripMenuItem.Click += itemInfoToolStripMenuItem_Click;
             // 
             // monsterInfoToolStripMenuItem
             // 
@@ -559,60 +558,53 @@ namespace Server
             monsterInfoToolStripMenuItem.Size = new Size(203, 22);
             monsterInfoToolStripMenuItem.Text = "Monster(OLD - HIDDEN)";
             monsterInfoToolStripMenuItem.Visible = false;
-            monsterInfoToolStripMenuItem.Click += monsterInfoToolStripMenuItem_Click;
             // 
             // itemNEWToolStripMenuItem
             // 
             itemNEWToolStripMenuItem.Name = "itemNEWToolStripMenuItem";
             itemNEWToolStripMenuItem.Size = new Size(203, 22);
             itemNEWToolStripMenuItem.Text = "Item";
-            itemNEWToolStripMenuItem.Click += itemNEWToolStripMenuItem_Click;
             // 
             // monsterExperimentalToolStripMenuItem
             // 
             monsterExperimentalToolStripMenuItem.Name = "monsterExperimentalToolStripMenuItem";
             monsterExperimentalToolStripMenuItem.Size = new Size(203, 22);
             monsterExperimentalToolStripMenuItem.Text = "Monster";
-            monsterExperimentalToolStripMenuItem.Click += monsterExperimentalToolStripMenuItem_Click;
             // 
             // nPCInfoToolStripMenuItem
             // 
             nPCInfoToolStripMenuItem.Name = "nPCInfoToolStripMenuItem";
             nPCInfoToolStripMenuItem.Size = new Size(203, 22);
             nPCInfoToolStripMenuItem.Text = "NPC";
-            nPCInfoToolStripMenuItem.Click += nPCInfoToolStripMenuItem_Click;
             // 
             // questInfoToolStripMenuItem
             // 
             questInfoToolStripMenuItem.Name = "questInfoToolStripMenuItem";
             questInfoToolStripMenuItem.Size = new Size(203, 22);
             questInfoToolStripMenuItem.Text = "Quest";
-            questInfoToolStripMenuItem.Click += questInfoToolStripMenuItem_Click;
             // 
             // magicInfoToolStripMenuItem
             // 
             magicInfoToolStripMenuItem.Name = "magicInfoToolStripMenuItem";
             magicInfoToolStripMenuItem.Size = new Size(203, 22);
             magicInfoToolStripMenuItem.Text = "Magic";
-            magicInfoToolStripMenuItem.Click += magicInfoToolStripMenuItem_Click;
             // 
             // gameshopToolStripMenuItem
             // 
             gameshopToolStripMenuItem.Name = "gameshopToolStripMenuItem";
             gameshopToolStripMenuItem.Size = new Size(203, 22);
             gameshopToolStripMenuItem.Text = "Gameshop";
-            gameshopToolStripMenuItem.Click += gameshopToolStripMenuItem_Click;
             // 
             // recipeToolStripMenuItem
             // 
             recipeToolStripMenuItem.Name = "recipeToolStripMenuItem";
             recipeToolStripMenuItem.Size = new Size(203, 22);
             recipeToolStripMenuItem.Text = "Recipe";
-            recipeToolStripMenuItem.Click += recipeToolStripMenuItem_Click;
             // 
             // configToolStripMenuItem1
             // 
-            configToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { serverToolStripMenuItem, balanceToolStripMenuItem, systemToolStripMenuItem, monsterTunerToolStripMenuItem, dropBuilderToolStripMenuItem });
+            // 精简：Config 只保留 Server/Balance（服务器配置）；System/MonsterTuner/DropBuilder 均为本地数据表编辑入口，移除
+            configToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { serverToolStripMenuItem, balanceToolStripMenuItem });
             configToolStripMenuItem1.Name = "configToolStripMenuItem1";
             configToolStripMenuItem1.Size = new Size(55, 20);
             configToolStripMenuItem1.Text = "Config";
@@ -643,105 +635,90 @@ namespace Server
             dragonSystemToolStripMenuItem.Name = "dragonSystemToolStripMenuItem";
             dragonSystemToolStripMenuItem.Size = new Size(139, 22);
             dragonSystemToolStripMenuItem.Text = "Dragon";
-            dragonSystemToolStripMenuItem.Click += dragonSystemToolStripMenuItem_Click;
             // 
             // miningToolStripMenuItem
             // 
             miningToolStripMenuItem.Name = "miningToolStripMenuItem";
             miningToolStripMenuItem.Size = new Size(139, 22);
             miningToolStripMenuItem.Text = "Mining";
-            miningToolStripMenuItem.Click += miningToolStripMenuItem_Click;
             // 
             // guildsToolStripMenuItem
             // 
             guildsToolStripMenuItem.Name = "guildsToolStripMenuItem";
             guildsToolStripMenuItem.Size = new Size(139, 22);
             guildsToolStripMenuItem.Text = "Guilds";
-            guildsToolStripMenuItem.Click += guildsToolStripMenuItem_Click;
             // 
             // fishingToolStripMenuItem
             // 
             fishingToolStripMenuItem.Name = "fishingToolStripMenuItem";
             fishingToolStripMenuItem.Size = new Size(139, 22);
             fishingToolStripMenuItem.Text = "Fishing";
-            fishingToolStripMenuItem.Click += fishingToolStripMenuItem_Click;
             // 
             // mailToolStripMenuItem
             // 
             mailToolStripMenuItem.Name = "mailToolStripMenuItem";
             mailToolStripMenuItem.Size = new Size(139, 22);
             mailToolStripMenuItem.Text = "Mail";
-            mailToolStripMenuItem.Click += mailToolStripMenuItem_Click;
             // 
             // goodsToolStripMenuItem
             // 
             goodsToolStripMenuItem.Name = "goodsToolStripMenuItem";
             goodsToolStripMenuItem.Size = new Size(139, 22);
             goodsToolStripMenuItem.Text = "Goods";
-            goodsToolStripMenuItem.Click += goodsToolStripMenuItem_Click;
             // 
             // refiningToolStripMenuItem
             // 
             refiningToolStripMenuItem.Name = "refiningToolStripMenuItem";
             refiningToolStripMenuItem.Size = new Size(139, 22);
             refiningToolStripMenuItem.Text = "Refining";
-            refiningToolStripMenuItem.Click += refiningToolStripMenuItem_Click;
             // 
             // relationshipToolStripMenuItem
             // 
             relationshipToolStripMenuItem.Name = "relationshipToolStripMenuItem";
             relationshipToolStripMenuItem.Size = new Size(139, 22);
             relationshipToolStripMenuItem.Text = "Relationship";
-            relationshipToolStripMenuItem.Click += relationshipToolStripMenuItem_Click;
             // 
             // mentorToolStripMenuItem
             // 
             mentorToolStripMenuItem.Name = "mentorToolStripMenuItem";
             mentorToolStripMenuItem.Size = new Size(139, 22);
             mentorToolStripMenuItem.Text = "Mentor";
-            mentorToolStripMenuItem.Click += mentorToolStripMenuItem_Click;
             // 
             // gemToolStripMenuItem
             // 
             gemToolStripMenuItem.Name = "gemToolStripMenuItem";
             gemToolStripMenuItem.Size = new Size(139, 22);
             gemToolStripMenuItem.Text = "Gem";
-            gemToolStripMenuItem.Click += gemToolStripMenuItem_Click;
             // 
             // conquestToolStripMenuItem
             // 
             conquestToolStripMenuItem.Name = "conquestToolStripMenuItem";
             conquestToolStripMenuItem.Size = new Size(139, 22);
             conquestToolStripMenuItem.Text = "Conquest";
-            conquestToolStripMenuItem.Click += conquestToolStripMenuItem_Click;
             // 
             // respawnsToolStripMenuItem
             // 
             respawnsToolStripMenuItem.Name = "respawnsToolStripMenuItem";
             respawnsToolStripMenuItem.Size = new Size(139, 22);
             respawnsToolStripMenuItem.Text = "SpawnTick";
-            respawnsToolStripMenuItem.Click += respawnsToolStripMenuItem_Click;
             // 
             // heroesToolStripMenuItem
             // 
             heroesToolStripMenuItem.Name = "heroesToolStripMenuItem";
             heroesToolStripMenuItem.Size = new Size(139, 22);
             heroesToolStripMenuItem.Text = "Heroes";
-            heroesToolStripMenuItem.Click += heroesToolStripMenuItem_Click;
             // 
             // monsterTunerToolStripMenuItem
             // 
             monsterTunerToolStripMenuItem.Name = "monsterTunerToolStripMenuItem";
             monsterTunerToolStripMenuItem.Size = new Size(152, 22);
             monsterTunerToolStripMenuItem.Text = "Monster Tuner";
-            monsterTunerToolStripMenuItem.Click += monsterTunerToolStripMenuItem_Click;
             // 
             // dropBuilderToolStripMenuItem
             // 
             dropBuilderToolStripMenuItem.Name = "dropBuilderToolStripMenuItem";
             dropBuilderToolStripMenuItem.Size = new Size(152, 22);
             dropBuilderToolStripMenuItem.Text = "Drop Builder";
-            dropBuilderToolStripMenuItem.Click += dropBuilderToolStripMenuItem_Click;
             // 
             // CharacterToolStripMenuItem
             // 
