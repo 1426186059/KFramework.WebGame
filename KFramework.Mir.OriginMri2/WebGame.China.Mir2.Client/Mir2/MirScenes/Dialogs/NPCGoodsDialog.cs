@@ -245,7 +245,6 @@ namespace Client.MirScenes.Dialogs
             Location = new Point(0, GameScene.Scene.NPCDialog.Size.Height + 10);
             Visible = true;
             KFramework.MonoGame.PrintTool.Log($"[商店诊断] NPCGoodsDialog.Show Loc={Location} NPC高度={GameScene.Scene.NPCDialog.Size.Height} 行数={DisplayGoods.Count} PType={PType}");
-            GameScene.Scene.InventoryDialog.Show();
         }
 
         public override void Draw()
