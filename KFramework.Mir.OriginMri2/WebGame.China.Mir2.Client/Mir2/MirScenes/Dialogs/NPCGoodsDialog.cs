@@ -11,8 +11,17 @@ using S = ServerPackets;
 
 namespace Client.MirScenes.Dialogs
 {
+    /// <summary>
+    /// NPC 商店商品列表：移植原始传奇 UI 779（NpcStore / NpcStoreSkin + NpcStoreRenderSkin）。
+    /// 335x433 独立面板，npc_storebg 背景，纵向滚动 60px 商品行（物品图标 / 名称 / 价格 / 限购 / 购买按钮）。
+    /// </summary>
     public sealed class NPCGoodsDialog : MirImageControl
     {
+        // 原始传奇 NpcStoreSkin：$bs 335x433，scroll x10 y10 317x390；NpcStoreRenderSkin 行高 60
+        private const int PanelW = 335, PanelH = 433;
+        private const int ListX = 10, ListY = 10, ListW = 317, ListH = 390;
+        private const int RowH = 60;
+
         public PanelType PType;
         public bool UsePearls;
 
@@ -21,142 +30,67 @@ namespace Client.MirScenes.Dialogs
 
         public List<UserItem> Goods = new List<UserItem>();
         public List<UserItem> DisplayGoods = new List<UserItem>();
-        public MirGoodsCell[] Cells;
+        private readonly List<NpcStoreRow> _rows = new List<NpcStoreRow>();
+
+        private MirScrollView _scroll;
         public MirButton BuyButton, CloseButton;
         public MirImageControl BuyLabel;
-
-        public MirButton UpButton, DownButton, PositionBar;
 
         public NPCGoodsDialog(PanelType type)
         {
             PType = type;
 
-            Index = 1000;
-            Library = Libraries.Prguse;
-            Location = new Point(0, 224);
-            Cells = new MirGoodsCell[8];
+            // 背景：原始传奇 npc_storebg.png（manifest 独立图）
+            AutoSize = false;
+            Size = new Size(PanelW, PanelH);
+            ImageKey = "resource/assets/gameui4/jpg/npc_storebg.png";
             Sort = true;
 
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Cells[i] = new MirGoodsCell
-                {
-                    Parent = this,
-                    Location = new Point(10, 34 + i * 33),
-                    Sound = SoundList.ButtonC
-                };
-                Cells[i].Click += (o, e) =>
-                {
-                    SelectedItem = ((MirGoodsCell)o).Item;
-                    Update();
-
-                    if (PType == PanelType.Craft)
-                    {
-                        GameScene.Scene.CraftDialog.ResetCells();
-                        GameScene.Scene.CraftDialog.RefreshCraftCells(SelectedItem);
-
-                        if (!GameScene.Scene.CraftDialog.Visible)
-                        {
-                            GameScene.Scene.CraftDialog.Show();
-                        }
-                    }
-                };
-                Cells[i].MouseWheel += NPCGoodsPanel_MouseWheel;
-                Cells[i].DoubleClick += (o, e) =>
-                {
-                    if (PType == PanelType.Craft) return;
-
-                    BuyItem();
-                };
-            }
-
+            // 关闭按钮：y_common-sheet#com_btn_close0（原始传奇 btn_close x323 y-9）
             CloseButton = new MirButton
             {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(217, 3),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 362,
+                Location = new Point(323, -9),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet#com_btn_close0",
+                PressedAtlasFrame = "com_btn_close1",
             };
             CloseButton.Click += (o, e) => Hide();
 
+            // 纵向商品列表：原始传奇 storeList（gap 0，行高 60）
+            _scroll = new MirScrollView
+            {
+                Parent = this,
+                Location = new Point(ListX, ListY),
+                Size = new Size(ListW, ListH),
+            };
+            _scroll.ShowScrollBar = true;
+
+            // Craft 面板沿用原逻辑的底部确认按钮（隐藏），保留字段避免外部引用失效
             BuyButton = new MirButton
             {
-                HoverIndex = 313,
-                Index = 312,
-                Location = new Point(77, 304),
-                Library = Libraries.Title,
                 Parent = this,
-                PressedIndex = 314,
+                Location = new Point(228, 304),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet#store_z_btn_1_1",
+                PressedAtlasFrame = "store_z_btn_1",
+                Text = "购买",
+                CenterText = true,
+                BackColour = Color.FromArgb(0, 0, 0, 0),
+                Border = false,
+                Visible = false,
             };
             BuyButton.Click += (o, e) => BuyItem();
 
             BuyLabel = new MirImageControl
             {
-                Index = 27,
-                Library = Libraries.Title,
                 Parent = this,
                 Location = new Point(20, 9),
+                Visible = false,
             };
 
             if (PType == PanelType.Craft)
-            {
-                BuyLabel.Index = 12;
                 BuyButton.Visible = false;
-            }
-
-            UpButton = new MirButton
-            {
-                Index = 197,
-                HoverIndex = 198,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 35),
-                Parent = this,
-                PressedIndex = 199,
-                Sound = SoundList.ButtonA
-            };
-            UpButton.Click += (o, e) =>
-            {
-                if (StartIndex == 0) return;
-                StartIndex--;
-                Update();
-            };
-
-            DownButton = new MirButton
-            {
-                Index = 207,
-                HoverIndex = 208,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 284),
-                Parent = this,
-                PressedIndex = 209,
-                Sound = SoundList.ButtonA
-            };
-            DownButton.Click += (o, e) =>
-            {
-                if (DisplayGoods.Count <= 8) return;
-
-                if (StartIndex == DisplayGoods.Count - 8) return;
-                StartIndex++;
-                Update();
-            };
-
-            PositionBar = new MirButton
-            {
-                Index = 205,
-                HoverIndex = 206,
-                Library = Libraries.Prguse2,
-                Location = new Point(219, 49),
-                Parent = this,
-                PressedIndex = 206,
-                Movable = true,
-                Sound = SoundList.None
-            };
-            PositionBar.OnMoving += PositionBar_OnMoving;
-            PositionBar.MouseUp += (o, e) => Update();
         }
 
         private bool CheckSubGoods()
@@ -270,65 +204,43 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        private void NPCGoodsPanel_MouseWheel(object sender, MouseEventArgs e)
-        {
-            int count = e.Delta / SystemInformation.MouseWheelScrollDelta;
-
-            if (StartIndex == 0 && count >= 0) return;
-            if (StartIndex == DisplayGoods.Count - 1 && count <= 0) return;
-
-            StartIndex -= count;
-            Update();
-        }
         private void Update()
         {
-            if (StartIndex > DisplayGoods.Count - 8) StartIndex = DisplayGoods.Count - 8;
-            if (StartIndex <= 0) StartIndex = 0;
-
-            if (DisplayGoods.Count > 8)
+            KFramework.MonoGame.PrintTool.Log($"[商店诊断] Update Goods={Goods.Count} DisplayGoods={DisplayGoods.Count} PType={PType}");
+            foreach (var row in _rows)
             {
-                PositionBar.Visible = true;
-                int h = 233 - PositionBar.Size.Height;
-                h = (int)((h / (float)(DisplayGoods.Count - 8)) * StartIndex);
-                PositionBar.Location = new Point(219, 49 + h);
+                _scroll.Remove(row);
+                row.Dispose();
             }
-            else
-                PositionBar.Visible = false;
+            _rows.Clear();
 
-
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < DisplayGoods.Count; i++)
             {
-                if (i + StartIndex >= DisplayGoods.Count)
+                UserItem item = DisplayGoods[i];
+                var matchingGoods = Goods.Where(x => x.Info.Index == item.Info.Index).ToList();
+                var row = new NpcStoreRow(item)
                 {
-                    Cells[i].Visible = false;
-                    continue;
-                }
-                Cells[i].Visible = true;
-
-                var matchingGoods = Goods.Where(x => x.Info.Index == Cells[i].Item.Info.Index);
-
-                Cells[i].Item = DisplayGoods[i + StartIndex];
-                Cells[i].MultipleAvailable = matchingGoods.Count() > 1 && matchingGoods.Any(x => x.IsShopItem == false);
-                Cells[i].Border = SelectedItem != null && Cells[i].Item == SelectedItem;
-                Cells[i].UsePearls = UsePearls;
+                    Parent = _scroll,
+                    Location = new Point(0, i * RowH),
+                    MultipleAvailable = matchingGoods.Count > 1 && matchingGoods.Any(x => x.IsShopItem == false),
+                    Selected = SelectedItem != null && item == SelectedItem,
+                    UsePearls = UsePearls,
+                };
+                row.Click += (o, e) =>
+                {
+                    SelectedItem = ((NpcStoreRow)o).Item;
+                    foreach (var r in _rows) { r.Selected = r.Item == SelectedItem; r.Refresh(); }
+                };
+                row.BuyClicked += (o, e) =>
+                {
+                    SelectedItem = ((NpcStoreRow)o).Item;
+                    BuyItem();
+                };
+                _rows.Add(row);
+                _scroll.Add(row);
             }
-        }
 
-        private void PositionBar_OnMoving(object sender, MouseEventArgs e)
-        {
-            const int x = 219;
-            int y = PositionBar.Location.Y;
-            if (y >= 282 - PositionBar.Size.Height) y = 282 - PositionBar.Size.Height;
-            if (y < 49) y = 49;
-
-            int h = 233 - PositionBar.Size.Height;
-            h = (int)Math.Round(((y - 49) / (h / (float)(DisplayGoods.Count - 8))));
-
-            PositionBar.Location = new Point(x, y);
-
-            if (h == StartIndex) return;
-            StartIndex = h;
-            Update();
+            _scroll.SetScrollOffset(new Point(0, 0));
         }
 
         public void NewGoods(IEnumerable<UserItem> list)
@@ -382,15 +294,130 @@ namespace Client.MirScenes.Dialogs
 
         public override void Show()
         {
-            for (int i = 0; i < Cells.Length; i++)
-            {
-                Cells[i].Recipe = PType == PanelType.Craft;
-            }
-
-            Location = new Point(Location.X, GameScene.Scene.NPCDialog.Size.Height);
+            // NPC 面板下方、左侧紧贴屏幕边沿（x=0，y=NPC 对话框高度）
+            Location = new Point(0, GameScene.Scene.NPCDialog.Size.Height);
             Visible = true;
+            KFramework.MonoGame.PrintTool.Log($"[商店诊断] NPCGoodsDialog.Show Loc={Location} NPC高度={GameScene.Scene.NPCDialog.Size.Height} 行数={DisplayGoods.Count} PType={PType}");
 
             GameScene.Scene.InventoryDialog.Show();
+        }
+
+        public override void Draw()
+        {
+            if (Visible && _scroll != null)
+                _scroll.InvalidateTexture(); // 商品图标走 CDN 异步加载，加载完需重烘滚动视图才会显示
+            base.Draw();
+        }
+    }
+
+    /// <summary>
+    /// 商店商品行：移植原始传奇 NpcStoreRenderSkin（317x60）。
+    /// npc_storebg1 底图 + 60x60 物品图标(MirItemCell 走原始传奇图集) + 名称/价格/限购 + store_z_btn 购买按钮。
+    /// </summary>
+    public sealed class NpcStoreRow : MirControl
+    {
+        public const int RowHeight = 60;
+        public UserItem Item { get; private set; }
+        public bool MultipleAvailable, Selected, UsePearls;
+        public event EventHandler BuyClicked;
+
+        private readonly MirImageControl _bg;
+        private readonly MirItemCell _itemCell;
+        private readonly MirLabel _nameLabel, _costLabel, _limitLabel;
+        private readonly MirButton _buyButton;
+
+        public NpcStoreRow(UserItem item)
+        {
+            Item = item;
+            Size = new Size(317, RowHeight);
+            Sort = true;
+
+            // npc_storebg1（y_common-sheet，317x64，scale9）——裁到行高 60
+            _bg = new MirImageControl
+            {
+                Parent = this,
+                Location = new Point(0, 0),
+                AtlasNameKey = "y_common-sheet#npc_storebg1",
+                Size = new Size(317, RowHeight),
+                NotControl = true,
+            };
+
+            // 物品图标：MirItemCell 已支持原始传奇 Info.Image 图集绘制
+            _itemCell = new MirItemCell
+            {
+                Parent = this,
+                Location = new Point(1, 0),
+                Size = new Size(60, 60),
+                Item = item,
+                NotControl = true,
+            };
+
+            _nameLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(74, 10),
+                Size = new Size(150, 24),
+                AutoSize = false,
+                Font = new Font(Settings.FontName, 14F),
+                ForeColour = Color.FromArgb(255, 230, 200),
+                BackColour = Color.Transparent,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
+                NotControl = true,
+            };
+
+            _costLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(71, 37),
+                Size = new Size(150, 20),
+                Font = new Font(Settings.FontName, 14F),
+                ForeColour = Color.Gold,
+                BackColour = Color.Transparent,
+                NotControl = true,
+            };
+
+            _limitLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(189, 37),
+                Size = new Size(40, 20),
+                Font = new Font(Settings.FontName, 12F),
+                ForeColour = Color.Yellow,
+                BackColour = Color.Transparent,
+                NotControl = true,
+            };
+
+            _buyButton = new MirButton
+            {
+                Parent = this,
+                Location = new Point(228, 12),
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet#store_z_btn_1_1",
+                PressedAtlasFrame = "store_z_btn_1",
+                Text = "购买",
+                CenterText = true,
+                BackColour = Color.FromArgb(0, 0, 0, 0),
+                Border = false,
+                Size = new Size(78, 36),
+            };
+            _buyButton.Click += (o, e) => BuyClicked?.Invoke(this, EventArgs.Empty);
+
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            if (Item?.Info == null) return;
+
+            _itemCell.Item = Item;
+            _nameLabel.Text = Item.Info.FriendlyName;
+
+            string currency = UsePearls ? "珍珠" : "金币";
+            _costLabel.Text = currency + ":" + Item.Info.Price;
+            _costLabel.ForeColour = Item.Info.Price <= GameScene.Gold ? Color.Gold : Color.FromArgb(255, 90, 90);
+
+            _limitLabel.Text = MultipleAvailable ? "多件" : string.Empty;
+            _bg.BackColour = Selected ? Color.FromArgb(60, 255, 255, 255) : Color.Transparent;
         }
     }
 }

@@ -4297,6 +4297,7 @@ namespace Client.MirScenes
         }
         private void NPCGoods(S.NPCGoods p)
         {
+            KFramework.MonoGame.PrintTool.Log($"[商店诊断] 收到NPCGoods 商品数={p.List.Count} Type={p.Type} NPCDialog.Visible={NPCDialog.Visible}");
             for (int i = 0; i < p.List.Count; i++)
             {
                 p.List[i].Info = GetItemInfo(p.List[i].ItemIndex);
