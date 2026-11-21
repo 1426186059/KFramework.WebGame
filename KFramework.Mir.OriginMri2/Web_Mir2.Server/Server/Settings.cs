@@ -46,7 +46,7 @@ namespace Server
         public static string RoutePath => Path.Combine(EnvirPath, "Routes");
         public static string NameListPath => Path.Combine(EnvirPath, "NameLists");
         public static string ValuePath => Path.Combine(EnvirPath, "Values");
-        public static string NoticePath => Path.Combine(EnvirPath, "Notice.txt");
+        public static string NoticePath => Path.Combine(EnvirPath, "WelcomeNotice.txt");
         public static string MinimapsPath => Path.Combine(EnvirPath, "Previews", "Minimaps");
         public static string NPCPreviewPath => Path.Combine(EnvirPath, "Previews", "NPC");
         public static string Previews => Path.Combine(EnvirPath, "Previews");
@@ -635,7 +635,7 @@ namespace Server
             LoadGoods();
             LoadMonsterRarity();
             LoadGem();
-            LoadNotice();
+            LoadWelcomeNotice();
             LoadWorldMap();
             LoadHeroSettings();
 
@@ -649,7 +649,7 @@ namespace Server
 
         }
 
-        public static void LoadNotice()
+        public static void LoadWelcomeNotice()
         {
             Notice = new Notice();
 

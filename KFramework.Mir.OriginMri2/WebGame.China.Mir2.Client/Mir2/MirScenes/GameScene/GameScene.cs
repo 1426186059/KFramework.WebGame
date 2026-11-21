@@ -141,7 +141,7 @@ namespace Client.MirScenes
         public BuffDialog HeroBuffsDialog;
 
         public KeyboardLayoutDialog KeyboardLayoutDialog;
-        public NoticeDialog NoticeDialog;
+        public WelcomeNoticeDialog WelcomeNoticeDialog;
 
         public TimerDialog TimerControl;
         public CompassDialog CompassControl;
@@ -320,7 +320,7 @@ namespace Client.MirScenes
 
             HelpDialog = new HelpDialog { Parent = this, Visible = false };
             KeyboardLayoutDialog = new KeyboardLayoutDialog { Parent = this, Visible = false };
-            NoticeDialog = new NoticeDialog { Parent = this, Visible = false };
+            WelcomeNoticeDialog = new WelcomeNoticeDialog { Parent = this, Visible = false };
 
             MountDialog = new MountDialog { Parent = this, Visible = false };
             FishingDialog = new FishingDialog { Parent = this, Visible = false };
@@ -737,7 +737,7 @@ namespace Client.MirScenes
                         MailReadLetterDialog.Hide();
                         MailReadParcelDialog.Hide();
                         ItemRentalDialog.Hide();
-                        NoticeDialog.Hide();
+                        WelcomeNoticeDialog.Hide();
                         HeroInventoryDialog?.Hide();
                         HeroManageDialog?.Hide();
                         HeroDialog?.Hide();
@@ -2130,7 +2130,7 @@ namespace Client.MirScenes
                     ExpireTimer((S.ExpireTimer)p);
                     break;
                 case (short)ServerPacketIds.UpdateNotice:
-                    ShowNotice((S.UpdateNotice)p);
+                    ShowWelcomeNotice((S.UpdateNotice)p);
                     break;
                 case (short)ServerPacketIds.Roll:
                     Roll((S.Roll)p);
@@ -10131,9 +10131,9 @@ namespace Client.MirScenes
             GameScene.Scene.RollControl.Setup(p.Type, p.Page, p.Result, p.AutoRoll);
         }
 
-        public void ShowNotice(S.UpdateNotice p)
+        public void ShowWelcomeNotice(S.UpdateNotice p)
         {
-            NoticeDialog.Update(p.Notice);
+            WelcomeNoticeDialog.Update(p.Notice);
         }
 
 
