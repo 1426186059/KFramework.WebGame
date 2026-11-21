@@ -974,7 +974,7 @@ namespace Server.MirObjects
                     // 原始传奇商店：脚本无商品时，按 NPCInfo.OriginSettings.StoreId 从 4config.npcstore 生成商品
                     if (sentGoods.Count == 0 && storeNPC?.Info?.OriginSettings != null && storeNPC.Info.OriginSettings.StoreId > 0)
                     {
-                        var originGoods = Envir.GetOriginStoreGoods(storeNPC.Info.OriginSettings.StoreId);
+                        var originGoods = Envir.GetOriginStoreGoods(storeNPC.Info.OriginSettings.StoreId, player);
                         for (int i = 0; i < originGoods.Count; i++)
                             player.CheckItem(originGoods[i]);
                         sentGoods.AddRange(originGoods);
@@ -1218,7 +1218,7 @@ namespace Server.MirObjects
             if (goods == null || count == 0 || count > goods.Info.StackSize)
             {
                 MessageQueue.Enqueue($"[商店诊断] Buy 找不到商品 index={index} count={count} goods={(goods == null ? "null" : goods.Info?.Name)} stack={goods?.Info?.StackSize} storeId={callingNPC?.Info?.OriginSettings?.StoreId}");
-                player.ReceiveChat("购买失败，该商品不存在或已下架。", ChatType.System);
+                player.ReceiveOutputMessage("购买失败，该商品不存在或已下架。", OutputMessageType.Error);
                 return;
             }
             MessageQueue.Enqueue($"[商店诊断] Buy 找到商品 {goods.Info?.Name} price={goods.ShopPrice} cur={goods.ShopCurrencyType}");
@@ -1245,7 +1245,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.Credit)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 元宝不足 cost={cost} have={player.Account.Credit}");
-                            player.ReceiveChat($"购买失败，元宝不足（需要 {cost:n0}）。", ChatType.System);
+                            player.ReceiveOutputMessage($"购买失败，元宝不足（需要 {cost:n0}）。", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1253,7 +1253,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.LegendCoin)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 传奇币不足 cost={cost} have={player.Account.LegendCoin}");
-                            player.ReceiveChat($"购买失败，传奇币不足（需要 {cost:n0}）。", ChatType.System);
+                            player.ReceiveOutputMessage($"购买失败，传奇币不足（需要 {cost:n0}）。", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1261,7 +1261,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.Gold)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 金币不足 cost={cost} have={player.Account.Gold}");
-                            player.ReceiveChat($"购买失败，金币不足（需要 {cost:n0}）。", ChatType.System);
+                            player.ReceiveOutputMessage($"购买失败，金币不足（需要 {cost:n0}）。", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1273,7 +1273,7 @@ namespace Server.MirObjects
 
             if (!player.CanGainItem(item))
             {
-                player.ReceiveChat("购买失败，背包空间不足，无法放入物品。", ChatType.System);
+                player.ReceiveOutputMessage("购买失败，背包空间不足，无法放入物品。", OutputMessageType.Error);
                 return;
             }
 
@@ -1307,7 +1307,7 @@ namespace Server.MirObjects
 
             player.GainItem(item);
 
-            // 购买成功提示（客户端左侧聊天框）
+            // 购买成功提示（客户端左上角两行：消耗 / 获得）
             if (player.NPCPage.Key.ToUpper() != PearlBuyKey)
             {
                 string currencyName;
@@ -1317,7 +1317,8 @@ namespace Server.MirObjects
                     case 2: currencyName = "传奇币"; break;
                     default: currencyName = "金币"; break;
                 }
-                player.ReceiveChat($"提示：消耗 {currencyName} {cost:n0}，获得 {item.Info.FriendlyName}", ChatType.System);
+                player.ReceiveOutputMessage($"消耗 {currencyName} {cost:n0}", OutputMessageType.Quest);
+                player.ReceiveOutputMessage($"获得 {item.Info.FriendlyName}", OutputMessageType.Quest);
             }
 
             if (isUsed)

@@ -132,7 +132,8 @@ public enum OutputMessageType : byte
 {
     Normal,
     Quest,
-    Guild
+    Guild,
+    Error // 红色错误提示（购买失败等），客户端左上角显示
 }
 
 public enum ItemGrade : byte

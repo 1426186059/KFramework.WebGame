@@ -237,9 +237,14 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            if (CMain.Time <= GameScene.NPCTime) return;
+            // 原始传奇商店：购买类链接不节流。原 5 秒节流靠 NPCResponse 回包清零，
+            // 但原始传奇商店抑制了 NPCResponse，导致关闭面板后再点“购买”一直被静默吞掉。
+            bool shopAction = action.IndexOf("Buy", StringComparison.OrdinalIgnoreCase) >= 0
+                           || action.IndexOf("Sell", StringComparison.OrdinalIgnoreCase) >= 0
+                           || action.IndexOf("Repair", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!shopAction && CMain.Time <= GameScene.NPCTime) return;
 
-            GameScene.NPCTime = CMain.Time + 5000;
+            GameScene.NPCTime = CMain.Time + (shopAction ? 0 : 5000);
             Network.Enqueue(new C.CallNPC { ObjectID = GameScene.NPCID, Key = $"[{action}]" });
         }
 

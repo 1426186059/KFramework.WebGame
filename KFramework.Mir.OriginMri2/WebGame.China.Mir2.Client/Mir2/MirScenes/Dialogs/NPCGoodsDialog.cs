@@ -122,12 +122,8 @@ namespace Client.MirScenes.Dialogs
         {
             if (SelectedItem == null) return;
 
-            if (CheckSubGoods())
-            {
-                return;
-            }
-
-            // 原始传奇：点购买按钮直接买 1 件，不弹数量输入框。
+            // 原始传奇：点购买按钮直接买 1 件，不弹数量输入框，也不弹子商品面板（Remove: CheckSubGoods 会把同 Index 的多条商品弹成子列表，导致“2 个修复油”）。
+            // 同一物品在原始传奇商店里出现多条时，直接用当前选中那条（UniqueID 精确匹配）购买即可。
             // 按商店下发的货币类型/价格做本地校验（玉佩是传奇币 1000，不能用 Info.Price/Gold 判断）。
             uint price = SelectedItem.ShopPrice > 0 ? SelectedItem.ShopPrice : SelectedItem.Price();
             string currency;
@@ -150,7 +146,7 @@ namespace Client.MirScenes.Dialogs
 
             if (price > owned)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat($"购买失败，{currency}不足（需要 {price:n0}）。", ChatType.System);
+                GameScene.Scene.OutputMessage($"购买失败，{currency}不足（需要 {price:n0}）。", OutputMessageType.Error);
                 return;
             }
 

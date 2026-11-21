@@ -515,6 +515,9 @@ namespace Client.MirScenes
                         case OutputMessageType.Guild:
                             color = Color.DeepPink;
                             break;
+                        case OutputMessageType.Error:
+                            color = Color.Red;
+                            break;
                         default:
                             color = Color.LimeGreen;
                             break;
@@ -4318,6 +4321,8 @@ namespace Client.MirScenes
         }
         private void NPCGoods(S.NPCGoods p)
         {
+            // 收到商店商品包说明服务端已确认商店请求，清掉购买链接的节流，保证关闭后可再次打开
+            NPCTime = 0;
             KFramework.MonoGame.PrintTool.Log($"[商店诊断] 收到NPCGoods 商品数={p.List.Count} Type={p.Type} NPCDialog.Visible={NPCDialog.Visible}");
             for (int i = 0; i < p.List.Count; i++)
             {

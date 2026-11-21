@@ -33,4 +33,27 @@ namespace Server.MirDatabase
         [JsonPropertyName("npcstore")]
         public Dictionary<int, Dictionary<int, OriginStoreItemTable>> npcstore { get; set; } = new();
     }
+
+    /// <summary>0config.conditions 单条条件（原始传奇 Logic.checkCondition 用）。</summary>
+    public class OriginConditionTable
+    {
+        [JsonPropertyName("id")]
+        public int id { get; set; }
+
+        [JsonPropertyName("conditionType")]
+        public int conditionType { get; set; }
+
+        [JsonPropertyName("conditionParam")]
+        public string conditionParam { get; set; } = "";
+
+        [JsonPropertyName("txt")]
+        public string txt { get; set; } = "";
+    }
+
+    /// <summary>0config 分片 DTO，仅取 conditions 条件表。</summary>
+    public class OriginMir2Config0
+    {
+        [JsonPropertyName("conditions")]
+        public Dictionary<int, OriginConditionTable> conditions { get; set; } = new();
+    }
 }

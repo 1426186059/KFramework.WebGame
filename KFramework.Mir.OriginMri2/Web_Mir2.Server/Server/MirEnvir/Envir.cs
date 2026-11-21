@@ -128,6 +128,8 @@ namespace Server.MirEnvir
 
         /// <summary>原始传奇商店表：StoreId → 商品记录列表（4config.npcstore，由 LoadOriginStores 加载）。</summary>
         public Dictionary<int, List<OriginStoreItemTable>> OriginStores = new Dictionary<int, List<OriginStoreItemTable>>();
+        /// <summary>原始传奇显示条件表（0config.conditions，id → 条件），用于 npcstore.showCondition 过滤。</summary>
+        public Dictionary<int, OriginConditionTable> OriginConditions = new Dictionary<int, OriginConditionTable>();
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
         public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();
         public List<GameShopItemTable> GameShopList = new List<GameShopItemTable>();
@@ -1094,6 +1096,8 @@ namespace Server.MirEnvir
                 LoadMapNpcPlacements(baseDir);
                 // 原始传奇商店：读 4config 分片的 npcstore 表（NPCInfo.OriginSettings.StoreId → 商品）。
                 LoadOriginStores(baseDir);
+                // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
+                LoadOriginConditions(baseDir);
                 QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
@@ -1218,17 +1222,93 @@ namespace Server.MirEnvir
             }
         }
 
+        /// <summary>加载 0config.conditions 条件表（原始传奇 Logic.checkCondition 用）。</summary>
+        private void LoadOriginConditions(string baseDir)
+        {
+            OriginConditions.Clear();
+            try
+            {
+                string file = Directory.GetFiles(baseDir, "0config*.json").FirstOrDefault();
+                if (file == null)
+                {
+                    MessageQueue.Enqueue("原始传奇条件表未找到 0config*.json（ExcelConfig 目录）");
+                    return;
+                }
+                var cfg = JsonSerializer.Deserialize<OriginMir2Config0>(File.ReadAllText(file), JsonConfigOptions);
+                if (cfg?.conditions != null)
+                    foreach (var kv in cfg.conditions) OriginConditions[kv.Key] = kv.Value;
+                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇条件表: {OriginConditions.Count} 条（0config.conditions）");
+            }
+            catch (Exception ex)
+            {
+                MessageQueue.Enqueue("加载原始传奇条件表失败: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 判断玩家是否满足原始传奇 npcstore.showCondition（忠实复刻 Logic.checkCondition/checkACondition）。
+        /// showCondition 是条件 id 列表（用 & 或 | 组合，原始传奇 splitCondition 按“或”分组、“与”组内）。
+        /// 我们游戏没有 VIP/转生/开服天数/充值等系统，这类条件一律判为不满足（普通玩家看不到高级商品，与原始传奇一致）。
+        /// 支持：condType 1=等级≥ / 2=等级≤ / 34=等级区间。空条件视为满足。
+        /// </summary>
+        public bool CheckOriginShowCondition(PlayerObject player, string showCondition)
+        {
+            if (string.IsNullOrWhiteSpace(showCondition)) return true;
+            if (OriginConditions.Count == 0) return true; // 条件表没加载时不误伤，保持全显示
+
+            // splitCondition：原始传奇按“&”拆组（组内“与”），这里简化为整体“与”+“|”“或”
+            var idTokens = showCondition.Replace("&", "|").Split('|', StringSplitOptions.RemoveEmptyEntries);
+            bool any = false;
+            foreach (var token in idTokens)
+            {
+                if (!int.TryParse(token.Trim(), out int condId)) continue;
+                if (!OriginConditions.TryGetValue(condId, out var cond)) continue;
+
+                bool ok = false;
+                switch (cond.conditionType)
+                {
+                    case 1: // 等级 >= param
+                        ok = player != null && player.Info.Level >= ParseFirstInt(cond.conditionParam, 0);
+                        break;
+                    case 2: // 等级 < param
+                        ok = player != null && player.Info.Level < ParseFirstInt(cond.conditionParam, int.MaxValue);
+                        break;
+                    case 34: // 等级区间 param="min#max#..."（原始传奇 34 型：level<min 或 level>max 都不满足的写法各异，这里取 [min,max]）
+                        {
+                            var p = cond.conditionParam?.Split('#') ?? Array.Empty<string>();
+                            int lo = p.Length > 0 ? ParseFirstInt(p[0], 0) : 0;
+                            int hi = p.Length > 1 ? ParseFirstInt(p[1], int.MaxValue) : int.MaxValue;
+                            ok = player != null && player.Info.Level >= lo && player.Info.Level <= hi;
+                            break;
+                        }
+                    default:
+                        // VIP/转生/开服天数/充值/拥有物品等我们没有的系统，判为不满足 → 过滤掉高级商品
+                        ok = false;
+                        break;
+                }
+                if (ok) { any = true; break; }
+            }
+            return any;
+        }
+
+        private static int ParseFirstInt(string text, int fallback)
+            => int.TryParse(text, out int v) ? v : fallback;
+
         /// <summary>
         /// 按原始传奇 StoreId 生成可下发的商品列表。item 的 "物品id#数量" 按 Index 映射到我们 ItemInfo。
         /// 价格沿用我们 ItemInfo.Price（转换器已从 1config col22 映射），原版 cost 仅作参考未覆盖。
         /// </summary>
-        public List<UserItem> GetOriginStoreGoods(int storeId)
+        public List<UserItem> GetOriginStoreGoods(int storeId, PlayerObject player = null)
         {
             var result = new List<UserItem>();
             if (!OriginStores.TryGetValue(storeId, out var list)) return result;
 
             foreach (var rec in list)
             {
+                // 原始传奇 showCondition：玩家不满足条件则不显示（如修复油 8153 需 999 级）。
+                // player 为 null（购买兜底查找）时不过滤，保证能按 UniqueID 找到已展示的商品。
+                if (player != null && !CheckOriginShowCondition(player, rec.showCondition)) continue;
+
                 if (string.IsNullOrEmpty(rec.item)) continue;
                 var itemParts = rec.item.Split('#');
                 if (!int.TryParse(itemParts[0], out int itemIndex)) continue;
