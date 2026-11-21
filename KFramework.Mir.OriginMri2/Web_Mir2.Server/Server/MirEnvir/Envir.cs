@@ -1236,7 +1236,14 @@ namespace Server.MirEnvir
                 }
                 var cfg = JsonSerializer.Deserialize<OriginMir2Config0>(File.ReadAllText(file), JsonConfigOptions);
                 if (cfg?.conditions != null)
-                    foreach (var kv in cfg.conditions) OriginConditions[kv.Key] = kv.Value;
+                {
+                    foreach (var kv in cfg.conditions)
+                    {
+                        // 原始配置里有 "undefined" 等非数字 key，跳过；只收数字 id 的条件
+                        if (int.TryParse(kv.Key, out int condId) && kv.Value != null)
+                            OriginConditions[condId] = kv.Value;
+                    }
+                }
                 MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇条件表: {OriginConditions.Count} 条（0config.conditions）");
             }
             catch (Exception ex)
