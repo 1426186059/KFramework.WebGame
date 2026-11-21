@@ -231,6 +231,9 @@ namespace Client.MirScenes.Dialogs
                 GameScene.Scene.NPCGoodsDialog?.Hide();
                 GameScene.Scene.NPCSubGoodsDialog?.Hide();
                 GameScene.Scene.NPCCraftGoodsDialog?.Hide();
+                // 购买面板打开时会 Show 背包；离开时若背包/仓库正显示则直接关闭，不动它们的位置
+                if (GameScene.Scene.InventoryDialog.Visible) GameScene.Scene.InventoryDialog.Hide();
+                if (GameScene.Scene.StorageDialog.Visible) GameScene.Scene.StorageDialog.Hide();
                 return;
             }
 

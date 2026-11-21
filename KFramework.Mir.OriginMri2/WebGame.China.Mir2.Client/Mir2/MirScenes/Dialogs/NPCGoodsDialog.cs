@@ -389,11 +389,12 @@ namespace Client.MirScenes.Dialogs
             _costLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(71, 35),
+                Location = new Point(74, 35), // 与名字同 x，整体左对齐
                 Size = new Size(150, 20),
                 Font = new Font(Settings.FontName, 12F),
                 ForeColour = Color.Gold,
                 BackColour = Color.Transparent,
+                DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                 NotControl = true,
             };
 
@@ -433,9 +434,30 @@ namespace Client.MirScenes.Dialogs
             _itemCell.Item = Item;
             _nameLabel.Text = Item.Info.FriendlyName;
 
-            string currency = UsePearls ? "珍珠" : "金币";
-            _costLabel.Text = currency + ":" + Item.Info.Price;
-            _costLabel.ForeColour = Item.Info.Price <= GameScene.Gold ? Color.Gold : Color.FromArgb(255, 90, 90);
+            // 原始传奇：货币名+价格来自商店 cost（服务端下发），0=金币/1=元宝/2=传奇币
+            string currency;
+            uint price;
+            uint owned;
+            switch (Item.ShopCurrencyType)
+            {
+                case 1:
+                    currency = "元宝";
+                    price = Item.ShopPrice;
+                    owned = GameScene.Credit;
+                    break;
+                case 2:
+                    currency = "传奇币";
+                    price = Item.ShopPrice;
+                    owned = GameScene.LegendCoin;
+                    break;
+                default:
+                    currency = UsePearls ? "珍珠" : "金币";
+                    price = Item.ShopPrice > 0 ? Item.ShopPrice : Item.Info.Price;
+                    owned = GameScene.Gold;
+                    break;
+            }
+            _costLabel.Text = currency + ":" + price;
+            _costLabel.ForeColour = price <= owned ? Color.Gold : Color.FromArgb(255, 90, 90);
 
             _limitLabel.Text = MultipleAvailable ? "多件" : string.Empty;
             _bg.BackColour = Selected ? Color.FromArgb(60, 255, 255, 255) : Color.Transparent;

@@ -1790,6 +1790,7 @@ namespace Server.MirObjects
                 QuestInventory = new UserItem[Info.QuestInventory.Length],
                 Gold = Account.Gold,
                 Credit = Account.Credit,
+                LegendCoin = Account.LegendCoin,
                 HasExpandedStorage = Account.ExpandedStorageExpiryDate > Envir.Now ? true : false,
                 HasStoragePassword = Account.HasStoragePassword,
                 RequireStoragePassword = Settings.RequireStoragePassword,
@@ -8264,6 +8265,17 @@ namespace Server.MirObjects
             Account.Credit += credit;
 
             Enqueue(new S.GainedCredit { Credit = credit });
+        }
+        public void GainLegendCoin(uint coin)
+        {
+            if (coin == 0) return;
+
+            if (((UInt64)Account.LegendCoin + coin) > uint.MaxValue)
+                coin = uint.MaxValue - Account.LegendCoin;
+
+            Account.LegendCoin += coin;
+
+            Enqueue(new S.GainedLegendCoin { LegendCoin = coin });
         }
         public void GainItemMail(UserItem item, int reason)
         {
@@ -15422,7 +15434,23 @@ namespace Server.MirObjects
 
         public void SendNPCGoods(List<UserItem> goods, float rate, PanelType panelType, bool hideAddedStats = false)
         {
-            Enqueue(new S.NPCGoods { List = goods, Rate = rate, Type = panelType, HideAddedStats = hideAddedStats });
+            var currencyTypes = new List<byte>();
+            var prices = new List<uint>();
+            foreach (var item in goods)
+            {
+                currencyTypes.Add(item.ShopCurrencyType);
+                prices.Add(item.ShopPrice > 0 ? item.ShopPrice : item.Price()); // 无 shop 价的回落到 Info.Price
+            }
+
+            Enqueue(new S.NPCGoods
+            {
+                List = goods,
+                Rate = rate,
+                Type = panelType,
+                HideAddedStats = hideAddedStats,
+                CurrencyTypes = currencyTypes,
+                Prices = prices
+            });
         }
     }
 }

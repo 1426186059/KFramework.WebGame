@@ -1240,6 +1240,27 @@ namespace Server.MirEnvir
                 if (itemParts.Length > 1 && int.TryParse(itemParts[1], out int count) && count > 0)
                     item.Count = (ushort)Math.Min(count, ushort.MaxValue);
 
+                // 原始传奇 cost = 货币物品id#价格。货币映射：1/499=金币(0)，6=元宝(1，价/100)，41=传奇币(2)
+                var costParts = rec.cost?.Split('#');
+                if (costParts != null && costParts.Length > 1 && int.TryParse(costParts[0], out int currencyId) && int.TryParse(costParts[1], out int price))
+                {
+                    switch (currencyId)
+                    {
+                        case 6: // 元宝，原始传奇单位是分
+                            item.ShopCurrencyType = 1;
+                            item.ShopPrice = (uint)Math.Max(0, price / 100);
+                            break;
+                        case 41: // 传奇币
+                            item.ShopCurrencyType = 2;
+                            item.ShopPrice = (uint)Math.Max(0, price);
+                            break;
+                        default: // 金币(1/499)及其它特殊货币，暂按金币显示与扣费
+                            item.ShopCurrencyType = 0;
+                            item.ShopPrice = (uint)Math.Max(0, price);
+                            break;
+                    }
+                }
+
                 result.Add(item);
             }
 

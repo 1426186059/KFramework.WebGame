@@ -311,6 +311,10 @@ public class UserItem
 
     public bool IsShopItem;
 
+    // 原始传奇商店价格（内存字段，不进存档）：0=金币/1=元宝/2=传奇币；Price=最终价格
+    public byte ShopCurrencyType;
+    public uint ShopPrice;
+
     public Awake Awake = new Awake();
 
     public Stats AddedStats;

@@ -248,7 +248,8 @@ namespace Client.MirScenes
         public static bool PickedUpGold;
         public MirControl ItemLabel, MailLabel, MemoLabel, GuildBuffLabel;
         public static long UseItemTime, PickUpTime, DropViewTime, TargetDeadTime;
-        public static uint Gold, Credit;
+        // 三种货币：金币/元宝/传奇币，均不区分绑定与非绑定（绑定也并入同一字段）
+        public static uint Gold, Credit, LegendCoin;
         public static long InspectTime;
         public bool ShowReviveMessage;
 
@@ -1521,6 +1522,12 @@ namespace Client.MirScenes
                 case (short)ServerPacketIds.LoseCredit:
                     LoseCredit((S.LoseCredit)p);
                     break;
+                case (short)ServerPacketIds.GainedLegendCoin:
+                    GainedLegendCoin((S.GainedLegendCoin)p);
+                    break;
+                case (short)ServerPacketIds.LoseLegendCoin:
+                    LoseLegendCoin((S.LoseLegendCoin)p);
+                    break;
                 case (short)ServerPacketIds.ObjectMonster:
                     ObjectMonster((S.ObjectMonster)p);
                     break;
@@ -2231,6 +2238,7 @@ namespace Client.MirScenes
             HeroBehaviourPanel.UpdateBehaviour(p.HeroBehaviour);
             Gold = p.Gold;
             Credit = p.Credit;
+            LegendCoin = p.LegendCoin;
 
             CharacterDialog = new CharacterDialog(MirGridType.Equipment, User) { Parent = this, Visible = false };
             CharacterSkillDialog = new CharacterSkillDialog { Parent = this, Visible = false };
@@ -3389,6 +3397,19 @@ namespace Client.MirScenes
             Credit -= p.Credit;
             SoundManager.PlaySound(SoundList.Gold);
         }
+        private void GainedLegendCoin(S.GainedLegendCoin p)
+        {
+            if (p.LegendCoin == 0) return;
+
+            LegendCoin += p.LegendCoin;
+            SoundManager.PlaySound(SoundList.Gold);
+            OutputMessage($"获得传奇币 {p.LegendCoin}");
+        }
+        private void LoseLegendCoin(S.LoseLegendCoin p)
+        {
+            LegendCoin -= p.LegendCoin;
+            SoundManager.PlaySound(SoundList.Gold);
+        }
         private void ObjectMonster(S.ObjectMonster p)
         {
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob) && ob is MonsterObject mob)
@@ -4301,6 +4322,12 @@ namespace Client.MirScenes
             for (int i = 0; i < p.List.Count; i++)
             {
                 p.List[i].Info = GetItemInfo(p.List[i].ItemIndex);
+                // 原始传奇商店价格：从包里的并行数组填入
+                if (i < p.CurrencyTypes.Count)
+                {
+                    p.List[i].ShopCurrencyType = p.CurrencyTypes[i];
+                    p.List[i].ShopPrice = p.Prices[i];
+                }
             }
 
             NPCRate = p.Rate;

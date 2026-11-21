@@ -1203,6 +1203,18 @@ namespace Server.MirObjects
                 }
             }
 
+            // 原始传奇商店商品：不在 Goods/UsedGoods/BuyBack 里，按 NPC 的 StoreId 重新生成并用 UniqueID 匹配
+            if (goods == null && callingNPC?.Info?.OriginSettings != null && callingNPC.Info.OriginSettings.StoreId > 0)
+            {
+                var originGoods = Envir.GetOriginStoreGoods(callingNPC.Info.OriginSettings.StoreId);
+                for (int i = 0; i < originGoods.Count; i++)
+                {
+                    if (originGoods[i].UniqueID != index) continue;
+                    goods = originGoods[i];
+                    break;
+                }
+            }
+
             if (goods == null || count == 0 || count > goods.Info.StackSize) return;
 
             if ((isBuyBack || isUsed) && count > goods.Count)
@@ -1210,15 +1222,30 @@ namespace Server.MirObjects
             else
                 goods.Count = count;
 
-            uint cost = goods.Price();
-            cost = (uint)(cost * PriceRate(player));
-            uint baseCost = (uint)(goods.Price() * PriceRate(player, true));
+            // 原始传奇商店价格：优先用 cost 解析出的 ShopPrice，否则回落 Info.Price
+            uint unitPrice = goods.ShopPrice > 0 ? goods.ShopPrice : goods.Price();
+            uint cost = (uint)(unitPrice * PriceRate(player)) * count;
+            uint baseCost = (uint)(unitPrice * PriceRate(player, true)) * count;
 
             if (player.NPCPage.Key.ToUpper() == PearlBuyKey)//pearl currency
             {
                 if (cost > player.Info.PearlCount) return;
             }
-            else if (cost > player.Account.Gold) return;
+            else
+            {
+                switch (goods.ShopCurrencyType)
+                {
+                    case 1: // 元宝 Credit
+                        if (cost > player.Account.Credit) return;
+                        break;
+                    case 2: // 传奇币 LegendCoin
+                        if (cost > player.Account.LegendCoin) return;
+                        break;
+                    default: // 金币
+                        if (cost > player.Account.Gold) return;
+                        break;
+                }
+            }
 
             UserItem item = (isBuyBack || isUsed) ? goods : Envir.CreateFreshItem(goods.Info);
             item.Count = goods.Count;
@@ -1231,8 +1258,21 @@ namespace Server.MirObjects
             }
             else
             {
-                player.Account.Gold -= cost;
-                player.Enqueue(new S.LoseGold { Gold = cost });
+                switch (goods.ShopCurrencyType)
+                {
+                    case 1: // 元宝
+                        player.Account.Credit -= cost;
+                        player.Enqueue(new S.LoseCredit { Credit = cost });
+                        break;
+                    case 2: // 传奇币
+                        player.Account.LegendCoin -= cost;
+                        player.Enqueue(new S.LoseLegendCoin { LegendCoin = cost });
+                        break;
+                    default: // 金币
+                        player.Account.Gold -= cost;
+                        player.Enqueue(new S.LoseGold { Gold = cost });
+                        break;
+                }
 
                 if (callingNPC != null && callingNPC.Conq != null)
                 {

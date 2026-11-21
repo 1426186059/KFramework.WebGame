@@ -611,7 +611,8 @@ namespace ServerPackets
         public bool HasHero;
         public HeroBehaviour HeroBehaviour;
         public UserItem[] Inventory, Equipment, QuestInventory;
-        public uint Gold, Credit;
+        // 三种货币：金币/元宝/传奇币，均不区分绑定与非绑定（绑定也并入同一字段）
+        public uint Gold, Credit, LegendCoin;
 
         public bool HasExpandedStorage;
         public bool HasStoragePassword;
@@ -685,6 +686,7 @@ namespace ServerPackets
 
             Gold = reader.ReadUInt32();
             Credit = reader.ReadUInt32();
+            LegendCoin = reader.ReadUInt32();
 
             HasExpandedStorage = reader.ReadBoolean();
             HasStoragePassword = reader.ReadBoolean();
@@ -777,6 +779,7 @@ namespace ServerPackets
 
             writer.Write(Gold);
             writer.Write(Credit);
+            writer.Write(LegendCoin);
 
             writer.Write(HasExpandedStorage);
             writer.Write(HasStoragePassword);
@@ -2381,6 +2384,45 @@ namespace ServerPackets
         }
     }
 
+    public sealed class GainedLegendCoin : Packet
+    {
+        public override short Index
+        {
+            get { return (short)ServerPacketIds.GainedLegendCoin; }
+        }
+
+        public uint LegendCoin;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            LegendCoin = reader.ReadUInt32();
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(LegendCoin);
+        }
+    }
+    public sealed class LoseLegendCoin : Packet
+    {
+        public override short Index
+        {
+            get { return (short)ServerPacketIds.LoseLegendCoin; }
+        }
+
+        public uint LegendCoin;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            LegendCoin = reader.ReadUInt32();
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(LegendCoin);
+        }
+    }
+
     public sealed class ObjectMonster : Packet
     {
         public override short Index
@@ -3188,6 +3230,10 @@ namespace ServerPackets
         public PanelType Type;
         public bool HideAddedStats;
 
+        // 原始传奇商店价格：与 List 等长，0=金币(Gold)/1=元宝(Credit)/2=其它特殊货币
+        public List<byte> CurrencyTypes = new List<byte>();
+        public List<uint> Prices = new List<uint>();
+
         protected override void ReadPacket(BinaryReader reader)
         {
             int count = reader.ReadInt32();
@@ -3198,6 +3244,13 @@ namespace ServerPackets
             Type = (PanelType)reader.ReadByte();
 
             HideAddedStats = reader.ReadBoolean();
+
+            int priceCount = reader.ReadInt32();
+            for (int i = 0; i < priceCount; i++)
+            {
+                CurrencyTypes.Add(reader.ReadByte());
+                Prices.Add(reader.ReadUInt32());
+            }
         }
         protected override void WritePacket(BinaryWriter writer)
         {
@@ -3209,6 +3262,13 @@ namespace ServerPackets
             writer.Write((byte)Type);
 
             writer.Write(HideAddedStats);
+
+            writer.Write(Prices.Count);
+            for (int i = 0; i < Prices.Count; i++)
+            {
+                writer.Write(CurrencyTypes[i]);
+                writer.Write(Prices[i]);
+            }
         }
     }
     public sealed class NPCSell : Packet

@@ -1731,6 +1731,8 @@ public enum ServerPacketIds : short
     StorageUnlockResult,
     StoragePasswordResult,
     RefreshInventory,
+    GainedLegendCoin,
+    LoseLegendCoin,
 }
 
 public enum ClientPacketIds : short

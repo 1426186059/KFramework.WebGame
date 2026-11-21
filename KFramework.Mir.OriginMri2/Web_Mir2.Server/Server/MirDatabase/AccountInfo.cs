@@ -69,8 +69,12 @@ namespace Server.MirDatabase
         public UserItem[] Storage = new UserItem[80];
         public bool HasExpandedStorage;
         public DateTime ExpandedStorageExpiryDate;
-        public uint Gold;
-        public uint Credit;
+        // 三种货币（账号权威存档）。本游戏不区分绑定/非绑定：
+        // 绑定元宝与非绑定元宝都记入 Credit，绑定传奇币与非绑定传奇币都记入 LegendCoin，
+        // 绑定金币与非绑定金币都记入 Gold——原始传奇 cost 的货币 id 41(绑定传奇币) 也直接并入 LegendCoin。
+        public uint Gold;      // 金币（原始传奇 cost 货币 id 1 / 499）
+        public uint Credit;    // 元宝（原始传奇 cost 货币 id 6，原版价格单位为分，读取时 /100）
+        public uint LegendCoin; // 传奇币（原始传奇 cost 货币 id 41）
 
         public MirConnection Connection;
         
@@ -172,6 +176,7 @@ namespace Server.MirDatabase
             
             Gold = reader.ReadUInt32();
             if (Envir.LoadVersion >= 63) Credit = reader.ReadUInt32();
+            LegendCoin = reader.ReadUInt32();
 
             count = reader.ReadInt32();
 
@@ -238,6 +243,7 @@ namespace Server.MirDatabase
             writer.Write(ExpandedStorageExpiryDate.ToBinary());
             writer.Write(Gold);
             writer.Write(Credit);
+            writer.Write(LegendCoin);
             writer.Write(Storage.Length);
             for (int i = 0; i < Storage.Length; i++)
             {
