@@ -1111,19 +1111,24 @@ namespace Server.MirObjects
             Enqueue(new S.NewMapInfo { MapIndex = mapInfo.Index, Info = info });
             Connection.SentMapInfo.Add(mapInfo);
         }
-        // 出生/绑定点固定为比奇省（地图 id 103），不再从所有地图的安全区里随机挑选
-        private const int HomeMapIndex = 103;
         private void SetBind()
         {
             SafeZoneInfo szi = null;
 
-            MapInfoTable home = Envir.MapInfoList.FirstOrDefault(m => m.Index == HomeMapIndex);
+            MapInfoTable home = Envir.MapInfoList.FirstOrDefault(m => m.Index == Settings.HomeMapIndex);
             if (home != null)
             {
-                szi = home.SafeZones.FirstOrDefault(z => z.StartPoint);
+                // 只在该地图标记了 StartPoint 的安全区里按配置序号挑，不写死坐标。
+                // 比奇省(103)当前有两个：0=比奇城(328,264)，1=新手村(291,619)。
+                List<SafeZoneInfo> startPoints = home.SafeZones.Where(z => z.StartPoint).ToList();
+                if (startPoints.Count > 0)
+                {
+                    int index = Math.Max(0, Math.Min(Settings.BirthStartPointIndex, startPoints.Count - 1));
+                    szi = startPoints[index];
+                }
             }
 
-            // 兜底：比奇城无起始点时，取第一个可用起始点（确定性，不再随机）
+            // 兜底：配置地图无起始点时，取全局第一个可用起始点（确定性，不再随机）
             if (szi == null && Envir.StartPoints.Count > 0)
             {
                 szi = Envir.StartPoints[0];
