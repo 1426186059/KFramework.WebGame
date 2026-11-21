@@ -427,7 +427,7 @@ namespace Client.MirScenes
                     BackColour = Color.Transparent,
                     Font = new Font(Settings.FontName, 12F),
                     ForeColour = Color.White,
-                    Location = new Point(20, 250 + i * 16),
+                    Location = new Point(20, 250 + i * 21),
                     OutLine = true,
                 };
             }

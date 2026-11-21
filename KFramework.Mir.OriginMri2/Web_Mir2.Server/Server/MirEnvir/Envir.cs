@@ -1092,12 +1092,17 @@ namespace Server.MirEnvir
                 NPCInfoList = LoadConfigList<NPCInfoTable>(baseDir, "NPCInfo.json");
                 // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
                 foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
-                // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
-                LoadMapNpcPlacements(baseDir);
-                // 原始传奇商店：读 4config 分片的 npcstore 表（NPCInfo.OriginSettings.StoreId → 商品）。
-                LoadOriginStores(baseDir);
-                // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
-                LoadOriginConditions(baseDir);
+                // 以下三张表是运行时数据，编辑器实例不需要加载（也不打日志）。
+                // 注意：MapInfoList（MapInfo_Fix.json）不在此列——那是编辑器要编辑的配置本身，MapInfoForm 等表单依赖它。
+                if (!ReferenceEquals(this, Edit))
+                {
+                    // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
+                    LoadMapNpcPlacements(baseDir);
+                    // 原始传奇商店：读 4config 分片的 npcstore 表（NPCInfo.OriginSettings.StoreId → 商品）。
+                    LoadOriginStores(baseDir);
+                    // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
+                    LoadOriginConditions(baseDir);
+                }
                 QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
@@ -1181,6 +1186,7 @@ namespace Server.MirEnvir
         /// </summary>
         private void LoadMapNpcPlacements(string baseDir)
         {
+            if (ReferenceEquals(this, Edit)) return; // 编辑器不加载运行时摆放数据
             MapNpcPlacements.Clear();
             foreach (var npc in NPCInfoList)
                 if (npc.OriginSettings?.Placements != null && npc.OriginSettings.Placements.Count > 0)
@@ -1255,8 +1261,8 @@ namespace Server.MirEnvir
         /// <summary>
         /// 判断玩家是否满足原始传奇 npcstore.showCondition（忠实复刻 Logic.checkCondition/checkACondition）。
         /// showCondition 是条件 id 列表（用 & 或 | 组合，原始传奇 splitCondition 按“或”分组、“与”组内）。
-        /// 我们游戏没有 VIP/转生/开服天数/充值等系统，这类条件一律判为不满足（普通玩家看不到高级商品，与原始传奇一致）。
-        /// 支持：condType 1=等级≥ / 2=等级≤ / 34=等级区间。空条件视为满足。
+        /// 我们游戏没有 VIP/转生/充值等系统，这类条件一律判为不满足（普通玩家看不到高级商品，与原始传奇一致）。
+        /// 支持：condType 1=等级≥ / 2=等级≤ / 34=等级区间 / 9=开服天数(按 Settings.OpenServerDate 计算，未配置则放行)。空条件视为满足。
         /// </summary>
         public bool CheckOriginShowCondition(PlayerObject player, string showCondition)
         {
@@ -1286,6 +1292,25 @@ namespace Server.MirEnvir
                             int lo = p.Length > 0 ? ParseFirstInt(p[0], 0) : 0;
                             int hi = p.Length > 1 ? ParseFirstInt(p[1], int.MaxValue) : int.MaxValue;
                             ok = player != null && player.Info.Level >= lo && player.Info.Level <= hi;
+                            break;
+                        }
+                    case 9: // 开服天数（如 90007=开服第7天）：按 Settings.OpenServerDate 真正计算
+                        {
+                            int needDay = ParseFirstInt(cond.conditionParam, 1);
+                            if (string.IsNullOrWhiteSpace(Settings.OpenServerDate))
+                            {
+                                ok = true; // 未配置开服日期 → 不限制（视为开服已久）
+                            }
+                            else if (DateTime.TryParse(Settings.OpenServerDate, out var openDate))
+                            {
+                                // 开服当天记为第 1 天
+                                int openDays = (DateTime.Today.Date - openDate.Date).Days + 1;
+                                ok = openDays >= needDay;
+                            }
+                            else
+                            {
+                                ok = true; // 日期格式非法 → 不误伤，放行
+                            }
                             break;
                         }
                     default:

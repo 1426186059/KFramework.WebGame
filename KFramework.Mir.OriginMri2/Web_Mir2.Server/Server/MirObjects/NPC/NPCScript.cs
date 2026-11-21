@@ -864,6 +864,16 @@ namespace Server.MirObjects
                         }
                     }
 
+                    // 原始传奇商店：点“购买”时 Response 故意抑制了 NPCResponse（客户端主对话框留在 Main），
+                    // 但服务端 NPCPage 已推进到 BuySell 页。玩家关掉购买面板后再次点“购买”，
+                    // 服务端当前页(BuySell)里没有 @BuySell 按钮，会被白名单拦截导致面板不再弹出。
+                    // 这里对原始传奇商店的 BuySellKey 放行，允许重复打开商店（两端页状态不一致是设计如此）。
+                    if (!found && string.Equals(key, BuySellKey, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var buyNPC = NPCObject.Get(objectID);
+                        if ((buyNPC?.Info?.OriginSettings?.StoreId ?? 0) > 0) found = true;
+                    }
+
                     if (!found)
                     {
                         var npc = NPCObject.Get(objectID);

@@ -146,7 +146,7 @@ namespace Client.MirScenes.Dialogs
 
             if (price > owned)
             {
-                GameScene.Scene.OutputMessage($"购买失败，{currency}不足（需要 {price:n0}）。", OutputMessageType.Error);
+                GameScene.Scene.OutputMessage($"购买失败，{currency}不足", OutputMessageType.Error);
                 return;
             }
 

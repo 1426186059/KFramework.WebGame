@@ -76,6 +76,9 @@ namespace Server
         public static string BlackstoneDropFilename = "00Blackstone";
 
         public static string Language = "Chinese";
+        // 开服日期（yyyy-MM-dd），用于原始传奇商店 showCondition 的“开服天数”条件(type 9)。
+        // 留空表示不限制（视为开服已久，所有开服天数条件都满足）。
+        public static string OpenServerDate = "";
 
         //Network
         public static string IPAddress = "127.0.0.1";
@@ -411,6 +414,7 @@ namespace Server
             EnforceDBChecks = Reader.ReadBoolean("General", "EnforceDBChecks", EnforceDBChecks);
             MonsterProcessWhenAlone = Reader.ReadBoolean("General", "MonsterProcessWhenAlone", MonsterProcessWhenAlone);
             Language=Reader.ReadString("General", "Language", Language);
+            OpenServerDate = Reader.ReadString("General", "OpenServerDate", OpenServerDate);
 
             //Paths
             IPAddress = Reader.ReadString("Network", "IPAddress", IPAddress);
@@ -704,6 +708,7 @@ namespace Server
             Reader.Write("General", "EnforceDBChecks", EnforceDBChecks);
             Reader.Write("General", "MonsterProcessWhenAlone", MonsterProcessWhenAlone);
             Reader.Write("General", "Language", Language);
+            Reader.Write("General", "OpenServerDate", OpenServerDate);
 
             //Paths
             Reader.Write("Network", "IPAddress", IPAddress);
