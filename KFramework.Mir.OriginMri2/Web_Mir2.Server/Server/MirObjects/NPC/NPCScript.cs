@@ -1245,7 +1245,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.Credit)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 元宝不足 cost={cost} have={player.Account.Credit}");
-                            player.ReceiveOutputMessage($"购买失败，元宝不足（需要 {cost:n0}）。", OutputMessageType.Error);
+                            player.ReceiveOutputMessage("购买失败，元宝不足", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1253,7 +1253,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.LegendCoin)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 传奇币不足 cost={cost} have={player.Account.LegendCoin}");
-                            player.ReceiveOutputMessage($"购买失败，传奇币不足（需要 {cost:n0}）。", OutputMessageType.Error);
+                            player.ReceiveOutputMessage("购买失败，传奇币不足", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1261,7 +1261,7 @@ namespace Server.MirObjects
                         if (cost > player.Account.Gold)
                         {
                             MessageQueue.Enqueue($"[商店诊断] 金币不足 cost={cost} have={player.Account.Gold}");
-                            player.ReceiveOutputMessage($"购买失败，金币不足（需要 {cost:n0}）。", OutputMessageType.Error);
+                            player.ReceiveOutputMessage("购买失败，金币不足", OutputMessageType.Error);
                             return;
                         }
                         break;
@@ -1305,9 +1305,8 @@ namespace Server.MirObjects
                 }
             }
 
-            player.GainItem(item);
-
-            // 购买成功提示（客户端左上角两行：消耗 / 获得）
+            // 购买成功：先提示消耗“<红>消耗</红> 货币名 x数量”，“获得 xxx”由客户端 GainedItem 自动显示。
+            // 珍珠购买不走三种货币，不提示消耗。Type 用 Normal 保证标签外的文字是白色。
             if (player.NPCPage.Key.ToUpper() != PearlBuyKey)
             {
                 string currencyName;
@@ -1317,9 +1316,10 @@ namespace Server.MirObjects
                     case 2: currencyName = "传奇币"; break;
                     default: currencyName = "金币"; break;
                 }
-                player.ReceiveOutputMessage($"消耗 {currencyName} {cost:n0}", OutputMessageType.Quest);
-                player.ReceiveOutputMessage($"获得 {item.Info.FriendlyName}", OutputMessageType.Quest);
+                player.ReceiveOutputMessage($"<color=red>消耗</color> {currencyName} x{cost}", OutputMessageType.Normal);
             }
+
+            player.GainItem(item);
 
             if (isUsed)
             {

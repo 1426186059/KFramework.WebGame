@@ -50,10 +50,11 @@ namespace Server.MirDatabase
         public string txt { get; set; } = "";
     }
 
-    /// <summary>0config 分片 DTO，仅取 conditions 条件表。</summary>
+    /// <summary>0config 分片 DTO，仅取 conditions 条件表。
+    /// key 用 string：原始配置里存在 "undefined" 等非数字 key，用 int 会让整表反序列化失败。</summary>
     public class OriginMir2Config0
     {
         [JsonPropertyName("conditions")]
-        public Dictionary<int, OriginConditionTable> conditions { get; set; } = new();
+        public Dictionary<string, OriginConditionTable> conditions { get; set; } = new();
     }
 }

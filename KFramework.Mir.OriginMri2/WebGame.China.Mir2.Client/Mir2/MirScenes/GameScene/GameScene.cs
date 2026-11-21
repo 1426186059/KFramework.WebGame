@@ -425,9 +425,9 @@ namespace Client.MirScenes
                 {
                     AutoSize = true,
                     BackColour = Color.Transparent,
-                    Font = new Font(Settings.FontName, 10F),
-                    ForeColour = Color.LimeGreen,
-                    Location = new Point(20, 250 + i * 13),
+                    Font = new Font(Settings.FontName, 12F),
+                    ForeColour = Color.White,
+                    Location = new Point(20, 250 + i * 16),
                     OutLine = true,
                 };
             }
@@ -519,7 +519,7 @@ namespace Client.MirScenes
                             color = Color.Red;
                             break;
                         default:
-                            color = Color.LimeGreen;
+                            color = Color.White;
                             break;
                     }
 
@@ -3366,7 +3366,8 @@ namespace Client.MirScenes
             AddItem(p.Item);
             User.RefreshStats();
 
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouGainedItem), p.Item.FriendlyName));
+            // “获得”亮绿，其余白色（引擎 MirLabel 支持 <color=...> 富文本标签）；固定中文绕过远程语言包
+            OutputMessage($"<color=lime>获得</color> {p.Item.FriendlyName} x{p.Item.Count}");
         }
         private void GainedQuestItem(S.GainedQuestItem p)
         {
