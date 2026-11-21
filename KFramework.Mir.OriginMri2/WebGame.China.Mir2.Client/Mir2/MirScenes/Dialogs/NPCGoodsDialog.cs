@@ -206,7 +206,6 @@ namespace Client.MirScenes.Dialogs
 
         private void Update()
         {
-            KFramework.MonoGame.PrintTool.Log($"[商店诊断] Update Goods={Goods.Count} DisplayGoods={DisplayGoods.Count} PType={PType}");
             foreach (var row in _rows)
             {
                 _scroll.Remove(row);

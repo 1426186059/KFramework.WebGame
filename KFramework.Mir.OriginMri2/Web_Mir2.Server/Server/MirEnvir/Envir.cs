@@ -121,6 +121,9 @@ namespace Server.MirEnvir
 
         /// <summary>mapnpc 表：NPC id → 全部摆放点。由 LoadMapNpcPlacements 从 5config 分片读取。</summary>
         public Dictionary<int, List<NPCPlacement>> MapNpcPlacements = new Dictionary<int, List<NPCPlacement>>();
+
+        /// <summary>原始传奇商店表：StoreId → 商品记录列表（4config.npcstore，由 LoadOriginStores 加载）。</summary>
+        public Dictionary<int, List<OriginStoreItemTable>> OriginStores = new Dictionary<int, List<OriginStoreItemTable>>();
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
         public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();
         public List<GameShopItemTable> GameShopList = new List<GameShopItemTable>();
@@ -1085,6 +1088,8 @@ namespace Server.MirEnvir
                 foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
                 // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
                 LoadMapNpcPlacements(baseDir);
+                // 原始传奇商店：读 4config 分片的 npcstore 表（NPCInfo.OriginSettings.StoreId → 商品）。
+                LoadOriginStores(baseDir);
                 QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
@@ -1174,6 +1179,67 @@ namespace Server.MirEnvir
                     MapNpcPlacements[npc.Index] = npc.OriginSettings.Placements;
 
             MessageQueue.Enqueue($"mapnpc 摆放点: {MapNpcPlacements.Sum(kv => kv.Value.Count)} 处 / {MapNpcPlacements.Count} 个 NPC（NPCInfo 内嵌）");
+        }
+
+        /// <summary>
+        /// 原始传奇商店表：整文件反序列化 4config 分片的 npcstore，按 StoreId 建索引。
+        /// 仿客户端 OriginMir2Config 写法：DTO 只声明用到的表，其余顶层表自动忽略。
+        /// </summary>
+        private void LoadOriginStores(string baseDir)
+        {
+            OriginStores.Clear();
+            try
+            {
+                string file = Directory.GetFiles(baseDir, "4config*.json").FirstOrDefault();
+                if (file == null)
+                {
+                    MessageQueue.Enqueue("原始传奇商店表未找到 4config*.json（ExcelConfig 目录）");
+                    return;
+                }
+
+                var cfg = JsonSerializer.Deserialize<OriginMir2Config4>(File.ReadAllText(file), JsonConfigOptions);
+                if (cfg?.npcstore == null) return;
+
+                foreach (var store in cfg.npcstore)
+                {
+                    var list = store.Value?.Values.OrderBy(x => x.id).ToList() ?? new List<OriginStoreItemTable>();
+                    OriginStores[store.Key] = list;
+                }
+
+                MessageQueue.Enqueue($"原始传奇商店表: {OriginStores.Count} 个商店 / {OriginStores.Sum(kv => kv.Value.Count)} 条商品（4config.npcstore）");
+            }
+            catch (Exception ex)
+            {
+                MessageQueue.Enqueue("加载原始传奇商店表失败: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 按原始传奇 StoreId 生成可下发的商品列表。item 的 "物品id#数量" 按 Index 映射到我们 ItemInfo。
+        /// 价格沿用我们 ItemInfo.Price（转换器已从 1config col22 映射），原版 cost 仅作参考未覆盖。
+        /// </summary>
+        public List<UserItem> GetOriginStoreGoods(int storeId)
+        {
+            var result = new List<UserItem>();
+            if (!OriginStores.TryGetValue(storeId, out var list)) return result;
+
+            foreach (var rec in list)
+            {
+                if (string.IsNullOrEmpty(rec.item)) continue;
+                var itemParts = rec.item.Split('#');
+                if (!int.TryParse(itemParts[0], out int itemIndex)) continue;
+
+                ItemInfoTable info = GetItemInfo(itemIndex);
+                if (info == null) continue;
+
+                UserItem item = CreateShopItem(info, (ulong)(storeId * 100000L + rec.id));
+                if (itemParts.Length > 1 && int.TryParse(itemParts[1], out int count) && count > 0)
+                    item.Count = (ushort)Math.Min(count, ushort.MaxValue);
+
+                result.Add(item);
+            }
+
+            return result;
         }
 
         private T LoadConfig<T>(string baseDir, string fileName) where T : class

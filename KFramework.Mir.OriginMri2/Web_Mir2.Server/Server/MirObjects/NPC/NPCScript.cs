@@ -949,17 +949,26 @@ namespace Server.MirObjects
                     for (int i = 0; i < Goods.Count; i++)
                         player.CheckItem(Goods[i]);
 
+                    var storeNPC = NPCObject.Get(player.NPCObjectID);
+
                     if (Settings.GoodsOn)
                     {
-                        var callingNPC = NPCObject.Get(player.NPCObjectID);
-
-                        if (callingNPC != null)
+                        if (storeNPC != null)
                         {
-                            for (int i = 0; i < callingNPC.UsedGoods.Count; i++)
-                                player.CheckItem(callingNPC.UsedGoods[i]);
-                        }
+                            for (int i = 0; i < storeNPC.UsedGoods.Count; i++)
+                                player.CheckItem(storeNPC.UsedGoods[i]);
 
-                        sentGoods.AddRange(callingNPC.UsedGoods);
+                            sentGoods.AddRange(storeNPC.UsedGoods);
+                        }
+                    }
+
+                    // 原始传奇商店：脚本无商品时，按 NPCInfo.OriginSettings.StoreId 从 4config.npcstore 生成商品
+                    if (sentGoods.Count == 0 && storeNPC?.Info?.OriginSettings != null && storeNPC.Info.OriginSettings.StoreId > 0)
+                    {
+                        var originGoods = Envir.GetOriginStoreGoods(storeNPC.Info.OriginSettings.StoreId);
+                        for (int i = 0; i < originGoods.Count; i++)
+                            player.CheckItem(originGoods[i]);
+                        sentGoods.AddRange(originGoods);
                     }
 
                     player.SendNPCGoods(sentGoods, PriceRate(player), PanelType.Buy, Settings.GoodsHideAddedStats);
