@@ -91,14 +91,14 @@ public sealed class FPSDialog : MirControl
         // 同 MirLabel：目标、清屏、批都由调用方管（TextRenderer 只把字形塞进当前批）。
         var savedSurface = DXManager.CurrentSurface;
         DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-        DXManager.GDevice.Clear(CommonColor.FromArgb((uint)BackColour.ToArgb()));
+        DXManager.GDevice.Clear(CommonColor.FromArgb((uint)unchecked((int)BackColour.PackedValue)));
         try
         {
             DXManager.BeginSprite(MirBlend.Normal);
             try
             {
                 TextRenderer.DrawText(_text, _font,
-                    new Rectangle(0, 0, Size.Width, Size.Height), ForeColour.ToArgb(),
+                    new Rectangle(0, 0, Size.Width, Size.Height), unchecked((int)ForeColour.PackedValue),
                     new TextStyle(TextAnchor.UpperLeft));
             }
             finally

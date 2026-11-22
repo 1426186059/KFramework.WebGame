@@ -286,9 +286,9 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            int fore = ForeColour.ToArgb();
-            int outline = OutLine ? OutLineColour.ToArgb() : 0;
-            int back = BackColour.ToArgb();
+            int fore = unchecked((int)ForeColour.PackedValue);
+            int outline = OutLine ? unchecked((int)OutLineColour.PackedValue) : 0;
+            int back = unchecked((int)BackColour.PackedValue);
 
             // 垂直一律 Overflow：Truncate 的"放不下整行不画"会让高度略小的标签整行消失。
             KFramework.MonoGame.TextStyle format = _drawFormat;

@@ -313,9 +313,9 @@ namespace Client.MirControls
             }
 
             Font font = TextBox.Font ?? new Font(Settings.FontName, 8F);
-            int fore = (TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White).ToArgb();
-            int back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
-            int selBack = CommonColor.FromArgb(128, 51, 153, 255).ToArgb();
+            int fore = unchecked((int)(TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White).PackedValue);
+            int back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? unchecked((int)TextBox.BackColor.PackedValue) : 0;
+            int selBack = unchecked((int)CommonColor.FromArgb(128, 51, 153, 255).PackedValue);
             string drawText = TextBox.Text ?? "";
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";

@@ -83,12 +83,6 @@ namespace Client.MirGraphics
         {
         }
 
-        static KFramework.MonoGame.Color ToColor(MirEngine.Color4 c) =>
-            new KFramework.MonoGame.Color((byte)(c.Red * 255), (byte)(c.Green * 255), (byte)(c.Blue * 255), (byte)(c.Alpha * 255));
-
-        static KFramework.MonoGame.Color ToColor(Color c) =>
-            new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A);
-
         private static KFramework.MonoGame.Material _batchMaterial;
         private static KFramework.MonoGame.Matrix4x4? _batchTransform;
 
@@ -299,7 +293,7 @@ void main()
         private static KFramework.MonoGame.BlendState ResolveBlend(KFramework.MonoGame.BlendState? blendState)
             => blendState ?? (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState();
 
-        public static void Draw(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, MirEngine.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
@@ -307,16 +301,16 @@ void main()
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture,
                 new KFramework.MonoGame.Rectangle((int)pos.X, (int)pos.Y, src.Width, src.Height),
-                src, ToColor(color));
+                src, color);
             CMain.DPSCounter++;
         }
 
-        public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, MirEngine.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             // 目标矩形按浮点传递，保留亚像素定位，消除缩放精灵的逐帧取整抖动。
-            Batch.Draw(texture, destRect, sourceRect, ToColor(color));
+            Batch.Draw(texture, destRect, sourceRect, color);
             CMain.DPSCounter++;
         }
 
@@ -356,27 +350,26 @@ void main()
             CMain.DPSCounter++;
         }
 
-        public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, MirEngine.Color4 color, float opacity)
+        public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, KFramework.MonoGame.Color color, float opacity)
         {
-            var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
+            Draw(texture, sourceRect, position, color.WithAlpha((byte)(opacity * 255)));
         }
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, MirEngine.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture?.RenderTarget != null) { Draw(texture.RenderTarget, sourceRect, position, color, blendState); return; }
             if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, position, color, blendState); return; }
         }
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, MirEngine.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture?.RenderTarget != null) { Draw(texture.RenderTarget, sourceRect, destRect, color, blendState); return; }
             if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, destRect, color, blendState); return; }
         }
 
-        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, MirEngine.Color4 color, float opacity)
+        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, KFramework.MonoGame.Color color, float opacity)
         {
-            var c = color; c.Alpha = opacity;
-            Draw(texture, sourceRect, position, c);
+            Draw(texture, sourceRect, position, color.WithAlpha((byte)(opacity * 255)));
         }
 
         private static Texture2D _whitePixel;
@@ -396,7 +389,7 @@ void main()
         public static void DrawLines(KFramework.MonoGame.Vector2[] points, float width, Color color)
         {
             if (points == null || points.Length < 2) return;
-            var c = ToColor(color);
+            var c = color;
             for (int i = 0; i < points.Length - 1; i++)
             {
                 float x0 = points[i].X, y0 = points[i].Y;
@@ -497,7 +490,7 @@ void main()
             if (tex?.RenderTarget == null) return;
             var saved = CurrentSurface;
             SetSurface(new SlimDX.Direct3D9.Surface(tex));
-            GDevice?.Clear(ToColor(backColour));
+            GDevice?.Clear(backColour);
             SetSurface(saved);
         }
 

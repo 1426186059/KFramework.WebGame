@@ -56,7 +56,7 @@ namespace SlimDX.Direct3D9
             var g = DXManager.GDevice;
             if (g != null)
             {
-                g.Clear(new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A));
+                g.Clear(c);
             }
         }
 

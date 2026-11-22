@@ -114,7 +114,7 @@ public sealed class MapControl : MirControl
                 DXManager.Draw(sprite.Texture,
                     new Rectangle(src.X, src.Y, src.Width, src.Height),
                     new RectangleF(footX - src.Width / 2f, footY - src.Height / 2f, src.Width, src.Height),
-                    new MirEngine.Color4(1f, 1f, 1f, 1f)); // 贴图自带颜色，白色着色不偏色
+                    new Color(1f, 1f, 1f, 1f)); // 贴图自带颜色，白色着色不偏色
                 DXManager.SetBlend(oldBlend);
                 return;
             }
@@ -131,7 +131,7 @@ public sealed class MapControl : MirControl
             DXManager.Draw(ptex,
                 new Rectangle(0, 0, ptex.Width, ptex.Height),
                 new RectangleF(footX - semiW, footY - semiH, semiW * 2, semiH * 2),
-                new MirEngine.Color4(0.9f, 1f, 0.15f, 0.15f)); // 经典红色，90% 不透明
+                new Color(1f, 0.15f, 0.15f, 0.9f)); // 经典红色，90% 不透明
             DXManager.SetBlend(oldBlend);
         }
     }
@@ -856,7 +856,7 @@ public sealed class MapControl : MirControl
 
                         int tileDrawX = c * TileTexWidth - User.Movement.X * CellWidth + OffSetX * CellWidth - OffSetX + User.OffSetMove.X;
                         int tileDrawY = r * TileTexHeight - User.Movement.Y * CellHeight + OffSetY * CellHeight + User.OffSetMove.Y;
-                        DXManager.Draw(tex, new Rectangle(0, 0, tex.Width, tex.Height), new RectangleF(tileDrawX, tileDrawY, TileTexWidth, TileTexHeight), new MirEngine.Color4(1f, 1f, 1f, 1f));
+                        DXManager.Draw(tex, new Rectangle(0, 0, tex.Width, tex.Height), new RectangleF(tileDrawX, tileDrawY, TileTexWidth, TileTexHeight), new Color(1f, 1f, 1f, 1f));
                     }
                 }
             }

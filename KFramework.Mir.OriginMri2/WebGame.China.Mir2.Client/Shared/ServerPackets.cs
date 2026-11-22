@@ -719,7 +719,7 @@ namespace ServerPackets
             writer.Write(Name);
             writer.Write(GuildName);
             writer.Write(GuildRank);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
             writer.Write((byte)Class);
             writer.Write((byte)Gender);
             writer.Write(Level);
@@ -1031,7 +1031,7 @@ namespace ServerPackets
             writer.Write(Name);
             writer.Write(GuildName);
             writer.Write(GuildRankName);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
             writer.Write((byte)Class);
             writer.Write((byte)Gender);
             writer.Write(Level);
@@ -2254,7 +2254,7 @@ namespace ServerPackets
         {
             writer.Write(ObjectID);
             writer.Write(Name);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
             writer.Write(Location.X);
             writer.Write(Location.Y);
             writer.Write(Image);
@@ -2481,7 +2481,7 @@ namespace ServerPackets
         {
             writer.Write(ObjectID);
             writer.Write(Name);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
             writer.Write(Location.X);
             writer.Write(Location.Y);
             writer.Write((ushort)Image);
@@ -2773,7 +2773,7 @@ namespace ServerPackets
 
         protected override void WritePacket(BinaryWriter writer)
         {
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
         }
     }
     public sealed class ObjectColourChanged : Packet
@@ -2795,7 +2795,7 @@ namespace ServerPackets
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(ObjectID);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
         }
     }
     public sealed class ObjectGuildNameChanged : Packet
@@ -3024,9 +3024,9 @@ namespace ServerPackets
             writer.Write(ObjectID);
             writer.Write(Name);
             writer.Write(NameUI);
-            writer.Write(NameColour.ToArgb());
+            writer.Write(unchecked((int)NameColour.PackedValue));
             writer.Write(Image);
-            writer.Write(Colour.ToArgb());
+            writer.Write(unchecked((int)Colour.PackedValue));
             writer.Write(Location.X);
             writer.Write(Location.Y);
             writer.Write((byte)Direction);
@@ -5237,7 +5237,7 @@ namespace ServerPackets
         {
             writer.Write(ObjectID);
             writer.Write(Image);
-            writer.Write(Colour.ToArgb());
+            writer.Write(unchecked((int)Colour.PackedValue));
         }
     }
     public sealed class MountUpdate : Packet
