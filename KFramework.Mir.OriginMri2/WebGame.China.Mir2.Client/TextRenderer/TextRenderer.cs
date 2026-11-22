@@ -25,11 +25,11 @@ public static class TextRenderer
 
     // ---------------- DrawText ----------------
 
-    public static void DrawText(string text, Font font, Rectangle bounds, int foreColor, EngineTextStyle style)
+    public static void DrawText(string text, Font font, Rectangle bounds, EngineColor foreColor, EngineTextStyle style)
     {
         EngineText.DrawText(DXManager.Batch, text, font,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-            EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
+            foreColor, style.Anchor, style.HorizontalWrap, style.VerticalWrap);
     }
 
     // ---------------- 富文本（交给 EngineRich，由调用方持有实例以复用解析结果）----------------
@@ -41,12 +41,12 @@ public static class TextRenderer
     }
 
     /// <summary>富文本绘制；outlineMode=true 时只画去标签的纯文本（描边用）。</summary>
-    public static void DrawText(EngineRich rich, Rectangle bounds, int foreColor, EngineTextStyle style,
+    public static void DrawText(EngineRich rich, Rectangle bounds, EngineColor foreColor, EngineTextStyle style,
                                 bool outlineMode = false)
     {
         rich.Draw(DXManager.Batch,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-            EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap,
+            foreColor, style.Anchor, style.HorizontalWrap, style.VerticalWrap,
             outlineMode);
     }
 

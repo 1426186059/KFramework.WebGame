@@ -286,9 +286,9 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            int fore = unchecked((int)ForeColour.PackedValue);
-            int outline = OutLine ? unchecked((int)OutLineColour.PackedValue) : 0;
-            int back = unchecked((int)BackColour.PackedValue);
+            Color fore = ForeColour;
+            Color outline = OutLine ? OutLineColour : CommonColor.Empty;
+            Color back = BackColour;
 
             // 垂直一律 Overflow：Truncate 的"放不下整行不画"会让高度略小的标签整行消失。
             KFramework.MonoGame.TextStyle format = _drawFormat;
@@ -298,7 +298,7 @@ namespace Client.MirControls
             // 若让 TextRenderer 每次自己开收批，就是 5 段。
             var savedSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-            DXManager.GDevice.Clear(CommonColor.FromArgb((uint)back));
+            DXManager.GDevice.Clear(back);
             try
             {
                 DXManager.BeginSprite(MirBlend.Normal);
@@ -308,7 +308,7 @@ namespace Client.MirControls
                     // 统一走 RichTextObject：无标签时内部按普通文本逐字符折行绘制，
                     // 解析与排版结果跨 4 次描边 + 1 次前景复用；描边用 outlineMode 只画去标签的纯文本。
                     SyncRich();
-                    if (outline != 0)
+                    if (outline.PackedValue != 0)
                     {
                         TextRenderer.DrawText(_rich, new Rectangle(1, 0, Size.Width, Size.Height), outline, format, true);
                         TextRenderer.DrawText(_rich, new Rectangle(0, 1, Size.Width, Size.Height), outline, format, true);

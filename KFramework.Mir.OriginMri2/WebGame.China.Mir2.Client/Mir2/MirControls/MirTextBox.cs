@@ -313,9 +313,8 @@ namespace Client.MirControls
             }
 
             Font font = TextBox.Font ?? new Font(Settings.FontName, 8F);
-            int fore = unchecked((int)(TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White).PackedValue);
-            int back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? unchecked((int)TextBox.BackColor.PackedValue) : 0;
-            int selBack = unchecked((int)CommonColor.FromArgb(128, 51, 153, 255).PackedValue);
+            Color fore = TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White;
+            Color back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor : CommonColor.Empty;
             string drawText = TextBox.Text ?? "";
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";
@@ -323,14 +322,14 @@ namespace Client.MirControls
             {
                 var saved = DXManager.CurrentSurface;
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-                DXManager.GDevice.Clear(CommonColor.FromArgb((uint)back));
+                DXManager.GDevice.Clear(back);
                 try
                 {
                     DXManager.BeginSprite(MirBlend.Normal);
                     _caretBox.DrawTextBox(
                         DXManager.Batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
-                        CommonColor.FromArgb((uint)fore),
+                        fore,
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
                         KFramework.MonoGame.TextBox.DefaultPadLeft, drawComp,
                         TextBox.SelectionStart, TextBox.SelectionLength);
