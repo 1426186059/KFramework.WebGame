@@ -1721,6 +1721,7 @@ public enum ServerPacketIds : short
     RefreshInventory,
     GainedLegendCoin,
     LoseLegendCoin,
+    TrackQuest,
 }
 
 public enum ClientPacketIds : short
@@ -1888,6 +1889,7 @@ public enum ClientPacketIds : short
     RemoveStoragePassword,
     GMCommand,
     SortInventory,
+    TrackQuest,
 }
 
 public enum ConquestType : byte

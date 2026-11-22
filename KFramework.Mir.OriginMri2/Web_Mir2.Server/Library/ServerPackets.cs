@@ -5408,6 +5408,26 @@ namespace ServerPackets
         }
     }
 
+    /// <summary>服务器确认某个任务的跟踪状态（客户端据此更新任务跟踪栏，不再本地保存）。</summary>
+    public sealed class TrackQuest : Packet
+    {
+        public override short Index { get { return (short)ServerPacketIds.TrackQuest; } }
+
+        public int QuestIndex;
+        public bool Track;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            QuestIndex = reader.ReadInt32();
+            Track = reader.ReadBoolean();
+        }
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(QuestIndex);
+            writer.Write(Track);
+        }
+    }
+
     public sealed class CompleteQuest : Packet
     {
         public override short Index

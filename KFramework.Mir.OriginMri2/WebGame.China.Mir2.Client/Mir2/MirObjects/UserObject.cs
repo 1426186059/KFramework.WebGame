@@ -74,7 +74,6 @@ namespace Client.MirObjects
         {
             Id = info.RealId;
             Name = info.Name;
-            Settings.LoadTrackedQuests(info.Name);
             NameColour = info.NameColour;
             GuildName = info.GuildName;
             GuildRankName = info.GuildRank;

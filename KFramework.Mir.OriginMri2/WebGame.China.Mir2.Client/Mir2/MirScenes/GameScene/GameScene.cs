@@ -1943,6 +1943,9 @@ namespace Client.MirScenes
                 case (short)ServerPacketIds.ChangeQuest:
                     ChangeQuest((S.ChangeQuest)p);
                     break;
+                case (short)ServerPacketIds.TrackQuest:
+                    TrackQuest((S.TrackQuest)p);
+                    break;
                 case (short)ServerPacketIds.CompleteQuest:
                     CompleteQuest((S.CompleteQuest)p);
                     break;
@@ -3124,6 +3127,17 @@ namespace Client.MirScenes
             messageBox.Show();
         }
 
+        private void TrackQuest(S.TrackQuest p)
+        {
+            ClientQuestProgress quest = User.CurrentQuests.FirstOrDefault(q => q.Id == p.QuestIndex);
+            if (quest == null) return;
+
+            if (p.Track)
+                QuestTrackingDialog.AddQuest(quest, true);
+            else
+                QuestTrackingDialog.RemoveQuest(quest, true);
+        }
+
         private void ChangeQuest(S.ChangeQuest p)
         {
             switch (p.QuestState)
@@ -3134,14 +3148,10 @@ namespace Client.MirScenes
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)
                         BindQuest(quest);
-                    if (Settings.TrackedQuests.Contains(p.Quest.Id))
-                    {
-                        GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest, true);
-                    }
-
+                    // TrackQuest 由服务器根据角色存档下发，客户端不再本地判断/保存。
                     if (p.TrackQuest)
                     {
-                        GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest);
+                        GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest, true);
                     }
 
                     if (p.AutoGuide)
@@ -3182,7 +3192,8 @@ namespace Client.MirScenes
                         User.OfferedQuests.RemoveAt(i);
                     }
 
-                    GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest);
+                    // 服务器已移除该任务，客户端不再回发跟踪取消包。
+                    GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest, true);
 
                     break;
 

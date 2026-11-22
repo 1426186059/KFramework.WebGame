@@ -39,7 +39,6 @@ namespace Client
 
 
         private static InIReader Reader = new InIReader(@".\Mir2Config.ini");
-        private static InIReader QuestTrackingReader = new InIReader(Path.Combine(UserDataPath, @".\QuestTracking.ini"));
 
         private static bool _useTestConfig;
         public static bool UseTestConfig
@@ -196,9 +195,6 @@ namespace Client
 
         public const string Language = "Chinese";
 
-        //Quests
-        public static int[] TrackedQuests = new int[5];
-
         //Chat
         public static bool
             ShowNormalChat = true,
@@ -233,7 +229,6 @@ namespace Client
         {
             // 浏览器端：InIReader 已改为走 IndexedDB，加载为异步，须 await 后再读取。
             await Reader.LoadAsync().ConfigureAwait(false);
-            await QuestTrackingReader.LoadAsync().ConfigureAwait(false);
             Reader.AutoPersist = false; // 批量读取期间不逐条落库，结束再统一保存一次;
 
             //Graphics
@@ -418,23 +413,6 @@ namespace Client
             Reader.Write("Game", "SkillBarTwoRows", value);
         }
 
-        public static void LoadTrackedQuests(string charName)
-        {
-            //Quests
-            for (int i = 0; i < TrackedQuests.Length; i++)
-            {
-                TrackedQuests[i] = QuestTrackingReader.ReadInt32(charName, "Quest-" + i.ToString(), -1);
-            }
-        }
-
-        public static void SaveTrackedQuests(string charName)
-        {
-            //Quests
-            for (int i = 0; i < TrackedQuests.Length; i++)
-            {
-                QuestTrackingReader.Write(charName, "Quest-" + i.ToString(), TrackedQuests[i]);
-            }
-        }
     }
 
 

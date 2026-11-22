@@ -1983,6 +1983,26 @@ namespace ClientPackets
         }
     }
 
+    /// <summary>客户端勾选/取消任务跟踪栏条目。跟踪状态由服务器持久化到角色存档。</summary>
+    public sealed class TrackQuest : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.TrackQuest; } }
+
+        public int QuestIndex;
+        public bool Track;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            QuestIndex = reader.ReadInt32();
+            Track = reader.ReadBoolean();
+        }
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(QuestIndex);
+            writer.Write(Track);
+        }
+    }
+
     public sealed class FinishQuest : Packet
     {
         public override short Index { get { return (short)ClientPacketIds.FinishQuest; } }

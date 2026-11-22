@@ -1213,7 +1213,6 @@ namespace Client.MirScenes.Dialogs
 
             for (int i = 0; i < Quests.Count; i++)
             {
-                bool Track = Settings.TrackedQuests.Contains(Quests[i].Id) ? true : false;
                 QuestSingleQuestItem singleQuest = new QuestSingleQuestItem(Quests[i])
                 {
                     Parent = this,

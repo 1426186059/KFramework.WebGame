@@ -90,6 +90,8 @@ namespace Server.MirDatabase
 
         public List<QuestProgressInfo> CurrentQuests = new List<QuestProgressInfo>();
         public List<int> CompletedQuests = new List<int>();
+        // 任务跟踪栏勾选状态（服务器权威，随角色存档持久化，最多 5 个当前任务 ID）。
+        public List<int> TrackedQuests = new List<int>();
 
         public bool[] Flags = new bool[Globals.FlagIndexCount];
 
@@ -299,6 +301,20 @@ namespace Server.MirDatabase
                 if (Envir.BindQuest(quest))
                 {
                     CurrentQuests.Add(quest);
+                }
+            }
+
+            // v120 起跟任务列表一起保存跟踪栏勾选；老存档没有这段，保持为空。
+            if (version > 119 && reader.BaseStream.Position + 4 <= reader.BaseStream.Length)
+            {
+                count = reader.ReadInt32();
+                if (count > 0 && count <= 5 && reader.BaseStream.Position + count * 4 <= reader.BaseStream.Length)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        int trackedId = reader.ReadInt32();
+                        if (trackedId > 0) TrackedQuests.Add(trackedId);
+                    }
                 }
             }
 
@@ -541,6 +557,12 @@ namespace Server.MirDatabase
             for (int i = 0; i < CurrentQuests.Count; i++)
             {
                 CurrentQuests[i].Save(writer);
+            }
+
+            writer.Write(TrackedQuests.Count);
+            for (int i = 0; i < TrackedQuests.Count; i++)
+            {
+                writer.Write(TrackedQuests[i]);
             }
 
             writer.Write(Buffs.Count);

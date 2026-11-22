@@ -403,6 +403,9 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.SortInventory:
                     SortInventory((C.SortInventory) p);
                     break;
+                case (short)ClientPacketIds.TrackQuest:
+                    TrackQuest((C.TrackQuest) p);
+                    break;
                 case (short)ClientPacketIds.MoveItem:
                     MoveItem((C.MoveItem) p);
                     break;
@@ -2016,6 +2019,13 @@ namespace Server.MirNetwork
             if (Stage != GameStage.Game) return;
 
             Player.AcceptQuest(p.QuestIndex, p.Navigate); //p.NPCIndex,
+        }
+
+        private void TrackQuest(C.TrackQuest p)
+        {
+            if (Stage != GameStage.Game) return;
+
+            Player.TrackQuest(p.QuestIndex, p.Track);
         }
 
         private void FinishQuest(C.FinishQuest p)

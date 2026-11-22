@@ -200,6 +200,39 @@ namespace Server.MirObjects
             get { return Info.CompletedQuests; }
         }
 
+        public List<int> TrackedQuests
+        {
+            get { return Info.TrackedQuests; }
+        }
+
+        /// <summary>设置任务跟踪状态，服务器权威并随角色存档持久化。
+        /// notify=false 用于已有 S.ChangeQuest/S.TrackQuest 会另行通知客户端的场景。</summary>
+        public bool TrackQuest(int questIndex, bool track, bool notify = true, bool requireActive = true)
+        {
+            if (questIndex <= 0) return false;
+            // 接取任务时 SendUpdateQuest 还没把 quest 加进 CurrentQuests，此时不做在线任务校验。
+            if (track && requireActive && !CurrentQuests.Any(q => q.Info != null && q.Info.Index == questIndex)) return false;
+
+            bool changed;
+            if (track)
+            {
+                if (TrackedQuests.Contains(questIndex)) return true;
+                if (TrackedQuests.Count >= 5) return false;
+
+                TrackedQuests.Add(questIndex);
+                changed = true;
+            }
+            else
+            {
+                changed = TrackedQuests.Remove(questIndex);
+            }
+
+            if (changed && notify)
+                Enqueue(new S.TrackQuest { QuestIndex = questIndex, Track = track });
+
+            return track ? TrackedQuests.Contains(questIndex) : !TrackedQuests.Contains(questIndex);
+        }
+
         // 已开放（未接取）的任务索引：左上角追踪栏显示"寻找 NPC"，玩家前往后才正式接取。
         public List<int> OfferedQuests = new List<int>();
 
@@ -1312,7 +1345,8 @@ namespace Server.MirObjects
             {
                 var quest = CurrentQuests[i];
                 quest.Init(this);
-                SendUpdateQuest(quest, QuestState.Add);
+                bool tracked = quest.Info != null && TrackedQuests.Contains(quest.Info.Index);
+                SendUpdateQuest(quest, QuestState.Add, tracked);
             }
 
             SendBaseStats();
@@ -4024,6 +4058,7 @@ namespace Server.MirObjects
                         {
                             SendUpdateQuest(player.CurrentQuests[i], QuestState.Remove);
                         }
+                        player.TrackedQuests.Clear();
 
                         player.CompletedQuests.Clear();
                         player.GetCompletedQuests();
@@ -4052,6 +4087,7 @@ namespace Server.MirObjects
                         if (activeQuest != null)
                         {
                             player.SendUpdateQuest(activeQuest, QuestState.Remove);
+                            player.TrackedQuests.Remove(questID);
                         }
 
                         switch (questState)
@@ -11991,7 +12027,8 @@ namespace Server.MirObjects
             OfferedQuests.Remove(index);
             Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = index }, QuestState = QuestState.Remove });
 
-            SendUpdateQuest(quest, QuestState.Add, true);
+            bool tracked = TrackQuest(index, true, false, false);
+            SendUpdateQuest(quest, QuestState.Add, tracked);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
@@ -12188,7 +12225,8 @@ namespace Server.MirObjects
             QuestProgressInfo quest = new QuestProgressInfo(index);
             quest.Init(this);
 
-            SendUpdateQuest(quest, QuestState.Add, true, true);
+            bool tracked = TrackQuest(index, true, false, false);
+            SendUpdateQuest(quest, QuestState.Add, tracked, true);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
@@ -12228,6 +12266,7 @@ namespace Server.MirObjects
 
             if (quest == null) return;
 
+            TrackQuest(questIndex, false, false);
             SendUpdateQuest(quest, QuestState.Remove);
 
             RecalculateQuestBag();
