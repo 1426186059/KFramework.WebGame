@@ -3530,7 +3530,8 @@ namespace Server.MirEnvir
         {
             foreach (var quest in QuestInfoList)
             {
-                if (quest.Type != QuestType.Daily) continue;
+                // 原始传奇主线为一次性任务，不参与跨天重置；其余类型按日常任务处理。
+                if (quest.Type == QuestType.Main || quest.Type == QuestType.None) continue;
 
                 for (var i = 0; i < info.CompletedQuests.Count; i++)
                 {

@@ -19,7 +19,6 @@ namespace Server.MirDatabase
         public int RequiredQuestId { get; set; }
 
         public int TaskGroupId { get; set; }
-        public int OriginalType { get; set; }
         public string Condition { get; set; } = "";
         public string ConditionText { get; set; } = "";
 
@@ -255,6 +254,7 @@ namespace Server.MirDatabase
             var o = OriginSettings;
             if (o == null) return;
 
+            // Type 即原始传奇任务类型（TaskType / taskgroupid），由 JSON 顶层字段反序列化，无需在此二次设置。
             Description.Clear();
             TaskDescription.Clear();
             ReturnDescription.Clear();
@@ -596,7 +596,6 @@ namespace Server.MirDatabase
                 ClassNeeded = RequiredClass,
                 QuestNeeded = RequiredQuest,
                 Type = Type,
-                OriginalType = OriginSettings?.OriginalType ?? 0,
                 TimeLimitInSeconds = TimeLimitInSeconds,
                 RewardGold = GoldReward,
                 RewardExp = ExpReward,

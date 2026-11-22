@@ -52,39 +52,22 @@ namespace Client.MirScenes.Dialogs
             JiuShen
         }
 
-        /// <summary>把任务表里的原始 taskgroupid 映射到原版 9 种 TaskType 的槽位。</summary>
+        /// <summary>把原始传奇（页游）任务类型映射到任务追踪面板的分组槽位。</summary>
         private static int SlotOf(ClientQuestInfo info)
         {
             if (info == null) return 0;
 
-            if (info.OriginalType == 0)
-                return info.Type == QuestType.Story ? 0 : (int)OriginalQuestKind.Xuanshang;
-
-            switch (info.OriginalType)
+            switch (info.Type)
             {
-                case 1: return (int)OriginalQuestKind.Main;
-                case 2: return (int)OriginalQuestKind.ChuMo;
-                case 3: return (int)OriginalQuestKind.RandomBoss;
-                case 4: return (int)OriginalQuestKind.Recovery;
-                case 5: return (int)OriginalQuestKind.Shenwei;
-                case 6: return (int)OriginalQuestKind.ChuMo;
-                case 7: return (int)OriginalQuestKind.ShouHu;
-                case 8: return (int)OriginalQuestKind.WdLogin;
-                case 130: return (int)OriginalQuestKind.JiuShen;
-                case 99:
-                case 101:
-                case 102:
-                case 103:
-                case 104:
-                case 105:
-                case 106:
-                case 107:
-                case 108:
-                case 109:
-                case 110:
-                case 120:
-                case 201:
-                    return (int)OriginalQuestKind.Xuanshang;
+                case QuestType.Main: return (int)OriginalQuestKind.Main;
+                case QuestType.ChuMo:
+                case QuestType.Group6: return (int)OriginalQuestKind.ChuMo;
+                case QuestType.RandomBoss: return (int)OriginalQuestKind.RandomBoss;
+                case QuestType.Recovery: return (int)OriginalQuestKind.Recovery;
+                case QuestType.Shenwei: return (int)OriginalQuestKind.Shenwei;
+                case QuestType.ShouHu: return (int)OriginalQuestKind.ShouHu;
+                case QuestType.WdLogin: return (int)OriginalQuestKind.WdLogin;
+                case QuestType.JiuShen: return (int)OriginalQuestKind.JiuShen;
                 default: return (int)OriginalQuestKind.Xuanshang;
             }
         }
@@ -99,7 +82,6 @@ namespace Client.MirScenes.Dialogs
             private readonly MirLabel _findLabel;
             private readonly MirLabel[] _taskLabels = new MirLabel[MaxTaskLines];
             private readonly QuestTaskTarget[] _targets = new QuestTaskTarget[MaxTaskLines];
-
             private ClientQuestProgress _quest;
             private bool _isOffered;
 
@@ -148,18 +130,12 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true,
                     Loop = true,
                     Animated = false,
-                    Blending = true,
                     ForeColour = Color.White,
-                    AutoSetupMovieClip = false,
+                    AutoSetupMovieClip = true,
                     Visible = false,
+                    AtlasNameKey = QuestBorderSheetKey,
+                    Location = new Point(0, 0)
                 };
-                Effect.AtlasLoaded += (o, e) =>
-                {
-                    var sheet = Effect.AtlasSheet;
-                    if (sheet?.MovieClip != null)
-                        Effect.SetMovieClip(sheet, QuestBorderScale);
-                };
-                Effect.AtlasNameKey = QuestBorderSheetKey;
 
                 Reset();
             }
@@ -193,8 +169,8 @@ namespace Client.MirScenes.Dialogs
                 _quest = entry.Quest;
                 _isOffered = entry.IsOffered;
 
-                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 2, 2, Color.LimeGreen, true, true);
-                Effect.Location = new Point(-12, -11);
+                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 10, 5, Color.LimeGreen, true, true);
+                Effect.Location = new Point(-15, 0);
                 Effect.Visible = showEffect;
                 Effect.Animated = showEffect;
 
@@ -203,7 +179,7 @@ namespace Client.MirScenes.Dialogs
                     string npcName = !string.IsNullOrEmpty(entry.Quest.QuestInfo.StartNpcName)
                         ? entry.Quest.QuestInfo.StartNpcName
                         : entry.Quest.QuestInfo.Name;
-                    SetLabel(_findLabel, "寻找 " + npcName, 2, 22, Color.Gold, false, true);
+                    SetLabel(_findLabel, "寻找 " + npcName, 10, 25, Color.Gold, false, true);
                     for (int i = 0; i < MaxTaskLines; i++)
                         _taskLabels[i].Visible = false;
                     return;
@@ -230,19 +206,19 @@ namespace Client.MirScenes.Dialogs
                         {
                             string prefix = text.Substring(0, idx);
                             string targetText = text.Substring(idx);
-                            SetLabel(_taskLabels[line - 1], prefix, 2, lineY, Color.White, true, true);
+                            SetLabel(_taskLabels[line - 1], prefix, 10, lineY, Color.White, true, true);
                             if (line >= MaxTaskLines) break;
 
                             int prefixW = TextRenderer.MeasureText(prefix, QuestFont).Width + 2;
                             _targets[line] = target;
-                            SetLabel(_taskLabels[line], targetText, 2 + prefixW, lineY, Color.Green, false, true);
+                            SetLabel(_taskLabels[line], targetText, 10 + prefixW, lineY, Color.Green, false, true);
                             line++;
                             continue;
                         }
                     }
 
                     bool navigable = target != null && target.MapIndex > 0;
-                    SetLabel(_taskLabels[line - 1], text, 2, lineY, navigable ? Color.Green : Color.White, !navigable, true);
+                    SetLabel(_taskLabels[line - 1], text, 10, lineY, navigable ? Color.Green : Color.White, !navigable, true);
                 }
 
                 for (int i = line; i < MaxTaskLines; i++)

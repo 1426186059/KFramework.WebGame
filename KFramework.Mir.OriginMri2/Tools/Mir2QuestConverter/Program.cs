@@ -43,7 +43,7 @@ public sealed class QuestOriginSettingsOut
     public string StartNpcName = "", FinishNpcName = "";
     public int NextQuestId, RequiredQuestId;
 
-    public int TaskGroupId, OriginalType;
+    public int TaskGroupId;
     public string Condition = "", ConditionText = "";
 
     public string Rewards = "", RewardText = "", Tip3 = "", CompleteInfo = "";
@@ -249,7 +249,7 @@ public static class Program
             if (minLevel >= 999) highLevelGate++;
 
             int groupId = TryInt(o, "taskgroupid", out int tg) ? tg : 0;
-            int originalType = TryInt(o, "type", out int ot) ? ot : 0;
+            int taskType = TryInt(o, "type", out int ot) ? ot : 0;
             int nextId = TryInt(o, "next", out int nx) ? nx : 0;
             int requiredQuest = prevByNext.TryGetValue(id, out int prev) ? prev : 0;
 
@@ -281,7 +281,6 @@ public static class Program
                 NextQuestId = nextId,
                 RequiredQuestId = requiredQuest,
                 TaskGroupId = groupId,
-                OriginalType = originalType,
                 Condition = condRaw,
                 ConditionText = string.Join("；", condTexts),
                 Rewards = rewards,
@@ -375,7 +374,8 @@ public static class Program
                 RequiredMinLevel = minLevel,
                 RequiredMaxLevel = maxLevel,
                 RequiredQuest = requiredQuest,
-                Type = (byte)(groupId >= 1 && groupId <= 6 ? 3 : 0),
+                // 原始传奇任务类型直接写到 QuestType 字段（TaskType / taskgroupid）。
+                Type = (byte)taskType,
                 GoldReward = gold,
                 ExpReward = exp,
                 OriginSettings = settings

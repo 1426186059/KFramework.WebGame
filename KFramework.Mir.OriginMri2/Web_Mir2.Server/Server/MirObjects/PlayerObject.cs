@@ -12161,7 +12161,8 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (quest.Info.Type != QuestType.Repeatable)
+            // 原始传奇只有主线任务是一次性的，完成后记入已完成列表；其它类型（除魔/悬赏/日常等）可重复，不记录。
+            if (quest.Info.Type == QuestType.Main)
             {
                 Info.CompletedQuests.Add(quest.Index);
                 GetCompletedQuests();

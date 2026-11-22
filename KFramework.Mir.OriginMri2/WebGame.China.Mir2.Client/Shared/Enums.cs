@@ -156,12 +156,32 @@ public enum RefinedValue : byte
     SC = 3,
 }
 
+/// <summary>原始传奇（页游）TaskType / taskgroupid。直接作为客户端任务类型字段下发。</summary>
 public enum QuestType : byte
 {
-    General = 0,
-    Daily = 1,
-    Repeatable = 2,
-    Story = 3
+    None = 0,
+    Main = 1,          // 主线
+    ChuMo = 2,         // 除魔
+    RandomBoss = 3,    // 随机BOSS
+    Recovery = 4,      // 回收
+    Shenwei = 5,       // 神威
+    Group6 = 6,        // 配置里存在，原始传奇 JS 未列该枚举
+    ShouHu = 7,        // 守护
+    WdLogin = 8,       // 登陆/日常
+    Xuanshang = 99,    // 悬赏（JS TaskType.xuanshang）
+    Xuanshang101 = 101,
+    Xuanshang102 = 102,
+    Xuanshang103 = 103,
+    Xuanshang104 = 104,
+    Xuanshang105 = 105,
+    Xuanshang106 = 106,
+    Xuanshang107 = 107,
+    Xuanshang108 = 108,
+    Xuanshang109 = 109,
+    Xuanshang110 = 110,
+    Xuanshang120 = 120,
+    JiuShen = 130,     // 九神
+    Xuanshang201 = 201
 }
 
 public enum QuestIcon : byte

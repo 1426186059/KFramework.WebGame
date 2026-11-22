@@ -399,10 +399,8 @@ public class ClientQuestInfo
     public int QuestNeeded;
     public RequiredClass ClassNeeded;
 
+    // 原始传奇（页游）任务类型：TaskType / taskgroupid，见 QuestType 枚举。
     public QuestType Type;
-
-    // 原始传奇 taskgroupid / TaskType（1主线 2除魔 3随机BOSS 4回收 5神威 7守护 8登陆 99悬赏 130九神）。
-    public int OriginalType;
 
     public int TimeLimitInSeconds = 0;
 
@@ -455,7 +453,6 @@ public class ClientQuestInfo
         QuestNeeded = reader.ReadInt32();
         ClassNeeded = (RequiredClass)reader.ReadByte();
         Type = (QuestType)reader.ReadByte();
-        OriginalType = reader.ReadInt32();
         TimeLimitInSeconds = reader.ReadInt32();
         RewardGold = reader.ReadUInt32();
         RewardExp = reader.ReadUInt32();
@@ -508,7 +505,6 @@ public class ClientQuestInfo
         writer.Write(QuestNeeded);
         writer.Write((byte)ClassNeeded);
         writer.Write((byte)Type);
-        writer.Write(OriginalType);
         writer.Write(TimeLimitInSeconds);
         writer.Write(RewardGold);
         writer.Write(RewardExp);
@@ -533,16 +529,28 @@ public class ClientQuestInfo
 
         switch (Type)
         {
-            case QuestType.General:
-            case QuestType.Repeatable:
+            case QuestType.Main:
                 if (completed)
-                    icon = QuestIcon.QuestionYellow;
+                    icon = QuestIcon.QuestionGreen;
                 else if (taken)
                     icon = QuestIcon.QuestionWhite;
                 else
-                    icon = QuestIcon.ExclamationYellow;
+                    icon = QuestIcon.ExclamationGreen;
                 break;
-            case QuestType.Daily:
+            case QuestType.WdLogin:
+            case QuestType.Xuanshang:
+            case QuestType.Xuanshang101:
+            case QuestType.Xuanshang102:
+            case QuestType.Xuanshang103:
+            case QuestType.Xuanshang104:
+            case QuestType.Xuanshang105:
+            case QuestType.Xuanshang106:
+            case QuestType.Xuanshang107:
+            case QuestType.Xuanshang108:
+            case QuestType.Xuanshang109:
+            case QuestType.Xuanshang110:
+            case QuestType.Xuanshang120:
+            case QuestType.Xuanshang201:
                 if (completed)
                     icon = QuestIcon.QuestionBlue;
                 else if (taken)
@@ -550,13 +558,13 @@ public class ClientQuestInfo
                 else
                     icon = QuestIcon.ExclamationBlue;
                 break;
-            case QuestType.Story:
+            default:
                 if (completed)
-                    icon = QuestIcon.QuestionGreen;
+                    icon = QuestIcon.QuestionYellow;
                 else if (taken)
                     icon = QuestIcon.QuestionWhite;
                 else
-                    icon = QuestIcon.ExclamationGreen;
+                    icon = QuestIcon.ExclamationYellow;
                 break;
         }
 
