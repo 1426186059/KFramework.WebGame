@@ -95,7 +95,8 @@ namespace Client.MirScenes.Dialogs
 
                 if (!SelectedQuest.Taken)
                 {
-                    // 尚未接取：在 NPC 旁点击“接取任务”
+                    // 尚未接取：在 NPC 旁点击“接取任务”。面板保持打开，等服务器
+                    // S.ChangeQuest(Add/Update) 回来后 ChangeQuest 内原地 DisplayInfo() 刷新按钮文字。
                     Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Accept, QuestIndex = SelectedQuest.QuestInfo.Index });
                 }
                 else if (SelectedQuest.Completed)
@@ -103,10 +104,11 @@ namespace Client.MirScenes.Dialogs
                     Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Finish, QuestIndex = SelectedQuest.QuestInfo.Index });
                     // 领取奖励时直接播放“任务完成”特效
                     GameScene.Scene?.TaskCompleteEffect?.Play();
+                    // 领奖后任务从 CurrentQuests 移除，服务器 S.ChangeQuest(Remove) 回来后
+                    // DisplayInfo()->GetAvailableQuests() 若无其它可交任务会自行 Hide()。
                 }
-                // 无论哪种状态（接取/继续/领取），点击后都关闭 NPC 任务面板
-                // （Visible=false，后续服务器状态包因条件不满足也不会再弹出来）
-                Hide();
+                // 对齐原始传奇：接取/完成后不关闭面板，对话文字原地刷新成“任务完成，领取奖励”，
+                // 玩家可直接点领奖，无需再回任务追踪面板重新打开。
             };
 
             MirButton closeButton = new MirButton
@@ -160,6 +162,26 @@ namespace Client.MirScenes.Dialogs
             }
             Reset();
             RefreshInterface();
+        }
+
+        /// <summary>
+        /// 服务器任务状态包回来后决定任务面板去留，对齐原始传奇 checknpcTaskDialog：
+        /// 原版按 TaskState 判断，只有 state != Accepted 才停留在任务面板。映射到本工程：
+        ///   - 接取后仍进行中（Taken 且未完成 = 原版 Accepted）→ 关闭面板，回到 NPC 普通对话；
+        ///   - 接取后即完成（Completed = 原版 Finish）→ 保持面板，ReDisplayButtons 原地刷成“领取奖励”；
+        ///   - 其它状态（Update/Remove/完成列表）→ 正常刷新。
+        /// </summary>
+        public void OnQuestStateChanged(ClientQuestProgress quest, QuestState state)
+        {
+            if (!Visible) return;
+
+            if (state == QuestState.Add && quest != null && quest.Taken && !quest.Completed)
+            {
+                Hide();
+                return;
+            }
+
+            DisplayInfo();
         }
 
         public void Reset()

@@ -3121,9 +3121,9 @@ namespace Client.MirScenes
                         AutoGuideToQuestNPC(p.Quest.QuestInfo.NPCIndex);
                     }
 
-                    // 任务面板处于打开状态时，接取/状态变化后刷新，使其显示最新（如“接取任务”->“继续”）
-                    if (Scene.QuestListDialog.Visible)
-                        Scene.QuestListDialog.DisplayInfo();
+                    // 任务面板刷新：对齐原始传奇 TaskState —— 接取后若任务立刻完成(Finish)则保持面板
+                    // 原地刷成“领取奖励”，若仍进行中(Accepted)则关闭面板回到 NPC 普通对话。
+                    Scene.QuestListDialog.OnQuestStateChanged(p.Quest, p.QuestState);
 
                     break;
                 case QuestState.Update:

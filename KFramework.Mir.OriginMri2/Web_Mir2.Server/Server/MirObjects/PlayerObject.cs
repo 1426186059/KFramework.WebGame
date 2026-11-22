@@ -4048,14 +4048,26 @@ namespace Server.MirObjects
                             return;
                         }
 
+                        // 进行中任务：必须用 player.SendUpdateQuest，否则包发给 GM 自己而非目标玩家
                         for (int i = player.CurrentQuests.Count - 1; i >= 0; i--)
                         {
-                            SendUpdateQuest(player.CurrentQuests[i], QuestState.Remove);
+                            player.SendUpdateQuest(player.CurrentQuests[i], QuestState.Remove);
                         }
+
+                        // 追踪栏：清掉左侧任务跟踪列表
                         player.TrackedQuests.Clear();
 
+                        // 已开放（未接取）任务：清服务端列表，并给客户端发 Remove 同步（否则追踪栏仍显示“寻找 NPC”）
+                        foreach (int offeredIndex in player.OfferedQuests)
+                            player.Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = offeredIndex }, QuestState = QuestState.Remove });
+                        player.OfferedQuests.Clear();
+
+                        // 完成记录：清服务端并下发空完成列表
                         player.CompletedQuests.Clear();
                         player.GetCompletedQuests();
+
+                        // 任务道具：清掉已无任务引用的任务背包物品（客户端同步删除）
+                        player.RecalculateQuestBag();
 
                         break;
 
