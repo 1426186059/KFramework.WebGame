@@ -3381,7 +3381,7 @@ namespace Client.MirScenes
 
             Gold += p.Gold;
             SoundManager.PlaySound(SoundList.Gold);
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouGainedGold), p.Gold, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Gold)));
+            OutputMessage($"<color=lime>获得</color> 金币 x{p.Gold}");
         }
         private void LoseGold(S.LoseGold p)
         {
@@ -3394,7 +3394,7 @@ namespace Client.MirScenes
 
             Credit += p.Credit;
             SoundManager.PlaySound(SoundList.Gold);
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouGainedGold), p.Credit, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Credit)));
+            OutputMessage($"<color=lime>获得</color> 元宝 x{p.Credit}");
         }
         private void LoseCredit(S.LoseCredit p)
         {
@@ -3407,7 +3407,7 @@ namespace Client.MirScenes
 
             LegendCoin += p.LegendCoin;
             SoundManager.PlaySound(SoundList.Gold);
-            OutputMessage($"获得传奇币 {p.LegendCoin}");
+            OutputMessage($"<color=lime>获得</color> 传奇币 x{p.LegendCoin}");
         }
         private void LoseLegendCoin(S.LoseLegendCoin p)
         {
@@ -3941,13 +3941,13 @@ namespace Client.MirScenes
 
         private void GainExperience(S.GainExperience p)
         {
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ExperienceGained), p.Amount));
+            OutputMessage($"<color=lime>获得</color> 经验 x{p.Amount}");
             MapObject.User.Experience += p.Amount;
         }
 
         private void GainHeroExperience(S.GainHeroExperience p)
         {
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HeroExperienceGained), p.Amount));
+            OutputMessage($"<color=lime>获得</color> 英雄经验 x{p.Amount}");
             MapObject.Hero.Experience += p.Amount;
         }
         private void LevelChanged(S.LevelChanged p)
