@@ -401,6 +401,9 @@ public class ClientQuestInfo
 
     public QuestType Type;
 
+    // 原始传奇 taskgroupid / TaskType（1主线 2除魔 3随机BOSS 4回收 5神威 7守护 8登陆 99悬赏 130九神）。
+    public int OriginalType;
+
     public int TimeLimitInSeconds = 0;
 
     public uint RewardGold;
@@ -452,6 +455,7 @@ public class ClientQuestInfo
         QuestNeeded = reader.ReadInt32();
         ClassNeeded = (RequiredClass)reader.ReadByte();
         Type = (QuestType)reader.ReadByte();
+        OriginalType = reader.ReadInt32();
         TimeLimitInSeconds = reader.ReadInt32();
         RewardGold = reader.ReadUInt32();
         RewardExp = reader.ReadUInt32();
@@ -504,6 +508,7 @@ public class ClientQuestInfo
         writer.Write(QuestNeeded);
         writer.Write((byte)ClassNeeded);
         writer.Write((byte)Type);
+        writer.Write(OriginalType);
         writer.Write(TimeLimitInSeconds);
         writer.Write(RewardGold);
         writer.Write(RewardExp);

@@ -8,174 +8,247 @@ using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
-
     public sealed class QuestTrackingDialog : MirImageControl
     {
+        public const int MaxTrackedQuests = 5;
+
         public List<int> TrackedQuestsIds = new List<int>();
         public List<MirLabel> TaskLines = new List<MirLabel>();
 
-        public Font QuestFont = new Font(Settings.FontName, 12F);
+        public static Font QuestFont = new Font(Settings.FontName, 12F);
 
         private MirImageControl m_ShowNode;
         private MirButton m_HideNode;
+        private MirImageControl mShowNode_Bg;
+        private MirScrollView2 _scrollView;
 
-        // CDN 上的 ebc12760_8637.png 反解析自 manifest：
-        //   resource/assets/gameui4/movieClip/y_task_complete.png
-        // 配套描述 y_task_complete.json（frameRate=10，10 帧）走 Mir2AtlasLibrary 配置化加载。
-        // 原始传奇 JS 的做法：每个任务条目是一个 render item，特效放独立 eff_group，
-        // 按 item.x-14 / item.y-13 定位（原版 scale .75/.8，本工程按条目高度缩到 .55）。
-        // 这里等价为每个 Item 自带特效。
+        // 原始传奇 JS 的 TaskType 共 9 种：1主线 2除魔 3随机BOSS 4回收 5神威 7守护 8登陆 99悬赏 130九神。
+        // taskRenderDic 每种类型最多一个条目 → 最多 9 行；行高固定，交给 MirScrollView2 虚拟化滚动。
+        private const int SlotCount = 9;
+        private const int RowHeight = 120;
         private const string QuestBorderSheetKey = "resource/assets/gameui4/movieClip/y_task_complete.json";
-        // 原版 JS 是 scaleX=.75 / scaleY=.8（单帧 274x86 → 显示约 217x80），
-        // 但它的条目高 42+19*goals（61~99px）；我们条目只有 45~75px，按 .8 会盖住下一条，
-        // 故缩到 .55（约 159x55），刚好框住一条「寻找 NPC」/已完成任务。
+        // 原版 scaleX=.75 / scaleY=.8，我们的条目更紧凑，缩到 .55。
         private const float QuestBorderScale = 0.55f;
-        private readonly List<QuestTrackingItem> _items = new List<QuestTrackingItem>();
+        private const int MaxTaskLines = 8;
+
+        private sealed class DisplayEntry
+        {
+            public ClientQuestProgress Quest;
+            public bool IsOffered;
+        }
+
+        private readonly List<DisplayEntry> _display = new List<DisplayEntry>();
+
+        private enum OriginalQuestKind
+        {
+            Main = 0,
+            ChuMo,
+            RandomBoss,
+            Recovery,
+            Shenwei,
+            ShouHu,
+            WdLogin,
+            Xuanshang,
+            JiuShen
+        }
+
+        /// <summary>把任务表里的原始 taskgroupid 映射到原版 9 种 TaskType 的槽位。</summary>
+        private static int SlotOf(ClientQuestInfo info)
+        {
+            if (info == null) return 0;
+
+            if (info.OriginalType == 0)
+                return info.Type == QuestType.Story ? 0 : (int)OriginalQuestKind.Xuanshang;
+
+            switch (info.OriginalType)
+            {
+                case 1: return (int)OriginalQuestKind.Main;
+                case 2: return (int)OriginalQuestKind.ChuMo;
+                case 3: return (int)OriginalQuestKind.RandomBoss;
+                case 4: return (int)OriginalQuestKind.Recovery;
+                case 5: return (int)OriginalQuestKind.Shenwei;
+                case 6: return (int)OriginalQuestKind.ChuMo;
+                case 7: return (int)OriginalQuestKind.ShouHu;
+                case 8: return (int)OriginalQuestKind.WdLogin;
+                case 130: return (int)OriginalQuestKind.JiuShen;
+                case 99:
+                case 101:
+                case 102:
+                case 103:
+                case 104:
+                case 105:
+                case 106:
+                case 107:
+                case 108:
+                case 109:
+                case 110:
+                case 120:
+                case 201:
+                    return (int)OriginalQuestKind.Xuanshang;
+                default: return (int)OriginalQuestKind.Xuanshang;
+            }
+        }
 
         /// <summary>
-        /// 一个任务条目 = 任务名 + 若干内容行（或「寻找 NPC」提示）+ 可选金色边框特效。
-        /// 对应原始传奇 taskRenderDic 里的一个 render item；X/Y 就是 item.x / item.y。
-        /// 条目的文字、点击、传送、特效全部自己负责，Dialog 只管排布。
+        /// 一行任务条目。MirScrollView2 只在视口内创建/复用这个控件；
+        /// 特效和标签都在构造期建好，Bind 只改文字、Visible、动画开关。
         /// </summary>
-        private sealed class QuestTrackingItem
+        private sealed class QuestTrackingItem : MirControl
         {
-            private readonly QuestTrackingDialog _owner;
-            private readonly List<MirLabel> _labels = new List<MirLabel>();
+            private readonly MirLabel _nameLabel;
+            private readonly MirLabel _findLabel;
+            private readonly MirLabel[] _taskLabels = new MirLabel[MaxTaskLines];
+            private readonly QuestTaskTarget[] _targets = new QuestTaskTarget[MaxTaskLines];
 
-            public ClientQuestProgress Quest { get; }
-            public int X { get; }
-            public int Y { get; }
-            public int Height { get; private set; }
-            public bool IsOffered { get; }
-            public MirAnimatedAtlasControl Effect { get; private set; }
+            private ClientQuestProgress _quest;
+            private bool _isOffered;
 
-            public QuestTrackingItem(QuestTrackingDialog owner, ClientQuestProgress quest, int x, int y, bool isOffered)
+            public MirAnimatedAtlasControl Effect { get; }
+
+            public QuestTrackingItem(QuestTrackingDialog owner)
             {
-                _owner = owner;
-                Quest = quest;
-                X = x;
-                Y = y;
-                IsOffered = isOffered;
-            }
+                NotControl = true;
+                Size = new Size(Math.Max(40, owner._scrollView.Size.Width), RowHeight);
+                Location = new Point(0, 0);
 
-            public void Build(bool showEffect)
-            {
-                if (showEffect)
-                    Effect = _owner.CreateQuestBorderEffect(X, Y);
+                _nameLabel = owner.NewLabel(Color.LimeGreen, true);
+                _nameLabel.Parent = this;
 
-                AddLabel(Quest.QuestInfo.Name, X, Y, Color.LimeGreen, true);
-
-                if (IsOffered)
-                    BuildOfferedHint();
-                else
-                    BuildTaskLines();
-            }
-
-            private void BuildOfferedHint()
-            {
-                string npcName = !string.IsNullOrEmpty(Quest.QuestInfo.StartNpcName)
-                    ? Quest.QuestInfo.StartNpcName
-                    : Quest.QuestInfo.Name;
-
-                var label = AddLabel("寻找 " + npcName, X, Y + 20, Color.Gold, false);
-                label.UnderLine = true;
-
-                ClientQuestProgress q = Quest;
-                label.Click += (s, e) =>
+                _findLabel = owner.NewLabel(Color.Gold, false);
+                _findLabel.Parent = this;
+                _findLabel.UnderLine = true;
+                _findLabel.Click += (s, e) =>
                 {
-                    PrintTool.Log($"offeredLabel.Click quest={q.Id}");
-                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Offered, QuestIndex = q.Id });
+                    if (_quest == null || !_isOffered) return;
+                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Offered, QuestIndex = _quest.Id });
                 };
 
-                Height = 45;
+                for (int i = 0; i < MaxTaskLines; i++)
+                {
+                    int index = i;
+                    _taskLabels[i] = owner.NewLabel(Color.White, true);
+                    _taskLabels[i].Parent = this;
+                    _taskLabels[i].Click += (s, e) =>
+                    {
+                        QuestTaskTarget target = _targets[index];
+                        if (_quest == null || _isOffered || target == null) return;
+                        Network.Enqueue(new C.TeleportToQuestTarget
+                        {
+                            MapIndex = target.MapIndex,
+                            X = target.X,
+                            Y = target.Y,
+                            MonsterIndex = target.MonsterIndex
+                        });
+                    };
+                }
+
+                Effect = new MirAnimatedAtlasControl
+                {
+                    Parent = this,
+                    NotControl = true,
+                    Loop = true,
+                    Animated = false,
+                    Blending = true,
+                    ForeColour = Color.White,
+                    AutoSetupMovieClip = false,
+                    Visible = false,
+                };
+                Effect.AtlasLoaded += (o, e) =>
+                {
+                    var sheet = Effect.AtlasSheet;
+                    if (sheet?.MovieClip != null)
+                        Effect.SetMovieClip(sheet, QuestBorderScale);
+                };
+                Effect.AtlasNameKey = QuestBorderSheetKey;
+
+                Reset();
             }
 
-            private void BuildTaskLines()
+            private void SetLabel(MirLabel label, string text, int x, int y, Color colour, bool notControl, bool show)
             {
-                int ti = 0;
-                foreach (string text in Quest.TaskList)
-                {
-                    string line = text;
-                    int lineY = Y + 20 + 15 * ti;
-                    QuestTaskTarget tgt = (Quest.Targets != null && ti < Quest.Targets.Count) ? Quest.Targets[ti] : null;
-                    ti++;
+                label.Text = text ?? string.Empty;
+                label.Location = new Point(x, y);
+                label.ForeColour = colour;
+                label.NotControl = notControl;
+                label.Visible = show;
+            }
 
-                    if (tgt != null && tgt.MapIndex > 0 && !string.IsNullOrEmpty(tgt.Name))
+            public void Reset()
+            {
+                _quest = null;
+                _isOffered = false;
+                for (int i = 0; i < MaxTaskLines; i++)
+                {
+                    _targets[i] = null;
+                    _taskLabels[i].Visible = false;
+                }
+                _nameLabel.Visible = false;
+                _findLabel.Visible = false;
+                Effect.Visible = false;
+                Effect.Animated = false;
+            }
+
+            public void Bind(DisplayEntry entry, bool showEffect)
+            {
+                _quest = entry.Quest;
+                _isOffered = entry.IsOffered;
+
+                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 2, 2, Color.LimeGreen, true, true);
+                Effect.Location = new Point(-12, -11);
+                Effect.Visible = showEffect;
+                Effect.Animated = showEffect;
+
+                if (entry.IsOffered)
+                {
+                    string npcName = !string.IsNullOrEmpty(entry.Quest.QuestInfo.StartNpcName)
+                        ? entry.Quest.QuestInfo.StartNpcName
+                        : entry.Quest.QuestInfo.Name;
+                    SetLabel(_findLabel, "寻找 " + npcName, 2, 22, Color.Gold, false, true);
+                    for (int i = 0; i < MaxTaskLines; i++)
+                        _taskLabels[i].Visible = false;
+                    return;
+                }
+
+                _findLabel.Visible = false;
+
+                int line = 0;
+                foreach (string taskText in entry.Quest.TaskList)
+                {
+                    if (line >= MaxTaskLines) break;
+
+                    string text = taskText ?? string.Empty;
+                    int lineY = 22 + 15 * line;
+                    QuestTaskTarget target = (entry.Quest.Targets != null && line < entry.Quest.Targets.Count)
+                        ? entry.Quest.Targets[line] : null;
+                    _targets[line] = target;
+                    line++;
+
+                    if (target != null && target.MapIndex > 0 && !string.IsNullOrEmpty(target.Name))
                     {
-                        int idx = line.IndexOf(tgt.Name, StringComparison.Ordinal);
+                        int idx = text.IndexOf(target.Name, StringComparison.Ordinal);
                         if (idx >= 0)
                         {
-                            string prefix = line.Substring(0, idx);
-                            string tgtText = line.Substring(idx);
-                            AddLabel(prefix, X, lineY, Color.White, true);
+                            string prefix = text.Substring(0, idx);
+                            string targetText = text.Substring(idx);
+                            SetLabel(_taskLabels[line - 1], prefix, 2, lineY, Color.White, true, true);
+                            if (line >= MaxTaskLines) break;
 
-                            int prefixW = TextRenderer.MeasureText(prefix, _owner.QuestFont).Width + 2;
-                            var tgtLabel = AddLabel(tgtText, X + prefixW, lineY, Color.Green, false);
-                            tgtLabel.UnderLine = true;
-                            BindTeleport(tgtLabel, tgt, "tgtLabel.Click");
+                            int prefixW = TextRenderer.MeasureText(prefix, QuestFont).Width + 2;
+                            _targets[line] = target;
+                            SetLabel(_taskLabels[line], targetText, 2 + prefixW, lineY, Color.Green, false, true);
+                            line++;
                             continue;
                         }
                     }
 
-                    bool navigable = tgt != null && tgt.MapIndex > 0;
-                    var taskLabel = AddLabel(line, X, lineY, navigable ? Color.Green : Color.White, !navigable);
-                    taskLabel.UnderLine = navigable;
-                    if (navigable)
-                        BindTeleport(taskLabel, tgt, "questTaskLabel.Click");
+                    bool navigable = target != null && target.MapIndex > 0;
+                    SetLabel(_taskLabels[line - 1], text, 2, lineY, navigable ? Color.Green : Color.White, !navigable, true);
                 }
 
-                Height = 15 * ti + 30;
-            }
-
-            private void BindTeleport(MirLabel label, QuestTaskTarget tgt, string logTag)
-            {
-                label.Click += (s, e) =>
+                for (int i = line; i < MaxTaskLines; i++)
                 {
-                    KFramework.MonoGame.PrintTool.Log($"{logTag} map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
-                    Network.Enqueue(new C.TeleportToQuestTarget
-                    {
-                        MapIndex = tgt.MapIndex,
-                        X = tgt.X,
-                        Y = tgt.Y,
-                        MonsterIndex = tgt.MonsterIndex
-                    });
-                };
-            }
-
-            private MirLabel AddLabel(string text, int x, int y, Color colour, bool notControl)
-            {
-                var label = new MirLabel
-                {
-                    Text = text,
-                    AutoSize = true,
-                    BackColour = Color.Transparent,
-                    Font = _owner.QuestFont,
-                    ForeColour = colour,
-                    Location = new Point(x, y),
-                    OutLine = true,
-                    NotControl = notControl,
-                    Parent = _owner,
-                    Visible = true,
-                };
-                _labels.Add(label);
-                _owner.TaskLines.Add(label);
-                return label;
-            }
-
-            public void Dispose()
-            {
-                foreach (MirLabel label in _labels)
-                {
-                    label.Parent = null;
-                    label.Dispose();
-                }
-                _labels.Clear();
-
-                if (Effect != null)
-                {
-                    Effect.Parent = null;
-                    Effect.Dispose();
-                    Effect = null;
+                    _targets[i] = null;
+                    _taskLabels[i].Visible = false;
                 }
             }
         }
@@ -202,12 +275,7 @@ namespace Client.MirScenes.Dialogs
             m_HideNode.LabelImage.Size = new Size(12, 46);
             m_HideNode.LabelImage.Location = m_HideNode.LabelImage.Center;
             m_HideNode.LabelImage.Visible = true;
-
-            m_HideNode.Click += (o, e) =>
-            {
-                m_ShowNode.Visible = true;
-                m_HideNode.Visible = false;
-            };
+            m_HideNode.Click += (o, e) => ShowNode();
 
             m_ShowNode = new MirImageControl
             {
@@ -220,7 +288,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(265, 188),
             };
 
-            var mShowNode_Bg = new MirImageControl
+            mShowNode_Bg = new MirImageControl
             {
                 Parent = m_ShowNode,
                 AtlasNameKey = "y_lefttop-sheet",
@@ -236,13 +304,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(245, 0),
                 Size = new Size(19, 188),
             };
-            mShowNode_HideBtn.Click += (o, e) =>
-            {
-                m_ShowNode.Visible = false;
-                m_HideNode.Visible = true;
-                KFramework.MonoGame.PrintTool.Log("mShowNode_HideBtn.Click");
-            };
-
+            mShowNode_HideBtn.Click += (o, e) => HideNode();
             mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
             mShowNode_HideBtn.LabelImage.AtlasFrame = "lefttop_leftbg1";
             mShowNode_HideBtn.LabelImage.Size = new Size(12, 46);
@@ -274,93 +336,116 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 188 - 85),
             };
 
-        }
-        
-        private MirAnimatedAtlasControl CreateQuestBorderEffect(int itemX, int itemY)
-        {
-            var ani = new MirAnimatedAtlasControl
+            // 滚动区就是 lefttopbg 背景本身：同位置、同大小，隐藏滚动条，只保留滚轮/拖拽。
+            _scrollView = new MirScrollView2
             {
-                Parent = this,
-                NotControl = true,
-                Location = new Point(itemX, itemY),
-                Loop = true,
-                Animated = true,
-                ForeColour = Color.White,
-                AutoSetupMovieClip = true,
-                AtlasNameKey = QuestBorderSheetKey
+                Parent = mShowNode_Bg,
+                Location = new Point(0, 0),
+                Size = mShowNode_Bg.Size,
+                BackColour = Color.Transparent,
+                Border = false,
+                ShowScrollBar = false,
             };
-            return ani;
+            mShowNode_Bg.AtlasLoaded += (o, e) =>
+            {
+                _scrollView.Location = new Point(0, 0);
+                _scrollView.Size = mShowNode_Bg.Size;
+                _scrollView.SetDataSource(_display.Count, RowHeight, CreateQuestRow, BindQuestRow);
+            };
+
+            _scrollView.SetDataSource(0, RowHeight, CreateQuestRow, BindQuestRow);
         }
 
-        private int AddItem(int x, int y, ClientQuestProgress quest, bool isOffered, bool showEffect)
+        private MirLabel NewLabel(Color colour, bool notControl)
         {
-            var item = new QuestTrackingItem(this, quest, x, y, isOffered);
-            item.Build(showEffect);
-            _items.Add(item);
-            return item.Height;
+            var label = new MirLabel
+            {
+                AutoSize = true,
+                BackColour = Color.Transparent,
+                Font = QuestFont,
+                ForeColour = colour,
+                OutLine = true,
+                NotControl = notControl,
+                Visible = false,
+            };
+            TaskLines.Add(label);
+            return label;
+        }
+
+        private MirControl CreateQuestRow()
+        {
+            return new QuestTrackingItem(this);
+        }
+
+        private void BindQuestRow(MirControl row, int index)
+        {
+            if (index < 0 || index >= _display.Count)
+            {
+                ((QuestTrackingItem)row).Reset();
+                return;
+            }
+
+            DisplayEntry entry = _display[index];
+            ((QuestTrackingItem)row).Bind(entry, entry.IsOffered || entry.Quest.Completed);
+        }
+
+        public void HideNode()
+        {
+            m_ShowNode.Visible = false;
+            m_HideNode.Visible = true;
+        }
+
+        public void ShowNode()
+        {
+            m_ShowNode.Visible = true;
+            m_HideNode.Visible = false;
+            DisplayQuests();
         }
 
         public void DisplayQuests()
         {
-            foreach (MirLabel label in TaskLines)
-            {
-                label.Parent = null;
-                label.Dispose();
-            }
-            TaskLines.Clear();
+            var questsToTrack = new List<ClientQuestProgress>();
+            questsToTrack.AddRange(from quest in MapObject.User.CurrentQuests
+                                   from id in TrackedQuestsIds.Where(id => quest.Id == id)
+                                   select quest);
 
-            foreach (QuestTrackingItem item in _items)
-            {
-                item.Dispose();
-            }
-            _items.Clear();
-
-            List<ClientQuestProgress> questsToTrack = new List<ClientQuestProgress>();
-
-            questsToTrack.Clear();
-            questsToTrack.AddRange(from quest in MapObject.User.CurrentQuests from id in TrackedQuestsIds.Where(id => quest.Id == id) select quest);
-            if (questsToTrack.Count < 1 && MapObject.User.OfferedQuests.Count < 1)
-            {
-                SyncWithNpcPanels();
-                return;
-            }
-
-            int y = 0;
+            // 每种 TaskType 最多一个条目：已接取优先，未接取补空槽。
+            var assigned = new Dictionary<int, DisplayEntry>();
 
             for (int i = 0; i < questsToTrack.Count; i++)
             {
-                ClientQuestProgress trackedInfo = questsToTrack[i];
-                y += AddItem(45, 20 + y, trackedInfo, false, trackedInfo.Completed);
-                if (i >= 5)
-                {
-                    break;
-                }
-            }
+                ClientQuestProgress quest = questsToTrack[i];
+                if (quest.QuestInfo == null) continue;
 
-            if (MapObject.User.OfferedQuests.Count > 0 && questsToTrack.Count > 0)
-            {
-                y += 15;
+                int slot = SlotOf(quest.QuestInfo);
+                if (!assigned.ContainsKey(slot))
+                    assigned[slot] = new DisplayEntry { Quest = quest, IsOffered = false };
+
+                if (i >= 5) break;
             }
 
             foreach (ClientQuestProgress offered in MapObject.User.OfferedQuests)
             {
-                if (offered.QuestInfo == null)
-                {
-                    continue;
-                }
-                y += AddItem(45, 20 + y, offered, true, true);
+                if (offered.QuestInfo == null) continue;
+
+                int slot = SlotOf(offered.QuestInfo);
+                if (!assigned.ContainsKey(slot))
+                    assigned[slot] = new DisplayEntry { Quest = offered, IsOffered = true };
             }
 
+            _display.Clear();
+            foreach (int slot in assigned.Keys.OrderBy(k => k))
+                _display.Add(assigned[slot]);
+
+            _scrollView.SetDataSource(_display.Count, RowHeight, CreateQuestRow, BindQuestRow);
             SyncWithNpcPanels();
         }
 
         // 跟踪列表完全由服务器下发（接取任务时自动记录），客户端只维护显示。
         public void AddQuest(ClientQuestProgress quest)
         {
-            if (TrackedQuestsIds.Any(d => d == quest.Id) || TrackedQuestsIds.Count >= 5)
-            {
+            if (TrackedQuestsIds.Any(d => d == quest.Id) || TrackedQuestsIds.Count >= MaxTrackedQuests)
                 return;
-            }
 
             TrackedQuestsIds.Add(quest.Id);
             DisplayQuests();
@@ -376,7 +461,5 @@ namespace Client.MirScenes.Dialogs
         {
             Visible = !(GameScene.Scene.NPCDialog.Visible || GameScene.Scene.QuestListDialog.Visible);
         }
-
     }
-
 }

@@ -11944,7 +11944,7 @@ namespace Server.MirObjects
                 !Functions.InRange(npc.CurrentLocation, CurrentLocation, Globals.DataRange) ||
                 !npc.VisibleLog[Info.Index] || !npc.Visible) return;
 
-            if (!info.CanAccept(this))
+            if (!info.CanOffer(this))
             {
                 canAccept = false;
             }
@@ -12213,7 +12213,7 @@ namespace Server.MirObjects
             QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
             if (CompletedQuests.Contains(index)) return;
-            if (!info.CanAccept(this)) return;
+            if (!info.CanOffer(this)) return;
             if (CurrentQuests.Count >= Globals.MaxConcurrentQuests) return;
 
             QuestProgressInfo quest = new QuestProgressInfo(index);
@@ -12238,7 +12238,10 @@ namespace Server.MirObjects
 
             QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
-            if (!info.CanAccept(this)) return;
+            if (!info.CanOffer(this)) return;
+            // 原始传奇 showCondition：等级/VIP/转生/开服天数等不满足就不在任务追踪栏显示。
+            // GM 提到 100 级会开放大量高等级任务，但被 showCondition 拦掉的任务仍不能出现。
+            if (!Envir.CheckOriginShowCondition(this, info.OriginSettings?.Condition)) return;
 
             OfferedQuests.Add(index);
 

@@ -510,7 +510,8 @@ namespace Server.MirDatabase
             return new QuestFlagTask { Number = number, Message = message };
         }
 
-        public bool CanAccept(PlayerObject player)
+        /// <summary>判断该任务是否应当开放给玩家（等级/职业/前置任务），即“是否可提供任务”，不是玩家点击接取时的校验。</summary>
+        public bool CanOffer(PlayerObject player)
         {
             if (RequiredMinLevel > player.Level || RequiredMaxLevel < player.Level)
                 return false;
@@ -595,6 +596,7 @@ namespace Server.MirDatabase
                 ClassNeeded = RequiredClass,
                 QuestNeeded = RequiredQuest,
                 Type = Type,
+                OriginalType = OriginSettings?.OriginalType ?? 0,
                 TimeLimitInSeconds = TimeLimitInSeconds,
                 RewardGold = GoldReward,
                 RewardExp = ExpReward,
