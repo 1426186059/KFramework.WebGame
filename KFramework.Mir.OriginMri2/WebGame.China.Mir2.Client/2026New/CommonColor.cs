@@ -3,10 +3,6 @@ using System.Collections.Generic;
 public static class CommonColor
 {
     private static byte B(int v) => (byte)KFramework.MonoGame.MathHelper.Clamp(v, 0, 255);
-
-    // ===== 颜色构造工具（原 MirEngine.Color.FromArgb，引擎只保留 FromArgb(uint)）=====
-    /// <summary>从 0xAARRGGBB 构造（uint 重载，转发引擎）。</summary>
-    public static Color FromArgb(uint argb) => Color.FromArgb(argb);
     /// <summary>alpha 在前的 4 参重载（对齐原 FromArgb(a,r,g,b)），注意引擎构造子是 r,g,b,a。</summary>
     public static Color FromArgb(int alpha, int red, int green, int blue)
         => new Color(B(red), B(green), B(blue), B(alpha));
