@@ -3,7 +3,6 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
-using SlimDX;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs

@@ -1,5 +1,4 @@
 using Client.MirObjects;
-using SlimDX;
 using WebGame.Mir2.MonoGame.Client;
 using Frame = Client.MirObjects.Frame;
 

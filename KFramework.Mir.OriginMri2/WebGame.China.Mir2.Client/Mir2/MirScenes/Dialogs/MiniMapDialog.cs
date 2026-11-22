@@ -1,12 +1,6 @@
 using Client.MirControls;
 using Client.MirGraphics;
-using Client.MirNetwork;
 using Client.MirObjects;
-using Client.MirSounds;
-using SlimDX;
-using System.Text.RegularExpressions;
-using WebGame.Mir2.MonoGame.Client;
-using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {

@@ -3,7 +3,6 @@ using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
-using SlimDX;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
@@ -534,11 +533,11 @@ namespace Client.MirObjects
             if (!DebugShowDrawLocation) return;
             const int r = 7;
             const int seg = 28;
-            var pts = new SlimDX.Vector2[seg + 1];
+            var pts = new KFramework.MonoGame.Vector2[seg + 1];
             for (int i = 0; i <= seg; i++)
             {
                 double a = i * 2.0 * Math.PI / seg;
-                pts[i] = new SlimDX.Vector2(p.X + (float)(r * Math.Cos(a)), p.Y + (float)(r * Math.Sin(a)));
+                pts[i] = new KFramework.MonoGame.Vector2(p.X + (float)(r * Math.Cos(a)), p.Y + (float)(r * Math.Sin(a)));
             }
             DXManager.DrawLines(pts, 2f, MirEngine.Color.Red);
         }
@@ -549,13 +548,13 @@ namespace Client.MirObjects
             if (!DebugShowDrawLocation) return;
             if (rect.Width <= 0 || rect.Height <= 0) return;
             int x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
-            var pts = new SlimDX.Vector2[]
+            var pts = new KFramework.MonoGame.Vector2[]
             {
-                new SlimDX.Vector2(x, y),
-                new SlimDX.Vector2(x + w, y),
-                new SlimDX.Vector2(x + w, y + h),
-                new SlimDX.Vector2(x, y + h),
-                new SlimDX.Vector2(x, y),
+                new KFramework.MonoGame.Vector2(x, y),
+                new KFramework.MonoGame.Vector2(x + w, y),
+                new KFramework.MonoGame.Vector2(x + w, y + h),
+                new KFramework.MonoGame.Vector2(x, y + h),
+                new KFramework.MonoGame.Vector2(x, y),
             };
             DXManager.DrawLines(pts, 2f, MirEngine.Color.Lime);
         }

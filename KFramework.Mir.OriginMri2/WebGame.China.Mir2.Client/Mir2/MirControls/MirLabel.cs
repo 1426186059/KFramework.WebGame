@@ -1,7 +1,4 @@
-using MirEngine;
 using Client.MirGraphics;
-using SlimDX;
-using SlimDX.Direct3D9;
 
 namespace Client.MirControls
 {
@@ -28,8 +25,8 @@ namespace Client.MirControls
                 AutoSizeChanged.Invoke(this, e);
         }
 
-        private KFramework.MonoGame.TextStyle _drawFormat = KFramework.MonoGame.TextStyle.Default;
-        public KFramework.MonoGame.TextStyle DrawFormat
+        private TextStyle _drawFormat = TextStyle.Default;
+        public TextStyle DrawFormat
         {
             get { return _drawFormat; }
             set
@@ -38,6 +35,7 @@ namespace Client.MirControls
                 OnDrawFormatChanged(EventArgs.Empty);
             }
         }
+
         public event EventHandler DrawFormatChanged;
         private void OnDrawFormatChanged(EventArgs e)
         {
@@ -131,16 +129,17 @@ namespace Client.MirControls
                 return;
 
             if (string.IsNullOrEmpty(_text))
+            {
                 Size = Size.Empty;
+            }
             else
             {
-                // 统一走 RichTextObject：无标签时它内部按普通文本快路径度量，有标签时剥离标签后度量。
                 SyncRich();
                 Size = TextRenderer.MeasureText(_rich, _drawFormat);
-                //Size = new Size(Size.Width, Size.Height + 5);
-
                 if (OutLine && Size != Size.Empty)
+                {
                     Size = new Size(Size.Width + 2, Size.Height + 2);
+                }
             }
         }
 
@@ -151,18 +150,15 @@ namespace Client.MirControls
             set
             {
                 if (_text == value)
+                {
                     return;
+                }
 
                 _text = value;
                 OnTextChanged(EventArgs.Empty);
             }
         }
-
-        /// <summary>
-        /// 兼容属性：渲染现已统一走 <see cref="KFramework.MonoGame.RichTextObject"/>，
-        /// 无标签文本按普通文本绘制、有标签时标签生效，无需再切开关。
-        /// 保留此属性仅为兼容旧的对象初始化器，赋值只触发一次重绘。
-        /// </summary>
+        
         private bool _richText;
         public bool RichText
         {
@@ -181,10 +177,7 @@ namespace Client.MirControls
             }
         }
 
-        // 富文本对象：持有文本/字体并缓存标签解析，度量/绘制/链接命中共用，
-        // 避免一次重绘里 4 次描边 + 1 次前景反复解析同一段文本。
         private readonly KFramework.MonoGame.RichTextObject _rich = new KFramework.MonoGame.RichTextObject();
-
         private void SyncRich()
         {
             _rich.SetText(Text);
@@ -221,11 +214,12 @@ namespace Client.MirControls
             Point loc = DisplayLocation;
             SyncRich();
             // 保证 TextInfo 按当前绘制参数排版（与 CreateTexture 的绘制矩形一致）。
-            _rich.Layout(new KFramework.MonoGame.RectangleF(1, 1, Size.Width, Size.Height),
-                         _drawFormat.Anchor, _drawFormat.HorizontalWrap,
-                         KFramework.MonoGame.VerticalWrapMode.Overflow);
+            _rich.Layout(new RectangleF(1, 1, Size.Width, Size.Height),
+                         _drawFormat.Anchor, 
+                         _drawFormat.HorizontalWrap,
+                         _drawFormat.VerticalWrap);
             url = TextRenderer.FindIntersectingLink(_rich,
-                new KFramework.MonoGame.Vector2(x - loc.X, y - loc.Y));
+                new Vector2(x - loc.X, y - loc.Y));
             return url != null;
         }
 
@@ -297,10 +291,7 @@ namespace Client.MirControls
             int back = BackColour.ToArgb();
 
             // 垂直一律 Overflow：Truncate 的"放不下整行不画"会让高度略小的标签整行消失。
-            KFramework.MonoGame.TextStyle format = new KFramework.MonoGame.TextStyle(
-                _drawFormat.Anchor,
-                _drawFormat.HorizontalWrap,
-                KFramework.MonoGame.VerticalWrapMode.Overflow);
+            KFramework.MonoGame.TextStyle format = _drawFormat;
 
             // 目标、清屏、批三件事都由调用方管（GDI 与游戏渲染已合并为一个渲染系统）：
             // 下面最多 5 次 DrawText（4 次描边 + 1 次前景）共用一次 Begin/End → 合成 1 次 draw call；
@@ -330,10 +321,10 @@ namespace Client.MirControls
                     {
                         int uy = Size.Height - 2;
                         if (uy > 0)
-                            DXManager.DrawLines(new SlimDX.Vector2[]
+                            DXManager.DrawLines(new KFramework.MonoGame.Vector2[]
                             {
-                                new SlimDX.Vector2(1, uy),
-                                new SlimDX.Vector2(Size.Width - 1, uy),
+                                new KFramework.MonoGame.Vector2(1, uy),
+                                new KFramework.MonoGame.Vector2(Size.Width - 1, uy),
                             }, 1F, ForeColour);
                     }
                 }
@@ -360,7 +351,7 @@ namespace Client.MirControls
             _autoSize = false;
 
             DrawFormatChanged = null;
-            _drawFormat = KFramework.MonoGame.TextStyle.Default;
+            _drawFormat = TextStyle.Default;
 
             FontChanged = null;
             if (_font != null)

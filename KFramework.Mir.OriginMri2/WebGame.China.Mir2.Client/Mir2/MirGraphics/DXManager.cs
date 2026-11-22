@@ -301,11 +301,11 @@ void main()
         private static KFramework.MonoGame.BlendState ResolveBlend(KFramework.MonoGame.BlendState? blendState)
             => blendState ?? (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState();
 
-        public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
-            SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
+            KFramework.MonoGame.Vector3 pos = position ?? KFramework.MonoGame.Vector3.Zero;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture,
                 new KFramework.MonoGame.Rectangle((int)pos.X, (int)pos.Y, src.Width, src.Height),
@@ -358,12 +358,12 @@ void main()
             CMain.DPSCounter++;
         }
 
-        public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
+        public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, SlimDX.Color4 color, float opacity)
         {
             var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
         }
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture?.RenderTarget != null) { Draw(texture.RenderTarget, sourceRect, position, color, blendState); return; }
             if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, position, color, blendState); return; }
@@ -375,7 +375,7 @@ void main()
             if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, destRect, color, blendState); return; }
         }
 
-        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
+        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, SlimDX.Color4 color, float opacity)
         {
             var c = color; c.Alpha = opacity;
             Draw(texture, sourceRect, position, c);
@@ -395,7 +395,7 @@ void main()
             }
         }
 
-        public static void DrawLines(SlimDX.Vector2[] points, float width, Color color)
+        public static void DrawLines(KFramework.MonoGame.Vector2[] points, float width, Color color)
         {
             if (points == null || points.Length < 2) return;
             var c = ToColor(color);

@@ -6,13 +6,10 @@ using Client.MirObjects;
 using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
-
-using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using Effect = Client.MirObjects.Effect;
-
 
 
 public sealed class MapControl : MirControl

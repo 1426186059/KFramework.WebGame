@@ -1,40 +1,9 @@
 // SlimDX 子集兼容壳：仅实现传奇客户端 (Mir2) 渲染代码实际用到的类型，
 // 让 95 个逻辑文件几乎不改即可编译到浏览器。真正的绘制由 RenderingCore(Canvas) 接管。
 using Client.MirGraphics;
-using MirEngine;
 
 namespace SlimDX
 {
-    public struct Vector2
-    {
-        public float X, Y;
-        public static readonly Vector2 Zero = new Vector2(0, 0);
-        public Vector2(float x, float y) { X = x; Y = y; }
-        public static Vector2 operator +(Vector2 a, Vector2 b) => new Vector2(a.X + b.X, a.Y + b.Y);
-        public static Vector2 operator -(Vector2 a, Vector2 b) => new Vector2(a.X - b.X, a.Y - b.Y);
-        public static Vector2 operator *(Vector2 a, float s) => new Vector2(a.X * s, a.Y * s);
-        public static Vector2 operator /(Vector2 a, float s) => new Vector2(a.X / s, a.Y / s);
-        public static bool operator ==(Vector2 a, Vector2 b) => a.X == b.X && a.Y == b.Y;
-        public static bool operator !=(Vector2 a, Vector2 b) => !(a == b);
-        public override bool Equals(object o) => o is Vector2 v && v == this;
-        public override int GetHashCode() => (X.GetHashCode() * 397) ^ Y.GetHashCode();
-    }
-
-    public struct Vector3
-    {
-        public float X, Y, Z;
-        public static readonly Vector3 Zero = new Vector3(0, 0, 0);
-        public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; }
-        public static Vector3 operator +(Vector3 a, Vector3 b) => new Vector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-        public static Vector3 operator -(Vector3 a, Vector3 b) => new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-        public static Vector3 operator *(Vector3 a, float s) => new Vector3(a.X * s, a.Y * s, a.Z * s);
-        public static Vector3 operator /(Vector3 a, float s) => new Vector3(a.X / s, a.Y / s, a.Z / s);
-        public static bool operator ==(Vector3 a, Vector3 b) => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-        public static bool operator !=(Vector3 a, Vector3 b) => !(a == b);
-        public override bool Equals(object o) => o is Vector3 v && v == this;
-        public override int GetHashCode() => (X.GetHashCode() * 397 ^ Y.GetHashCode() * 397) ^ Z.GetHashCode();
-    }
-
     // 颜色：调用方多传 Color，需支持隐式转换。
     public struct Color4
     {
@@ -127,7 +96,7 @@ namespace SlimDX.Direct3D9
     public class Line
     {
         public float Width = 1F;
-        public void Draw(Vector2[] points, Color color)
+        public void Draw(KFramework.MonoGame.Vector2[] points, Color color)
         {
             // 线条绘制已接入：复用 DXManager 的 1×1 白像素沿 SpriteBatch 拉伸成细矩形（见 DXManager.DrawLines）。
             DXManager.DrawLines(points, Width, color);

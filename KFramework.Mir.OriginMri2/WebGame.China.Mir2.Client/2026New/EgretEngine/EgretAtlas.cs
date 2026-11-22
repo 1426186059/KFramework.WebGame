@@ -1,9 +1,6 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
-// MirEngine 全局 using 也导出了 Rectangle / Vector2；这里用别名消歧，明确使用 KFramework.MonoGame 版本。
-using Vector2 = KFramework.MonoGame.Vector2;
-
 /// <summary>
 /// 白鹭普通图集（egret.SpriteSheet / textureData）：只负责「静态坐标映射」——
 /// frames(字典) 或模型 frames(数组) 给出整页 PNG 上每个子图的 {x,y,w,h}，

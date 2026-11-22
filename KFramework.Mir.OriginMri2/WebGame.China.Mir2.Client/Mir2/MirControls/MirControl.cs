@@ -1,6 +1,7 @@
 using Client.MirGraphics;
 using Client.MirSounds;
 using SlimDX;
+using Vector3 = KFramework.MonoGame.Vector3;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 
@@ -809,13 +810,13 @@ namespace Client.MirControls
                 return;
 
             int x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
-            SlimDX.Vector2[] pts =
+            KFramework.MonoGame.Vector2[] pts =
             {
-                new SlimDX.Vector2(x, y),
-                new SlimDX.Vector2(x + w, y),
-                new SlimDX.Vector2(x + w, y + h),
-                new SlimDX.Vector2(x, y + h),
-                new SlimDX.Vector2(x, y),
+                new KFramework.MonoGame.Vector2(x, y),
+                new KFramework.MonoGame.Vector2(x + w, y),
+                new KFramework.MonoGame.Vector2(x + w, y + h),
+                new KFramework.MonoGame.Vector2(x, y + h),
+                new KFramework.MonoGame.Vector2(x, y),
             };
             DXManager.DrawLines(pts, 1f, Color.Cyan);
         }

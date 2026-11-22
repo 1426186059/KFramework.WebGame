@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
 // MirEngine 全局 using 也导出了 Vector2；这里用别名消歧，明确使用 KFramework.MonoGame 版本。
-using Vector2 = KFramework.MonoGame.Vector2;
 
 /// <summary>
 /// 图集门面（旧代码统一使用这个名字）：【不继承】任何图集类，而是把能力组合进来：

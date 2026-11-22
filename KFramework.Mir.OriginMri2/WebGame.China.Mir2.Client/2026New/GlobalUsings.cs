@@ -10,5 +10,7 @@ global using Size = KFramework.MonoGame.Size;
 global using RectangleF = KFramework.MonoGame.RectangleF;
 global using PointF = KFramework.MonoGame.Vector2;
 global using SizeF = KFramework.MonoGame.Vector2;
+global using Vector2 = KFramework.MonoGame.Vector2;
+global using Vector3 = KFramework.MonoGame.Vector3;
 global using Point = KFramework.MonoGame.Point;
 global using Rectangle = KFramework.MonoGame.Rectangle;
