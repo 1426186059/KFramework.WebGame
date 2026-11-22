@@ -2,7 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Client.MirGraphics;
-using Client.MirObjects;   // Mir2OriginResource / DXManager 等
+using Client.MirObjects;
+using KFramework.MonoGameExtend;   // Mir2OriginResource / DXManager 等
 
 namespace Client.MirControls
 {
@@ -14,7 +15,8 @@ namespace Client.MirControls
 
     public class MirImageControl : MirControl
     {
-        public override Point DisplayLocation { get { return UseOffSet ? base.DisplayLocation.Add(Library.GetOffSet(Index)) : base.DisplayLocation; } }
+        // Lib 图集已彻底不加载，不再取 Library.GetOffSet；偏移统一由布局/Atlas 分支处理。
+        public override Point DisplayLocation { get { return base.DisplayLocation; } }
         public Point DisplayLocationWithoutOffSet { get { return base.DisplayLocation; } }
 
         // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
@@ -393,8 +395,6 @@ namespace Client.MirControls
                 else if (AutoSize && AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                     && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
                     result = new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
-                else if (AutoSize && Library != null && Index >= 0)
-                    result = Library.GetTrueSize(Index);
                 else
                     result = base.Size;
                 // SizeScale 直接收进 Size：绘制/布局框/命中区（DisplayRectangle 用 Size）一起缩放。
@@ -411,8 +411,6 @@ namespace Client.MirControls
                 if (AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                     && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
                     return new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
-                if (Library != null && Index >= 0)
-                    return Library.GetTrueSize(Index);
                 return base.TrueSize;
             }
         }
@@ -549,64 +547,11 @@ namespace Client.MirControls
 
             if (Library != null)
             {
-                // 资源缺失 / 尚未就绪：绘制默认占位图（灰色块），实现“无依赖 / 默认图片”兜底，避免界面空白。
-                // （Index<0 是 Mir2“该层无图”的正常标记，保持透明不画占位。）
-                if (Index >= 0 && Library.GetTrueSize(Index) == Size.Empty)
-                {
+                // Lib 图集已彻底不加载：不再触碰 MLibrary.GetTrueSize/Draw，
+                // 统一用 KDefaultRes.DefaultTexture2D 画占位块。Index<0 仍是“该层无图”，保持透明。
+                if (Index >= 0)
                     DrawDefaultImage();
-                    return;
-                }
-                bool oldGray = DXManager.GrayScale;
-
-                if (GrayScale)
-                {
-                    DXManager.SetGrayscale(true);
-                }
-
-                // 以 Pivot 决定图像哪个点落在 DisplayLocation。Size 已含 SizeScale，直接用 Size。
-                Size drawSize = Size;
-                Point drawLoc = new Point(
-                    DisplayLocation.X - (int)(_pivot.X * drawSize.Width),
-                    DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height));
-
-                // 预乘透明度到颜色，再交给按 Size 缩放的重载（该重载走 DXManager.Draw，自身不处理 Opacity）。
-                Color drawColor = ForeColour;
-                if (Opacity < 1f)
-                    drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
-
-                // 九宫格：拆 9 块绘制，保留四角/四边厚度，仅中间随 Size 拉伸。
-                int bordersLib = BorderLeft + BorderTop + BorderRight + BorderBottom;
-                if (DrawMode == MirImageDrawMode.NineGrid && bordersLib > 0)
-                {
-                    Size img = Library.GetTrueSize(Index);
-                    ForEachNineGridRect(img.Width, img.Height, drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height,
-                        BorderLeft, BorderTop, BorderRight, BorderBottom,
-                        (src, dst) => Library.Draw(Index, src, dst, drawColor, 1f));
-                    if (GrayScale) DXManager.SetGrayscale(oldGray);
-                    return;
-                }
-
-                if (FillAmount >= 1f)
-                {
-                    if (Blending)
-                        Library.DrawBlend(Index, drawLoc, drawSize, drawColor, BlendingRate);
-                    else
-                        Library.Draw(Index, drawLoc, drawSize, drawColor);
-                }
-                else
-                {
-                    // fillAmount（裁剪，不拉伸）：按 FillOrigin 仅绘制图像指定比例部分。
-                    Size imgSize = Library.GetTrueSize(Index);
-                    Rectangle src = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
-                    Rectangle dst = new Rectangle(drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height);
-                    ApplyFillClip(FillAmount, FillOrigin, ref src, ref dst);
-                    bool oldBlend = DXManager.Blending;
-                    if (Blending) DXManager.SetBlend(true, BlendingRate);
-                    Library.Draw(Index, src, new RectangleF(dst.X, dst.Y, dst.Width, dst.Height), drawColor, 1f);
-                    if (Blending) DXManager.SetBlend(oldBlend);
-                }
-
-                if (GrayScale) DXManager.SetGrayscale(oldGray);
+                return;
             }
         }
 
@@ -615,14 +560,14 @@ namespace Client.MirControls
         {
             var tex = KFramework.MonoGameExtend.KDefaultRes.DefaultTexture2D;
             if (tex == null) return;
-            Size drawSize = Size;
+            Size drawSize = Size = new Size(50, 50);
             if (drawSize.Width <= 0 || drawSize.Height <= 0) return;
             int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
             int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
             var srcRect = new KFramework.MonoGame.Rectangle(0, 0, tex.Width, tex.Height);
             var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
-            Color drawColor = new Color(70, 70, 70, 160);
-            DXManager.Draw(tex, srcRect, dstRect, drawColor, (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), FlipEffects);
+            Color drawColor = Color.White;
+            DXManager.Draw(tex, srcRect, dstRect, drawColor, MirBlend.Normal.ToBlendState(), FlipEffects);
         }
 
         // 按 FillAmount / FillOrigin 把整图源/目标矩形裁剪为可见部分（不拉伸图像，仅按比例显隐）。

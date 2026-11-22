@@ -9,7 +9,7 @@ namespace Client.MirScenes.Dialogs
 
     public sealed class QuestDetailDialog : MirImageControl
     {
-        private readonly MirButton _shareButton, _pauseButton, _cancelButton;
+        private readonly MirButton _pauseButton;
 
         public ClientQuestProgress Quest;
         public QuestMessage Message;
@@ -92,21 +92,6 @@ namespace Client.MirScenes.Dialogs
 
 
 
-            _shareButton = new MirButton
-            {
-                Index = 616,
-                HoverIndex = 617,
-                PressedIndex = 618,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(40, 436),
-                Sound = SoundList.ButtonA
-            };
-            _shareButton.Click += (o, e) =>
-            {
-                Network.Enqueue(new C.ShareQuest { QuestIndex = Quest.Id });
-            };
-
             _pauseButton = new MirButton
             {
                 Index = 270,
@@ -118,29 +103,6 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
                 Visible = false
             };
-
-            _cancelButton = new MirButton
-            {
-                Index = 203,
-                HoverIndex = 204,
-                PressedIndex = 205,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(200, 436),
-                Sound = SoundList.ButtonA,
-            };
-            _cancelButton.Click += (o, e) =>
-            {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AskCancelQuest), MirMessageBoxButtons.YesNo);
-
-                messageBox.YesButton.Click += (o1, a) =>
-                {
-                    Network.Enqueue(new C.AbandonQuest { QuestIndex = Quest.Id });
-                    Hide();
-                };
-                messageBox.Show();
-            };
-
 
             MirButton closeButton = new MirButton
             {

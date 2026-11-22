@@ -1943,15 +1943,6 @@ namespace Client.MirScenes
                 case (short)ServerPacketIds.ChangeQuest:
                     ChangeQuest((S.ChangeQuest)p);
                     break;
-                case (short)ServerPacketIds.TrackQuest:
-                    TrackQuest((S.TrackQuest)p);
-                    break;
-                case (short)ServerPacketIds.CompleteQuest:
-                    CompleteQuest((S.CompleteQuest)p);
-                    break;
-                case (short)ServerPacketIds.ShareQuest:
-                    ShareQuest((S.ShareQuest)p);
-                    break;
                 case (short)ServerPacketIds.GainedQuestItem:
                     GainedQuestItem((S.GainedQuestItem)p);
                     break;
@@ -3109,35 +3100,6 @@ namespace Client.MirScenes
             Redraw();
         }
 
-        private void CompleteQuest(S.CompleteQuest p)
-        {
-            User.CompletedQuests = p.CompletedQuests;
-        }
-
-        private void ShareQuest(S.ShareQuest p)
-        {
-            ClientQuestInfo quest = GameScene.QuestInfoList.FirstOrDefault(e => e.Index == p.QuestIndex);
-
-            if (quest == null) return;
-
-            MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PlayerShareQuestRequest), p.SharerName), MirMessageBoxButtons.YesNo);
-
-            messageBox.YesButton.Click += (o, e) => Network.Enqueue(new C.AcceptQuest { NPCIndex = 0, QuestIndex = quest.Index });
-
-            messageBox.Show();
-        }
-
-        private void TrackQuest(S.TrackQuest p)
-        {
-            ClientQuestProgress quest = User.CurrentQuests.FirstOrDefault(q => q.Id == p.QuestIndex);
-            if (quest == null) return;
-
-            if (p.Track)
-                QuestTrackingDialog.AddQuest(quest, true);
-            else
-                QuestTrackingDialog.RemoveQuest(quest, true);
-        }
-
         private void ChangeQuest(S.ChangeQuest p)
         {
             switch (p.QuestState)
@@ -3151,7 +3113,7 @@ namespace Client.MirScenes
                     // TrackQuest 由服务器根据角色存档下发，客户端不再本地判断/保存。
                     if (p.TrackQuest)
                     {
-                        GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest, true);
+                        GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest);
                     }
 
                     if (p.AutoGuide)
@@ -3193,7 +3155,7 @@ namespace Client.MirScenes
                     }
 
                     // 服务器已移除该任务，客户端不再回发跟踪取消包。
-                    GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest, true);
+                    GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest);
 
                     break;
 
@@ -3212,6 +3174,11 @@ namespace Client.MirScenes
                     GameScene.Scene.QuestTrackingDialog.DisplayQuests();
                     break;
                 }
+
+                // 完成列表由原 S.CompleteQuest 合并而来。
+                case QuestState.CompletedList:
+                    User.CompletedQuests = p.CompletedQuests;
+                    break;
             }
 
             GameScene.Scene.QuestTrackingDialog.DisplayQuests();

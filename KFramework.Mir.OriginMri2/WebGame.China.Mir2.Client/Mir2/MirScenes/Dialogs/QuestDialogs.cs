@@ -96,11 +96,11 @@ namespace Client.MirScenes.Dialogs
                 if (!SelectedQuest.Taken)
                 {
                     // 尚未接取：在 NPC 旁点击“接取任务”
-                    Network.Enqueue(new C.AcceptQuest { QuestIndex = SelectedQuest.QuestInfo.Index, Navigate = false });
+                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Accept, QuestIndex = SelectedQuest.QuestInfo.Index });
                 }
                 else if (SelectedQuest.Completed)
                 {
-                    Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
+                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Finish, QuestIndex = SelectedQuest.QuestInfo.Index });
                     // 领取奖励时直接播放“任务完成”特效
                     GameScene.Scene?.TaskCompleteEffect?.Play();
                 }
@@ -1294,7 +1294,6 @@ namespace Client.MirScenes.Dialogs
         public ClientQuestProgress Quest;
 
         public bool Selected;
-        public bool TrackQuest;
 
         public event EventHandler SelectedQuestChanged;
         private void OnSelectedQuestChanged()
@@ -1307,7 +1306,6 @@ namespace Client.MirScenes.Dialogs
         {
             Quest = quest;
             Size = new Size(250, 15);
-            TrackQuest = GameScene.Scene.QuestTrackingDialog.TrackedQuestsIds.Contains(quest.Id);
 
             string name = Quest.QuestInfo.Name;
             string level = string.Format("Lv{0}", Quest.QuestInfo.MinLevelNeeded);
@@ -1316,7 +1314,6 @@ namespace Client.MirScenes.Dialogs
             bool lowLevelQuest = (MapObject.User.Level - quest.QuestInfo.MinLevelNeeded) > 10;
 
             BeforeDraw += QuestTaskSingleItem_BeforeDraw;
-            AfterDraw += QuestTaskSingleItem_AfterDraw;
 
             _selectedImage = new MirImageControl
             {
@@ -1349,22 +1346,6 @@ namespace Client.MirScenes.Dialogs
                     case MouseButtons.Left:
                         GameScene.Scene.QuestDetailDialog.DisplayQuestDetails(Quest);
                         break;
-                    case MouseButtons.Right:
-                        {
-                            if (TrackQuest)
-                            {
-                                GameScene.Scene.QuestTrackingDialog.RemoveQuest(Quest);
-                            }
-                            else
-                            {
-                                if (GameScene.Scene.QuestTrackingDialog.TrackedQuestsIds.Count >= 5) return;
-
-                                GameScene.Scene.QuestTrackingDialog.AddQuest(Quest);
-                            }
-
-                            TrackQuest = !TrackQuest;
-                        }
-                        break;
                 }
 
                 OnSelectedQuestChanged();
@@ -1385,14 +1366,6 @@ namespace Client.MirScenes.Dialogs
         void QuestTaskSingleItem_BeforeDraw(object sender, EventArgs e)
         {
             _selectedImage.Visible = Selected;
-        }
-
-        void QuestTaskSingleItem_AfterDraw(object sender, EventArgs e)
-        {
-            if (TrackQuest)
-            {
-                Libraries.Prguse.Draw(997, new Point(DisplayLocation.X - 15, DisplayLocation.Y), Color.White);
-            }
         }
 
         protected override void Dispose(bool disposing)

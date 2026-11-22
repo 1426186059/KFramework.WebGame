@@ -427,6 +427,8 @@ public abstract class Packet
                 return new C.DeleteItem();
             case (short)ClientPacketIds.TrackQuest:
                 return new C.TrackQuest();
+            case (short)ClientPacketIds.QuestCmd:
+                return new C.QuestCmd();
             default:
                 return null;
         }

@@ -181,7 +181,20 @@ public enum QuestState : byte
     Add,
     Update,
     Remove,
-    Offered
+    Offered,
+    // 合并后的 S.ChangeQuest 用它承载完成列表。
+    CompletedList
+}
+
+/// <summary>合并后的任务操作类型：C.QuestCmd.Action。</summary>
+public enum QuestCmdType : byte
+{
+    /// <summary>0=待接任务（点击「寻找 NPC」，服务端寻路并接取 OfferedQuest）。</summary>
+    Offered,
+    /// <summary>1=接取任务（在 NPC 任务面板点接取）。</summary>
+    Accept,
+    /// <summary>2=完成任务（领取奖励）。</summary>
+    Finish
 }
 
 public enum QuestAction : byte
@@ -1889,7 +1902,8 @@ public enum ClientPacketIds : short
     RemoveStoragePassword,
     GMCommand,
     SortInventory,
-    TrackQuest,
+    TrackQuest, // 旧协议，保留 ID 占位；已合并进 QuestCmd
+    QuestCmd,
 }
 
 public enum ConquestType : byte

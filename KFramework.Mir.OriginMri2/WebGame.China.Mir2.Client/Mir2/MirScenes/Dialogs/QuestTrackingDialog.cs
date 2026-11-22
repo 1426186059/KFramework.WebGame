@@ -84,7 +84,7 @@ namespace Client.MirScenes.Dialogs
                 label.Click += (s, e) =>
                 {
                     PrintTool.Log($"offeredLabel.Click quest={q.Id}");
-                    Network.Enqueue(new AcceptQuest { QuestIndex = q.Id, Navigate = true });
+                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Offered, QuestIndex = q.Id });
                 };
 
                 Height = 45;
@@ -132,7 +132,7 @@ namespace Client.MirScenes.Dialogs
                 label.Click += (s, e) =>
                 {
                     KFramework.MonoGame.PrintTool.Log($"{logTag} map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
-                    Network.Enqueue(new TeleportToQuestTarget
+                    Network.Enqueue(new C.TeleportToQuestTarget
                     {
                         MapIndex = tgt.MapIndex,
                         X = tgt.X,
@@ -354,8 +354,8 @@ namespace Client.MirScenes.Dialogs
             SyncWithNpcPanels();
         }
 
-        /// <summary>fromServer=true 表示这次变化来自服务器（登录恢复或 S.TrackQuest 确认），不再回包。</summary>
-        public void AddQuest(ClientQuestProgress quest, bool fromServer = false)
+        // 跟踪列表完全由服务器下发（接取任务时自动记录），客户端只维护显示。
+        public void AddQuest(ClientQuestProgress quest)
         {
             if (TrackedQuestsIds.Any(d => d == quest.Id) || TrackedQuestsIds.Count >= 5)
             {
@@ -364,18 +364,12 @@ namespace Client.MirScenes.Dialogs
 
             TrackedQuestsIds.Add(quest.Id);
             DisplayQuests();
-
-            if (!fromServer)
-                Network.Enqueue(new C.TrackQuest { QuestIndex = quest.Id, Track = true });
         }
 
-        public void RemoveQuest(ClientQuestProgress quest, bool fromServer = false)
+        public void RemoveQuest(ClientQuestProgress quest)
         {
             if (!TrackedQuestsIds.Remove(quest.Id)) return;
             DisplayQuests();
-
-            if (!fromServer)
-                Network.Enqueue(new C.TrackQuest { QuestIndex = quest.Id, Track = false });
         }
 
         public void SyncWithNpcPanels()

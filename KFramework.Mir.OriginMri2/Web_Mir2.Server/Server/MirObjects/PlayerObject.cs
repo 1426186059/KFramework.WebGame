@@ -205,30 +205,24 @@ namespace Server.MirObjects
             get { return Info.TrackedQuests; }
         }
 
-        /// <summary>设置任务跟踪状态，服务器权威并随角色存档持久化。
-        /// notify=false 用于已有 S.ChangeQuest/S.TrackQuest 会另行通知客户端的场景。</summary>
-        public bool TrackQuest(int questIndex, bool track, bool notify = true, bool requireActive = true)
+        /// <summary>接取任务时自动记录到跟踪栏，服务器权威并随角色存档持久化；客户端没有勾选/取消入口。</summary>
+        private bool TrackQuest(int questIndex, bool track, bool requireActive = true)
         {
             if (questIndex <= 0) return false;
             // 接取任务时 SendUpdateQuest 还没把 quest 加进 CurrentQuests，此时不做在线任务校验。
             if (track && requireActive && !CurrentQuests.Any(q => q.Info != null && q.Info.Index == questIndex)) return false;
 
-            bool changed;
             if (track)
             {
                 if (TrackedQuests.Contains(questIndex)) return true;
                 if (TrackedQuests.Count >= 5) return false;
 
                 TrackedQuests.Add(questIndex);
-                changed = true;
             }
             else
             {
-                changed = TrackedQuests.Remove(questIndex);
+                TrackedQuests.Remove(questIndex);
             }
-
-            if (changed && notify)
-                Enqueue(new S.TrackQuest { QuestIndex = questIndex, Track = track });
 
             return track ? TrackedQuests.Contains(questIndex) : !TrackedQuests.Contains(questIndex);
         }
@@ -4646,7 +4640,7 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        AbandonQuest(quest.Info.Index);
+                        ExpireQuest(quest.Info.Index);
                     }
                     break;
             }
@@ -12027,7 +12021,7 @@ namespace Server.MirObjects
             OfferedQuests.Remove(index);
             Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = index }, QuestState = QuestState.Remove });
 
-            bool tracked = TrackQuest(index, true, false, false);
+            bool tracked = TrackQuest(index, true, false);
             SendUpdateQuest(quest, QuestState.Add, tracked);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
@@ -12225,7 +12219,7 @@ namespace Server.MirObjects
             QuestProgressInfo quest = new QuestProgressInfo(index);
             quest.Init(this);
 
-            bool tracked = TrackQuest(index, true, false, false);
+            bool tracked = TrackQuest(index, true, false);
             SendUpdateQuest(quest, QuestState.Add, tracked, true);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
@@ -12260,37 +12254,17 @@ namespace Server.MirObjects
             });
         }
 
-        public void AbandonQuest(int questIndex)
+        // 玩家侧没有“放弃任务”入口；这里只处理任务超时等服务端自动移除。
+        private void ExpireQuest(int questIndex)
         {
             QuestProgressInfo quest = CurrentQuests.FirstOrDefault(e => e.Info.Index == questIndex);
 
             if (quest == null) return;
 
-            TrackQuest(questIndex, false, false);
+            TrackQuest(questIndex, false);
             SendUpdateQuest(quest, QuestState.Remove);
 
             RecalculateQuestBag();
-        }
-        public void ShareQuest(int questIndex)
-        {
-            bool shared = false;
-
-            if (GroupMembers != null)
-            {
-                foreach (PlayerObject player in GroupMembers.
-                    Where(player => player.CurrentMap == CurrentMap &&
-                        Functions.InRange(player.CurrentLocation, CurrentLocation, Globals.DataRange) &&
-                        !player.Dead && player != this))
-                {
-                    player.Enqueue(new S.ShareQuest { QuestIndex = questIndex, SharerName = Name });
-                    shared = true;
-                }
-            }
-
-            if (!shared)
-            {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.QuestNotShared), ChatType.System);
-            }
         }
 
         public void CheckGroupQuestKill(MonsterInfoTable mInfo)
@@ -12464,8 +12438,9 @@ namespace Server.MirObjects
 
         public void GetCompletedQuests()
         {
-            Enqueue(new S.CompleteQuest
+            Enqueue(new S.ChangeQuest
             {
+                QuestState = QuestState.CompletedList,
                 CompletedQuests = CompletedQuests
             });
         }

@@ -5392,12 +5392,19 @@ namespace ServerPackets
         // 客户端据此自动寻路走到该任务关联的 NPC（发放 NPC）。
         public bool AutoGuide;
 
+        // 合并进来的完成列表载荷；普通 Add/Update/Remove 时用默认值即可。
+        public List<int> CompletedQuests = new List<int>();
+
         protected override void ReadPacket(BinaryReader reader)
         {
             Quest = new ClientQuestProgress(reader);
             QuestState = (QuestState)reader.ReadByte();
             TrackQuest = reader.ReadBoolean();
             AutoGuide = reader.ReadBoolean();
+            int count = reader.ReadInt32();
+            CompletedQuests = new List<int>(count);
+            for (int i = 0; i < count; i++)
+                CompletedQuests.Add(reader.ReadInt32());
         }
         protected override void WritePacket(BinaryWriter writer)
         {
@@ -5405,6 +5412,9 @@ namespace ServerPackets
             writer.Write((byte)QuestState);
             writer.Write(TrackQuest);
             writer.Write(AutoGuide);
+            writer.Write(CompletedQuests.Count);
+            for (int i = 0; i < CompletedQuests.Count; i++)
+                writer.Write(CompletedQuests[i]);
         }
     }
 

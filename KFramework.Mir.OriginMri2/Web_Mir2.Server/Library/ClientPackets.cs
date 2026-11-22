@@ -2003,6 +2003,30 @@ namespace ClientPackets
         }
     }
 
+    /// <summary>合并后的任务操作包：Offered/Accept/Finish 全走这一条。
+    /// 跟踪由服务器自动记录，点击任务目标传送走独立的 C.TeleportToQuestTarget。</summary>
+    public sealed class QuestCmd : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.QuestCmd; } }
+
+        /// <summary>操作类型，取值见 QuestCmdType：
+        /// 0=Offered 待接任务（点击「寻找 NPC」，寻路接取）；
+        /// 1=Accept 接取任务（NPC 面板）；2=Finish 完成任务/领取奖励。</summary>
+        public byte Action;
+        public int QuestIndex;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            Action = reader.ReadByte();
+            QuestIndex = reader.ReadInt32();
+        }
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(Action);
+            writer.Write(QuestIndex);
+        }
+    }
+
     public sealed class FinishQuest : Packet
     {
         public override short Index { get { return (short)ClientPacketIds.FinishQuest; } }

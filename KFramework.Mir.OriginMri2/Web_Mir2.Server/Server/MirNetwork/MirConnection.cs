@@ -403,9 +403,6 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.SortInventory:
                     SortInventory((C.SortInventory) p);
                     break;
-                case (short)ClientPacketIds.TrackQuest:
-                    TrackQuest((C.TrackQuest) p);
-                    break;
                 case (short)ClientPacketIds.MoveItem:
                     MoveItem((C.MoveItem) p);
                     break;
@@ -679,17 +676,8 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.FishingChangeAutocast:
                     FishingChangeAutocast((C.FishingChangeAutocast)p);
                     break;
-                case (short)ClientPacketIds.AcceptQuest:
-                    AcceptQuest((C.AcceptQuest)p);
-                    break;
-                case (short)ClientPacketIds.FinishQuest:
-                    FinishQuest((C.FinishQuest)p);
-                    break;
-                case (short)ClientPacketIds.AbandonQuest:
-                    AbandonQuest((C.AbandonQuest)p);
-                    break;
-                case (short)ClientPacketIds.ShareQuest:
-                    ShareQuest((C.ShareQuest)p);
+                case (short)ClientPacketIds.QuestCmd:
+                    QuestCmd((C.QuestCmd)p);
                     break;
                 case (short)ClientPacketIds.AcceptReincarnation:
                     AcceptReincarnation();
@@ -2021,11 +2009,24 @@ namespace Server.MirNetwork
             Player.AcceptQuest(p.QuestIndex, p.Navigate); //p.NPCIndex,
         }
 
-        private void TrackQuest(C.TrackQuest p)
+        /// <summary>任务操作统一入口：所有客户端任务行为都通过 C.QuestCmd 进来。</summary>
+        private void QuestCmd(C.QuestCmd p)
         {
             if (Stage != GameStage.Game) return;
 
-            Player.TrackQuest(p.QuestIndex, p.Track);
+            switch ((QuestCmdType)p.Action)
+            {
+                case QuestCmdType.Offered:
+                    // 待接任务：点击「寻找 NPC」，服务端寻路并接取。
+                    Player.AcceptQuest(p.QuestIndex, true);
+                    break;
+                case QuestCmdType.Accept:
+                    Player.AcceptQuest(p.QuestIndex, false);
+                    break;
+                case QuestCmdType.Finish:
+                    Player.FinishQuest(p.QuestIndex);
+                    break;
+            }
         }
 
         private void FinishQuest(C.FinishQuest p)
@@ -2033,20 +2034,6 @@ namespace Server.MirNetwork
             if (Stage != GameStage.Game) return;
 
             Player.FinishQuest(p.QuestIndex);
-        }
-
-        private void AbandonQuest(C.AbandonQuest p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.AbandonQuest(p.QuestIndex);
-        }
-
-        private void ShareQuest(C.ShareQuest p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.ShareQuest(p.QuestIndex);
         }
 
         private void AcceptReincarnation()
