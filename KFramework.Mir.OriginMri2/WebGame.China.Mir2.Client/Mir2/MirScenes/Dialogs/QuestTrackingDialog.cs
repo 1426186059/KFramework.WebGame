@@ -5,6 +5,7 @@ using Client.MirNetwork;
 using Client.MirGraphics;
 using ClientPackets;
 using C = ClientPackets;
+using KFramework.MonoGame;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -25,7 +26,7 @@ namespace Client.MirScenes.Dialogs
         // 原始传奇 JS 的 TaskType 共 9 种：1主线 2除魔 3随机BOSS 4回收 5神威 7守护 8登陆 99悬赏 130九神。
         // taskRenderDic 每种类型最多一个条目 → 最多 9 行；行高固定，交给 MirScrollView2 虚拟化滚动。
         private const int SlotCount = 9;
-        private const int RowHeight = 120;
+        private const int RowHeight = 60;
         private const string QuestBorderSheetKey = "resource/assets/gameui4/movieClip/y_task_complete.json";
         // 原版 scaleX=.75 / scaleY=.8，我们的条目更紧凑，缩到 .55。
         private const float QuestBorderScale = 0.55f;
@@ -76,7 +77,7 @@ namespace Client.MirScenes.Dialogs
         /// 一行任务条目。MirScrollView2 只在视口内创建/复用这个控件；
         /// 特效和标签都在构造期建好，Bind 只改文字、Visible、动画开关。
         /// </summary>
-        private sealed class QuestTrackingItem : MirControl
+        private sealed class QuestTrackingItem : MirImageControl
         {
             private readonly MirLabel _nameLabel;
             private readonly MirLabel _findLabel;
@@ -92,7 +93,11 @@ namespace Client.MirScenes.Dialogs
                 // 整行参与命中：offered 状态点行内任意空白处都能接取/寻路到 NPC。
                 // 子标签（_findLabel / 可导航的 _taskLabels）命中优先级更高，点击照常走它们自己的 Click。
                 NotControl = false;
+                AutoSize = false;
                 Size = new Size(Math.Max(40, owner._scrollView.Size.Width), RowHeight);
+                Texture = KDefaultRes.DefaultTexture2D;
+                DrawImage = false;
+
                 Location = new Point(0, 0);
                 Click += (s, e) =>
                 {
@@ -106,15 +111,18 @@ namespace Client.MirScenes.Dialogs
 
                 _nameLabel = owner.NewLabel(CommonColor.OriginalQuestTitle, true);
                 _nameLabel.Parent = this;
+                _nameLabel.NotControl = true;
 
                 _findLabel = owner.NewLabel(CommonColor.White, true);
                 _findLabel.Parent = this;
                 _findLabel.RichText = true;   // 单标签富文本：白色"找到 " + 绿色下划线 NPC 名
+                _findLabel.NotControl = true;
 
                 for (int i = 0; i < MaxTaskLines; i++)
                 {
                     _taskLabels[i] = owner.NewLabel(CommonColor.White, true);
                     _taskLabels[i].Parent = this;
+                    _taskLabels[i].NotControl = true;
                 }
 
                 Effect = new MirAnimatedAtlasControl
@@ -138,12 +146,12 @@ namespace Client.MirScenes.Dialogs
                 Reset();
             }
 
-            private void SetLabel(MirLabel label, string text, int x, int y, Color colour, bool notControl, bool show)
+            private void SetLabel(MirLabel label, string text, int x, int y, Color colour, bool show)
             {
                 label.Text = text ?? string.Empty;
                 label.Location = new Point(x, y);
                 label.ForeColour = colour;
-                label.NotControl = notControl;
+                label.NotControl = true;
                 label.Visible = show;
             }
 
@@ -201,7 +209,7 @@ namespace Client.MirScenes.Dialogs
                 _isOffered = entry.IsOffered;
 
                 // 原始传奇渲染：getTaskTypeName(type) 前缀 + 任务名（textstyle 28/29）。
-                SetLabel(_nameLabel, QuestTypeLabel.Decorate(entry.Quest.QuestInfo.Type, entry.Quest.QuestInfo.Name), 10, 10, CommonColor.OriginalQuestTitle, true, true);
+                SetLabel(_nameLabel, QuestTypeLabel.Decorate(entry.Quest.QuestInfo.Type, entry.Quest.QuestInfo.Name), 10, 10, CommonColor.OriginalQuestTitle, true);
                 // 对齐原始传奇 addTaskEffect：r.x = e[t].x - 14, r.y = e[t].y - 13, scaleX=.75, scaleY=.8。
                 Effect.Location = new Point(-14, -13);
                 Effect.Visible = showEffect;
@@ -214,7 +222,7 @@ namespace Client.MirScenes.Dialogs
                         ? entry.Quest.QuestInfo.StartNpcName
                         : entry.Quest.QuestInfo.Name;
                     // 富文本：白色"找到 " + 亮绿色带下划线 NPC 名。
-                    SetLabel(_findLabel, "找到 <color=" + CommonColor.LimeGreenHex + "><u>" + npcName + "</u></color>", 10, 30, CommonColor.White, true, true);
+                    SetLabel(_findLabel, "找到 <color=" + CommonColor.LimeGreenHex + "><u>" + npcName + "</u></color>", 10, 30, CommonColor.White, true);
                     for (int i = 0; i < MaxTaskLines; i++)
                         _taskLabels[i].Visible = false;
                     return;
@@ -241,19 +249,19 @@ namespace Client.MirScenes.Dialogs
                         {
                             string prefix = text.Substring(0, idx);
                             string targetText = text.Substring(idx);
-                            SetLabel(_taskLabels[line - 1], prefix, 10, lineY, CommonColor.White, true, true);
+                            SetLabel(_taskLabels[line - 1], prefix, 10, lineY, CommonColor.White, true);
                             if (line >= MaxTaskLines) break;
 
                             int prefixW = TextRenderer.MeasureText(prefix, QuestFont).Width + 2;
                             _targets[line] = target;
-                            SetLabel(_taskLabels[line], targetText, 10 + prefixW, lineY, CommonColor.Green, true, true);
+                            SetLabel(_taskLabels[line], targetText, 10 + prefixW, lineY, CommonColor.Green, true);
                             line++;
                             continue;
                         }
                     }
 
                     bool navigable = target != null && target.MapIndex > 0;
-                    SetLabel(_taskLabels[line - 1], text, 10, lineY, navigable ? CommonColor.Green : CommonColor.White, true, true);
+                    SetLabel(_taskLabels[line - 1], text, 10, lineY, navigable ? CommonColor.Green : CommonColor.White, true);
                 }
 
                 for (int i = line; i < MaxTaskLines; i++)
@@ -305,6 +313,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = "y_lefttop-sheet",
                 AtlasFrame = "lefttopbg",
                 Location = new Point(40, 0),
+                Size = new Size(202, 188)
             };
 
             var mShowNode_HideBtn = new MirButton
