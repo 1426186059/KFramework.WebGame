@@ -170,9 +170,10 @@ namespace Client.MirScenes.Dialogs
                 _isOffered = entry.IsOffered;
 
                 SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 10, 5, Color.LimeGreen, true, true);
-                Effect.Location = new Point(-15, 0);
+                Effect.Location = new Point(-17, -17);
                 Effect.Visible = showEffect;
                 Effect.Animated = showEffect;
+                Effect.SizeScale = 0.5f;
 
                 if (entry.IsOffered)
                 {
