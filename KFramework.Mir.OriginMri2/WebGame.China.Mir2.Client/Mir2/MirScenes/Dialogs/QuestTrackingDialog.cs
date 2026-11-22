@@ -19,6 +19,17 @@ namespace Client.MirScenes.Dialogs
         private MirImageControl m_ShowNode;
         private MirButton m_HideNode;
 
+        // CDN 上的 ebc12760_8637.png 反解析自 manifest：
+        //   resource/assets/gameui4/movieClip/y_task_complete.png
+        // 配套描述 y_task_complete.json（frameRate=10，10 帧）走 Mir2AtlasLibrary 配置化加载，
+        // 与 TaskCompleteEffect 等特效一致，不硬编码 URL / 不手算帧矩形。
+        // 用途：任务跟踪面板出现「寻找 NPC」（如「寻找老兵」）时，在该行背后闪烁金色边框，
+        // 提示玩家点击这一行去接取任务。
+        private const string QuestBorderSheetKey = "resource/assets/gameui4/movieClip/y_task_complete.json";
+        private MirAnimatedAtlasControl _questBorderAni;
+        private bool _hasFindNpcHint;
+        private Point _findNpcHintLocation;
+
         public QuestTrackingDialog()
         {
             Location = new Point(0, 50);
@@ -26,6 +37,8 @@ namespace Client.MirScenes.Dialogs
             Size = new Size(265, 188);
             DrawImage = false;
             Texture = KDefaultRes.DefaultTexture2D;
+
+            AfterDraw += (o, e) => SyncQuestBorder();
 
             m_HideNode = new MirButton
             {
@@ -113,6 +126,33 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 188 - 85),
             };
 
+            // 金色边框动画：manifest key 交给 Mir2AtlasLibrary 解析 CDN 哈希路径，
+            // MovieClip 的帧序/帧率(10fps)/逐帧矩形全由 y_task_complete.json 配置驱动。
+            _questBorderAni = new MirAnimatedAtlasControl
+            {
+                Parent = this,
+                NotControl = true,
+                Location = new Point(0, 0),
+                Loop = true,
+                Animated = true,
+                Blending = true,
+                ForeColour = Color.White,
+                AutoSetupMovieClip = true,
+                Visible = false,
+            };
+            _questBorderAni.AtlasNameKey = QuestBorderSheetKey;
+        }
+
+        private void SyncQuestBorder()
+        {
+            if (_questBorderAni == null) return;
+
+            bool show = m_ShowNode != null && m_ShowNode.Visible && _hasFindNpcHint;
+            _questBorderAni.Visible = show;
+
+            // MovieClip 帧内容自带约 14px 的左上内偏移，向上挪一点让边框正好框住「寻找 NPC」那一行。
+            if (show)
+                _questBorderAni.Location = new Point(0, Math.Max(0, _findNpcHintLocation.Y - 28));
         }
 
         public void DisplayQuests()
@@ -121,6 +161,8 @@ namespace Client.MirScenes.Dialogs
             {
                 label.Dispose();
             }
+
+            _hasFindNpcHint = false;
 
             List<ClientQuestProgress> questsToTrack = new List<ClientQuestProgress>();
 
@@ -321,6 +363,13 @@ namespace Client.MirScenes.Dialogs
                     Network.Enqueue(new AcceptQuest { QuestIndex = q.Id, Navigate = true });
                 };
                 TaskLines.Add(offeredLabel);
+
+                // 面板上真的画出了「寻找 NPC」这一行，才让金色边框闪烁提示玩家点击。
+                if (!_hasFindNpcHint)
+                {
+                    _hasFindNpcHint = true;
+                    _findNpcHintLocation = offeredLabel.Location;
+                }
 
                 y += 30;
             }
