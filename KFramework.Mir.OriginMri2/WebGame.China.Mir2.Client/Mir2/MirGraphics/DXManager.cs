@@ -15,7 +15,6 @@ namespace Client.MirGraphics
         public static float BlendingRate;
         public static BlendMode BlendingMode;
 
-        public static SlimDX.Direct3D9.Sprite Sprite = new SlimDX.Direct3D9.Sprite();
         public static SlimDX.Direct3D9.Line Line = new SlimDX.Direct3D9.Line();
         public static SlimDX.Direct3D9.Device Device = new SlimDX.Direct3D9.Device();
         public static SlimDX.Direct3D9.Surface CurrentSurface;

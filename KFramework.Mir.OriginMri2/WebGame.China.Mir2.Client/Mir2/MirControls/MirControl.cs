@@ -1,7 +1,5 @@
 using Client.MirGraphics;
 using Client.MirSounds;
-using SlimDX;
-using Vector3 = KFramework.MonoGame.Vector3;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 
