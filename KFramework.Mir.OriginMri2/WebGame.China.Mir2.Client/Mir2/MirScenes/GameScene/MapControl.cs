@@ -460,12 +460,14 @@ public sealed class MapControl : MirControl
         MapObject.MouseObjectID = 0;
         MapObject.TargetObjectID = 0;
         MapObject.MagicObjectID = 0;
-
-        // 先卸载旧地图上的全部对象：Remove 需要从当前网格移除对象，
-        // 必须在本方法置空 M2CellInfo 之前执行，否则旧 NPC/怪物残留导致重影跟随玩家。
+        
         if (M2CellInfo != null)
+        {
             for (var i = ObjectsList.Count - 1; i >= 0; i--)
+            {
                 ObjectsList[i]?.Remove();
+            }
+        }
 
         Objects.Clear();
         ObjectsList.Clear();
@@ -480,9 +482,6 @@ public sealed class MapControl : MirControl
             ObjectsList.Add(User);
         }
 
-        // 切图置空网格（须在对象卸载之后）：异步加载完成前，新地图的 User/NPC/怪物对象
-        // 会经由 AddObject/RemoveObject 落入 _pendingAdd 缓冲，待 LoadMapAsync 加载完本图后统一回放，
-        // 避免用“旧地图(可能更小)网格”按“新地图坐标”索引导致 IndexOutOfRangeException。
         if (bResetCell)
         {
             M2CellInfo = null;
@@ -495,12 +494,6 @@ public sealed class MapControl : MirControl
     public async Task LoadMapAsync()
     {
         ResetMap();
-
-        // 记录本次加载代次并快照文件名：LoadMapAsync 是 fire-and-forget 调用的，
-        // 连续/并发切图时（如登录时连着收到两张地图包），先完成的旧地图若照常落地，
-        // 会被后完成的覆盖，最终显示成「另一张地图的同一坐标区域」。
-        // 中断上一次尚未完成的加载：新切图一来旧的立即作废，不再继续
-        // 解析 / 建 PathFinder / 预加载库 / 播音乐。
         _mapLoadCts?.Cancel();
         _mapLoadCts = new CancellationTokenSource();
         var token = _mapLoadCts.Token;
@@ -519,23 +512,21 @@ public sealed class MapControl : MirControl
         }
         catch (OperationCanceledException)
         {
-            return;   // 被新切图取消，正常退出
+            return;
         }
 
-        // 期间已有更新的切图请求：本次结果作废，绝不能覆盖新地图的数据。
         if (token.IsCancellationRequested || gen != _mapLoadGeneration)
         {
-            // MapReader 内部会顺带把 NewResConfig.CurrentMapName 设成它自己这张（旧）地图，
-            // 作废时要改回当前最新的那张，否则后续地图片库会按旧地图名去取。
             string staleName = Path.GetFileNameWithoutExtension(fileName);
             NewResConfig.CurrentMapName = Path.GetFileNameWithoutExtension(FileName);
-            //KFramework.MonoGame.PrintTool.Log($"[Map] 丢弃过期地图加载: {staleName}（已有更新的切图请求，当前={NewResConfig.CurrentMapName}）");
             return;
         }
 
         M2CellInfo = Map.MapCells;
-        // 地图就绪后补加竞态窗口内暂存的对象（如登录时先于地图加载完成的 UserObject）
-        foreach (var ob in _pendingAdd) AddObject(ob);
+        foreach (var ob in _pendingAdd)
+        {
+            AddObject(ob);
+        }
         _pendingAdd.Clear();
         Width = Map.Width;
         Height = Map.Height;
@@ -552,30 +543,21 @@ public sealed class MapControl : MirControl
         _floorDirty = true;
         _lastUserCell = new Point(-1, -1);
 
-        // 首次进图卡顿采样：PathFinder 构造会为整张地图逐格 new Node（Width*Height 个对象），
-        // 与上面 CellInfo 网格同量级，同样跑在 await 之后的主线程上。
         var pfT0 = DateTime.Now;
         PathFinder = new PathFinder(this);
 
         try
         {
-            // 背景音乐走原始传奇：按地图 id 查 5config.soundnormal[type=3] 的 BGM（CDN audio/{file}.mp3），
-            // 替代经典 Mir2 的本地 MapMusic（服务端下发的 Music 字段换表后已全为 0，不可用）。
-            // 地图 id 取文件名（如 "103.map" → 103）；未配 BGM 的地图会停止当前音乐。
             string mapStem = Path.GetFileNameWithoutExtension(fileName);
             int mapBgmId = int.TryParse(mapStem, out int mid) ? SoundManager.GetOriginMapBgm(mid) : 0;
             SoundManager.PlayOriginMusic(mapBgmId, true);
         }
         catch (Exception)
         {
-            // Do nothing. index was not valid.
         }
 
         SetMusic = Music;
         SoundList.Music = Music;
-
-        // 采样：从收到地图包 → 网格/寻路全部就绪的总耗时（瓦片另算，见 DrawFloor 日志）
-        //KFramework.MonoGame.PrintTool.Log($"[Map] 地图加载链路总耗时（收包 → 网格+寻路就绪）：{(DateTime.Now - GameScene.MapLoadStart).TotalMilliseconds:F0}ms  时刻={DateTime.Now:HH:mm:ss.fff}");
     }
 
 
