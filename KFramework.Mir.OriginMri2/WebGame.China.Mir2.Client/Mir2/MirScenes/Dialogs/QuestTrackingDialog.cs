@@ -236,7 +236,7 @@ namespace Client.MirScenes.Dialogs
                     if (line >= MaxTaskLines) break;
 
                     string text = taskText ?? string.Empty;
-                    int lineY = 22 + 15 * line;
+                    int lineY = 30 + 15 * line;
                     QuestTaskTarget target = (entry.Quest.Targets != null && line < entry.Quest.Targets.Count)
                         ? entry.Quest.Targets[line] : null;
                     _targets[line] = target;
