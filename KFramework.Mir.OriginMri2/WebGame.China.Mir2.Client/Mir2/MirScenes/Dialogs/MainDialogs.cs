@@ -69,7 +69,7 @@ namespace Client.MirScenes.Dialogs
                 AnimationDelay = 120,
                 Pivot = new PointF(1, 0f),
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.1f,
+                SizeScale = new KFramework.MonoGame.Vector2(1.1f, 1.1f),
                 FillOrigin = MirFillOrigin.Bottom,
             };
             this.mHPAni.SetFrames("y_h_hp_", 0, 9);
@@ -83,7 +83,7 @@ namespace Client.MirScenes.Dialogs
                 AnimationDelay = 120,
                 Pivot = new PointF(1, 1f),
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.1f,
+                SizeScale = new KFramework.MonoGame.Vector2(1.1f, 1.1f),
             };
             this.mHPAni1.SetFrames("y_h_pl_", 0, 9);
 
@@ -95,7 +95,7 @@ namespace Client.MirScenes.Dialogs
                 Loop = true,
                 AnimationDelay = 120,
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.1f,
+                SizeScale = new KFramework.MonoGame.Vector2(1.1f, 1.1f),
                 FillOrigin = MirFillOrigin.Bottom,
             };
             this.mMPAni.SetFrames("y_h_mp_", 0, 9);
@@ -108,7 +108,7 @@ namespace Client.MirScenes.Dialogs
                 Loop = true,
                 AnimationDelay = 120,
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.1f,
+                SizeScale = new KFramework.MonoGame.Vector2(1.1f, 1.1f),
                 Pivot = new PointF(0, 1f),
             };
             this.mMPAni1.SetFrames("y_h_mpl_", 0, 9);
@@ -677,11 +677,11 @@ namespace Client.MirScenes.Dialogs
         {
             float fHPPercent = User.HP / (float)User.Stats[Stat.HP];
             this.mHPAni.FillAmount = fHPPercent;
-            this.mHPAni1.Location = new Point(0, (int)(10 + 122 * this.mHPAni.SizeScale * (1 - fHPPercent)));
+            this.mHPAni1.Location = new Point(0, (int)(10 + 122 * this.mHPAni.SizeScale.Y * (1 - fHPPercent)));
             if (HPOnly) return;
             float fMPPercent = User.MP / (float)User.Stats[Stat.MP];
             this.mMPAni.FillAmount = fMPPercent;
-            this.mMPAni1.Location = new Point(0, (int)(10 + 122 * this.mMPAni.SizeScale * (1 - fMPPercent)));
+            this.mMPAni1.Location = new Point(0, (int)(10 + 122 * this.mMPAni.SizeScale.Y * (1 - fMPPercent)));
         }
 
         private void ExperienceBar_BeforeDraw(object sender, EventArgs e)

@@ -89,39 +89,32 @@ namespace Client.MirScenes.Dialogs
 
             public QuestTrackingItem(QuestTrackingDialog owner)
             {
-                NotControl = true;
+                // 整行参与命中：offered 状态点行内任意空白处都能接取/寻路到 NPC。
+                // 子标签（_findLabel / 可导航的 _taskLabels）命中优先级更高，点击照常走它们自己的 Click。
+                NotControl = false;
                 Size = new Size(Math.Max(40, owner._scrollView.Size.Width), RowHeight);
                 Location = new Point(0, 0);
+                Click += (s, e) =>
+                {
+                    if (_isOffered)
+                    {
+                        TryAcceptQuest();
+                        return;
+                    }
+                    TryTeleportFirstTarget();
+                };
 
-                _nameLabel = owner.NewLabel(Color.LimeGreen, true);
+                _nameLabel = owner.NewLabel(CommonColor.LimeGreen, true);
                 _nameLabel.Parent = this;
 
-                _findLabel = owner.NewLabel(Color.Gold, false);
+                _findLabel = owner.NewLabel(CommonColor.White, true);
                 _findLabel.Parent = this;
-                _findLabel.UnderLine = true;
-                _findLabel.Click += (s, e) =>
-                {
-                    if (_quest == null || !_isOffered) return;
-                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Offered, QuestIndex = _quest.Id });
-                };
+                _findLabel.RichText = true;   // 单标签富文本：白色"找到 " + 绿色下划线 NPC 名
 
                 for (int i = 0; i < MaxTaskLines; i++)
                 {
-                    int index = i;
-                    _taskLabels[i] = owner.NewLabel(Color.White, true);
+                    _taskLabels[i] = owner.NewLabel(CommonColor.White, true);
                     _taskLabels[i].Parent = this;
-                    _taskLabels[i].Click += (s, e) =>
-                    {
-                        QuestTaskTarget target = _targets[index];
-                        if (_quest == null || _isOffered || target == null) return;
-                        Network.Enqueue(new C.TeleportToQuestTarget
-                        {
-                            MapIndex = target.MapIndex,
-                            X = target.X,
-                            Y = target.Y,
-                            MonsterIndex = target.MonsterIndex
-                        });
-                    };
                 }
 
                 Effect = new MirAnimatedAtlasControl
@@ -130,11 +123,16 @@ namespace Client.MirScenes.Dialogs
                     NotControl = true,
                     Loop = true,
                     Animated = false,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     AutoSetupMovieClip = true,
                     Visible = false,
                     AtlasNameKey = QuestBorderSheetKey,
-                    Location = new Point(0, 0)
+                    Location = new Point(0, 0),
+                    DrawMode = MirImageDrawMode.NineGrid,
+                    BorderLeft = 20,
+                    BorderTop = 20,
+                    BorderRight = 20,
+                    BorderBottom = 20,
                 };
 
                 Reset();
@@ -147,6 +145,39 @@ namespace Client.MirScenes.Dialogs
                 label.ForeColour = colour;
                 label.NotControl = notControl;
                 label.Visible = show;
+            }
+
+            // 接取/寻路到 NPC：整行 Item 与 _findLabel 共用，仅在"可提供任务"状态生效。
+            private void TryAcceptQuest()
+            {
+                if (_quest == null || !_isOffered) return;
+                Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Offered, QuestIndex = _quest.Id });
+            }
+
+            // 传送到指定任务目标：行内子标签点各自的 target 时调用。
+            private void TryTeleportTarget(QuestTaskTarget target)
+            {
+                if (_quest == null || _isOffered || target == null) return;
+                Network.Enqueue(new C.TeleportToQuestTarget
+                {
+                    MapIndex = target.MapIndex,
+                    X = target.X,
+                    Y = target.Y,
+                    MonsterIndex = target.MonsterIndex
+                });
+            }
+
+            // 整行点击（进行中任务）：传送到第一个有效目标，没有则什么都不做。
+            private void TryTeleportFirstTarget()
+            {
+                if (_quest == null || _isOffered) return;
+                for (int i = 0; i < MaxTaskLines; i++)
+                {
+                    QuestTaskTarget target = _targets[i];
+                    if (target == null) continue;
+                    TryTeleportTarget(target);
+                    return;
+                }
             }
 
             public void Reset()
@@ -169,18 +200,20 @@ namespace Client.MirScenes.Dialogs
                 _quest = entry.Quest;
                 _isOffered = entry.IsOffered;
 
-                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 10, 5, Color.LimeGreen, true, true);
-                Effect.Location = new Point(-17, -17);
+                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 10, 10, CommonColor.LimeGreen, true, true);
+                // 对齐原始传奇 addTaskEffect：r.x = e[t].x - 14, r.y = e[t].y - 13, scaleX=.75, scaleY=.8。
+                Effect.Location = new Point(-14, -13);
                 Effect.Visible = showEffect;
                 Effect.Animated = showEffect;
-                Effect.SizeScale = 0.5f;
+                Effect.SizeScale = new KFramework.MonoGame.Vector2(0.75f, 0.8f);
 
                 if (entry.IsOffered)
                 {
                     string npcName = !string.IsNullOrEmpty(entry.Quest.QuestInfo.StartNpcName)
                         ? entry.Quest.QuestInfo.StartNpcName
                         : entry.Quest.QuestInfo.Name;
-                    SetLabel(_findLabel, "寻找 " + npcName, 10, 25, Color.Gold, false, true);
+                    // 富文本：白色"找到 " + 亮绿色带下划线 NPC 名。
+                    SetLabel(_findLabel, "找到 <color=" + CommonColor.LimeGreenHex + "><u>" + npcName + "</u></color>", 10, 30, CommonColor.White, true, true);
                     for (int i = 0; i < MaxTaskLines; i++)
                         _taskLabels[i].Visible = false;
                     return;
@@ -207,19 +240,19 @@ namespace Client.MirScenes.Dialogs
                         {
                             string prefix = text.Substring(0, idx);
                             string targetText = text.Substring(idx);
-                            SetLabel(_taskLabels[line - 1], prefix, 10, lineY, Color.White, true, true);
+                            SetLabel(_taskLabels[line - 1], prefix, 10, lineY, CommonColor.White, true, true);
                             if (line >= MaxTaskLines) break;
 
                             int prefixW = TextRenderer.MeasureText(prefix, QuestFont).Width + 2;
                             _targets[line] = target;
-                            SetLabel(_taskLabels[line], targetText, 10 + prefixW, lineY, Color.Green, false, true);
+                            SetLabel(_taskLabels[line], targetText, 10 + prefixW, lineY, CommonColor.Green, true, true);
                             line++;
                             continue;
                         }
                     }
 
                     bool navigable = target != null && target.MapIndex > 0;
-                    SetLabel(_taskLabels[line - 1], text, 10, lineY, navigable ? Color.Green : Color.White, !navigable, true);
+                    SetLabel(_taskLabels[line - 1], text, 10, lineY, navigable ? CommonColor.Green : CommonColor.White, true, true);
                 }
 
                 for (int i = line; i < MaxTaskLines; i++)
@@ -260,7 +293,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 DrawImage = false,
                 Texture = KDefaultRes.DefaultTexture2D,
-                ForeColour = Color.Blue,
+                ForeColour = CommonColor.Blue,
                 Location = new Point(0, 0),
                 Size = new Size(265, 188),
             };

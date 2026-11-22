@@ -19,15 +19,14 @@ namespace Client.MirControls
         public override Point DisplayLocation { get { return base.DisplayLocation; } }
         public Point DisplayLocationWithoutOffSet { get { return base.DisplayLocation; } }
 
-        // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
-        public float SizeScale { get; set; } = 1f;
+        // 绘制/布局缩放向量（原 AtlasFrameScale 与 SizeScale 合并，且支持非等比）。
+        // X/Y 分别作用于绘制尺寸与 Size（布局/命中），默认 (1,1) = 原尺寸。
+        // 对齐原始传奇 scaleX/scaleY 不一致的特效时直接给不同分量，如 (0.75f, 0.8f)。
+        public KFramework.MonoGame.Vector2 SizeScale { get; set; } = new KFramework.MonoGame.Vector2(1f, 1f);
 
         // 用 DXManager.UISampler（线性）采样绘制本控件图像，供放大的 UI 小图（角色立绘）平滑显示。
         // 默认 false：全局保持 Point 最近邻，文字/精灵锐利；仅立绘这类被放大的小图控件置 true。
         public bool UseUISampler { get; set; } = false;
-
-        // MovieClip 绘制共用的统一缩放系数（如界面 ScaleF），由 MirAnimatedAtlasControl.SetMovieClip 装配。
-        protected float AtlasFrameScale { get; set; } = 1f;
 
         // 填充裁剪（类似 Unity Image.fillAmount）：FillAmount<1 时只绘制图像的指定比例部分，不拉伸图像。
         // 用于固定形状（如半月血条）按比例显隐，避免改 Size 把形状压变形。
@@ -397,9 +396,9 @@ namespace Client.MirControls
                     result = new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
                 else
                     result = base.Size;
-                // SizeScale 直接收进 Size：绘制/布局框/命中区（DisplayRectangle 用 Size）一起缩放。
-                if (SizeScale != 1f)
-                    result = new Size((int)(result.Width * SizeScale), (int)(result.Height * SizeScale));
+                // SizeScale.X/Y 分别收进 Size：绘制/布局框/命中区同步缩放。
+                if (SizeScale.X != 1f || SizeScale.Y != 1f)
+                    result = new Size((int)(result.Width * SizeScale.X), (int)(result.Height * SizeScale.Y));
                 return result;
             }
         }
@@ -482,11 +481,11 @@ namespace Client.MirControls
                     // 用四条边各自缩放取整，而不是「top + Round(height)」——后者在
                     // 逐帧 w/h 不同时会因两次独立取整额外抖 1px。
                     // clipRect.Y + clipRect.Height 由资源保证恒定，所以 bottom 恒定，脚不会动。
-                    float s = AtlasFrameScale;
-                    int left = DisplayLocation.X + (int)Math.Round(clipRect.X * s);
-                    int right = DisplayLocation.X + (int)Math.Round((clipRect.X + clipRect.Width) * s);
-                    int top = DisplayLocation.Y + (int)Math.Round(clipRect.Y * s);
-                    int bottom = DisplayLocation.Y + (int)Math.Round((clipRect.Y + clipRect.Height) * s);
+                    // SizeScale.X/Y 分别缩放帧矩形；SizeScale 已计入 Size（布局/命中），这里同步用于绘制。
+                    int left = DisplayLocation.X + (int)Math.Round(clipRect.X * SizeScale.X);
+                    int right = DisplayLocation.X + (int)Math.Round((clipRect.X + clipRect.Width) * SizeScale.X);
+                    int top = DisplayLocation.Y + (int)Math.Round(clipRect.Y * SizeScale.Y);
+                    int bottom = DisplayLocation.Y + (int)Math.Round((clipRect.Y + clipRect.Height) * SizeScale.Y);
                     drawSize = new Size(right - left, bottom - top);
                     px = left - (int)(_pivot.X * drawSize.Width);
                     py = top - (int)(_pivot.Y * drawSize.Height);

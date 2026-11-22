@@ -90,7 +90,8 @@ namespace Client.MirControls
         /// <summary>
         /// 装配一个白鹭 MovieClip：帧序 / 帧率 / 统一注册点布局 / 缩放 / 布局包围盒
         /// 全部由 Mir2AtlasSheet 组合的 EgretMovieClip 提供，控件只负责按当前帧取矩形来画。
-        /// scale = 界面缩放系数（如 SelectScene.ScaleF）。
+        /// scale = 界面等比缩放系数（如 SelectScene.ScaleF），非 1 时写入 SizeScale（X/Y 同值）；
+        /// 使用方可自行给 SizeScale 设不同分量做非等比，默认不覆盖。
         /// 返回 false 表示图集为空或没有可播放帧；同一 MovieClip 重复调用不重装配，不打断播放。
         /// </summary>
         public bool SetMovieClip(Mir2AtlasSheet sheet, float scale = 1f)
@@ -102,15 +103,17 @@ namespace Client.MirControls
 
             _movieClip = movie;
             AutoSize = false;
-            AtlasFrameScale = scale;
+            // scale 非 1 时（显式指定界面缩放）覆盖 SizeScale；默认 1 时不覆盖使用方预置值。
+            if (scale != 1f)
+                SizeScale = new KFramework.MonoGame.Vector2(scale, scale);
             AnimationDelay = movie.DelayMs;
             AtlasSheet = sheet;
             AtlasAnimationFrames = movie.PlayOrder;
 
-            // Size 只用于布局/命中框；绘制尺寸来自 Layouts 的每帧矩形。
+            // Size 只用于布局/命中框；Size getter 已含 SizeScale.X/Y，这里用原始包围盒，避免重复乘。
             var b = movie.Bounds;
             if (b.Width > 0 && b.Height > 0)
-                Size = new Size(Math.Max(1, (int)(b.Width * scale)), Math.Max(1, (int)(b.Height * scale)));
+                Size = new Size(Math.Max(1, b.Width), Math.Max(1, b.Height));
 
             return true;
         }
