@@ -104,7 +104,7 @@ namespace Client.MirScenes.Dialogs
                     TryTeleportFirstTarget();
                 };
 
-                _nameLabel = owner.NewLabel(CommonColor.LimeGreen, true);
+                _nameLabel = owner.NewLabel(CommonColor.OriginalQuestTitle, true);
                 _nameLabel.Parent = this;
 
                 _findLabel = owner.NewLabel(CommonColor.White, true);
@@ -200,7 +200,8 @@ namespace Client.MirScenes.Dialogs
                 _quest = entry.Quest;
                 _isOffered = entry.IsOffered;
 
-                SetLabel(_nameLabel, entry.Quest.QuestInfo.Name, 10, 10, CommonColor.LimeGreen, true, true);
+                // 原始传奇渲染：getTaskTypeName(type) 前缀 + 任务名（textstyle 28/29）。
+                SetLabel(_nameLabel, QuestTypeLabel.Decorate(entry.Quest.QuestInfo.Type, entry.Quest.QuestInfo.Name), 10, 10, CommonColor.OriginalQuestTitle, true, true);
                 // 对齐原始传奇 addTaskEffect：r.x = e[t].x - 14, r.y = e[t].y - 13, scaleX=.75, scaleY=.8。
                 Effect.Location = new Point(-14, -13);
                 Effect.Visible = showEffect;

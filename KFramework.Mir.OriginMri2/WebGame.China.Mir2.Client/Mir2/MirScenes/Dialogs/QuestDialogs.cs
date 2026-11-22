@@ -484,7 +484,7 @@ namespace Client.MirScenes.Dialogs
             IconImage.Index = 961 + (int)Quest.Icon + iconTypeOffset;
             IconImage.Visible = true;
 
-            NameLabel.Text = Quest.QuestInfo.Name;
+            NameLabel.Text = QuestTypeLabel.Decorate(Quest.QuestInfo.Type, Quest.QuestInfo.Name);
             RequirementLabel.Text = Quest.QuestInfo.MinLevelNeeded > 0 ? "Lv " + Quest.QuestInfo.MinLevelNeeded : "";
         }
 
@@ -646,7 +646,7 @@ namespace Client.MirScenes.Dialogs
             CurrentLines.Clear();
 
             //add quest title at the beginning
-            CurrentLines.Insert(0, Quest.QuestInfo.Name);
+            CurrentLines.Insert(0, QuestTypeLabel.Decorate(Quest.QuestInfo.Type, Quest.QuestInfo.Name));
 
             if (Quest.Taken && !Quest.QuestInfo.SameFinishNPC && Quest.QuestInfo.CompletionDescription.Count > 0 && GameScene.Scene.QuestListDialog.CurrentNPCID == Quest.QuestInfo.FinishNPCIndex)
             {
@@ -1307,7 +1307,7 @@ namespace Client.MirScenes.Dialogs
             Quest = quest;
             Size = new Size(250, 15);
 
-            string name = Quest.QuestInfo.Name;
+            string name = QuestTypeLabel.Decorate(Quest.QuestInfo.Type, Quest.QuestInfo.Name);
             string level = string.Format("Lv{0}", Quest.QuestInfo.MinLevelNeeded);
             string state = quest.Completed ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Complete) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InProgress);
 
