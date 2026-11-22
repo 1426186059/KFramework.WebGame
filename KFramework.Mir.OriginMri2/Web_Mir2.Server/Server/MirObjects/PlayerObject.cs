@@ -215,7 +215,9 @@ namespace Server.MirObjects
             if (track)
             {
                 if (TrackedQuests.Contains(questIndex)) return true;
-                if (TrackedQuests.Count >= 5) return false;
+                // 上限时淘汰最早追踪的一条（旧存档可能已累积满），保证新接取的任务总能进追踪栏。
+                if (TrackedQuests.Count >= 5)
+                    TrackedQuests.RemoveAt(0);
 
                 TrackedQuests.Add(questIndex);
             }
@@ -634,9 +636,6 @@ namespace Server.MirObjects
                     break;
                 case DelayedType.DamageIndicator:
                     CompleteDamageIndicator(action.Params);
-                    break;
-                case DelayedType.Quest:
-                    CompleteQuest(action.Params);
                     break;
                 case DelayedType.SpellEffect:
                     CompleteSpellEffect(action.Params);
@@ -4635,28 +4634,6 @@ namespace Server.MirObjects
             if (send)
                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoNearbyOwnedCarcasses), ChatType.System);
         }
-        private void CompleteQuest(IList<object> data)
-        {
-            QuestProgressInfo quest = (QuestProgressInfo)data[0];
-            QuestAction questAction = (QuestAction)data[1];
-            bool ignoreIfComplete = (bool)data[2];
-
-            if (quest == null) return;
-
-            switch (questAction)
-            {
-                case QuestAction.TimeExpired:
-                    {
-                        if (ignoreIfComplete && quest.Completed)
-                        {
-                            return;
-                        }
-
-                        ExpireQuest(quest.Info.Index);
-                    }
-                    break;
-            }
-        }
         private void CompleteNPC(IList<object> data)
         {
             uint npcid = (uint)data[0];
@@ -8123,12 +8100,20 @@ namespace Server.MirObjects
                 p = near.Value;
             }
 
-            // 已在目标点同图且范围内：无需传送，直接打开面板（避免"明明就在 NPC 旁还被传送"）
-            bool alreadyThere = (CurrentMap == map) && Functions.InRange(CurrentLocation, p, Globals.DataRange);
+            // 已在目标点同图且足够近：无需传送（避免"明明就在目标旁还被传送"）。
+            // 注意不能用 Globals.DataRange(=16，交互范围)：玩家接任务时站在发放 NPC 旁，
+            // 目标刷点常在十几格内，会被误判为"已到达"而点击无反应（如"商队的求救"的鸡刷点）。
+            // 这里用与 HasQuestTarget 一致的 3 格作为"确实已到目标点"的判定。
+            const int ArrivedRange = 3;
+            bool alreadyThere = (CurrentMap == map) && Functions.InRange(CurrentLocation, p, ArrivedRange);
             if (!alreadyThere)
             {
                 MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
                 Teleport(map, p);
+            }
+            else
+            {
+                MessageQueue.Enqueue($"[传送诊断] 已在目标 3 格内 ({CurrentLocation.X},{CurrentLocation.Y})，不传送");
             }
 
             // 打开面板：直接用服务器自身任务数据解析出的 NPC 运行时 ObjectID，按 ID 精确 CallNPC，
@@ -12182,6 +12167,11 @@ namespace Server.MirObjects
 
             SendUpdateQuest(quest, QuestState.Remove);
 
+            // 领奖后清掉该任务的追踪记录，形成滚动窗口。
+            // 否则 TrackedQuests 只增不减，很快达到 5 个上限；后续自动接取的任务虽然进了 CurrentQuests，
+            // 但 TrackQuest 因上限返回 false，下发的 ChangeQuest 不带 TrackQuest，客户端追踪栏就不显示任何任务。
+            TrackQuest(questIndex, false);
+
             if (quest.Info.CarryItems.Count > 0)
             {
                 foreach (QuestItemTask carryItem in quest.Info.CarryItems)
@@ -12208,9 +12198,10 @@ namespace Server.MirObjects
 
             CallDefaultNPC(DefaultNPCType.OnFinishQuest, questIndex);
 
-            // 任务调度器：完成当前任务后，按"已完成 Index +1"自动接取下一满足条件的任务。
-            // 空洞(已删索引)自然越过；仅职业不符可跳过(限职业数)；等级/前置不符则停止。
-            QuestScheduler.AdvanceAfterComplete(quest.Info.Index);
+            // 任务调度器：完成当前任务后推进下一环。对齐原始传奇——按 next 字段找下一环，
+            // 若下一环接取NPC(StartNpcId)==当前任务交付NPC(FinishNpcId)（同一个NPC），直接接取；
+            // 否则走"开放(寻找NPC)"流程，由玩家自行前往。
+            QuestScheduler.AdvanceAfterComplete(quest.Info);
         }
 
         /// <summary>
@@ -12233,7 +12224,9 @@ namespace Server.MirObjects
             quest.Init(this);
 
             bool tracked = TrackQuest(index, true, false);
-            SendUpdateQuest(quest, QuestState.Add, tracked, true);
+            // 自动接取不触发自动寻路：玩家此刻通常就站在交付 NPC 面前（领完奖连续接下一环），
+            // autoGuide 会让客户端跑 A*；目标 NPC 格子不可走时会穷举整张地图，WASM 单线程直接卡死。
+            SendUpdateQuest(quest, QuestState.Add, tracked, false);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
@@ -12268,19 +12261,6 @@ namespace Server.MirObjects
                 Quest = new ClientQuestProgress { Id = info.Index, QuestInfoTable = cqi },
                 QuestState = QuestState.Offered
             });
-        }
-
-        // 玩家侧没有“放弃任务”入口；这里只处理任务超时等服务端自动移除。
-        private void ExpireQuest(int questIndex)
-        {
-            QuestProgressInfo quest = CurrentQuests.FirstOrDefault(e => e.Info.Index == questIndex);
-
-            if (quest == null) return;
-
-            TrackQuest(questIndex, false);
-            SendUpdateQuest(quest, QuestState.Remove);
-
-            RecalculateQuestBag();
         }
 
         public void CheckGroupQuestKill(MonsterInfoTable mInfo)
@@ -12432,14 +12412,12 @@ namespace Server.MirObjects
                     {
                         CurrentQuests.Add(quest);
                     }
-                    quest.SetTimer();
                     break;
                 case QuestState.Remove:
                     if (CurrentQuests.Contains(quest))
                     {
                         CurrentQuests.Remove(quest);
                     }
-                    quest.RemoveTimer();
                     break;
             }
 

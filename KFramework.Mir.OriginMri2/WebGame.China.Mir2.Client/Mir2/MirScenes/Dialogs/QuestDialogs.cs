@@ -165,19 +165,30 @@ namespace Client.MirScenes.Dialogs
         }
 
         /// <summary>
-        /// 服务器任务状态包回来后决定任务面板去留，对齐原始传奇 checknpcTaskDialog：
-        /// 原版按 TaskState 判断，只有 state != Accepted 才停留在任务面板。映射到本工程：
-        ///   - 接取后仍进行中（Taken 且未完成 = 原版 Accepted）→ 关闭面板，回到 NPC 普通对话；
-        ///   - 接取后即完成（Completed = 原版 Finish）→ 保持面板，ReDisplayButtons 原地刷成“领取奖励”；
-        ///   - 其它状态（Update/Remove/完成列表）→ 正常刷新。
+        /// 服务器任务状态包回来后的处理，对齐原始传奇：
+        ///   - 接取后任务立刻完成（纯对话任务，Completed=true）：自动领奖 + 关闭面板，
+        ///     玩家点一次“对话”即完成接取/完成/领奖/关闭全流程（原版一次点击全做完）；
+        ///   - 接取后仍进行中（Accepted）：关闭面板，回到 NPC 普通对话；
+        ///   - 其它状态（Update/Remove/完成列表）：正常刷新。
         /// </summary>
         public void OnQuestStateChanged(ClientQuestProgress quest, QuestState state)
         {
             if (!Visible) return;
 
-            if (state == QuestState.Add && quest != null && quest.Taken && !quest.Completed)
+            if (state == QuestState.Add && quest != null && quest.Taken)
             {
-                Hide();
+                if (quest.Completed)
+                {
+                    // 纯对话任务：接取即完成，自动领奖并收尾（无需玩家再点一次“领取奖励”）
+                    Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Finish, QuestIndex = quest.Id });
+                    GameScene.Scene?.TaskCompleteEffect?.Play();
+                    Hide();
+                }
+                else
+                {
+                    // 进行中任务：关闭面板回到 NPC 普通对话
+                    Hide();
+                }
                 return;
             }
 
@@ -929,7 +940,37 @@ namespace Client.MirScenes.Dialogs
             if (Quest == null) return;
 
             ClientQuestInfo info = Quest.QuestInfo;
-            int x = 0; // 一行内的左内边距
+            if (info == null) return;
+
+            // 对齐原始传奇：reward 字符串按 '#' 拆前后两段，各占一行——
+            //   前半段 = 奖励描述（原版 t.txt_reward.text = reward.split("#")[0]），纯文本；
+            //   后半段 = NPC 对话（reward.split("#")[1]），由下方 _PlayerTaskTalk 按钮台词显示。
+            // 咱们服务端已按 '#' 拆好：前半存 CompletionDescription、后半存 PlayerTaskTalk。
+            // 这里只显示前半段（原文一行，不拆逗号）；没下发时才回退到结构化奖励图标。
+            if (info.CompletionDescription != null && info.CompletionDescription.Count > 0)
+            {
+                int y = 2;
+                foreach (string raw in info.CompletionDescription)
+                {
+                    if (string.IsNullOrWhiteSpace(raw)) continue;
+                    var label = new MirLabel
+                    {
+                        Parent = this,
+                        AutoSize = true,
+                        Location = new Point(0, y),
+                        Text = raw.Trim(),
+                        ForeColour = CommonColor.White,
+                        NotControl = false,
+                        Font = new Font(Settings.FontName, 12F),
+                    };
+                    _labels.Add(label);
+                    y += label.Size.Height + 2;
+                }
+                Redraw();
+                return;
+            }
+
+            int x = 0; // 一行内的左内边距（无原版 reward 描述时的回退）
 
             if (info.RewardExp > 0)
                 x = AddSegment(x, "经验", info.RewardExp.ToString("###0"));

@@ -353,11 +353,6 @@ namespace Server.MirDatabase
             if (!Completed)
             {
                 EndDateTime = Envir.Now;
-
-                if (Info.TimeLimitInSeconds > 0)
-                {
-                    Owner.ExpireTimer($"Quest-{Index}");
-                }
             }
 // updatetask again to show gototask
             UpdateTasks();
@@ -717,46 +712,6 @@ namespace Server.MirDatabase
         }
 
         #endregion
-
-        #endregion
-
-        #region Optional Functions
-
-        public void SetTimer()
-        {
-            if (Owner == null)
-            {
-                return;
-            }
-
-            if (Info.TimeLimitInSeconds > 0)
-            {
-                var secondsSinceStarted = (int)(Envir.Now - StartDateTime).TotalSeconds;
-
-                var remainingSeconds = Info.TimeLimitInSeconds - secondsSinceStarted;
-
-                if (remainingSeconds > 0)
-                {
-                    Owner.SetTimer($"Quest-{Index}", remainingSeconds, 1);
-                }
-
-                DelayedAction action = new DelayedAction(DelayedType.Quest, Envir.Time + (remainingSeconds * 1000), this, QuestAction.TimeExpired, true);
-                Owner.ActionList.Add(action);
-            }
-        }
-
-        public void RemoveTimer()
-        {
-            if (Owner == null)
-            {
-                return;
-            }
-
-            if (Info.TimeLimitInSeconds > 0)
-            {
-                Owner.ExpireTimer($"Quest-{Index}");
-            }
-        }
 
         #endregion
 

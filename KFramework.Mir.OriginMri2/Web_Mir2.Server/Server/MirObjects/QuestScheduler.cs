@@ -23,50 +23,67 @@ namespace Server.MirObjects
         }
 
         /// <summary>
-        /// 某任务完成后，从“已完成任务的 Index +1”开始往后寻找下一个可接任务。
-        /// 规则：
-        ///  - 空洞（已被删除、不存在的 Index）：自然越过，并重置连续跳过计数；
-        ///  - 仅“职业不满足”可以跳过，且连续跳过超过 MaxClassSkips 即停止（不一直跳）；
-        ///  - 等级 / 前置任务不满足：立即停止（不跳过）。
-        /// 找到第一个满足条件的任务即自动接取并结束。
+        /// 某任务完成后推进下一环，对齐原始传奇的任务链配置：
+        ///  - 优先按当前任务的 OriginSettings.NextQuestId（= 原版 next 字段）找下一环；
+        ///  - 自动接取以原版 _task.state 为准：state==2（TaskState.Accepted）直接 AutoAcceptQuest，
+        ///    state==1（NotAccepted）或缺失只 OfferQuest（追踪栏显示"寻找NPC"，玩家去 fnpc 手动接）。
+        ///    不再用"同 NPC"猜测（原版存在同 NPC 但不自动接、不同 NPC 却自动接的任务）。
+        /// 没有 next 配置时，退化为从 Index+1 往后找第一个可接任务，同样按 state 判断。
         /// </summary>
-        public void AdvanceAfterComplete(int completedIndex)
+        public void AdvanceAfterComplete(QuestInfoTable completed)
         {
             var list = Envir.Main.QuestInfoList;
-            if (list.Count == 0) return;
-            int maxIndex = list.Max(q => q.Index);
+            if (list.Count == 0 || completed == null) return;
 
+            QuestInfoTable next = null;
+            if (completed.OriginSettings != null && completed.OriginSettings.NextQuestId > 0)
+                next = list.FirstOrDefault(d => d.Index == completed.OriginSettings.NextQuestId);
+
+            if (next != null)
+            {
+                if (next.CanOffer(_player))
+                    AdvanceTo(next);
+                return;
+            }
+
+            // 退化：无 next 配置时从 Index+1 往后找第一个可接任务
+            int maxIndex = list.Max(q => q.Index);
             int classSkipRun = 0;
-            int cand = completedIndex + 1;
+            int cand = completed.Index + 1;
             while (cand <= maxIndex)
             {
                 QuestInfoTable q = list.FirstOrDefault(d => d.Index == cand);
-                if (q == null)                       // 空洞：越过并重置计数
+                if (q == null || _player.CompletedQuests.Contains(cand))
                 {
                     classSkipRun = 0;
                     cand++;
                     continue;
                 }
-                if (_player.CompletedQuests.Contains(cand))   // 已完成：越过并重置计数
+                if (q.CanOffer(_player))
                 {
-                    classSkipRun = 0;
-                    cand++;
-                    continue;
-                }
-                if (q.CanOffer(_player))            // 满足条件：开放（寻找NPC）并结束
-                {
-                    _player.OfferQuest(cand);
+                    AdvanceTo(q);
                     return;
                 }
-                if (!IsClassEligible(q))              // 仅职业不符可跳过
+                if (!IsClassEligible(q))
                 {
                     classSkipRun++;
                     if (classSkipRun > MaxClassSkips) return;
                     cand++;
                     continue;
                 }
-                return;                              // 等级/前置不符：停止
+                return;
             }
+        }
+
+        /// <summary>
+        /// 按原版 _task.state 推进：2=Accepted 自动接取，其余=NotAccepted 只开放。
+        /// 非原版任务（OriginSettings==null）保持旧的 Index+1 接龙行为：不作自动接取，仅开放。
+        /// </summary>
+        private void AdvanceTo(QuestInfoTable quest)
+        {
+            bool auto = quest.OriginSettings != null && quest.OriginSettings.State == 2;
+            if (auto) _player.AutoAcceptQuest(quest.Index);
+            else _player.OfferQuest(quest.Index);
         }
 
         /// <summary>

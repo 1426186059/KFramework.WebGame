@@ -217,11 +217,6 @@ public enum QuestCmdType : byte
     Finish
 }
 
-public enum QuestAction : byte
-{
-    TimeExpired
-}
-
 public enum DefaultNPCType : byte
 {
     Login,

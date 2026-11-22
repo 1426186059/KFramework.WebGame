@@ -18,6 +18,10 @@ namespace Server.MirDatabase
         public int NextQuestId { get; set; }
         public int RequiredQuestId { get; set; }
 
+        // 原版 _task.state：2=TaskState.Accepted（上一环领完奖后直接自动接取），
+        // 1=NotAccepted（需要玩家去 fnpc 对话手动接取）。自动接取完全以此为准，不再按同 NPC 猜测。
+        public int State { get; set; }
+
         public int TaskGroupId { get; set; }
         public string Condition { get; set; } = "";
         public string ConditionText { get; set; } = "";
