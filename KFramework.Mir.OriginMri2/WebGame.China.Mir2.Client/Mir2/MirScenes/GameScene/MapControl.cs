@@ -548,7 +548,6 @@ public sealed class MapControl : MirControl
         _mapTileCache.Clear();
         _mapTileLoading.Clear();
         _tilesReady = 0;            // 采样计数随切图重置
-        _tileGridLogged = false;
         _floorWaitFrames = 0;
         _floorDirty = true;
         _lastUserCell = new Point(-1, -1);
@@ -822,25 +821,26 @@ public sealed class MapControl : MirControl
     private void DrawFloor(int vpW, int vpH)
     {
         int fw = vpW, fh = vpH;
-        if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
-            || DXManager.FloorTexture.Width != fw || DXManager.FloorTexture.Height != fh)
+        if (DXManager.FloorTexture == null || 
+            DXManager.FloorTexture.Disposed || 
+            DXManager.FloorTexture.Width != fw || 
+            DXManager.FloorTexture.Height != fh)
         {
             DXManager.FloorTexture = new Texture(DXManager.Device, fw, fh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             DXManager.FloorSurface = DXManager.FloorTexture.GetSurfaceLevel(0);
         }
 
-        // 还没进图（User 为空）时直接判定有效，避免空烘焙
-        if (User == null) { FloorValid = true; return; }
+        if (User == null) 
+        { 
+            FloorValid = true; 
+            return; 
+        }
 
         var floorT0 = DateTime.Now;   // 采样：单次地板烘焙耗时
         Surface oldSurface = DXManager.CurrentSurface;
         DXManager.SetSurface(DXManager.FloorSurface);
         DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
 
-        // 原版传奇地板：直接由 CDN 的 assets/resource/zipmap/{MapImg}/{index}.jpg 真实瓦片拼出，
-        // 取代旧 Libraries.MapLibs 瓦片索引渲染——原始传奇官方就是这么画地图的。
-        // 瓦片网格：cols=ceil(PixelWidth/TileTexWidth)，rows=ceil(PixelHeight/TileTexHeight)，index=r*cols+c+1；
-        // 每瓦片在地图像素空间占 [c*TileTexWidth,(c+1)*TileTexWidth]x[r*TileTexHeight,(r+1)*TileTexHeight]，映射到 1:1 地板 RT 后整张贴入。
         int pending = 0;
         if (MapImg > 0 && TileCols > 0 && TileRows > 0)
         {
@@ -857,14 +857,6 @@ public sealed class MapControl : MirControl
             if (rowMin < 0) rowMin = 0;
             if (colMax >= TileCols) colMax = TileCols - 1;
             if (rowMax >= TileRows) rowMax = TileRows - 1;
-
-            // 采样：本次切图一次性要拉多少张瓦片（只在切图后第一帧打一次）
-            if (!_tileGridLogged)
-            {
-                _tileGridLogged = true;
-                int tc = colMax - colMin + 1, tr = rowMax - rowMin + 1;
-                //KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片请求规模: {tc}x{tr}={tc * tr} 张（TileCols={TileCols} TileRows={TileRows} 地图像素={PixelWidth}x{PixelHeight}）");
-            }
 
             // 地板 RT 是 1:1 像素，瓦片用单位变换贴，避免被外层遗留 RenderTransform 二次缩放/偏移
             var savedRT = DXManager.RenderTransform;
