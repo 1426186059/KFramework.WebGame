@@ -104,7 +104,7 @@ namespace Client.MirScenes.Dialogs
             CharacterDisplay.AfterDraw += (o, e) =>
             {
                 if (Class == MirClass.Wizard)
-                    Libraries.ChrSel.DrawBlend(CharacterDisplay.Index + 560, CharacterDisplay.DisplayLocationWithoutOffSet, Color.White, true);
+                    Libraries.ChrSel.DrawBlend(CharacterDisplay.Index + 560, CharacterDisplay.DisplayLocationWithoutOffSet, CommonColor.White, true);
             };
 
 
@@ -265,13 +265,13 @@ namespace Client.MirScenes.Dialogs
             {
                 OKButton.Enabled = false;
                 NameTextBox.Border = true;
-                NameTextBox.BorderColour = Color.Red;
+                NameTextBox.BorderColour = CommonColor.Red;
             }
             else
             {
                 OKButton.Enabled = true;
                 NameTextBox.Border = true;
-                NameTextBox.BorderColour = Color.Green;
+                NameTextBox.BorderColour = CommonColor.Green;
             }
         }
 

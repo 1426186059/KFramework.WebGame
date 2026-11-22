@@ -57,7 +57,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(PanelIndent, 10),
                 Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
             };
 
             _descLabel = new MirLabel
@@ -66,7 +66,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(PanelIndent, 34),
                 Size = new Size(450, 130),
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
             };
 
             Reward = new QuestRewards
@@ -83,7 +83,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(PanelIndent, 145),
                 Text = "Finish",
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 UnderLine = true,
                 Sound = SoundList.ButtonA,
                 NotControl = false,
@@ -358,7 +358,7 @@ namespace Client.MirScenes.Dialogs
             else
                 text = plain[0] + "\n" + string.Join(" ", plain.GetRange(1, plain.Count - 1));
 
-            _descLabel.ForeColour = Color.White;
+            _descLabel.ForeColour = CommonColor.White;
             _descLabel.Text = text;
             _descLabel.Visible = true;
 
@@ -573,7 +573,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (i != 0 && CurrentLines[i] != TaskTitle && CurrentLines[i] != ProgressTitle && CurrentLines[i] != ReturnTitle && CurrentLines[i]  != TimeLimitTitle) continue;
 
-                Libraries.Prguse.Draw(919, new Point(DisplayLocation.X + 5, DisplayLocation.Y + 5 + (i - TopLine) * 15 + adjust), Color.White);
+                Libraries.Prguse.Draw(919, new Point(DisplayLocation.X + 5, DisplayLocation.Y + 5 + (i - TopLine) * 15 + adjust), CommonColor.White);
 
                 adjust += 5;
             }
@@ -736,7 +736,7 @@ namespace Client.MirScenes.Dialogs
             for (int i = TopLine; i < BottomLine; i++)
             {
                 Font font = Font;
-                Color fontColor = Color.White;
+                Color fontColor = CommonColor.White;
                 bool title = false;
 
                 if (i == 0 || lines[i] == TaskTitle || lines[i] == ProgressTitle || lines[i] == ReturnTitle || lines[i] == TimeLimitTitle)
@@ -746,7 +746,7 @@ namespace Client.MirScenes.Dialogs
 
                     if (i == 0)
                     {
-                        fontColor = Color.Yellow;
+                        fontColor = CommonColor.Yellow;
                     }
                 }
 
@@ -861,19 +861,19 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = p,
                 Text = text,
-                ForeColour = Color.Cyan,
+                ForeColour = CommonColor.Cyan,
                 Font = Font
             };
 
             temp.MouseEnter += (o, e) =>
             {
-                temp.ForeColour = Color.Orange;
+                temp.ForeColour = CommonColor.Orange;
                 NPCDialog.ShowTooltipForLink(linkType, linkIdx, temp.DisplayLocation);
             };
 
             temp.MouseLeave += (o, e) =>
             {
-                temp.ForeColour = Color.Cyan;
+                temp.ForeColour = CommonColor.Cyan;
                 NPCDialog.HideTooltipForLink();
             };
 
@@ -936,7 +936,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(x, 2),
                 Text = label,
-                ForeColour = Color.LimeGreen,
+                ForeColour = CommonColor.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
                 Font = new Font(Settings.FontName, 12F),
@@ -950,7 +950,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(x, 2),
                 Text = " " + value,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 UnderLine = false,
                 NotControl = false,
                 Font = new Font(Settings.FontName, 12F),
@@ -970,7 +970,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(x, 2),
                 Text = item.Name,
-                ForeColour = Color.LimeGreen,
+                ForeColour = CommonColor.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
                 Font = new Font(Settings.FontName, 12F),
@@ -1009,7 +1009,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Location = new Point(x, 2),
                     Text = " x" + count,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     UnderLine = false,
                     NotControl = false,
                     Font = new Font(Settings.FontName, 12F),
@@ -1138,7 +1138,7 @@ namespace Client.MirScenes.Dialogs
                 CountLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     NotControl = true,
                     OutLine = false,
                     Parent = this,
@@ -1206,7 +1206,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.LimeGreen,
+                ForeColour = CommonColor.LimeGreen,
                 Location = new Point(18, 0),
                 Visible = true,
             };
@@ -1329,7 +1329,7 @@ namespace Client.MirScenes.Dialogs
                 Text = string.Format("{0,-4} {1}", level, name),
                 AutoSize = true,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = lowLevelQuest ? Color.Gray : quest.New ? Color.Yellow : Color.White,
+                ForeColour = lowLevelQuest ? CommonColor.Gray : quest.New ? CommonColor.Yellow : CommonColor.White,
                 Parent = this,
                 Location = new Point(0, 0),
                 Sound = SoundList.ButtonA
@@ -1356,7 +1356,7 @@ namespace Client.MirScenes.Dialogs
                 Text = string.Format("{0}", state),
                 AutoSize = true,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = lowLevelQuest ? Color.Gray : quest.New ? Color.Yellow : Color.White,
+                ForeColour = lowLevelQuest ? CommonColor.Gray : quest.New ? CommonColor.Yellow : CommonColor.White,
                 Parent = this,
                 Location = new Point(185, 0),
                 Sound = SoundList.ButtonA

@@ -40,10 +40,10 @@ public sealed class FPSDialog : MirControl
     public FPSDialog()
     {
         DrawControlTexture = true;                // 离屏纹理缓存：整块烘焙一次
-        BackColour = Color.FromArgb(50, 50, 50);
+        BackColour = CommonColor.FromArgb(50, 50, 50);
         Border = true;
-        BorderColour = Color.Black;
-        ForeColour = Color.White;
+        BorderColour = CommonColor.Black;
+        ForeColour = CommonColor.White;
         NotControl = true;
         Opacity = 1F;
         _font = ScaleFont(new Font(Settings.FontName, 8F));
@@ -91,7 +91,7 @@ public sealed class FPSDialog : MirControl
         // 同 MirLabel：目标、清屏、批都由调用方管（TextRenderer 只把字形塞进当前批）。
         var savedSurface = DXManager.CurrentSurface;
         DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-        DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)BackColour.ToArgb()));
+        DXManager.GDevice.Clear(CommonColor.FromArgb((uint)BackColour.ToArgb()));
         try
         {
             DXManager.BeginSprite(MirBlend.Normal);

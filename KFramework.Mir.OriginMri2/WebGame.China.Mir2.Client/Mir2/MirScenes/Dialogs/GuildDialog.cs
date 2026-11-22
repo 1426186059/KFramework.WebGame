@@ -198,7 +198,7 @@ namespace Client.MirScenes.Dialogs
             };
             Notice = new MirTextBox()
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Font = new Font(Settings.FontName, 8F),
                 Enabled = false,
                 Visible = true,
@@ -317,8 +317,8 @@ namespace Client.MirScenes.Dialogs
                 int index = i;
                 MembersRanks[i] = new MirDropDownBox()
                 {
-                    BackColour = i % 2 == 0 ? Color.FromArgb(255, 10, 10, 10) : Color.FromArgb(255, 15, 15, 15),
-                    ForeColour = Color.White,
+                    BackColour = i % 2 == 0 ? CommonColor.FromArgb(255, 10, 10, 10) : CommonColor.FromArgb(255, 15, 15, 15),
+                    ForeColour = CommonColor.White,
                     Parent = MembersPage,
                     Size = new Size(100, 14),
                     Location = new Point(24, 30 + (i * 15)),
@@ -332,8 +332,8 @@ namespace Client.MirScenes.Dialogs
             {
                 MembersName[i] = new MirLabel()
                 {
-                    BackColour = i % 2 == 0 ? Color.FromArgb(255, 05, 05, 05) : Color.FromArgb(255, 07, 07, 07),
-                    ForeColour = Color.White,
+                    BackColour = i % 2 == 0 ? CommonColor.FromArgb(255, 05, 05, 05) : CommonColor.FromArgb(255, 07, 07, 07),
+                    ForeColour = CommonColor.White,
                     Parent = MembersPage,
                     Size = new Size(100, 14),
                     Location = new Point(125, 30 + (i * 15)),
@@ -348,8 +348,8 @@ namespace Client.MirScenes.Dialogs
             {
                 MembersStatus[i] = new MirLabel()
                 {
-                    BackColour = i % 2 == 0 ? Color.FromArgb(255, 10, 10, 10) : Color.FromArgb(255, 15, 15, 15),
-                    ForeColour = Color.White,
+                    BackColour = i % 2 == 0 ? CommonColor.FromArgb(255, 10, 10, 10) : CommonColor.FromArgb(255, 15, 15, 15),
+                    ForeColour = CommonColor.White,
                     Parent = MembersPage,
                     Size = new Size(100, 14),
                     Location = new Point(225, 30 + (i * 15)),
@@ -453,7 +453,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = MembersPage,
                 Size = new Size(150, 12),
                 Font = new Font(Settings.FontName, 7F),
-                ForeColour = Color.White
+                ForeColour = CommonColor.White
             };
             MembersPage.KeyDown += MembersPanel_KeyDown;
             MembersPage.MouseWheel += MembersPanel_MouseWheel;
@@ -498,7 +498,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildNameLevelMembers),
                 Visible = true,
                 Parent = StatusPage,
-                ForeColour = Color.Gray,
+                ForeColour = CommonColor.Gray,
             };
             StatusGuildName = new MirLabel()
             {
@@ -556,9 +556,9 @@ namespace Client.MirScenes.Dialogs
                 Parent = StatusPage,
                 Visible = true,
                 Text = "",
-                BackColour = Color.FromArgb(255, 25, 25, 25),
+                BackColour = CommonColor.FromArgb(255, 25, 25, 25),
                 Border = true,
-                BorderColour = Color.FromArgb(255, 35, 35, 35),
+                BorderColour = CommonColor.FromArgb(255, 35, 35, 35),
                 CanLoseFocus = true
             };
             RecruitMemberButton = new MirButton()
@@ -730,7 +730,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EditRank),
                 Location = new Point(42, 18),
                 Size = new Size(150, 20),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = RankPage,
                 NotControl = true,
 
@@ -740,7 +740,7 @@ namespace Client.MirScenes.Dialogs
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectRank),
                 Location = new Point(198, 18),
                 Size = new Size(150, 20),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = RankPage,
                 NotControl = true,
 
@@ -750,11 +750,11 @@ namespace Client.MirScenes.Dialogs
                 Parent = RankPage,
                 Location = new Point(198, 36),
                 Size = new Size(130, 16),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = true,
                 Enabled = true,
-                BackColour = Color.FromArgb(255, 25, 25, 25),
-                BorderColour = Color.FromArgb(255, 35, 35, 35),
+                BackColour = CommonColor.FromArgb(255, 25, 25, 25),
+                BorderColour = CommonColor.FromArgb(255, 35, 35, 35),
             };
             RanksSelectBox.ValueChanged += (o, e) => OnRankSelect(RanksSelectBox._WantedIndex);
 
@@ -768,8 +768,8 @@ namespace Client.MirScenes.Dialogs
                 Enabled = false,
                 Text = "",
                 Border = true,
-                BackColour = Color.FromArgb(255, 25, 25, 25),
-                BorderColour = Color.FromArgb(255, 35, 35, 35),
+                BackColour = CommonColor.FromArgb(255, 25, 25, 25),
+                BorderColour = CommonColor.FromArgb(255, 35, 35, 35),
             };
             RanksName.BeforeDraw += (o, e) => RanksName_BeforeDraw();
             RanksName.TextBox.KeyPress += RanksName_KeyPress;
@@ -1047,7 +1047,7 @@ namespace Client.MirScenes.Dialogs
                         if (BuffInfo.LevelRequirement > GameScene.Scene.GuildDialog.Level)
                         {
                             Buffs[i].Info.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InsufficientLevel);
-                            Buffs[i].Info.ForeColour = Color.Red;
+                            Buffs[i].Info.ForeColour = CommonColor.Red;
                             Buffs[i].Icon.Index += 2;
                         }
                         else
@@ -1134,9 +1134,9 @@ namespace Client.MirScenes.Dialogs
         {
             GameScene.Scene.GuildBuffLabel = new MirControl
             {
-                BackColour = Color.FromArgb(255, 50, 50, 50),
+                BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                 Border = true,
-                BorderColour = Color.Gray,
+                BorderColour = CommonColor.Gray,
                 NotControl = true,
                 Parent = GameScene.Scene,
                 Opacity = 0.7F,
@@ -1149,7 +1149,7 @@ namespace Client.MirScenes.Dialogs
             MirLabel HintName = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, 4),
                 OutLine = true,
                 Parent = GameScene.Scene.GuildBuffLabel,
@@ -1180,7 +1180,7 @@ namespace Client.MirScenes.Dialogs
             MirLabel RequiredLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, GameScene.Scene.GuildBuffLabel.DisplayRectangle.Bottom),
                 OutLine = true,
                 Parent = GameScene.Scene.GuildBuffLabel,
@@ -1207,7 +1207,7 @@ namespace Client.MirScenes.Dialogs
                 MirLabel TimeLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, GameScene.Scene.GuildBuffLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = GameScene.Scene.GuildBuffLabel,
@@ -1222,7 +1222,7 @@ namespace Client.MirScenes.Dialogs
             MirLabel InfoLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, GameScene.Scene.GuildBuffLabel.DisplayRectangle.Bottom),
                 OutLine = true,
                 Parent = GameScene.Scene.GuildBuffLabel,
@@ -1574,9 +1574,9 @@ namespace Client.MirScenes.Dialogs
                         MembersRanks[RowCount].SelectedIndex = Ranks[i].Index;
                         MembersName[RowCount].Text = Ranks[i].Members[j].Name;
                         if (Ranks[i].Members[j].Online)
-                            MembersStatus[RowCount].ForeColour = Color.LimeGreen;
+                            MembersStatus[RowCount].ForeColour = CommonColor.LimeGreen;
                         else
-                            MembersStatus[RowCount].ForeColour = Color.White;
+                            MembersStatus[RowCount].ForeColour = CommonColor.White;
                         TimeSpan Diff = now - Ranks[i].Members[j].LastLogin.ToLocalTime();
                         string text;
                         if (Ranks[i].Members[j].Online)
@@ -1710,7 +1710,7 @@ namespace Client.MirScenes.Dialogs
             }
             if (StatusExpBar.Library == null) return;
 
-            StatusExpBar.Library.Draw(424, StatusExpBar.DisplayLocation, new Size(260, 22), Color.White);
+            StatusExpBar.Library.Draw(424, StatusExpBar.DisplayLocation, new Size(260, 22), CommonColor.White);
 
             double percent = GameScene.Scene.GuildDialog.Experience / (double)GameScene.Scene.GuildDialog.MaxExperience;
             StatusExpLabel.Text = string.Format("{0:#0.##%}", percent);
@@ -1718,7 +1718,7 @@ namespace Client.MirScenes.Dialogs
             if (percent <= 0) return;
             Rectangle section = new Rectangle(0, 0, (int)((260 - 3) * percent), 22);
 
-            StatusExpBar.Library.Draw(StatusExpBar.Index, section, StatusExpBar.DisplayLocation, Color.White, false);
+            StatusExpBar.Library.Draw(StatusExpBar.Index, section, StatusExpBar.DisplayLocation, CommonColor.White, false);
 
         }
 
@@ -2130,7 +2130,7 @@ namespace Client.MirScenes.Dialogs
 
         public GuildBuffButton()
         {
-            BorderColour = Color.Orange;
+            BorderColour = CommonColor.Orange;
 
             Size = new Size(188, 33);
             Icon = new MirImageControl

@@ -10,7 +10,7 @@ namespace Client.MirControls
             {
                 if (_label != null && !_label.IsDisposed)
                     return _label.ForeColour;
-                return Color.Empty;
+                return CommonColor.Empty;
             }
             set
             {
@@ -174,7 +174,7 @@ namespace Client.MirControls
         // GrayScale 由 MirImageControl.DrawControl 应用（AtlasFrame / Library 通道）。
         // 已有专门禁用帧（DisabledIndex / DisabledAtlasFrame）或不想置灰的按钮，把开关设为 false。
         public bool AutoGrayWhenDisabled { get; set; } = true;
-        public Color DisabledLabelColour { get; set; } = Color.Gray;
+        public Color DisabledLabelColour { get; set; } = CommonColor.Gray;
         private Color? _enabledLabelColour;
 
         protected override void OnEnabledChanged()

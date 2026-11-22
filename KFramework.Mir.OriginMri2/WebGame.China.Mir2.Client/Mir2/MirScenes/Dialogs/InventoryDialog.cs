@@ -65,7 +65,7 @@ namespace Client.MirScenes.Dialogs
             Bag1Button.Click += Button_Click;
             Bag1Button.Label.Text = "背包";
             Bag1Button.Label.OutLine = true;
-            Bag1Button.Label.ForeColour = Color.Gray;
+            Bag1Button.Label.ForeColour = CommonColor.Gray;
             Bag1Button.Label.Location = new Point(0, 10);
 
             Bag2Button = new MirButton
@@ -80,7 +80,7 @@ namespace Client.MirScenes.Dialogs
             Bag2Button.Click += Button_Click;
             Bag2Button.Label.Text = "背包";
             Bag2Button.Label.OutLine = true;
-            Bag2Button.Label.ForeColour = Color.Gray;
+            Bag2Button.Label.ForeColour = CommonColor.Gray;
             Bag2Button.Label.Location = new Point(0, 10);
 
             StorageButton = new MirButton
@@ -95,7 +95,7 @@ namespace Client.MirScenes.Dialogs
             StorageButton.Click += Button_Click;
             StorageButton.Label.Text = "仓库";
             StorageButton.Label.OutLine = true;
-            StorageButton.Label.ForeColour = Color.Gray;
+            StorageButton.Label.ForeColour = CommonColor.Gray;
             StorageButton.Label.Location = new Point(0, 10);
 
 
@@ -111,7 +111,7 @@ namespace Client.MirScenes.Dialogs
             };
             Bag1SelectButton.Label.Text = "背包";
             Bag1SelectButton.Label.OutLine = true;
-            Bag1SelectButton.Label.ForeColour = Color.White;
+            Bag1SelectButton.Label.ForeColour = CommonColor.White;
             Bag1SelectButton.Label.Location = new Point(5, 10);
             Bag1SelectButton.Label.Size = new Size(20, 92);
 
@@ -127,7 +127,7 @@ namespace Client.MirScenes.Dialogs
             };
             Bag2SelectButton.Label.Text = "背包";
             Bag2SelectButton.Label.OutLine = true;
-            Bag2SelectButton.Label.ForeColour = Color.White;
+            Bag2SelectButton.Label.ForeColour = CommonColor.White;
             Bag2SelectButton.Label.Location = new Point(5, 10);
             Bag2SelectButton.Label.Size = new Size(20, 92);
 
@@ -143,7 +143,7 @@ namespace Client.MirScenes.Dialogs
             };
             StorageSelectButton.Label.Text = "仓库";
             StorageSelectButton.Label.OutLine = true;
-            StorageSelectButton.Label.ForeColour = Color.White;
+            StorageSelectButton.Label.ForeColour = CommonColor.White;
             StorageSelectButton.Label.Location = new Point(5, 10);
             StorageSelectButton.Label.Size = new Size(20, 92);
 
@@ -160,7 +160,7 @@ namespace Client.MirScenes.Dialogs
             YiJianShiYongButton.Click += Button_Click;
             YiJianShiYongButton.Label.Text = "一键使用";
             YiJianShiYongButton.Label.OutLine = true;
-            YiJianShiYongButton.Label.ForeColour = Color.Yellow;
+            YiJianShiYongButton.Label.ForeColour = CommonColor.Yellow;
             YiJianShiYongButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             ZhengLiButton = new MirButton
@@ -175,7 +175,7 @@ namespace Client.MirScenes.Dialogs
             ZhengLiButton.Click += (o, e) => Network.Enqueue(new C.SortInventory());
             ZhengLiButton.Label.Text = "整理";
             ZhengLiButton.Label.OutLine = true;
-            ZhengLiButton.Label.ForeColour = Color.Yellow;
+            ZhengLiButton.Label.ForeColour = CommonColor.Yellow;
             ZhengLiButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             HuiShouButton = new MirButton
@@ -190,7 +190,7 @@ namespace Client.MirScenes.Dialogs
             HuiShouButton.Click += Button_Click;
             HuiShouButton.Label.Text = "回收";
             HuiShouButton.Label.OutLine = true;
-            HuiShouButton.Label.ForeColour = Color.Yellow;
+            HuiShouButton.Label.ForeColour = CommonColor.Yellow;
             HuiShouButton.Label.DrawFormat = new TextStyle(TextAnchor.MiddleCenter);
 
             var mCoin = new MirImageControl

@@ -286,10 +286,10 @@ namespace Client.MirScenes
             RequestedMonsterInfo.Clear();
             RequestedNPCInfo.Clear();
 
-            //Color.Transparent 会让 UI层 半透黑区域，变为 半透白。
-            //这是原版也存在的问题，用默认的Color.Empty 即可
-            //BackColour = Color.Transparent;
-            BackColour = Color.Empty;
+            //CommonColor.Transparent 会让 UI层 半透黑区域，变为 半透白。
+            //这是原版也存在的问题，用默认的CommonColor.Empty 即可
+            //BackColour = CommonColor.Transparent;
+            BackColour = CommonColor.Empty;
 
             MoveTime = CMain.Time;
 
@@ -337,11 +337,11 @@ namespace Client.MirScenes
                 Parent = this,
                 AutoSize = false, Size = new Size(36, 18),
                 Location = new Point(8, Settings.ScreenHeight - 26),
-                Border = true, BorderColour = Color.Lime,
+                Border = true, BorderColour = CommonColor.Lime,
                 ForeColour = new Color(20, 35, 12),
             };
             gmButton.Label.Text = "GM";
-            gmButton.Label.ForeColour = Color.White;
+            gmButton.Label.ForeColour = CommonColor.White;
             gmButton.Click += (o, e) => GMDialog.Toggle();
             NewHeroDialog = new NewCharacterDialog { Parent = this, Visible = false };
             NewHeroDialog.TitleLabel.Index = 847;
@@ -424,9 +424,9 @@ namespace Client.MirScenes
                 OutputLines[i] = new MirLabel
                 {
                     AutoSize = true,
-                    BackColour = Color.Transparent,
+                    BackColour = CommonColor.Transparent,
                     Font = new Font(Settings.FontName, 12F),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(20, 250 + i * 21),
                     OutLine = true,
                 };
@@ -510,16 +510,16 @@ namespace Client.MirScenes
                     switch (OutputMessages[i].Type)
                     {
                         case OutputMessageType.Quest:
-                            color = Color.Gold;
+                            color = CommonColor.Gold;
                             break;
                         case OutputMessageType.Guild:
-                            color = Color.DeepPink;
+                            color = CommonColor.DeepPink;
                             break;
                         case OutputMessageType.Error:
-                            color = Color.Red;
+                            color = CommonColor.Red;
                             break;
                         default:
-                            color = Color.White;
+                            color = CommonColor.White;
                             break;
                     }
 
@@ -2208,7 +2208,7 @@ namespace Client.MirScenes
                     Text = mInfo.Title,
                     Parent = BigMapDialog.ViewPort,
                     AutoSize = true,
-                    ForeColour = Color.Gold,
+                    ForeColour = CommonColor.Gold,
                     OutLine = true,
                     Visible = false,
                     NotControl = true,
@@ -3604,14 +3604,14 @@ namespace Client.MirScenes
                     switch (p.Type)
                     {
                         case DamageType.Hit: //add damage level colours
-                            obj.Damages.Add(new Damage(p.Damage.ToString("#,##0"), 1000, obj.Race == ObjectType.Player ? Color.Red : Color.White, 50));
+                            obj.Damages.Add(new Damage(p.Damage.ToString("#,##0"), 1000, obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White, 50));
                             break;
                         case DamageType.Miss:
-                            obj.Damages.Add(new Damage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Miss), 1200, obj.Race == ObjectType.Player ? Color.LightCoral : Color.LightGray, 50));
+                            obj.Damages.Add(new Damage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Miss), 1200, obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 50));
                             break;
                         case DamageType.Critical:
                             obj.Damages.Add(
-                                new Damage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Crit), 1000, obj.Race == ObjectType.Player ? Color.DarkRed : Color.DarkRed, 50) { Offset = 15 });
+                                new Damage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Crit), 1000, obj.Race == ObjectType.Player ? CommonColor.DarkRed : CommonColor.DarkRed, 50) { Offset = 15 });
                             break;
                     }
                 }
@@ -6933,17 +6933,17 @@ namespace Client.MirScenes
             switch (grade)
             {
                 case ItemGrade.Common:
-                    return Color.Yellow;
+                    return CommonColor.Yellow;
                 case ItemGrade.Rare:
-                    return Color.DeepSkyBlue;
+                    return CommonColor.DeepSkyBlue;
                 case ItemGrade.Legendary:
-                    return Color.DarkOrange;
+                    return CommonColor.DarkOrange;
                 case ItemGrade.Mythical:
-                    return Color.Plum;
+                    return CommonColor.Plum;
                 case ItemGrade.Heroic:
-                    return Color.Red;
+                    return CommonColor.Red;
                 default:
-                    return Color.Yellow;
+                    return CommonColor.Yellow;
             }
         }
 
@@ -7209,7 +7209,7 @@ namespace Client.MirScenes
             MirLabel etcLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, nameLabel.DisplayRectangle.Bottom),
                 OutLine = true,
                 Parent = ItemLabel,
@@ -7221,9 +7221,9 @@ namespace Client.MirScenes
 
             MirControl outLine = new MirControl
             {
-                BackColour = Color.FromArgb(255, 50, 50, 50),
+                BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                 Border = true,
-                BorderColour = Color.Gray,
+                BorderColour = CommonColor.Gray,
                 NotControl = true,
                 Parent = ItemLabel,
                 Opacity = 0.4F,
@@ -7313,7 +7313,7 @@ namespace Client.MirScenes
                 MirLabel DuraLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7339,7 +7339,7 @@ namespace Client.MirScenes
                 MirLabel DCLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7366,7 +7366,7 @@ namespace Client.MirScenes
                 MirLabel MCLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7393,7 +7393,7 @@ namespace Client.MirScenes
                 MirLabel SCLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7436,7 +7436,7 @@ namespace Client.MirScenes
                 MirLabel LUCKLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7465,7 +7465,7 @@ namespace Client.MirScenes
                 MirLabel ACCLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7489,7 +7489,7 @@ namespace Client.MirScenes
                 MirLabel HOLYLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7527,7 +7527,7 @@ namespace Client.MirScenes
                 MirLabel ASPEEDLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7557,7 +7557,7 @@ namespace Client.MirScenes
                 MirLabel FREEZINGLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7588,7 +7588,7 @@ namespace Client.MirScenes
                 MirLabel POISONLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7612,7 +7612,7 @@ namespace Client.MirScenes
                 MirLabel CRITICALRATELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7642,7 +7642,7 @@ namespace Client.MirScenes
                 MirLabel CRITICALDAMAGELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7666,7 +7666,7 @@ namespace Client.MirScenes
                 MirLabel ReflectLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7689,7 +7689,7 @@ namespace Client.MirScenes
                 MirLabel HPdrainLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7718,7 +7718,7 @@ namespace Client.MirScenes
                 MirLabel expRateLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7747,7 +7747,7 @@ namespace Client.MirScenes
                 MirLabel dropRateLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7776,7 +7776,7 @@ namespace Client.MirScenes
                 MirLabel goldRateLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7800,7 +7800,7 @@ namespace Client.MirScenes
                     MirLabel heroLabel = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -7819,9 +7819,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -7888,7 +7888,7 @@ namespace Client.MirScenes
                 MirLabel ACLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7934,7 +7934,7 @@ namespace Client.MirScenes
                 MirLabel MACLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -7965,7 +7965,7 @@ namespace Client.MirScenes
                     MirLabel MAXHPLabel = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                        ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -7990,7 +7990,7 @@ namespace Client.MirScenes
                 MirLabel MAXMPLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8014,7 +8014,7 @@ namespace Client.MirScenes
                 MirLabel MAXHPRATELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8037,7 +8037,7 @@ namespace Client.MirScenes
                 MirLabel MAXMPRATELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8060,7 +8060,7 @@ namespace Client.MirScenes
                 MirLabel MAXACRATE = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8083,7 +8083,7 @@ namespace Client.MirScenes
                 MirLabel MAXMACRATELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8106,7 +8106,7 @@ namespace Client.MirScenes
                 MirLabel HEALTH_RECOVERYLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8129,7 +8129,7 @@ namespace Client.MirScenes
                 MirLabel MANA_RECOVERYLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8153,7 +8153,7 @@ namespace Client.MirScenes
                 MirLabel POISON_RECOVERYabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8182,7 +8182,7 @@ namespace Client.MirScenes
                 MirLabel AGILITYLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8205,7 +8205,7 @@ namespace Client.MirScenes
                 MirLabel STRONGLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8233,7 +8233,7 @@ namespace Client.MirScenes
                 MirLabel POISON_RESISTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8260,7 +8260,7 @@ namespace Client.MirScenes
                 MirLabel MAGIC_RESISTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8284,7 +8284,7 @@ namespace Client.MirScenes
                 MirLabel MAXDCRATE = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8306,7 +8306,7 @@ namespace Client.MirScenes
                 MirLabel MAXMCRATE = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8328,7 +8328,7 @@ namespace Client.MirScenes
                 MirLabel MAXSCRATE = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8350,7 +8350,7 @@ namespace Client.MirScenes
                 MirLabel DAMAGEREDUC = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8366,9 +8366,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -8409,7 +8409,7 @@ namespace Client.MirScenes
                 MirLabel HANDWEIGHTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8433,7 +8433,7 @@ namespace Client.MirScenes
                 MirLabel WEARWEIGHTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8457,7 +8457,7 @@ namespace Client.MirScenes
                 MirLabel BAGWEIGHTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8481,7 +8481,7 @@ namespace Client.MirScenes
                 MirLabel BAGWEIGHTLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8503,7 +8503,7 @@ namespace Client.MirScenes
                 MirLabel TNRLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8520,7 +8520,7 @@ namespace Client.MirScenes
                 MirLabel TNRLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = addValue > 0 ? Color.Cyan : Color.White,
+                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8538,9 +8538,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -8591,7 +8591,7 @@ namespace Client.MirScenes
                 MirLabel AWAKE_TOTAL_VALUELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8611,7 +8611,7 @@ namespace Client.MirScenes
                     MirLabel AWAKE_LEVEL_VALUELabel = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -8630,9 +8630,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -8667,7 +8667,7 @@ namespace Client.MirScenes
                 MirLabel SOCKETLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = (count > realItem.Slots && !realItem.IsFishingRod && realItem.Type != ItemType.Mount) ? Color.Cyan : Color.White,
+                    ForeColour = (count > realItem.Slots && !realItem.IsFishingRod && realItem.Type != ItemType.Mount) ? CommonColor.Cyan : CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8687,7 +8687,7 @@ namespace Client.MirScenes
                 MirLabel SOCKETLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8702,9 +8702,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -8735,68 +8735,68 @@ namespace Client.MirScenes
             {
                 count++;
                 string text;
-                Color colour = Color.White;
+                Color colour = CommonColor.White;
                 switch (realItem.RequiredType)
                 {
                     case RequiredType.Level:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredLevel), realItem.RequiredAmount);
                         if (MapObject.User.Level < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxAC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredAC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MaxAC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxMAC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredMAC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MaxMAC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxDC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredDC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MaxDC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxMC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredMC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MaxMC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxSC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredSC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MaxSC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MaxLevel:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MaximumLevel), realItem.RequiredAmount);
                         if (MapObject.User.Level > realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MinAC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredBaseAC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MinAC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MinMAC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredBaseMAC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MinMAC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MinDC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredBaseDC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MinDC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MinMC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredBaseMC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MinMC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case RequiredType.MinSC:
                         text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RequiredBaseSC), realItem.RequiredAmount);
                         if (MapObject.User.Stats[Stat.MinSC] < realItem.RequiredAmount)
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     default:
                         text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UnknownTypeRequired);
@@ -8821,29 +8821,29 @@ namespace Client.MirScenes
             if (realItem.RequiredClass != RequiredClass.None)
             {
                 count++;
-                Color colour = Color.White;
+                Color colour = CommonColor.White;
 
                 switch (MapObject.User.Class)
                 {
                     case MirClass.Warrior:
                         if (!realItem.RequiredClass.HasFlag(RequiredClass.Warrior))
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case MirClass.Wizard:
                         if (!realItem.RequiredClass.HasFlag(RequiredClass.Wizard))
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case MirClass.Taoist:
                         if (!realItem.RequiredClass.HasFlag(RequiredClass.Taoist))
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case MirClass.Assassin:
                         if (!realItem.RequiredClass.HasFlag(RequiredClass.Assassin))
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                     case MirClass.Archer:
                         if (!realItem.RequiredClass.HasFlag(RequiredClass.Archer))
-                            colour = Color.Red;
+                            colour = CommonColor.Red;
                         break;
                 }
 
@@ -8866,7 +8866,7 @@ namespace Client.MirScenes
             {
                 count++;
                 string text;
-                var colour = Color.White;
+                var colour = CommonColor.White;
 
                 text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SellingPriceGold), ((long)(item.Price() / 2)).ToString("###,###,##0"));
 
@@ -8892,9 +8892,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -8928,7 +8928,7 @@ namespace Client.MirScenes
                 MirLabel DONT_DEATH_DROPLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8947,7 +8947,7 @@ namespace Client.MirScenes
                 MirLabel DONT_DROPLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8966,7 +8966,7 @@ namespace Client.MirScenes
                 MirLabel DONT_UPGRADELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -8985,7 +8985,7 @@ namespace Client.MirScenes
                 MirLabel DONT_SELLLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9004,7 +9004,7 @@ namespace Client.MirScenes
                 MirLabel DONT_TRADELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9023,7 +9023,7 @@ namespace Client.MirScenes
                 MirLabel DONT_STORELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9042,7 +9042,7 @@ namespace Client.MirScenes
                 MirLabel DONT_REPAIRLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9061,7 +9061,7 @@ namespace Client.MirScenes
                 MirLabel DONT_REPAIRLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9080,7 +9080,7 @@ namespace Client.MirScenes
                 MirLabel DONT_REPAIRLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9099,7 +9099,7 @@ namespace Client.MirScenes
                 MirLabel DONT_DODLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9118,7 +9118,7 @@ namespace Client.MirScenes
                 MirLabel No_WedLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9137,7 +9137,7 @@ namespace Client.MirScenes
                 MirLabel No_HeroLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9156,7 +9156,7 @@ namespace Client.MirScenes
                 MirLabel BOELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9172,7 +9172,7 @@ namespace Client.MirScenes
                 MirLabel BOELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9191,7 +9191,7 @@ namespace Client.MirScenes
                 MirLabel CURSEDLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9219,7 +9219,7 @@ namespace Client.MirScenes
                 MirLabel GemUseOn = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9234,7 +9234,7 @@ namespace Client.MirScenes
                     MirLabel GemWeapon = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9250,7 +9250,7 @@ namespace Client.MirScenes
                     MirLabel GemArmour = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9266,7 +9266,7 @@ namespace Client.MirScenes
                     MirLabel Gemhelmet = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9282,7 +9282,7 @@ namespace Client.MirScenes
                     MirLabel Gemnecklace = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9298,7 +9298,7 @@ namespace Client.MirScenes
                     MirLabel GemBracelet = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9314,7 +9314,7 @@ namespace Client.MirScenes
                     MirLabel GemRing = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9330,7 +9330,7 @@ namespace Client.MirScenes
                     MirLabel Gemamulet = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9346,7 +9346,7 @@ namespace Client.MirScenes
                     MirLabel Gembelt = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9362,7 +9362,7 @@ namespace Client.MirScenes
                     MirLabel Gemboots = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9378,7 +9378,7 @@ namespace Client.MirScenes
                     MirLabel Gemstone = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9394,7 +9394,7 @@ namespace Client.MirScenes
                     MirLabel Gemtorch = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.White,
+                        ForeColour = CommonColor.White,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9414,7 +9414,7 @@ namespace Client.MirScenes
             //    MirLabel CANTAWAKENINGLabel = new MirLabel
             //    {
             //        AutoSize = true,
-            //        ForeColour = Color.Yellow,
+            //        ForeColour = CommonColor.Yellow,
             //        Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
             //        OutLine = true,
             //        Parent = ItemLabel,
@@ -9435,7 +9435,7 @@ namespace Client.MirScenes
                 MirLabel EXPIRELabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9458,7 +9458,7 @@ namespace Client.MirScenes
                     MirLabel SEALEDLabel = new MirLabel
                     {
                         AutoSize = true,
-                        ForeColour = Color.Red,
+                        ForeColour = CommonColor.Red,
                         Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                         OutLine = true,
                         Parent = ItemLabel,
@@ -9477,7 +9477,7 @@ namespace Client.MirScenes
                 MirLabel OWNERLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.DarkKhaki,
+                    ForeColour = CommonColor.DarkKhaki,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9493,7 +9493,7 @@ namespace Client.MirScenes
                 MirLabel RENTALLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Khaki,
+                    ForeColour = CommonColor.Khaki,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9510,7 +9510,7 @@ namespace Client.MirScenes
                 var RentalLockLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.DarkKhaki,
+                    ForeColour = CommonColor.DarkKhaki,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9529,9 +9529,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -9592,7 +9592,7 @@ namespace Client.MirScenes
                 MirLabel GEMLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9611,7 +9611,7 @@ namespace Client.MirScenes
                 MirLabel SPLITUPLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9629,9 +9629,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -9671,7 +9671,7 @@ namespace Client.MirScenes
                 MirLabel IDLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.DarkKhaki,
+                    ForeColour = CommonColor.DarkKhaki,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9684,7 +9684,7 @@ namespace Client.MirScenes
                 MirLabel TOOLTIPLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Khaki,
+                    ForeColour = CommonColor.Khaki,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9702,9 +9702,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -9732,7 +9732,7 @@ namespace Client.MirScenes
                 MirLabel GMLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Orchid,
+                    ForeColour = CommonColor.Orchid,
                     Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = ItemLabel,
@@ -9744,9 +9744,9 @@ namespace Client.MirScenes
 
                 MirControl outLine = new MirControl
                 {
-                    BackColour = Color.FromArgb(255, 50, 50, 50),
+                    BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     NotControl = true,
                     Parent = ItemLabel,
                     Opacity = 0.4F,
@@ -9785,9 +9785,9 @@ namespace Client.MirScenes
 
             ItemLabel = new MirControl
             {
-                BackColour = Color.FromArgb(255, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(255, 0, 0, 0),
                 Border = true,
-                BorderColour = ((HoverItem.CurrentDura == 0 && HoverItem.MaxDura != 0) ? Color.Red : Color.FromArgb(255, 148, 146, 148)),
+                BorderColour = ((HoverItem.CurrentDura == 0 && HoverItem.MaxDura != 0) ? CommonColor.Red : CommonColor.FromArgb(255, 148, 146, 148)),
                 DrawControlTexture = true,
                 NotControl = true,
                 Parent = this,
@@ -9840,9 +9840,9 @@ namespace Client.MirScenes
 
             MailLabel = new MirControl
             {
-                BackColour = Color.FromArgb(255, 50, 50, 50),
+                BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                 Border = true,
-                BorderColour = Color.Gray,
+                BorderColour = CommonColor.Gray,
                 DrawControlTexture = true,
                 NotControl = true,
                 Parent = this,
@@ -9852,7 +9852,7 @@ namespace Client.MirScenes
             MirLabel nameLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 Location = new Point(4, 4),
                 OutLine = true,
                 Parent = MailLabel,
@@ -9865,7 +9865,7 @@ namespace Client.MirScenes
             MirLabel dateLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, MailLabel.DisplayRectangle.Bottom),
                 OutLine = true,
                 Parent = MailLabel,
@@ -9880,7 +9880,7 @@ namespace Client.MirScenes
                 MirLabel goldLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Location = new Point(4, MailLabel.DisplayRectangle.Bottom),
                     OutLine = true,
                     Parent = MailLabel,
@@ -9894,7 +9894,7 @@ namespace Client.MirScenes
             MirLabel openedLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.Red,
+                ForeColour = CommonColor.Red,
                 Location = new Point(4, MailLabel.DisplayRectangle.Bottom),
                 OutLine = true,
                 Parent = MailLabel,
@@ -9916,9 +9916,9 @@ namespace Client.MirScenes
 
             MemoLabel = new MirControl
             {
-                BackColour = Color.FromArgb(255, 50, 50, 50),
+                BackColour = CommonColor.FromArgb(255, 50, 50, 50),
                 Border = true,
-                BorderColour = Color.Gray,
+                BorderColour = CommonColor.Gray,
                 DrawControlTexture = true,
                 NotControl = true,
                 Parent = this,
@@ -9928,7 +9928,7 @@ namespace Client.MirScenes
             MirLabel memoLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(4, 4),
                 OutLine = true,
                 Parent = MemoLabel,

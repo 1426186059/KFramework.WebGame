@@ -758,7 +758,7 @@ namespace Client.MirControls
             Controls = new List<MirControl>();
             _opacity = 1F;
             _enabled = true;
-            _foreColour = Color.White;
+            _foreColour = CommonColor.White;
             _visible = true;
             _sound = SoundList.None;
         }
@@ -816,7 +816,7 @@ namespace Client.MirControls
                 new KFramework.MonoGame.Vector2(x, y + h),
                 new KFramework.MonoGame.Vector2(x, y),
             };
-            DXManager.DrawLines(pts, 1f, Color.Cyan);
+            DXManager.DrawLines(pts, 1f, CommonColor.Cyan);
         }
 
         protected virtual void BeforeDrawControl()
@@ -835,7 +835,7 @@ namespace Client.MirControls
             if (ControlTexture == null || ControlTexture.Disposed)
                 return;
 
-            DXManager.DrawOpaque(ControlTexture, new Rectangle(0, 0, Size.Width, Size.Height), new Vector3?(new Vector3((float)(DisplayLocation.X), (float)(DisplayLocation.Y), 0.0f)), Color.White, Opacity);
+            DXManager.DrawOpaque(ControlTexture, new Rectangle(0, 0, Size.Width, Size.Height), new Vector3?(new Vector3((float)(DisplayLocation.X), (float)(DisplayLocation.Y), 0.0f)), CommonColor.White, Opacity);
 
             CleanTime = CMain.Time + Settings.CleanDelay;
         }
@@ -1223,7 +1223,7 @@ namespace Client.MirControls
                 Disposing = null;
 
                 BackColourChanged = null;
-                _backColour = Color.Empty;
+                _backColour = CommonColor.Empty;
 
                 BorderChanged = null;
                 _border = false;
@@ -1231,7 +1231,7 @@ namespace Client.MirControls
                 _borderInfo = null;
 
                 BorderColourChanged = null;
-                _borderColour = Color.Empty;
+                _borderColour = CommonColor.Empty;
 
                 DrawControlTexture = false;
                 DisposeTexture();
@@ -1273,7 +1273,7 @@ namespace Client.MirControls
                 KeyDown = null;
 
                 ForeColourChanged = null;
-                _foreColour = Color.Empty;
+                _foreColour = CommonColor.Empty;
 
                 LocationChanged = null;
 

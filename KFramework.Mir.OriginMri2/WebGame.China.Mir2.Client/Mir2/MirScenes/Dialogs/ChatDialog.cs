@@ -98,8 +98,8 @@ namespace Client.MirScenes.Dialogs
 
             ChatTextBox = new MirTextBox
             {
-                BackColour = Color.DarkGray,
-                ForeColour = Color.Black,
+                BackColour = CommonColor.DarkGray,
+                ForeColour = CommonColor.Black,
                 Parent = mChatTextBoxBg,
                 Size = new Size(470, 20),
                 Location = new Point(0, 0),
@@ -140,8 +140,8 @@ namespace Client.MirScenes.Dialogs
             // 频道下拉 + 发送按钮(从 ChatControlBar 合并进来)
             mChatChannel = new MirDropDownBox2()
             {
-                BackColour = Color.FromArgb(255, 15, 15, 15),
-                ForeColour = Color.White,
+                BackColour = CommonColor.FromArgb(255, 15, 15, 15),
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Size = new Size(60, 30),
                 Location = new Point(0, 90),
@@ -409,28 +409,28 @@ namespace Client.MirScenes.Dialogs
             switch (type)
             {
                 case ChatType.World:
-                    backColour = Color.Yellow;
-                    foreColour = Color.Black;
+                    backColour = CommonColor.Yellow;
+                    foreColour = CommonColor.Black;
                     break;
                 case ChatType.System:
-                    backColour = Color.Red;
-                    foreColour = Color.White;
+                    backColour = CommonColor.Red;
+                    foreColour = CommonColor.White;
                     break;
                 case ChatType.Team:
-                    backColour = Color.White;
-                    foreColour = Color.Brown;
+                    backColour = CommonColor.White;
+                    foreColour = CommonColor.Brown;
                     break;
                 case ChatType.PrivateChat:
-                    foreColour = Color.CornflowerBlue;
-                    backColour = Color.White;
+                    foreColour = CommonColor.CornflowerBlue;
+                    backColour = CommonColor.White;
                     break;
                 case ChatType.Guild:
-                    backColour = Color.White;
-                    foreColour = Color.Green;
+                    backColour = CommonColor.White;
+                    foreColour = CommonColor.Green;
                     break;
                 default:
-                    backColour = Color.White;
-                    foreColour = Color.Black;
+                    backColour = CommonColor.White;
+                    foreColour = CommonColor.Black;
                     break;
             }
 
@@ -661,20 +661,20 @@ namespace Client.MirScenes.Dialogs
                     Parent = ChatHistoryPanel,
                     Location = p,
                     Text = name,
-                    ForeColour = Color.Blue,
+                    ForeColour = CommonColor.Blue,
                     Sound = SoundList.ButtonC,
                     Font = ChatFont,
                     OutLine = false,
                 };
 
-                temp.MouseEnter += (o, e) => temp.ForeColour = Color.Red;
+                temp.MouseEnter += (o, e) => temp.ForeColour = CommonColor.Red;
                 temp.MouseLeave += (o, e) =>
                 {
                     GameScene.Scene.DisposeItemLabel();
-                    temp.ForeColour = Color.Blue;
+                    temp.ForeColour = CommonColor.Blue;
                 };
-                temp.MouseDown += (o, e) => temp.ForeColour = Color.Blue;
-                temp.MouseUp += (o, e) => temp.ForeColour = Color.Red;
+                temp.MouseDown += (o, e) => temp.ForeColour = CommonColor.Blue;
+                temp.MouseUp += (o, e) => temp.ForeColour = CommonColor.Red;
 
                 temp.Click += (o, e) =>
                 {

@@ -58,10 +58,10 @@ namespace Client.MirObjects
             OwnerLabel = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 ForeColour = NameColour,
                 OutLine = true,
-                OutLineColour = Color.Black,
+                OutLineColour = CommonColor.Black,
                 Text = ownerText,
             };
             OwnerLabel.Disposing += (o, e) => LabelList.Remove(OwnerLabel);

@@ -89,7 +89,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(16, 15),
                 AutoSize = true,
-                ForeColour = Color.BurlyWood,
+                ForeColour = CommonColor.BurlyWood,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
             };
 

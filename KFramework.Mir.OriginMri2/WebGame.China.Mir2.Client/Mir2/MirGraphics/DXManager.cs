@@ -2,7 +2,6 @@ using Client.MirControls;
 using KFramework.MonoGame;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
-using Color = MirEngine.Color;
 namespace Client.MirGraphics
 {
     class DXManager
@@ -509,7 +508,7 @@ void main()
             Draw(texture,
                 new Rectangle(0, 0, texture.Width, texture.Height),
                 new RectangleF(0, 0, texture.Width, texture.Height),
-                Color.White,
+                CommonColor.White,
                 MirBlend.Normal.ToBlendState());
         }
 

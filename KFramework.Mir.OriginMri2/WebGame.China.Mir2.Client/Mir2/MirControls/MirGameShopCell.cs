@@ -68,7 +68,7 @@ namespace Client.MirControls
                 Location = new Point(53, 37),
                 Parent = this,
                 NotControl = true,
-                ForeColour = Color.Gray,
+                ForeColour = CommonColor.Gray,
                 Font = new Font(Settings.FontName, 7F),
                 Text = "STOCK:"
             };

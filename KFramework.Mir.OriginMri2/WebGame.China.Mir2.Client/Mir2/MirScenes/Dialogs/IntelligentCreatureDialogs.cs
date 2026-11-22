@@ -356,7 +356,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)((FullnessFG.Size.Width) * percent), FullnessFG.Size.Height);
 
-            FullnessFG.Library.Draw(FullnessFG.Index, section, FullnessFG.DisplayLocation, Color.White, false);
+            FullnessFG.Library.Draw(FullnessFG.Index, section, FullnessFG.DisplayLocation, CommonColor.White, false);
 
 
             FullnessNow.Location = new Point(FullnessFG.Location.X + section.Width - 8, FullnessNow.Location.Y);
@@ -385,7 +385,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)((BlackStoneImageFG.Size.Width) * percent), BlackStoneImageFG.Size.Height);
 
-            BlackStoneImageFG.Library.Draw(BlackStoneImageFG.Index, section, BlackStoneImageFG.DisplayLocation, Color.White, false);
+            BlackStoneImageFG.Library.Draw(BlackStoneImageFG.Index, section, BlackStoneImageFG.DisplayLocation, CommonColor.White, false);
         }
 
         private void Control_MouseEnter(object sender, EventArgs e)
@@ -1342,17 +1342,17 @@ namespace Client.MirScenes.Dialogs
             switch (grade)
             {
                 case ItemGrade.Common:
-                    return Color.Yellow;
+                    return CommonColor.Yellow;
                 case ItemGrade.Rare:
-                    return Color.DeepSkyBlue;
+                    return CommonColor.DeepSkyBlue;
                 case ItemGrade.Legendary:
-                    return Color.DarkOrange;
+                    return CommonColor.DarkOrange;
                 case ItemGrade.Mythical:
-                    return Color.Plum;
+                    return CommonColor.Plum;
                 case ItemGrade.Heroic:
-                    return Color.Red;
+                    return CommonColor.Red;
                 default:
-                    return Color.White;
+                    return CommonColor.White;
             }
         }
 

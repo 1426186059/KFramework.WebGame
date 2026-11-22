@@ -28,9 +28,9 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(15, 0),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
             };
 
             GuildOwner = new MirLabel
@@ -38,9 +38,9 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(45, 0),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
             };
 
             OwnerName = new MirLabel
@@ -48,9 +48,9 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(150, 0),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
             };
 
             Status = new MirLabel
@@ -58,9 +58,9 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(365, 0),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
             };
 
             Price = new MirLabel
@@ -68,9 +68,9 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(460, 0),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
             };
         }
     }
@@ -204,10 +204,10 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(15, 38),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.Goldenrod,
+                ForeColour = CommonColor.Goldenrod,
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Text = "GT #"
             };
 
@@ -216,10 +216,10 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(60, 38),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.Goldenrod,
+                ForeColour = CommonColor.Goldenrod,
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OwningGuild)
             };
 
@@ -228,10 +228,10 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(230, 38),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.Goldenrod,
+                ForeColour = CommonColor.Goldenrod,
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildLeaders)
             };
 
@@ -240,10 +240,10 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(380, 38),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.Goldenrod,
+                ForeColour = CommonColor.Goldenrod,
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GTStatus)
             };
 
@@ -252,10 +252,10 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(480, 38),
                 AutoSize = true,
                 Parent = this,
-                ForeColour = Color.Goldenrod,
+                ForeColour = CommonColor.Goldenrod,
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GTPrice)
             };
 
@@ -266,7 +266,7 @@ namespace Client.MirScenes.Dialogs
                     Parent = this,
                     Location = new Point(5, 60 + 20 * i),
                     Border = false,
-                    BorderColour = Color.Lime,
+                    BorderColour = CommonColor.Lime,
                 };
                 gt.Idx.Text = (i + 1).ToString();
                 gt.GuildOwner.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None);

@@ -127,7 +127,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCell = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.Renting,
                 Library = Libraries.Items,
                 Parent = this,
@@ -290,7 +290,7 @@ namespace Client.MirScenes.Dialogs
 
             _guestItemCell = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.GuestRenting,
                 Library = Libraries.Items,
                 Parent = this,

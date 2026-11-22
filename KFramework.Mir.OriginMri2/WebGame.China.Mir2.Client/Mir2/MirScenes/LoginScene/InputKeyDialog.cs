@@ -23,9 +23,9 @@ namespace Client.MirScenes
 
                 // FGUI 登录模块没有对应软键盘，这里保留咱们自己的纯色面板（不套 FGUI 底图）。
                 Visible = true;
-                BackColour = Color.FromArgb(235, 24, 24, 34);
+                BackColour = CommonColor.FromArgb(235, 24, 24, 34);
                 Border = true;
-                BorderColour = Color.FromArgb(160, 190, 170, 120);
+                BorderColour = CommonColor.FromArgb(160, 190, 170, 120);
 
                 KeyEscButton = new MirButton
                 {

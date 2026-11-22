@@ -21,7 +21,7 @@ namespace Client.MirControls
             // 场景 RT 底色用【透明洋红】(alpha=0)：本端口 blit 走 alpha 合成（非原版洋红 color key），
             // 洋红区即透明，上屏时露出下层地图——与 Crystal「洋红=透明键」等价。GameScene 拆两层后，
             // UI 区域外透出地图；登陆/选人场景会在各自构造里覆盖为黑底。
-            BackColour = Color.FromArgb(0, 255, 0, 255);
+            BackColour = CommonColor.FromArgb(0, 255, 0, 255);
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         }
 

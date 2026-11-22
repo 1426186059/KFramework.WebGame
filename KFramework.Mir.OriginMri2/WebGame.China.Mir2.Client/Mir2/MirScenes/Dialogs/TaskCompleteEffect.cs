@@ -1,6 +1,5 @@
 using Client.MirControls;                  // MirControl / MirAnimatedAtlasControl
 using Client.MirGraphics;                 // DXManager
-using Color = MirEngine.Color;
 namespace Client.MirScenes.Dialogs
 {
     /// <summary>
@@ -35,7 +34,7 @@ namespace Client.MirScenes.Dialogs
                 Loop = false,                // 只播一次
                 AnimationDelay = 200,         // 每帧毫秒
                 Blending = true,             // 叠加混合，适合光效
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Animated = false,
             };
             _ani.AfterAnimation += (s, e) => OnOneFinished();

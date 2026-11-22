@@ -310,7 +310,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Shortcuts),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Font = new Font(Settings.FontName, 10F),
                 Parent = this,
                 AutoSize = true,
@@ -322,7 +322,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Information),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Font = new Font(Settings.FontName, 10F),
                 Parent = this,
                 AutoSize = true,
@@ -340,7 +340,7 @@ namespace Client.MirScenes.Dialogs
                 MirLabel shortcutLabel = new MirLabel
                 {
                     Text = Shortcuts[i].Shortcut,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                     Font = new Font(Settings.FontName, 9F),
                     Parent = this,
@@ -353,7 +353,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Text = Shortcuts[i].Information,
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Font = new Font(Settings.FontName, 9F),
                     Parent = this,
                     AutoSize = true,
@@ -398,7 +398,7 @@ namespace Client.MirScenes.Dialogs
         {
             if (ImageID < 0) return;
 
-            Libraries.Help.Draw(ImageID, new Point(DisplayLocation.X, DisplayLocation.Y + 40), Color.White, false);
+            Libraries.Help.Draw(ImageID, new Point(DisplayLocation.X, DisplayLocation.Y + 40), CommonColor.White, false);
         }
     }
 }

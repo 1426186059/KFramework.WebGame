@@ -9,21 +9,50 @@ namespace KFramework.MonoGame
     {
         public byte R, G, B, A;
 
-        public Color(byte r, byte g, byte b, byte a = 255) { R = r; G = g; B = b; A = a; }
+        public Color(byte r, byte g, byte b, byte a = 255) 
+        { 
+            R = r; 
+            G = g; 
+            B = b; 
+            A = a; 
+        }
 
         public Color(int r, int g, int b, int a = 255)
-            : this((byte)MathHelper.Clamp(r, 0, 255), (byte)MathHelper.Clamp(g, 0, 255),
-                   (byte)MathHelper.Clamp(b, 0, 255), (byte)MathHelper.Clamp(a, 0, 255)) { }
+            : this((byte)MathHelper.Clamp(r, 0, 255), 
+                  (byte)MathHelper.Clamp(g, 0, 255),
+                   (byte)MathHelper.Clamp(b, 0, 255), 
+                   (byte)MathHelper.Clamp(a, 0, 255)) 
+        { 
+
+        }
 
         public Color(float r, float g, float b, float a = 1f)
-            : this((int)(r * 255f), (int)(g * 255f), (int)(b * 255f), (int)(a * 255f)) { }
+            : this((int)(r * 255f), (int)(g * 255f), (int)(b * 255f), (int)(a * 255f)) 
+        { 
 
-        /// <summary>从 0xAARRGGBB 构造（与 CSS 习惯一致）。</summary>
+        }
+        
         public static Color FromArgb(uint argb)
-            => new((byte)(argb >> 16), (byte)(argb >> 8), (byte)argb, (byte)(argb >> 24));
+        {
+            return new((byte)(argb >> 16), (byte)(argb >> 8), (byte)argb, (byte)(argb >> 24));
+        }
 
-        public uint PackedValue
-            => ((uint)A << 24) | ((uint)R << 16) | ((uint)G << 8) | B;
+        public static Color FromRGBA(uint rgba)
+        {
+            return new((byte)(rgba >> 24), (byte)(rgba >> 16), (byte)(rgba >> 8), (byte)rgba);
+        }
+
+        public uint ToRGBANumber()
+        {
+            return ((uint)R << 24) | ((uint)G << 16) | ((uint)B << 8) | A;
+        }
+
+        public uint ToARGBNumber()
+        {
+            return ((uint)A << 24) | ((uint)R << 16) | ((uint)G << 8) | B;
+        }
+
+        public uint PackedValue => ToARGBNumber();
 
         public static Color Transparent => new(0, 0, 0, 0);
         public static Color White => new(255, 255, 255);

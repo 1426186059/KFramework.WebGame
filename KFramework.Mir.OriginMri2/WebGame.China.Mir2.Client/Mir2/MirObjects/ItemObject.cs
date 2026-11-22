@@ -90,7 +90,7 @@ namespace Client.MirObjects
 
         public override void DrawName()
         {
-            CreateLabel(Color.Transparent, false, true);
+            CreateLabel(CommonColor.Transparent, false, true);
 
             if (NameLabel == null) return;
             NameLabel.Location = new Point(
@@ -111,7 +111,7 @@ namespace Client.MirObjects
 
         public void DrawName(int y)
         {
-            CreateLabel(Color.FromArgb(100, 0, 24, 48), true, false);
+            CreateLabel(CommonColor.FromArgb(100, 0, 24, 48), true, false);
 
             NameLabel.Location = new Point(
                 DisplayRectangle.X + (DisplayRectangle.Width - NameLabel.Size.Width) / 2,
@@ -135,7 +135,7 @@ namespace Client.MirObjects
             NameLabel = new MirControls.MirLabel
             {
                 AutoSize = true,
-                BorderColour = Color.Black,
+                BorderColour = CommonColor.Black,
                 BackColour = backColour,
                 ForeColour = NameColour,
                 OutLine = outline,

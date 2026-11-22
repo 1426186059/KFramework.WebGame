@@ -19,7 +19,7 @@ namespace Client.MirObjects
         public MapObject Owner;
 
         public int Light = 6;
-        public Color LightColour = Color.White;
+        public Color LightColour = CommonColor.White;
 
         public bool Blend = true;
         public float Rate = 1F;
@@ -128,9 +128,9 @@ namespace Client.MirObjects
 
 
             if (Blend)
-                Library.DrawBlend(BaseIndex + CurrentFrame, DrawLocation, Color.White, true, Rate);
+                Library.DrawBlend(BaseIndex + CurrentFrame, DrawLocation, CommonColor.White, true, Rate);
             else
-                Library.Draw(BaseIndex + CurrentFrame, DrawLocation, Color.White, true);
+                Library.Draw(BaseIndex + CurrentFrame, DrawLocation, CommonColor.White, true);
         }
 
         public void Clear()
@@ -212,9 +212,9 @@ namespace Client.MirObjects
             DrawLocation.Offset(x * CurrentFrame / Count, y * CurrentFrame / Count);
 
             if (!Blend)
-                Library.Draw(index, DrawLocation, Color.White, true);
+                Library.Draw(index, DrawLocation, CommonColor.White, true);
             else
-                Library.DrawBlend(index, DrawLocation, Color.White, true, Rate);
+                Library.DrawBlend(index, DrawLocation, CommonColor.White, true, Rate);
         }
 
     }
@@ -465,14 +465,14 @@ namespace Client.MirObjects
             : base(null, 0, 0, duration, owner, starttime)
         {
             Light = lightDistance;
-            LightColour = lightColour == null ? Color.White : (Color)lightColour;
+            LightColour = lightColour == null ? CommonColor.White : (Color)lightColour;
         }
 
         public LightEffect(int duration, Point source, long starttime = 0, int lightDistance = 6, Color? lightColour = null)
             : base(null, 0, 0, duration, source, starttime)
         {
             Light = lightDistance;
-            LightColour = lightColour == null ? Color.White : (Color)lightColour;
+            LightColour = lightColour == null ? CommonColor.White : (Color)lightColour;
         }
 
         public override void Process()

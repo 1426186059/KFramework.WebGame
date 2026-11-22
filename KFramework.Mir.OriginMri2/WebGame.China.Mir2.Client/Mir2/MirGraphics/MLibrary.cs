@@ -313,7 +313,7 @@ namespace Client.MirGraphics
                 return;
 
 
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)x, (float)y, 0.0F), Color.White);
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)x, (float)y, 0.0F), CommonColor.White);
 
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
@@ -449,7 +449,7 @@ namespace Client.MirGraphics
 
             Color c = colour;
             if (opacity < 1f)
-                c = Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
+                c = CommonColor.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
 
             DXManager.Draw(mi.Image, section, destRect, c);
 
@@ -491,7 +491,7 @@ namespace Client.MirGraphics
             if (x + mi.Width < 0 || y + mi.Height < 0)
                 return;
 
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3(x, y, 0.0F), Color.White);
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3(x, y, 0.0F), CommonColor.White);
 
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
@@ -510,7 +510,7 @@ namespace Client.MirGraphics
             bool oldBlend = DXManager.Blending;
             DXManager.SetBlend(true, 1);
 
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), Color.White);
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), CommonColor.White);
 
             DXManager.SetBlend(oldBlend);
             mi.CleanTime = CMain.Time + Settings.CleanDelay;

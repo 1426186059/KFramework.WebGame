@@ -182,8 +182,8 @@ namespace Client.MirControls
             Size = new Size(55, 55);
             GridType = MirGridType.None;
             DrawImage = false;
-            BorderColour = Color.Lime;
-            BackColour = Color.FromArgb(255, 255, 125, 125);
+            BorderColour = CommonColor.Lime;
+            BackColour = CommonColor.FromArgb(255, 255, 125, 125);
             Opacity = 0.5F;
             DrawControlTexture = true;
         }
@@ -2520,7 +2520,7 @@ namespace Client.MirControls
             var src = sprite.SourceRectangle;
             // 按格子尺寸拉伸（与原 equip_grid 60×60 底图同尺寸），画在 DisplayLocation 作为物品背景。
             var dst = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
-            DXManager.Draw(sprite.Texture, src, dst, KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState());
+            DXManager.Draw(sprite.Texture, src, dst, CommonColor.White, MirBlend.Normal.ToBlendState());
         }
 
         // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfoTable.Image 是原始传奇 1config.item 的 col19
@@ -2541,7 +2541,7 @@ namespace Client.MirControls
         private void DrawItemIcon(UserItem item, bool dim)
         {
             if (item?.Info == null) return;
-            KFramework.MonoGame.Color originColour = dim ? Color.DimGray : ForeColour;
+            KFramework.MonoGame.Color originColour = dim ? CommonColor.DimGray : ForeColour;
             // 服务器通过 S.NewItemInfo 下发的 ItemInfoTable.Image 已是完整 uint（协议两端 Image 对齐 uint），
             // 直接用即可，无需本地表补全。
             uint iconId = item.Info.Image;
@@ -2552,7 +2552,7 @@ namespace Client.MirControls
             ushort image = item.Image;
             Size imgSize = Library.GetTrueSize(image);
             Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
-            Library.Draw(image, DisplayLocation.Add(offSet), dim ? Color.DimGray : ForeColour,
+            Library.Draw(image, DisplayLocation.Add(offSet), dim ? CommonColor.DimGray : ForeColour,
                          UseOffSet, dim ? 0.8F : 1F);
         }
 
@@ -2566,12 +2566,12 @@ namespace Client.MirControls
                 CreateDisposeLabel();
 
                 if (GridType == MirGridType.Craft && Libraries.Prguse != null)
-                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
+                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), CommonColor.White, UseOffSet, 0.8F);
 
                 DrawItemIcon(Item, false);
 
                 if (Item.SealedInfo != null && Item.SealedInfo.ExpiryDate > CMain.Now && Libraries.StateItems != null)
-                    Libraries.StateItems.Draw(3590, DisplayLocation.Add(new Point(2, 2)), Color.White, UseOffSet, 1F);
+                    Libraries.StateItems.Draw(3590, DisplayLocation.Add(new Point(2, 2)), CommonColor.White, UseOffSet, 1F);
             }
             else if (Item != null && (GameScene.SelectedCell == this || Locked))
             {
@@ -2583,7 +2583,7 @@ namespace Client.MirControls
                 CreateDisposeLabel();
 
                 if (GridType == MirGridType.Craft && Libraries.Prguse != null)
-                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
+                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), CommonColor.White, UseOffSet, 0.8F);
 
                 DrawItemIcon(ShadowItem, true);
             }
@@ -2630,7 +2630,7 @@ namespace Client.MirControls
                 CountLabel = new MirLabel
                 {
                     AutoSize = true,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     NotControl = true,
                     OutLine = false,
                     Parent = this,
@@ -2639,7 +2639,7 @@ namespace Client.MirControls
 
             if (ShadowItem != null)
             {
-                CountLabel.ForeColour = (Item == null || ShadowItem.Count > Item.Count) ? Color.Red : Color.LimeGreen;
+                CountLabel.ForeColour = (Item == null || ShadowItem.Count > Item.Count) ? CommonColor.Red : CommonColor.LimeGreen;
                 CountLabel.Text = string.Format("{0}/{1}", Item == null ? 0 : Item.Count, ShadowItem.Count);
             }
             else

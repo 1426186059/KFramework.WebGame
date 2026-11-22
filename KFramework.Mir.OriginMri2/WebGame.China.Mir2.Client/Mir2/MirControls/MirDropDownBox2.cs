@@ -146,8 +146,8 @@ namespace Client.MirControls
 
         public MirDropDownBox2()
         {
-            BackColour = Color.FromArgb(255, 6, 6, 6);
-            ForeColour = Color.White;
+            BackColour = CommonColor.FromArgb(255, 6, 6, 6);
+            ForeColour = CommonColor.White;
             Enabled = false;
             // 箭头按钮(DropDownButton)本身就是点击区:选中文字直接显示在它的 Label 里(见下方 BeforeDraw),
             // 不再使用独立的左侧 Label。外部配 DropDownButton.AtlasFrame / AtlasNameKey 即可。
@@ -252,13 +252,13 @@ namespace Client.MirControls
                     Location = new Point(btnX, index * RowHeight),
                     Size = new Size(Math.Max(0, btnW), RowHeight),
                     ForeColour = ForeColour,
-                    BackColour = Color.FromArgb(255, 20, 20, 20),
+                    BackColour = CommonColor.FromArgb(255, 20, 20, 20),
                     Font = new Font(Settings.FontName, 8F)
                 };
-                lbl.MouseEnter += (o, e) => lbl.BackColour = Color.FromArgb(255, 140, 70, 0);
-                lbl.MouseLeave += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
-                lbl.MouseDown += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
-                lbl.MouseUp += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
+                lbl.MouseEnter += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 140, 70, 0);
+                lbl.MouseLeave += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
+                lbl.MouseDown += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
+                lbl.MouseUp += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
                 lbl.Click += (o, e) => SelectOption(index);
                 lbl.BeforeDraw += (o, e) =>
                 {

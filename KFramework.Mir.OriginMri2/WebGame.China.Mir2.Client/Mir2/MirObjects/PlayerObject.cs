@@ -978,16 +978,16 @@ namespace Client.MirObjects
 
             Color newColour = Poison switch
             {
-                _ when (Poison & PoisonType.DelayedExplosion) == PoisonType.DelayedExplosion => Color.Orange,
-                _ when (Poison & (PoisonType.Paralysis | PoisonType.LRParalysis)) != 0 => Color.Gray,
-                _ when (Poison & PoisonType.Frozen) == PoisonType.Frozen => Color.Blue,
-                _ when (Poison & PoisonType.Blindness) == PoisonType.Blindness => Color.MediumVioletRed,
-                _ when (Poison & (PoisonType.Stun | PoisonType.Dazed)) != 0 => Color.Yellow,
-                _ when (Poison & PoisonType.Slow) == PoisonType.Slow => Color.Purple,
-                _ when (Poison & PoisonType.Bleeding) == PoisonType.Bleeding => Color.DarkRed,
-                _ when (Poison & PoisonType.Red) == PoisonType.Red => Color.Red,
-                _ when (Poison & PoisonType.Green) == PoisonType.Green => Color.Green,
-                _ => Color.White
+                _ when (Poison & PoisonType.DelayedExplosion) == PoisonType.DelayedExplosion => CommonColor.Orange,
+                _ when (Poison & (PoisonType.Paralysis | PoisonType.LRParalysis)) != 0 => CommonColor.Gray,
+                _ when (Poison & PoisonType.Frozen) == PoisonType.Frozen => CommonColor.Blue,
+                _ when (Poison & PoisonType.Blindness) == PoisonType.Blindness => CommonColor.MediumVioletRed,
+                _ when (Poison & (PoisonType.Stun | PoisonType.Dazed)) != 0 => CommonColor.Yellow,
+                _ when (Poison & PoisonType.Slow) == PoisonType.Slow => CommonColor.Purple,
+                _ when (Poison & PoisonType.Bleeding) == PoisonType.Bleeding => CommonColor.DarkRed,
+                _ when (Poison & PoisonType.Red) == PoisonType.Red => CommonColor.Red,
+                _ when (Poison & PoisonType.Green) == PoisonType.Green => CommonColor.Green,
+                _ => CommonColor.White
             };
 
             if (newColour != DrawColour)
@@ -3496,7 +3496,7 @@ namespace Client.MirObjects
                 Blend = blend,
                 Skip = skip,
                 Light = lightDistance,
-                LightColour = lightColour == null ? Color.White : (Color)lightColour
+                LightColour = lightColour == null ? CommonColor.White : (Color)lightColour
             };
 
             Effects.Add(missile);
@@ -3641,25 +3641,25 @@ namespace Client.MirObjects
                     switch (Spell)
                     {
                         case Spell.Slaying:
-                            Libraries.Magic.DrawBlend(1820 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic.DrawBlend(1820 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.DoubleSlash:
-                            Libraries.Magic2.DrawBlend(1960 + ((int)Direction * 10) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic2.DrawBlend(1960 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.Thrusting:
-                            Libraries.Magic.DrawBlend(2190 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic.DrawBlend(2190 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.HalfMoon:
-                            Libraries.Magic.DrawBlend(2560 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic.DrawBlend(2560 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.TwinDrakeBlade:
-                            Libraries.Magic2.DrawBlend(220 + ((int)Direction * 20) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic2.DrawBlend(220 + ((int)Direction * 20) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.CrossHalfMoon:
-                            Libraries.Magic2.DrawBlend(40 + ((int)Direction * 10) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic2.DrawBlend(40 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.FlamingSword:
-                            Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                     }
                     break;
@@ -3668,13 +3668,13 @@ namespace Client.MirObjects
                     switch (Spell)
                     {
                         case Spell.DoubleSlash:
-                            Libraries.Magic2.DrawBlend(2050 + ((int)Direction * 10) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic2.DrawBlend(2050 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.TwinDrakeBlade:
-                            Libraries.Magic2.DrawBlend(226 + ((int)Direction * 20) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic2.DrawBlend(226 + ((int)Direction * 20) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                         case Spell.FlamingSword:
-                            Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, Color.White, true, 0.7F);
+                            Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                     }
                     break;
@@ -3851,10 +3851,10 @@ namespace Client.MirObjects
             NameLabel = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 ForeColour = NameColour,
                 OutLine = true,
-                OutLineColour = Color.Black,
+                OutLineColour = CommonColor.Black,
                 Text = Name,
             };
             NameLabel.Disposing += (o, e) => LabelList.Remove(NameLabel);
@@ -3878,10 +3878,10 @@ namespace Client.MirObjects
             GuildLabel = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 ForeColour = NameColour,
                 OutLine = true,
-                OutLineColour = Color.Black,
+                OutLineColour = CommonColor.Black,
                 Text = GuildName,
             };
             GuildLabel.Disposing += (o, e) => LabelList.Remove(GuildLabel);

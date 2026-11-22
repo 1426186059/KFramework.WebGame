@@ -29,8 +29,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Location = new Point(0, -6),
                 Size = new Size(660, 40),
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Yellow,
+                OutLineColour = CommonColor.Black,
             };
 
             TextLabel2 = new MirLabel
@@ -42,8 +42,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Location = new Point(0, 0),
                 Size = new Size(660, 40),
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Yellow,
+                OutLineColour = CommonColor.Black,
             };
 
             Layout = new MirImageControl

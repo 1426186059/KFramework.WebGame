@@ -72,8 +72,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Sort = true,
                 Visible = false,
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Yellow,
+                OutLineColour = CommonColor.Black,
             };
         }
 
@@ -603,8 +603,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Sort = true,
                 Visible = false,
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Yellow,
+                OutLineColour = CommonColor.Black,
             };
         }
 

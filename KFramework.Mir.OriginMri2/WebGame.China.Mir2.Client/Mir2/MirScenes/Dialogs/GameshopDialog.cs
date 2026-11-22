@@ -169,8 +169,8 @@ namespace Client.MirScenes.Dialogs
 
             Search = new MirTextBox
             {
-                BackColour = Color.FromArgb(4, 4, 4),
-                ForeColour = Color.White,
+                BackColour = CommonColor.FromArgb(4, 4, 4),
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Size = new Size(140, 16),
                 Location = new Point(540, 69),
@@ -432,7 +432,7 @@ namespace Client.MirScenes.Dialogs
                     Size = new Size(90, 20),
                     Location = new Point(15, 103 + (15 * i)),
                     Text = "Testing - " + i.ToString(),
-                    ForeColour = Color.Gray,
+                    ForeColour = CommonColor.Gray,
                     Font = new Font(Settings.FontName, 7F),
                 };
                 Filters[i].Click += (o, e) =>
@@ -444,8 +444,8 @@ namespace Client.MirScenes.Dialogs
                     UpdateShop();
                     for (int p = 0; p < Filters.Length; p++)
                     {
-                        if (Filters[p].Text == lab.Text) Filters[p].ForeColour = Color.FromArgb(230, 200, 160);
-                        else Filters[p].ForeColour = Color.Gray;
+                        if (Filters[p].Text == lab.Text) Filters[p].ForeColour = CommonColor.FromArgb(230, 200, 160);
+                        else Filters[p].ForeColour = CommonColor.Gray;
                     }
 
                 };
@@ -454,7 +454,7 @@ namespace Client.MirScenes.Dialogs
                     MirLabel lab = (MirLabel)o;
                     for (int p = 0; p < Filters.Length; p++)
                     {
-                        if (Filters[p].Text == lab.Text && Filters[p].ForeColour != Color.FromArgb(230, 200, 160)) Filters[p].ForeColour = Color.FromArgb(160, 140, 110);
+                        if (Filters[p].Text == lab.Text && Filters[p].ForeColour != CommonColor.FromArgb(230, 200, 160)) Filters[p].ForeColour = CommonColor.FromArgb(160, 140, 110);
                     }
                 };
                 Filters[i].MouseLeave += (o, e) =>
@@ -462,7 +462,7 @@ namespace Client.MirScenes.Dialogs
                     MirLabel lab = (MirLabel)o;
                     for (int p = 0; p < Filters.Length; p++)
                     {
-                        if (Filters[p].Text == lab.Text && Filters[p].ForeColour != Color.FromArgb(230, 200, 160)) Filters[p].ForeColour = Color.Gray;
+                        if (Filters[p].Text == lab.Text && Filters[p].ForeColour != CommonColor.FromArgb(230, 200, 160)) Filters[p].ForeColour = CommonColor.Gray;
                     }
                 };
                 Filters[i].MouseWheel += FilterScrolling;
@@ -674,7 +674,7 @@ namespace Client.MirScenes.Dialogs
 
                 }
             }
-            Filters[0].ForeColour = Color.FromArgb(230, 200, 160);
+            Filters[0].ForeColour = CommonColor.FromArgb(230, 200, 160);
             CStartIndex = 0;
             SetCategories();
             UpdateShop();
@@ -687,7 +687,7 @@ namespace Client.MirScenes.Dialogs
                 if (i < CategoryList.Count)
                 {
                     Filters[i].Text = CategoryList[i + CStartIndex];
-                    Filters[i].ForeColour = Filters[i].Text == TypeFilter ? Color.FromArgb(230, 200, 160) : Color.Gray;
+                    Filters[i].ForeColour = Filters[i].Text == TypeFilter ? CommonColor.FromArgb(230, 200, 160) : CommonColor.Gray;
                     Filters[i].NotControl = false;
                 }
                 else

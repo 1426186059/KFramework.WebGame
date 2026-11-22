@@ -129,7 +129,7 @@ namespace Client.MirScenes.Dialogs
                 }
             }
 
-            Libraries.StateItems.Draw(FishingImage, new Point(Location.X + 10, Location.Y + 40), Color.White, false);
+            Libraries.StateItems.Draw(FishingImage, new Point(Location.X + 10, Location.Y + 40), CommonColor.White, false);
         }
 
         public override void Show()
@@ -355,7 +355,7 @@ namespace Client.MirScenes.Dialogs
             if (width < 0) width = 0;
             if (width > 216) width = 216;
             Rectangle r = new Rectangle(0, 0, width, 12);
-            Libraries.Prguse.Draw(1342, r, new Point(ChanceBar.DisplayLocation.X, ChanceBar.DisplayLocation.Y), Color.White, false);
+            Libraries.Prguse.Draw(1342, r, new Point(ChanceBar.DisplayLocation.X, ChanceBar.DisplayLocation.Y), CommonColor.White, false);
         }
 
         void ProgressBar_BeforeDraw(object sender, EventArgs e)
@@ -370,7 +370,7 @@ namespace Client.MirScenes.Dialogs
             if (width > 216) width = 216;
 
             Rectangle r = new Rectangle(0, 0, width, 8);
-            Libraries.Prguse.Draw(1349, r, new Point(ProgressBar.DisplayLocation.X, ProgressBar.DisplayLocation.Y), Color.White, false);
+            Libraries.Prguse.Draw(1349, r, new Point(ProgressBar.DisplayLocation.X, ProgressBar.DisplayLocation.Y), CommonColor.White, false);
         }
 
         public void Cancel()

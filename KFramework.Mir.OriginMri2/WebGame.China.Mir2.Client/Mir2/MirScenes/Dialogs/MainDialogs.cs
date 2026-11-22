@@ -357,7 +357,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = AutoFightButton,
                 Location = new Point(-6, -8),   // 让约 70×65 的转圈居中覆盖在 34×18 的按钮上
                 Loop = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Animated = false,
                 Visible = false,
                 NotControl = true,                // 不拦截按钮点击
@@ -479,8 +479,8 @@ namespace Client.MirScenes.Dialogs
             AModeLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.Yellow,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Yellow,
+                OutLineColour = CommonColor.Black,
                 Parent = this,
                 Location = new Point(Settings.Resolution != 800 ? 899 : 675, Settings.Resolution != 800 ? -448 : -280),
                 Visible = Settings.ModeView
@@ -489,8 +489,8 @@ namespace Client.MirScenes.Dialogs
             PModeLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.Orange,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.Orange,
+                OutLineColour = CommonColor.Black,
                 Parent = this,
                 Location = new Point(230, 125),
                 Visible = Settings.ModeView
@@ -499,8 +499,8 @@ namespace Client.MirScenes.Dialogs
             SModeLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.LimeGreen,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.LimeGreen,
+                OutLineColour = CommonColor.Black,
                 Parent = this,
                 Location = new Point(899, -463),
                 Visible = Settings.ModeView
@@ -516,7 +516,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(465, -53),
                 Loop = true,
                 Blending = true,               // 原始传奇 blendMode = ADD
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Animated = false,
                 Visible = false,
                 NotControl = true,
@@ -528,7 +528,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(465, -53),
                 Loop = true,
                 Blending = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Animated = false,
                 Visible = false,
                 NotControl = true,
@@ -694,7 +694,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)((ExperienceBar.Size.Width - 3) * percent), ExperienceBar.Size.Height);
 
-            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, Color.White, false);
+            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, CommonColor.White, false);
         }
 
         private void WeightBar_BeforeDraw(object sender, EventArgs e)
@@ -723,7 +723,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)((WeightBar.Size.Width - 2) * percent), WeightBar.Size.Height);
 
-            WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, Color.White, false);
+            WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, CommonColor.White, false);
         }
     }
 

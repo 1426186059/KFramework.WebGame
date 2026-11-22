@@ -69,7 +69,7 @@ namespace Client.MirGraphics
                 case ParticleType.Fog:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = 1F,
                         BlendRate = 0.4F,
                         AliveTime = DateTime.MaxValue,
@@ -82,7 +82,7 @@ namespace Client.MirGraphics
                 case ParticleType.Sand:
                     particle = new SandParticle(this, tex)
                     {
-                        Color = Color.Yellow,
+                        Color = CommonColor.Yellow,
                         Size = 1F,
                         BlendRate = 0.2F,
                         AliveTime = DateTime.MaxValue,
@@ -95,7 +95,7 @@ namespace Client.MirGraphics
                 case ParticleType.Snow:
                     particle = new SnowParticle(this, tex)
                     {
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = 1F,
                         BlendRate = 1F,
                         AliveTime = DateTime.MaxValue,
@@ -108,7 +108,7 @@ namespace Client.MirGraphics
                 case ParticleType.FireyLeaves:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.Firebrick,
+                        Color = CommonColor.Firebrick,
                         BlendRate = 1F,
                         AliveTime = DateTime.MaxValue,
                         Blend = true,
@@ -120,7 +120,7 @@ namespace Client.MirGraphics
                 case ParticleType.Leaves:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.Goldenrod,
+                        Color = CommonColor.Goldenrod,
                         BlendRate = 0.1F,
                         AliveTime = DateTime.MaxValue,
                         Blend = true,
@@ -134,7 +134,7 @@ namespace Client.MirGraphics
                 case ParticleType.PurpleLeaves:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.Purple,
+                        Color = CommonColor.Purple,
                         BlendRate = 0.1F,
                         AliveTime = DateTime.MaxValue,
                         Blend = true,
@@ -150,7 +150,7 @@ namespace Client.MirGraphics
                         Engine = this,
                         ImageInfo = tex,
                         Color = ColorTranslator.FromHtml("#ffffff85"),
-                        // Color = Color.White,
+                        // Color = CommonColor.White,
                         Size = 1F,
                         BlendRate = 1F,
                         AliveTime = DateTime.MaxValue,
@@ -163,7 +163,7 @@ namespace Client.MirGraphics
                 case ParticleType.FlowersRain:
                     particle = new FlowerParticle(this, tex)
                     {
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = 1F,
                         BlendRate = 0.5F,
                         AliveTime = DateTime.MaxValue,
@@ -176,7 +176,7 @@ namespace Client.MirGraphics
                 case ParticleType.YellowFog:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.Yellow,
+                        Color = CommonColor.Yellow,
                         Size = 1F,
                         BlendRate = 0.25F,
                         AliveTime = DateTime.MaxValue,
@@ -189,7 +189,7 @@ namespace Client.MirGraphics
                 case ParticleType.FogCloud:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.Transparent,
+                        Color = CommonColor.Transparent,
                         Size = 1F,
                         BlendRate = 0.2F,
                         AliveTime = DateTime.MaxValue,
@@ -202,7 +202,7 @@ namespace Client.MirGraphics
                 case ParticleType.RedFog:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.DarkRed,
+                        Color = CommonColor.DarkRed,
                         Size = 1F,
                         AliveTime = DateTime.MaxValue,
                         BlendRate = 0.2F,
@@ -216,7 +216,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(5 + CMain.Random.Next(4)),
                         Blend = true,
@@ -230,7 +230,7 @@ namespace Client.MirGraphics
                 case ParticleType.BlueFog:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.DeepSkyBlue,
+                        Color = CommonColor.DeepSkyBlue,
                         Size = 1F,
                         AliveTime = DateTime.MaxValue,
                         BlendRate = 0.2F,
@@ -243,7 +243,7 @@ namespace Client.MirGraphics
                 case ParticleType.Blizzard:
                     particle = new FogParticle(this, tex)
                     {
-                        Color = Color.FromArgb(255, 172, 229, 238),
+                        Color = CommonColor.FromArgb(255, 172, 229, 238),
                         Size = 1F,
                         AliveTime = DateTime.MaxValue,
                         BlendRate = 0.2F,
@@ -256,7 +256,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(1 + CMain.Random.Next(2)),
                         Blend = false,
@@ -272,7 +272,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.DarkRed,
+                        Color = CommonColor.DarkRed,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(1 + CMain.Random.Next(2)),
                         Blend = true,
@@ -288,7 +288,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(1 + CMain.Random.Next(2)),
                         Blend = true,
@@ -305,7 +305,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.Yellow,
+                        Color = CommonColor.Yellow,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(1 + CMain.Random.Next(2)),
                         Blend = true,
@@ -321,7 +321,7 @@ namespace Client.MirGraphics
                     {
                         Engine = this,
                         ImageInfo = tex,
-                        Color = Color.White,
+                        Color = CommonColor.White,
                         Size = (float)CMain.Random.NextDouble(),
                         AliveTime = CMain.Now.AddSeconds(1 + CMain.Random.Next(2)),
                         Blend = true,

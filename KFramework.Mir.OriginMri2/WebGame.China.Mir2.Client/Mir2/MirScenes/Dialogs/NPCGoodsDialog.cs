@@ -82,7 +82,7 @@ namespace Client.MirScenes.Dialogs
                 PressedAtlasFrame = "store_z_btn_1",
                 Text = "购买",
                 CenterText = true,
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
                 Visible = false,
             };
@@ -286,7 +286,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(0, 0),
                 Size = new Size(317, RowHeight),
-                BackColour = Color.FromArgb(30, 20, 20, 30),
+                BackColour = CommonColor.FromArgb(30, 20, 20, 30),
                 NotControl = true,
             };
             new RowDivider
@@ -322,8 +322,8 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(150, 24),
                 AutoSize = false,
                 Font = new Font(Settings.FontName, 12F),
-                ForeColour = Color.FromArgb(255, 230, 200),
-                BackColour = Color.Transparent,
+                ForeColour = CommonColor.FromArgb(255, 230, 200),
+                BackColour = CommonColor.Transparent,
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                 NotControl = true,
             };
@@ -334,8 +334,8 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(74, 35), // 与名字同 x，整体左对齐
                 Size = new Size(150, 20),
                 Font = new Font(Settings.FontName, 12F),
-                ForeColour = Color.Gold,
-                BackColour = Color.Transparent,
+                ForeColour = CommonColor.Gold,
+                BackColour = CommonColor.Transparent,
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
                 NotControl = true,
             };
@@ -346,8 +346,8 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(189, 37),
                 Size = new Size(40, 20),
                 Font = new Font(Settings.FontName, 12F),
-                ForeColour = Color.Yellow,
-                BackColour = Color.Transparent,
+                ForeColour = CommonColor.Yellow,
+                BackColour = CommonColor.Transparent,
                 NotControl = true,
             };
 
@@ -360,7 +360,7 @@ namespace Client.MirScenes.Dialogs
                 PressedAtlasFrame = "store_z_btn_1",
                 Text = "购买",
                 CenterText = true,
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
                 Size = new Size(78, 36),
             };
@@ -399,10 +399,10 @@ namespace Client.MirScenes.Dialogs
                     break;
             }
             _costLabel.Text = currency + ":" + price;
-            _costLabel.ForeColour = price <= owned ? Color.Gold : Color.FromArgb(255, 90, 90);
+            _costLabel.ForeColour = price <= owned ? CommonColor.Gold : CommonColor.FromArgb(255, 90, 90);
 
             _limitLabel.Text = MultipleAvailable ? "多件" : string.Empty;
-            _bg.BackColour = Selected ? Color.FromArgb(60, 255, 255, 255) : Color.Transparent;
+            _bg.BackColour = Selected ? CommonColor.FromArgb(60, 255, 255, 255) : CommonColor.Transparent;
             _itemCell.Item = Item;
         }
     }
@@ -429,7 +429,7 @@ namespace Client.MirScenes.Dialogs
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, iconId, priority: Mir2OriginObjectLibrary.PriorityItem);
             Mir2OriginObjectLibrary.DrawItemIconFit(iconId, DisplayLocation.X, DisplayLocation.Y,
-                                                    Size.Width, Size.Height, Color.White);
+                                                    Size.Width, Size.Height, CommonColor.White);
         }
     }
 
@@ -440,9 +440,9 @@ namespace Client.MirScenes.Dialogs
     {
         public RowDivider()
         {
-            BackColour = Color.FromArgb(255, 90, 80, 70);
+            BackColour = CommonColor.FromArgb(255, 90, 80, 70);
             Border = true;
-            BorderColour = Color.FromArgb(255, 90, 80, 70);
+            BorderColour = CommonColor.FromArgb(255, 90, 80, 70);
         }
     }
 }

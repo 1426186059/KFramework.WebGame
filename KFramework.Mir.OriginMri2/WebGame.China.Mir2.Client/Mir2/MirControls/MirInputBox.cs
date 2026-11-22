@@ -62,7 +62,7 @@ namespace Client.MirControls
             {
                 Parent = mBg,
                 Border = true,
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 Size = new Size(300, 30),
                 MaxLength = 50,
             };
@@ -79,7 +79,7 @@ namespace Client.MirControls
                 Size = new Size(106, 40)
             };
             OKButton.CenterText = true;
-            OKButton.FontColour = Color.White;
+            OKButton.FontColour = CommonColor.White;
             OKButton.Location = new Point(OKButton.Center.X - 100, 120);
 
             CancelButton = new MirButton
@@ -92,7 +92,7 @@ namespace Client.MirControls
                 Size = new Size(106, 40)
             };
             CancelButton.CenterText = true;
-            CancelButton.FontColour = Color.White;
+            CancelButton.FontColour = CommonColor.White;
             CancelButton.Click += DisposeDialog;
             CancelButton.Location = new Point(CancelButton.Center.X + 100, 120);
         }

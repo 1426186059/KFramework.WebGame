@@ -85,7 +85,7 @@ namespace Client.MirScenes.Dialogs
                 Text = "",
                 Parent = this,
                 Font = new Font(Settings.FontName, 13F),
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 OutLine = true,
                 Location = new Point(24, 21), // 原始传奇 txt_name x=24 y=21 size=17
                 AutoSize = true
@@ -130,9 +130,9 @@ namespace Client.MirScenes.Dialogs
                 Visible = false,
                 NotControl = true,
                 Sort = true,
-                BackColour = Color.FromArgb(240, 80, 60, 40), // Darker brownish color
+                BackColour = CommonColor.FromArgb(240, 80, 60, 40), // Darker brownish color
                 Border = true,
-                BorderColour = Color.FromArgb(255, 120, 100, 80), // Brownish border
+                BorderColour = CommonColor.FromArgb(255, 120, 100, 80), // Brownish border
                 DrawControlTexture = true,
                 Modal = false
             };
@@ -151,7 +151,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = _tooltipPanel,
                 AutoSize = true,
-                ForeColour = Color.Yellow, // Title in yellow like KR
+                ForeColour = CommonColor.Yellow, // Title in yellow like KR
                 Location = new Point(70, 5),
                 NotControl = true,
                 OutLine = true
@@ -161,7 +161,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = _tooltipPanel,
                 AutoSize = true,
-                ForeColour = Color.White, // Content in white
+                ForeColour = CommonColor.White, // Content in white
                 Location = new Point(70, 25),
                 NotControl = true,
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap),
@@ -307,7 +307,7 @@ namespace Client.MirScenes.Dialogs
                             Library = Libraries.Title,
                             Sound = SoundList.ButtonA,
                             Text = txt,
-                            FontColour = Color.White,
+                            FontColour = CommonColor.White,
                             ForeColour = color
                         };
 
@@ -477,16 +477,16 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = p,
                 Text = text,
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 UnderLine = true,
                 Sound = SoundList.ButtonC,
                 Font = contentFont
             };
 
-            temp.MouseEnter += (o, e) => temp.ForeColour = Color.Red;
-            temp.MouseLeave += (o, e) => temp.ForeColour = Color.Yellow;
-            temp.MouseDown += (o, e) => temp.ForeColour = Color.Yellow;
-            temp.MouseUp += (o, e) => temp.ForeColour = Color.Red;
+            temp.MouseEnter += (o, e) => temp.ForeColour = CommonColor.Red;
+            temp.MouseLeave += (o, e) => temp.ForeColour = CommonColor.Yellow;
+            temp.MouseDown += (o, e) => temp.ForeColour = CommonColor.Yellow;
+            temp.MouseUp += (o, e) => temp.ForeColour = CommonColor.Red;
 
             if (!string.IsNullOrEmpty(link))
             {
@@ -539,7 +539,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = p,
                 Text = text,
-                ForeColour = Color.Cyan,
+                ForeColour = CommonColor.Cyan,
                 UnderLine = true,
                 Font = contentFont,
                 NotControl = false // Make sure it can receive mouse events
@@ -547,13 +547,13 @@ namespace Client.MirScenes.Dialogs
 
             temp.MouseEnter += (o, e) =>
             {
-                temp.ForeColour = Color.Orange;
+                temp.ForeColour = CommonColor.Orange;
                 ShowTooltip(linkType, linkName, temp.DisplayLocation);
             };
 
             temp.MouseLeave += (o, e) =>
             {
-                temp.ForeColour = Color.Cyan;
+                temp.ForeColour = CommonColor.Cyan;
                 HideTooltip();
             };
 
@@ -584,14 +584,14 @@ namespace Client.MirScenes.Dialogs
                     Parent = this,
                     Location = new Point(BottomLinkX + col * (BottomLinkColWidth + BottomLinkGap), y + row * 24),
                     Text = links[i].Text,
-                    ForeColour = Color.Yellow,
+                    ForeColour = CommonColor.Yellow,
                     UnderLine = true,
                     Sound = SoundList.ButtonC,
                     Font = font
                 };
 
-                label.MouseEnter += (o, e) => label.ForeColour = Color.Red;
-                label.MouseLeave += (o, e) => label.ForeColour = Color.Yellow;
+                label.MouseEnter += (o, e) => label.ForeColour = CommonColor.Red;
+                label.MouseLeave += (o, e) => label.ForeColour = CommonColor.Yellow;
                 label.Click += (o, e) => ButtonClicked(action);
                 label.MouseWheel += NPCDialog_MouseWheel;
                 _bottomLinkLabels.Add(label);
@@ -1093,7 +1093,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCell = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.DropPanel,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1541,7 +1541,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[0] = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1553,7 +1553,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[1] = new MirItemCell //Required
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1565,7 +1565,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[2] = new MirItemCell //Required
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1576,7 +1576,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[3] = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1586,7 +1586,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[4] = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1596,7 +1596,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[5] = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1606,7 +1606,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCells[6] = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.AwakenItem,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1619,7 +1619,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(35, 141),
                 Size = new Size(109, 14),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = true,
                 Enabled = true,
             };
@@ -1897,7 +1897,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(22, 5),
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
-                ForeColour = Color.BurlyWood,
+                ForeColour = CommonColor.BurlyWood,
                 Visible = true,
                 NotControl = true
             };
@@ -1905,7 +1905,7 @@ namespace Client.MirScenes.Dialogs
             PossibilityLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Location = new Point(10, 135),
                 Font = new Font(Settings.FontName, 8F),
@@ -1916,7 +1916,7 @@ namespace Client.MirScenes.Dialogs
             GoldLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Location = new Point(30, 190),
                 Font = new Font(Settings.FontName, 8F),
@@ -1938,7 +1938,7 @@ namespace Client.MirScenes.Dialogs
                         Size = new Size(35, 32),
                         Location = new Point(((x - _toolCount) * 40) + 52, 86),
                         Border = true,
-                        BorderColour = Color.Lime
+                        BorderColour = CommonColor.Lime
                     };
                 }
                 else
@@ -1952,7 +1952,7 @@ namespace Client.MirScenes.Dialogs
                         Size = new Size(35, 32),
                         Location = new Point((x * 44) + 108, 44),
                         Border = true,
-                        BorderColour = Color.Lime
+                        BorderColour = CommonColor.Lime
                     };
                 }
 
@@ -2526,7 +2526,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked),
-                ForeColour = Color.Red
+                ForeColour = CommonColor.Red
             };
 
             StoragePasswordLabel = new MirLabel
@@ -2536,7 +2536,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = false
             };
 
@@ -2885,12 +2885,12 @@ namespace Client.MirScenes.Dialogs
                 RentButton.Visible = true;
                 LockedPage.Visible = false;
                 RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageExpiresOn) + GameScene.User.ExpandedStorageExpiryTime.ToString();
-                RentalLabel.ForeColour = Color.White;
+                RentalLabel.ForeColour = CommonColor.White;
             }
             else
             {
                 RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked);
-                RentalLabel.ForeColour = Color.Red;
+                RentalLabel.ForeColour = CommonColor.Red;
                 RentButton.Visible = true;
                 LockedPage.Visible = true;
             }
@@ -3082,7 +3082,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (_label != null && !_label.IsDisposed)
                     return _label.ForeColour;
-                return Color.Empty;
+                return CommonColor.Empty;
             }
             set
             {
@@ -3131,7 +3131,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(237, 20),
                 DrawFormat = new TextStyle(TextAnchor.UpperCenter),
-                ForeColour = Color.Black,
+                ForeColour = CommonColor.Black,
                 Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
             };
 
@@ -3161,9 +3161,9 @@ namespace Client.MirScenes.Dialogs
                 }
 
                 if (Blending)
-                    Library.DrawBlend(Index + 3, DisplayLocation, Color.White, false, BlendingRate);
+                    Library.DrawBlend(Index + 3, DisplayLocation, CommonColor.White, false, BlendingRate);
                 else
-                    Library.Draw(Index + 3, DisplayLocation, Color.White, false, Opacity);
+                    Library.Draw(Index + 3, DisplayLocation, CommonColor.White, false, Opacity);
 
                 if (GrayScale) DXManager.SetGrayscale(oldGray);
             }

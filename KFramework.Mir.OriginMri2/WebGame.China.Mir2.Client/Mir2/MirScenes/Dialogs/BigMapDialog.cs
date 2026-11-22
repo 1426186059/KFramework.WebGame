@@ -70,7 +70,7 @@ namespace Client.MirScenes.Dialogs
             // 标题 "地图"（mapSkin _Group1 14,13 / txt_title x=20 style233）
             TitleLabel = new MirLabel
             {
-                ForeColour = Color.FromArgb(255, 240, 200, 120),
+                ForeColour = CommonColor.FromArgb(255, 240, 200, 120),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(208, 37),
@@ -112,7 +112,7 @@ namespace Client.MirScenes.Dialogs
                     Sound = SoundList.ButtonA,
                 };
                 b.Label.Text = btnLabels[i];
-                b.Label.ForeColour = Color.FromArgb(255, 245, 220, 160);
+                b.Label.ForeColour = CommonColor.FromArgb(255, 245, 220, 160);
                 b.CenterText = true;
                 b.Click += (o, e) => OnActionButton(k);
                 _actionButtons[i] = b;
@@ -141,7 +141,7 @@ namespace Client.MirScenes.Dialogs
             CoordinateLabel = new MirLabel
             {
                 AutoSize = true,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 OutLine = true,
                 Location = new Point(MapAreaX + 8, MapAreaY + MapAreaH - 22),
                 Parent = this,
@@ -165,7 +165,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Text = text,
                 AutoSize = true,
-                ForeColour = Color.Red,
+                ForeColour = CommonColor.Red,
                 Location = new Point(x - 10, y + 30),
                 NotControl = true,
             };
@@ -465,7 +465,7 @@ namespace Client.MirScenes.Dialogs
                 DXManager.Draw(_bigMapTexture,
                     new Rectangle(0, 0, _bigMapTexture.Width, _bigMapTexture.Height),
                     new Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height),
-                    Color.White);
+                    CommonColor.White);
             }
 
             int startPointX = (int)(viewRect.X / ScaleX);
@@ -543,7 +543,7 @@ namespace Client.MirScenes.Dialogs
                     float dx = rx - lastX, dy = ry - lastY;
                     if (i == 0 || dx * dx + dy * dy >= minDist * minDist)
                     {
-                        DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3(rx - 2F, ry - 2F, 0.0F), Color.White);
+                        DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3(rx - 2F, ry - 2F, 0.0F), CommonColor.White);
                         lastX = rx; lastY = ry;
                     }
                 }

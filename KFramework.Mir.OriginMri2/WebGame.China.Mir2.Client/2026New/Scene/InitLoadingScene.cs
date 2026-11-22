@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Client.MirControls;
 using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
-using Color = MirEngine.Color;
 namespace Client.MirScenes
 {
     /// <summary>
@@ -28,7 +27,7 @@ namespace Client.MirScenes
         public InitLoadingScene()
         {
             // 登录/选人类场景覆为黑底；初始化场景同样用纯黑，避免透出底层（ActiveScene 默认透明洋红）。
-            BackColour = Color.Black;
+            BackColour = CommonColor.Black;
 
             _spinnerLabel = new MirLabel
             {
@@ -37,7 +36,7 @@ namespace Client.MirScenes
                 AnchorPos = new Point(0, 30),
                 Size = new Size(64, 64),
                 Text = Spinner[0].ToString(),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _spinnerLabel.ApplyAnchor();
@@ -49,7 +48,7 @@ namespace Client.MirScenes
                 AnchorPos = new Point(0, -60),
                 Size = new Size(800, 30),
                 Text = "正在初始化…",
-                ForeColour = Color.LightGray,
+                ForeColour = CommonColor.LightGray,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _statusLabel.ApplyAnchor();

@@ -162,8 +162,8 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(30, 40),
                 Size = new Size(200, 30),
-                BackColour = Color.Empty,
-                ForeColour = Color.LightGray,
+                BackColour = CommonColor.Empty,
+                ForeColour = CommonColor.LightGray,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
@@ -174,8 +174,8 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(30, 65),
                 Size = new Size(200, 30),
-                BackColour = Color.Empty,
-                ForeColour = Color.LightGray,
+                BackColour = CommonColor.Empty,
+                ForeColour = CommonColor.LightGray,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
@@ -186,8 +186,8 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(30, 90),
                 Size = new Size(200, 30),
-                BackColour = Color.Empty,
-                ForeColour = Color.LightGray,
+                BackColour = CommonColor.Empty,
+                ForeColour = CommonColor.LightGray,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
@@ -198,8 +198,8 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(30, 115),
                 Size = new Size(200, 30),
-                BackColour = Color.Empty,
-                ForeColour = Color.LightGray,
+                BackColour = CommonColor.Empty,
+                ForeColour = CommonColor.LightGray,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,

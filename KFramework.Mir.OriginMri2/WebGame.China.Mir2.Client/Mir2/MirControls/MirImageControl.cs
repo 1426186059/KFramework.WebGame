@@ -419,7 +419,7 @@ namespace Client.MirControls
         {
             _drawImage = true;
             _index = -1;
-            ForeColour = Color.White;
+            ForeColour = CommonColor.White;
             _autoSize = true;
         }
 
@@ -565,7 +565,7 @@ namespace Client.MirControls
             int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
             var srcRect = new KFramework.MonoGame.Rectangle(0, 0, tex.Width, tex.Height);
             var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
-            Color drawColor = Color.White;
+            Color drawColor = CommonColor.White;
             DXManager.Draw(tex, srcRect, dstRect, drawColor, MirBlend.Normal.ToBlendState(), FlipEffects);
         }
 

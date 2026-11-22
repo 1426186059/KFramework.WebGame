@@ -47,7 +47,7 @@ namespace Client.MirControls
             BackColour = CommonColor.ModalBackdrop;
             DrawControlTexture = true;
             Border = false;
-            ForeColour = Color.White;
+            ForeColour = CommonColor.White;
             DrawImage = false;   // 遮罩只画纯色，不走 Texture / 图集 / Library 分支
 
             // 第二层：居中显示的 PNG 背景（Anchor 保持 None，异步加载完成后的 ApplyAnchor 不会挪动它）。
@@ -59,7 +59,7 @@ namespace Client.MirControls
                 Location = new Point((Settings.ScreenWidth - PanelSize.Width) / 2,
                                      (Settings.ScreenHeight - PanelSize.Height) / 2),
                 ImageKey = PanelImageKey,
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
             };
 
@@ -70,7 +70,7 @@ namespace Client.MirControls
                 Size = new Size(PanelSize.Width - 48, 78),
                 Parent = _panel,
                 Text = message,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter, HorizontalWrapMode.Wrap),
             };
 
@@ -129,12 +129,12 @@ namespace Client.MirControls
                 AtlasNameKey = ButtonAtlas + "#" + ButtonUpFrame,
                 HoverAtlasFrame = ButtonDownFrame,
                 PressedAtlasFrame = ButtonDownFrame,
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
                 Text = caption,
             };
             btn.CenterText = true;
-            btn.FontColour = Color.White;
+            btn.FontColour = CommonColor.White;
             return btn;
         }
 

@@ -35,7 +35,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(12, 35),
                 Size = new Size(170, 14),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = true,
                 Enabled = true,
             };

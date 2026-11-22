@@ -174,7 +174,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(115, 205),
                 Location = new Point(8, 237),
                 Font = new Font(Settings.FontName, 8F - 1),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = false
             };
 
@@ -533,7 +533,7 @@ namespace Client.MirScenes.Dialogs
 
             ItemCell = new MirItemCell
             {
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 GridType = MirGridType.TrustMerchant,
                 Library = Libraries.Items,
                 Parent = this,
@@ -1315,11 +1315,11 @@ namespace Client.MirScenes.Dialogs
 
                         SellItemButton.Enabled = true;
 
-                        PriceTextBox.BorderColour = (Amount == MaxConsignAmount) ? Color.Orange : Color.Lime;
+                        PriceTextBox.BorderColour = (Amount == MaxConsignAmount) ? CommonColor.Orange : CommonColor.Lime;
                     }
                     else
                     {
-                        PriceTextBox.BorderColour = Color.Red;
+                        PriceTextBox.BorderColour = CommonColor.Red;
                         SellItemButton.Enabled = false;
                     }
                 }
@@ -1327,7 +1327,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     if (Amount >= MinBidAmount)
                     {
-                        PriceTextBox.BorderColour = Color.Lime;
+                        PriceTextBox.BorderColour = CommonColor.Lime;
 
                         if (Amount > MaxBidAmount)
                         {
@@ -1337,11 +1337,11 @@ namespace Client.MirScenes.Dialogs
                         SellItemButton.Enabled = true;
 
                         if (Amount == MaxBidAmount)
-                            PriceTextBox.BorderColour = Color.Orange;
+                            PriceTextBox.BorderColour = CommonColor.Orange;
                     }
                     else
                     {
-                        PriceTextBox.BorderColour = Color.Red;
+                        PriceTextBox.BorderColour = CommonColor.Red;
                         SellItemButton.Enabled = false;
                     }
                 }
@@ -1439,7 +1439,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Size = new Size(354, 32);
                 Sound = SoundList.ButtonA;
-                BorderColour = Color.FromArgb(255, 200, 100, 0);
+                BorderColour = CommonColor.FromArgb(255, 200, 100, 0);
                 BeforeDraw += AuctionRow_BeforeDraw;
 
                 NameLabel = new MirLabel
@@ -1557,39 +1557,39 @@ namespace Client.MirScenes.Dialogs
                 PriceLabel.Text = String.Format("{0:###,###,##0} {1}", Listing.Price, listing.ItemType == MarketItemType.Auction ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Bid) : "");
 
                 NameLabel.ForeColour = GameScene.Scene.GradeNameColor(Listing.Item.Info.Grade);
-                if (NameLabel.ForeColour == Color.Yellow)
-                    NameLabel.ForeColour = Color.White;
+                if (NameLabel.ForeColour == CommonColor.Yellow)
+                    NameLabel.ForeColour = CommonColor.White;
 
                 if (Listing.Price > 10000000) //10Mil
-                    PriceLabel.ForeColour = Color.Red;
+                    PriceLabel.ForeColour = CommonColor.Red;
                 else if (listing.Price > 1000000) //1Million
-                    PriceLabel.ForeColour = Color.Orange;
+                    PriceLabel.ForeColour = CommonColor.Orange;
                 else if (listing.Price > 100000) //1Million
-                    PriceLabel.ForeColour = Color.LawnGreen;
+                    PriceLabel.ForeColour = CommonColor.LawnGreen;
                 else if (listing.Price > 10000) //1Million
-                    PriceLabel.ForeColour = Color.DeepSkyBlue;
+                    PriceLabel.ForeColour = CommonColor.DeepSkyBlue;
                 else
-                    PriceLabel.ForeColour = Color.White;
+                    PriceLabel.ForeColour = CommonColor.White;
 
 
                 SellerLabel.Text = Listing.Seller;
-                SellerLabel.ForeColour = Color.White;
+                SellerLabel.ForeColour = CommonColor.White;
 
                 if (UserMode)
                 {
                     switch (Listing.Seller)
                     {
                         case "Sold":
-                            SellerLabel.ForeColour = Color.Gold;
+                            SellerLabel.ForeColour = CommonColor.Gold;
                             break;
                         case "Expired":
-                            SellerLabel.ForeColour = Color.Red;
+                            SellerLabel.ForeColour = CommonColor.Red;
                             break;
                         case "Bid Met":
-                            SellerLabel.ForeColour = Color.LawnGreen;
+                            SellerLabel.ForeColour = CommonColor.LawnGreen;
                             break;
                         default:
-                            SellerLabel.ForeColour = Color.White;
+                            SellerLabel.ForeColour = CommonColor.White;
                             break;
                     }
                 }

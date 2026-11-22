@@ -52,10 +52,10 @@ namespace Client.MirControls
                 Parent = this,
                 NotControl = true,
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 ForeColour = colour,
                 OutLine = true,
-                OutLineColour = Color.Black,
+                OutLineColour = CommonColor.Black,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Font = new Font(Settings.FontName, font),
                 Text = text,
@@ -69,7 +69,7 @@ namespace Client.MirControls
         /// <summary>显示一行冒泡提示（白色，12 号普通字体）。</summary>
         public static void Show(string text)
         {
-            Show(text, Color.White);
+            Show(text, CommonColor.White);
         }
 
         /// <summary>显示一行冒泡提示，可指定颜色与字号。</summary>

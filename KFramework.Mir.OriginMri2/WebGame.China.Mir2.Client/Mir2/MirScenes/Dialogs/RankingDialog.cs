@@ -196,7 +196,7 @@ namespace Client.MirScenes.Dialogs
                 Text = "",
                 Parent = this,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
-                ForeColour = Color.BurlyWood,
+                ForeColour = CommonColor.BurlyWood,
                 Location = new Point(229, 36),
                 Size = new Size(82, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
@@ -332,7 +332,7 @@ namespace Client.MirScenes.Dialogs
             public RankingRow()
             {
                 Sound = SoundList.ButtonA;
-                BorderColour = Color.Lime;
+                BorderColour = CommonColor.Lime;
                 Visible = false;
                 Click += (o, e) => Inspect();
 
@@ -400,40 +400,40 @@ namespace Client.MirScenes.Dialogs
                 Index = listing.PlayerId;
                 if (RankLabel.Text == "1")
                 {
-                    RankLabel.ForeColour = Color.Gold;
-                    NameLabel.ForeColour = Color.Gold;
-                    LevelLabel.ForeColour = Color.Gold;
-                    ClassLabel.ForeColour = Color.Gold;
+                    RankLabel.ForeColour = CommonColor.Gold;
+                    NameLabel.ForeColour = CommonColor.Gold;
+                    LevelLabel.ForeColour = CommonColor.Gold;
+                    ClassLabel.ForeColour = CommonColor.Gold;
                 }
 
                 if (RankLabel.Text == "2")
                 {
-                    RankLabel.ForeColour = Color.Silver;
-                    NameLabel.ForeColour = Color.Silver;
-                    LevelLabel.ForeColour = Color.Silver;
-                    ClassLabel.ForeColour = Color.Silver;
+                    RankLabel.ForeColour = CommonColor.Silver;
+                    NameLabel.ForeColour = CommonColor.Silver;
+                    LevelLabel.ForeColour = CommonColor.Silver;
+                    ClassLabel.ForeColour = CommonColor.Silver;
                 }
 
                 if (RankLabel.Text == "3")
                 {
-                    RankLabel.ForeColour = Color.RosyBrown;
-                    NameLabel.ForeColour = Color.RosyBrown;
-                    LevelLabel.ForeColour = Color.RosyBrown;
-                    ClassLabel.ForeColour = Color.RosyBrown;
+                    RankLabel.ForeColour = CommonColor.RosyBrown;
+                    NameLabel.ForeColour = CommonColor.RosyBrown;
+                    LevelLabel.ForeColour = CommonColor.RosyBrown;
+                    ClassLabel.ForeColour = CommonColor.RosyBrown;
                 }
                 else if (NameLabel.Text == GameScene.User.Name)
                 {
-                    RankLabel.ForeColour = Color.Green;
-                    NameLabel.ForeColour = Color.Green;
-                    LevelLabel.ForeColour = Color.Green;
-                    ClassLabel.ForeColour = Color.Green;
+                    RankLabel.ForeColour = CommonColor.Green;
+                    NameLabel.ForeColour = CommonColor.Green;
+                    LevelLabel.ForeColour = CommonColor.Green;
+                    ClassLabel.ForeColour = CommonColor.Green;
                 }
                 else if (Convert.ToInt32(RankLabel.Text) > 3)
                 {
-                    RankLabel.ForeColour = Color.White;
-                    NameLabel.ForeColour = Color.White;
-                    LevelLabel.ForeColour = Color.White;
-                    ClassLabel.ForeColour = Color.White;
+                    RankLabel.ForeColour = CommonColor.White;
+                    NameLabel.ForeColour = CommonColor.White;
+                    LevelLabel.ForeColour = CommonColor.White;
+                    ClassLabel.ForeColour = CommonColor.White;
                 }
 
                 Visible = true;

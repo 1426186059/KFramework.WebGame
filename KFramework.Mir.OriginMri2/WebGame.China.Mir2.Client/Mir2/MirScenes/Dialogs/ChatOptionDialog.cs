@@ -305,8 +305,8 @@ namespace Client.MirScenes.Dialogs
         {
             if (Settings.TransparentChat)
             {
-                GameScene.Scene.ChatDialog.ForeColour = Color.FromArgb(15, 0, 0);
-                GameScene.Scene.ChatDialog.BackColour = Color.FromArgb(15, 0, 0);
+                GameScene.Scene.ChatDialog.ForeColour = CommonColor.FromArgb(15, 0, 0);
+                GameScene.Scene.ChatDialog.BackColour = CommonColor.FromArgb(15, 0, 0);
                 GameScene.Scene.ChatDialog.Opacity = 0.8f;
 
                 TransparencyOnButton.Index = 474;
@@ -317,8 +317,8 @@ namespace Client.MirScenes.Dialogs
             }
             else
             {
-                GameScene.Scene.ChatDialog.ForeColour = Color.White;
-                GameScene.Scene.ChatDialog.BackColour = Color.White;
+                GameScene.Scene.ChatDialog.ForeColour = CommonColor.White;
+                GameScene.Scene.ChatDialog.BackColour = CommonColor.White;
                 GameScene.Scene.ChatDialog.Opacity = 1;
 
                 TransparencyOnButton.Index = 473;

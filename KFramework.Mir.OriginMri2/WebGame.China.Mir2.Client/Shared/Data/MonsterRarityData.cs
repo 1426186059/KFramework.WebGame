@@ -28,7 +28,7 @@ public static class MonsterRarityData
             GoldMultiplier = 1.00,
             ItemDropBonusPercent = 0,
             GoldDropBonusPercent = 0,
-            NameColour = Color.White
+            NameColour = CommonColor.White
         },
         [MonsterType.Uncommon] = new MonsterRarityProfile
         {
@@ -39,7 +39,7 @@ public static class MonsterRarityData
             GoldMultiplier = 1.25,
             ItemDropBonusPercent = 15,
             GoldDropBonusPercent = 15,
-            NameColour = Color.LightGreen
+            NameColour = CommonColor.LightGreen
         },
         [MonsterType.Rare] = new MonsterRarityProfile
         {
@@ -50,7 +50,7 @@ public static class MonsterRarityData
             GoldMultiplier = 1.75,
             ItemDropBonusPercent = 35,
             GoldDropBonusPercent = 35,
-            NameColour = Color.DeepSkyBlue
+            NameColour = CommonColor.DeepSkyBlue
         },
         [MonsterType.Elite] = new MonsterRarityProfile
         {
@@ -61,7 +61,7 @@ public static class MonsterRarityData
             GoldMultiplier = 2.50,
             ItemDropBonusPercent = 75,
             GoldDropBonusPercent = 75,
-            NameColour = Color.Gold
+            NameColour = CommonColor.Gold
         }
     };
 

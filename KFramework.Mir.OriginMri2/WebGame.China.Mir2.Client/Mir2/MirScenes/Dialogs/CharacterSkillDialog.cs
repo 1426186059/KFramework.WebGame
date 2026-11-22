@@ -2,7 +2,6 @@ using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using KFramework.MonoGameExtend;
-using Color = MirEngine.Color;
 using Client.MirNetwork;
 using Client.MirObjects;
 using SlimDX;
@@ -63,7 +62,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 20),
                 Size = new Size(318, 30),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
                 NotControl = true
             };
@@ -83,7 +82,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this, Text = "技能 · 点击【设置】绑定快捷键",
                 Location = new Point(8, 480), 
                 Size = new Size(230, 28),
-                DrawFormat = new TextStyle(TextAnchor.MiddleLeft), ForeColour = Color.FromArgb(255, 210, 180),
+                DrawFormat = new TextStyle(TextAnchor.MiddleLeft), ForeColour = CommonColor.FromArgb(255, 210, 180),
                 NotControl = true,
             };
 
@@ -228,7 +227,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(220, 48), 
                     Size = new Size(44, 20),
                     DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                    ForeColour = Color.FromArgb(255, 90, 200),
+                    ForeColour = CommonColor.FromArgb(255, 90, 200),
                     UnderLine = true,
                 };
                 _state.Click += (o, e) =>
@@ -244,7 +243,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(0, 0), 
                     Size = new Size(RowW, RowH),
                     Texture = KDefaultRes.DefaultTexture2D, 
-                    ForeColour = Color.FromArgb(100, 0, 0, 0),
+                    ForeColour = CommonColor.FromArgb(100, 0, 0, 0),
                     NotControl = true, 
                     Visible = false,
                 };
@@ -258,7 +257,7 @@ namespace Client.MirScenes.Dialogs
                 _icon.Hint = SkillDescriptionHelper.Get(magic);
                 // 原始传奇技能图标：纯 CDN，无本地图集回落。
                 _icon.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                _icon.ForeColour = Color.White;
+                _icon.ForeColour = CommonColor.White;
 
                 bool learned = magic.Level > 0;
                 _name.Text = magic.Name;
@@ -266,7 +265,7 @@ namespace Client.MirScenes.Dialogs
                 _level.Text = learned ? magic.Level.ToString() : "";
                 _level.ForeColour = LearnColour;
                 _point.Text = learned ? magic.Experience.ToString() : "未学习";
-                _point.ForeColour = learned ? Color.LightGray : UnlearnColour;
+                _point.ForeColour = learned ? CommonColor.LightGray : UnlearnColour;
                 _expBar.Visible = learned;
                 _dim.Visible = !learned;
 
@@ -356,9 +355,9 @@ namespace Client.MirScenes.Dialogs
                 {
                     Text = "",
                     Font = new Font(Settings.FontName, 12F),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     OutLine = true,
-                    OutLineColour = Color.Black,
+                    OutLineColour = CommonColor.Black,
                     Parent = this,
                     Location = new Point(0, y),
                     Size = new Size(CellBgSize, CellBgSize),
@@ -371,7 +370,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     Text = keyOffset == 0 ? (row + 1).ToString() : ("F" + (row + 1)),
                     Font = new Font(Settings.FontName, 10F),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Parent = this,
                     Location = new Point(CellOffset, y + CellOffset),
                     Size = new Size(CellSize, CellSize),
@@ -439,7 +438,7 @@ namespace Client.MirScenes.Dialogs
 
                     // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png，纯 CDN 无本地回落。
                     Cells[row].ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
-                    Cells[row].ForeColour = Color.White;
+                    Cells[row].ForeColour = CommonColor.White;
                     // 技能描述 + 按键/MP/CD 摘要
                     Cells[row].Hint = SkillDescriptionHelper.Get(magic) + "\n\n" +
                         GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
@@ -741,7 +740,7 @@ namespace Client.MirScenes.Dialogs
 
             // 原始传奇技能图标：按 OriginIcon 从 CDN 加载，纯 CDN 无本地回落。
             SkillButton.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(Magic.OriginIcon);
-            SkillButton.ForeColour = Color.White;
+            SkillButton.ForeColour = CommonColor.White;
 
             SetDelay();
         }
@@ -827,7 +826,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(50, 50),
                 NotControl = true,
                 AtlasNameKey = "y_skillhotkey-sheet#bg_kjjsz_03",
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
             };
 
             // 技能图标 38×38 @ (92,26)
@@ -839,7 +838,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(40, 40),
                 NotControl = true,
                 ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
             };
 
             // 描述文字 "X快捷键设置为" @ (150,38)
@@ -849,7 +848,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(230, 32),
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Text = magic.Name + "快捷键设置为"
             };
 
@@ -863,7 +862,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(24, 24),
                 AtlasNameKey = "y_common-sheet#hide_unselect",
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = !secondOn,
             };
             var mSelectSecondBG = new MirImageControl
@@ -873,7 +872,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(24, 24),
                 AtlasNameKey = "y_common-sheet#hide_select",
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Visible = secondOn,
             };
             mUnSelectSecondBG.Click += (object sender, EventArgs e) =>
@@ -898,7 +897,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(100, 24),
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Text = "双排技能栏"
             };
 

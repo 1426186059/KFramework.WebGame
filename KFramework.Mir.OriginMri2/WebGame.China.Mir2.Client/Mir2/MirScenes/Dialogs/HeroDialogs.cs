@@ -321,7 +321,7 @@ namespace Client.MirScenes.Dialogs
             //if Transparent return
 
             if (Libraries.Prguse != null)
-                Libraries.Prguse.Draw(Index == 1921 ? 1934 : 1946, DisplayLocation, Color.White, false, 0.5F);
+                Libraries.Prguse.Draw(Index == 1921 ? 1934 : 1946, DisplayLocation, CommonColor.White, false, 0.5F);
         }
 
         public void Flip()
@@ -648,7 +648,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, sectionWidth, ExperienceBar.Size.Height);
 
-            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, Color.White, false);
+            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, CommonColor.White, false);
             ExLabel.Text = string.Format("{0:F2}%", percent);
         }
 
@@ -662,7 +662,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)(HealthBar.Size.Width * percent), HealthBar.Size.Height);
 
-            HealthBar.Library.Draw(HealthBar.Index, section, HealthBar.DisplayLocation, Color.White, false);
+            HealthBar.Library.Draw(HealthBar.Index, section, HealthBar.DisplayLocation, CommonColor.White, false);
             Hplabel.Text = GameScene.Hero?.HP.ToString() + "/" + GameScene.Hero?.Stats[Stat.HP].ToString();
         }
 
@@ -676,7 +676,7 @@ namespace Client.MirScenes.Dialogs
 
             Rectangle section = new Rectangle(0, 0, (int)(ManaBar.Size.Width * percent), ManaBar.Size.Height);
 
-            ManaBar.Library.Draw(ManaBar.Index, section, ManaBar.DisplayLocation, Color.White, false);
+            ManaBar.Library.Draw(ManaBar.Index, section, ManaBar.DisplayLocation, CommonColor.White, false);
             Mplabel.Text = GameScene.Hero?.MP.ToString() + "/" + GameScene.Hero?.Stats[Stat.MP].ToString();
         }
     }
@@ -701,7 +701,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(22, 17),
                 DrawFormat = new TextStyle(TextAnchor.UpperRight),
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 Visible = false
             };
 
@@ -713,7 +713,7 @@ namespace Client.MirScenes.Dialogs
             AmountLabel.Visible = Info != null;
             if (Info == null) return;
             AmountLabel.Text = CountItem(Info).ToString();
-            Libraries.Items.Draw((int)Info.Image, DisplayLocation.Add(2, 3), Size, Color.White);
+            Libraries.Items.Draw((int)Info.Image, DisplayLocation.Add(2, 3), Size, CommonColor.White);
             AmountLabel.Draw();
         }
 

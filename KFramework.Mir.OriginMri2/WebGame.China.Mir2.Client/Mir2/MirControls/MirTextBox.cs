@@ -247,7 +247,7 @@ namespace Client.MirControls
 
         public MirTextBox()
         {
-            BackColour = Color.Black;
+            BackColour = CommonColor.Black;
 
             DrawControlTexture = true;
             TextureValid = false;
@@ -313,9 +313,9 @@ namespace Client.MirControls
             }
 
             Font font = TextBox.Font ?? new Font(Settings.FontName, 8F);
-            int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
-            int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
+            int fore = (TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White).ToArgb();
+            int back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
+            int selBack = CommonColor.FromArgb(128, 51, 153, 255).ToArgb();
             string drawText = TextBox.Text ?? "";
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";
@@ -323,14 +323,14 @@ namespace Client.MirControls
             {
                 var saved = DXManager.CurrentSurface;
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-                DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
+                DXManager.GDevice.Clear(CommonColor.FromArgb((uint)back));
                 try
                 {
                     DXManager.BeginSprite(MirBlend.Normal);
                     _caretBox.DrawTextBox(
                         DXManager.Batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
-                        KFramework.MonoGame.Color.FromArgb((uint)fore),
+                        CommonColor.FromArgb((uint)fore),
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
                         KFramework.MonoGame.TextBox.DefaultPadLeft, drawComp,
                         TextBox.SelectionStart, TextBox.SelectionLength);

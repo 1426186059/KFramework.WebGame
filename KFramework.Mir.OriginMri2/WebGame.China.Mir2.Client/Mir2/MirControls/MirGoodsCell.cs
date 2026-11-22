@@ -18,7 +18,7 @@ namespace Client.MirControls
         public MirGoodsCell()
         {
             Size = new Size(205, 32);
-            BorderColour = Color.Lime;
+            BorderColour = CommonColor.Lime;
 
             NameLabel = new MirLabel
             {
@@ -35,7 +35,7 @@ namespace Client.MirControls
                 NotControl = true,
                 DrawControlTexture = true,
                 Location = new Point(23, 17),
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
             };
 
             PriceLabel = new MirLabel

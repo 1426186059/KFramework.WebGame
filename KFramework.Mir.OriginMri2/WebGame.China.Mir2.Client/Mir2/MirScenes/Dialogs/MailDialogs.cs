@@ -624,7 +624,7 @@ namespace Client.MirScenes.Dialogs
                 Text = "",
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -632,7 +632,7 @@ namespace Client.MirScenes.Dialogs
 
             MessageTextBox = new MirTextBox
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(15, 92),
@@ -729,7 +729,7 @@ namespace Client.MirScenes.Dialogs
                 Text = "",
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -737,7 +737,7 @@ namespace Client.MirScenes.Dialogs
 
             MessageTextBox = new MirTextBox
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(15, 98),
@@ -775,7 +775,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Cells[i] = new MirItemCell
                 {
-                    BorderColour = Color.Lime,
+                    BorderColour = CommonColor.Lime,
                     Size = new Size(35, 31),
                     GridType = MirGridType.Mail,
                     Library = Libraries.Items,
@@ -1007,7 +1007,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -1017,7 +1017,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 56),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -1025,7 +1025,7 @@ namespace Client.MirScenes.Dialogs
 
             MessageLabel = new MirLabel
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(15, 92),
@@ -1138,7 +1138,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -1148,7 +1148,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Location = new Point(70, 56),
                 Size = new Size(150, 15),
                 NotControl = true,
@@ -1156,7 +1156,7 @@ namespace Client.MirScenes.Dialogs
 
             MessageLabel = new MirLabel
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(15, 98),
@@ -1226,7 +1226,7 @@ namespace Client.MirScenes.Dialogs
 
                     Cells[i] = new MirItemCell
                     {
-                        BorderColour = Color.Lime,
+                        BorderColour = CommonColor.Lime,
                         Size = new Size(35, 31),
                         GridType = MirGridType.Mail,
                         Library = Libraries.Items,

@@ -36,13 +36,13 @@ namespace Client.MirScenes
             Disposing += (o, e) => SoundManager.StopMusic();
 
             // 登录背景：FGUI「DLoginBg.xml」的 Login_00012.png，按 1280x720 原尺寸 1:1 显示，不缩放。
-            BackColour = Color.FromArgb(16, 20, 34);
+            BackColour = CommonColor.FromArgb(16, 20, 34);
 
             _background = new MirAnimatedControl
             {
                 Animated = false,
                 Parent = this,
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
             };
             LoginSceneLayout.SetPanel(_background, LoginSceneLayout.BgFullScreen,
@@ -84,9 +84,9 @@ namespace Client.MirScenes
             Version = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.FromArgb(200, 50, 50, 50),
+                BackColour = CommonColor.FromArgb(200, 50, 50, 50),
                 Border = true,
-                BorderColour = Color.Black,
+                BorderColour = CommonColor.Black,
                 Location = new Point(5, Settings.ScreenHeight - 20),
                 Parent = _background,
                 Text = string.Format("Build: {0}.{1}.{2}", Globals.ProductCodename, Settings.UseTestConfig ? "Debug" : "Release", Application.ProductVersion),

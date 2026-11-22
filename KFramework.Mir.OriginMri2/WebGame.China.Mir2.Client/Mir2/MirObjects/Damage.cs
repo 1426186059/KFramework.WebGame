@@ -32,10 +32,10 @@ namespace Client.MirObjects
                 DamageLabel = new MirLabel
                 {
                     AutoSize = true,
-                    BackColour = Color.Transparent,
+                    BackColour = CommonColor.Transparent,
                     ForeColour = Colour,
                     OutLine = true,
-                    OutLineColour = Color.Black,
+                    OutLineColour = CommonColor.Black,
                     Text = Text,
                     Font = new Font(Settings.FontName, 8F, KFramework.MonoGame.FontStyle.Bold)
                 };

@@ -77,8 +77,8 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(FrameW - 8, 20),
                 Location = new Point(4, 2),
                 NotControl = true,
-                ForeColour = Color.White,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.White,
+                OutLineColour = CommonColor.Black,
                 Font = new Font(Settings.FontName, 10F),
             };
 
@@ -89,8 +89,8 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(FrameW - 16, 16),
                 Location = new Point(8, PanelH - 24),
                 NotControl = true,
-                ForeColour = Color.White,
-                OutLineColour = Color.Black,
+                ForeColour = CommonColor.White,
+                OutLineColour = CommonColor.Black,
                 Font = new Font(Settings.FontName, 10F),
                 RichText = true,
             };
@@ -158,7 +158,7 @@ namespace Client.MirScenes.Dialogs
 
             Point drawLocation = Location;
             drawLocation.Offset(ViewX, ViewY);
-            DXManager.Draw(_miniMapTexture, viewRect, new Vector3(drawLocation.X, drawLocation.Y, 0), Color.FromArgb((int)(255 * _fade), 255, 255, 255));
+            DXManager.Draw(_miniMapTexture, viewRect, new Vector3(drawLocation.X, drawLocation.Y, 0), CommonColor.FromArgb((int)(255 * _fade), 255, 255, 255));
 
             float startPointX = viewRect.X / scaleX;
             float startPointY = viewRect.Y / scaleY;
@@ -173,29 +173,29 @@ namespace Client.MirScenes.Dialogs
 
                 Color colour;
                 if ((GroupDialog.GroupList.Contains(ob.Name) && MapObject.User != ob) || ob.Name.EndsWith(string.Format("({0})", MapObject.User.Name)))
-                    colour = Color.FromArgb(0, 0, 255);
+                    colour = CommonColor.FromArgb(0, 0, 255);
                 else if (ob is PlayerObject)
-                    colour = Color.FromArgb(255, 255, 255);
+                    colour = CommonColor.FromArgb(255, 255, 255);
                 else if (ob is NPCObject || ob.AI == 6)
-                    colour = Color.FromArgb(0, 255, 50);
+                    colour = CommonColor.FromArgb(0, 255, 50);
                 else
-                    colour = Color.FromArgb(255, 0, 0);
+                    colour = CommonColor.FromArgb(255, 0, 0);
 
                 DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
 
                 if (ob is NPCObject npc && npc.GetAvailableQuests(true).Any())
                 {
                     string text = "";
-                    Color color = Color.Empty;
+                    Color color = CommonColor.Empty;
                     switch (npc.QuestIcon)
                     {
-                        case QuestIcon.ExclamationBlue: color = Color.DodgerBlue; text = "!"; break;
-                        case QuestIcon.ExclamationYellow: color = Color.Yellow; text = "!"; break;
-                        case QuestIcon.ExclamationGreen: color = Color.Green; text = "!"; break;
-                        case QuestIcon.QuestionBlue: color = Color.DodgerBlue; text = "?"; break;
-                        case QuestIcon.QuestionWhite: color = Color.White; text = "?"; break;
-                        case QuestIcon.QuestionYellow: color = Color.Yellow; text = "?"; break;
-                        case QuestIcon.QuestionGreen: color = Color.Green; text = "?"; break;
+                        case QuestIcon.ExclamationBlue: color = CommonColor.DodgerBlue; text = "!"; break;
+                        case QuestIcon.ExclamationYellow: color = CommonColor.Yellow; text = "!"; break;
+                        case QuestIcon.ExclamationGreen: color = CommonColor.Green; text = "!"; break;
+                        case QuestIcon.QuestionBlue: color = CommonColor.DodgerBlue; text = "?"; break;
+                        case QuestIcon.QuestionWhite: color = CommonColor.White; text = "?"; break;
+                        case QuestIcon.QuestionYellow: color = CommonColor.Yellow; text = "?"; break;
+                        case QuestIcon.QuestionGreen: color = CommonColor.Green; text = "?"; break;
                     }
                     QuestIcons.Add(new MirLabel
                     {
@@ -216,7 +216,7 @@ namespace Client.MirScenes.Dialogs
             // 自己（黄点，最后画，对应 y_map_p_2）；玩家恒在视口中心
             float mx = drawLocation.X + (MapObject.User.CurrentLocation.X - startPointX) * scaleX;
             float my = drawLocation.Y + (MapObject.User.CurrentLocation.Y - startPointY) * scaleY;
-            DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 5, 5), new Vector3((float)(mx - 1), (float)(my - 1), 0), Color.Yellow);
+            DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 5, 5), new Vector3((float)(mx - 1), (float)(my - 1), 0), CommonColor.Yellow);
         }
 
         private async void LoadMiniMapTexture(int img)
@@ -268,7 +268,7 @@ namespace Client.MirScenes.Dialogs
             }
 
             // 整行前景保持白色：坐标用它；状态词用富文本标签单独上色。
-            LocationLabel.ForeColour = Color.White;
+            LocationLabel.ForeColour = CommonColor.White;
             return safe ? "<color=lime>安全区域</color>" : "<color=red>危险区域</color>";
         }
     }

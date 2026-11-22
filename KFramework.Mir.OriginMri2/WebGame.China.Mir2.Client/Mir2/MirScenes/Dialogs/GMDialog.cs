@@ -11,7 +11,6 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
-using Color = MirEngine.Color;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -159,7 +158,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
             CloseButton.Label.Text = "X";
-            CloseButton.Label.ForeColour = Color.White;
+            CloseButton.Label.ForeColour = CommonColor.White;
             CloseButton.Click += (o, e) => Hide();
 
             GMCommandTab = new MirButton
@@ -169,7 +168,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = TabActive, Border = true, BorderColour = ButtonBorder,
             };
             GMCommandTab.Label.Text = "GM 命令";
-            GMCommandTab.Label.ForeColour = Color.White;
+            GMCommandTab.Label.ForeColour = CommonColor.White;
             GMCommandTab.Click += (o, e) => ShowGMCommandTab();
 
             ItemTab = new MirButton
@@ -179,7 +178,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = TabInactive, Border = true, BorderColour = ButtonBorder,
             };
             ItemTab.Label.Text = "物品表";
-            ItemTab.Label.ForeColour = Color.White;
+            ItemTab.Label.ForeColour = CommonColor.White;
             ItemTab.Click += (o, e) => ShowItemTab();
 
             DebugTab = new MirButton
@@ -189,7 +188,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = TabInactive, Border = true, BorderColour = ButtonBorder,
             };
             DebugTab.Label.Text = "调试显示";
-            DebugTab.Label.ForeColour = Color.White;
+            DebugTab.Label.ForeColour = CommonColor.White;
             DebugTab.Click += (o, e) => ShowDebugTab();
 
             // —— GM 命令面板（ScrollView 承载长列表）——
@@ -216,11 +215,11 @@ namespace Client.MirScenes.Dialogs
             var searchLabel = new MirLabel
             {
                 Parent = ItemPanel, Location = new Point(3, 3), Size = new Size(40, 18),
-                Text = "搜索", ForeColour = Color.White, AutoSize = false,
+                Text = "搜索", ForeColour = CommonColor.White, AutoSize = false,
             };
             ItemSearchBox = new MirTextBox
             {
-                Parent = ItemPanel, Border = true, BorderColour = Color.Lime, MaxLength = 40,
+                Parent = ItemPanel, Border = true, BorderColour = CommonColor.Lime, MaxLength = 40,
                 Location = new Point(45, 2), Size = new Size(180, 18),
             };
             ItemSearchBox.TextBox.TextChanged += (s, e) =>
@@ -267,7 +266,7 @@ namespace Client.MirScenes.Dialogs
             var label = new MirLabel
             {
                 Parent = DebugPanel, Location = new Point(16, y), Size = new Size(440, 26),
-                Text = text, ForeColour = Color.White, AutoSize = false,
+                Text = text, ForeColour = CommonColor.White, AutoSize = false,
             };
             MirButton btn = new MirButton
             {
@@ -275,7 +274,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(470, y), Sound = SoundList.ButtonA,
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
-            btn.Label.ForeColour = Color.White;
+            btn.Label.ForeColour = CommonColor.White;
             btn.Click += (o, e) =>
             {
                 set(!get());
@@ -341,11 +340,11 @@ namespace Client.MirScenes.Dialogs
                 {
                     Location = new Point(0, i * RowH + 1), Size = new Size(340, 24),
                     Text = cmd + (string.IsNullOrEmpty(hint) ? "" : "  -  " + hint),
-                    ForeColour = Color.Yellow, AutoSize = false,
+                    ForeColour = CommonColor.Yellow, AutoSize = false,
                 };
                 var box = new MirTextBox
                 {
-                    Border = true, BorderColour = Color.Lime,
+                    Border = true, BorderColour = CommonColor.Lime,
                     Location = new Point(350, i * RowH + 2), Size = new Size(210, 20), MaxLength = 200,
                 };
                 var btn = new MirButton
@@ -355,7 +354,7 @@ namespace Client.MirScenes.Dialogs
                     Border = true, BorderColour = ButtonBorder,
                 };
                 btn.Label.Text = "执行";
-                btn.Label.ForeColour = Color.White;
+                btn.Label.ForeColour = CommonColor.White;
                 btn.Click += (o, e) => SendGMCommand(cmd, box.Text);
 
                 // 回车只吞掉（避免冒泡到全局快捷键），绝不发命令。
@@ -454,7 +453,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = row, NotControl = true,
                 Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 264), RowH),
-                ForeColour = Color.White, AutoSize = false,
+                ForeColour = CommonColor.White, AutoSize = false,
             };
             row.GradeLabel = new MirLabel
             {
@@ -466,12 +465,12 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = row, NotControl = true,
                 Location = new Point(rowW - 168, 0), Size = new Size(56, RowH),
-                ForeColour = Color.LightGray, AutoSize = false,
+                ForeColour = CommonColor.LightGray, AutoSize = false,
             };
 
             row.QtyBox = new MirTextBox
             {
-                Parent = row, Border = true, BorderColour = Color.Lime, MaxLength = 9,
+                Parent = row, Border = true, BorderColour = CommonColor.Lime, MaxLength = 9,
                 Location = new Point(rowW - 104, (RowH - 20) / 2), Size = new Size(44, 20),
                 Text = "1",
             };
@@ -486,7 +485,7 @@ namespace Client.MirScenes.Dialogs
                 Border = true, BorderColour = ButtonBorder,
             };
             row.ExecuteButton.Label.Text = "执行";
-            row.ExecuteButton.Label.ForeColour = Color.White;
+            row.ExecuteButton.Label.ForeColour = CommonColor.White;
 
             // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）；都取 row 的当前绑定值。
             void Execute()
@@ -529,12 +528,12 @@ namespace Client.MirScenes.Dialogs
         {
             switch (grade)
             {
-                case 0: return Color.Gray;
-                case 1: return Color.White;
-                case 2: return Color.LimeGreen;
-                case 3: return Color.RoyalBlue;
-                case 4: return Color.MediumPurple;
-                default: return Color.Orange;
+                case 0: return CommonColor.Gray;
+                case 1: return CommonColor.White;
+                case 2: return CommonColor.LimeGreen;
+                case 3: return CommonColor.RoyalBlue;
+                case 4: return CommonColor.MediumPurple;
+                default: return CommonColor.Orange;
             }
         }
         #endregion

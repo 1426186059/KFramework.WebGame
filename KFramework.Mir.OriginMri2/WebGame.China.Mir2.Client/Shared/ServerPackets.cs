@@ -637,7 +637,7 @@ namespace ServerPackets
             Name = reader.ReadString();
             GuildName = reader.ReadString();
             GuildRank = reader.ReadString();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
             Class = (MirClass)reader.ReadByte();
             Gender = (MirGender)reader.ReadByte();
             Level = reader.ReadUInt16();
@@ -970,7 +970,7 @@ namespace ServerPackets
             Name = reader.ReadString();
             GuildName = reader.ReadString();
             GuildRankName = reader.ReadString();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
             Class = (MirClass)reader.ReadByte();
             Gender = (MirGender)reader.ReadByte();
             Level = reader.ReadUInt16();
@@ -2244,7 +2244,7 @@ namespace ServerPackets
         {
             ObjectID = reader.ReadUInt32();
             Name = reader.ReadString();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
             Location = new Point(reader.ReadInt32(), reader.ReadInt32());
             Image = reader.ReadUInt16();
             grade = (ItemGrade)reader.ReadByte();
@@ -2452,7 +2452,7 @@ namespace ServerPackets
         {
             ObjectID = reader.ReadUInt32();
             Name = reader.ReadString();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
             Location = new Point(reader.ReadInt32(), reader.ReadInt32());
             Image = (Monster)reader.ReadUInt16();
             Direction = (MirDirection)reader.ReadByte();
@@ -2768,7 +2768,7 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -2789,7 +2789,7 @@ namespace ServerPackets
         protected override void ReadPacket(BinaryReader reader)
         {
             ObjectID = reader.ReadUInt32();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -3006,9 +3006,9 @@ namespace ServerPackets
             ObjectID = reader.ReadUInt32();
             Name = reader.ReadString();
             NameUI = reader.ReadString();
-            NameColour = Color.FromArgb(reader.ReadInt32());
+            NameColour = Color.FromArgb(reader.ReadUInt32());
             Image = reader.ReadUInt16();
-            Colour = Color.FromArgb(reader.ReadInt32());
+            Colour = Color.FromArgb(reader.ReadUInt32());
             Location = new Point(reader.ReadInt32(), reader.ReadInt32());
             Direction = (MirDirection)reader.ReadByte();
 
@@ -5231,7 +5231,7 @@ namespace ServerPackets
         {
             ObjectID = reader.ReadUInt32();
             Image = reader.ReadUInt16();
-            Colour = Color.FromArgb(reader.ReadInt32());
+            Colour = Color.FromArgb(reader.ReadUInt32());
         }
         protected override void WritePacket(BinaryWriter writer)
         {

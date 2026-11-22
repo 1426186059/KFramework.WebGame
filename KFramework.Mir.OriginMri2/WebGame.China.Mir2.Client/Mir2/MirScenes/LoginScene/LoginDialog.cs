@@ -22,7 +22,7 @@ namespace Client.MirScenes
                 // 原本的纯色面板、边框、文字标签让位给美术图（标签实例保留，只是不显示）。
                 AutoSize = false;
                 Size = LoginSceneLayout.LoginPanel;
-                BackColour = Color.FromArgb(0, 0, 0, 0);
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0);
                 Border = false;
                 PixelDetect = false;
                 LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgLogin, LoginSceneLayout.LoginPanel);
@@ -31,7 +31,7 @@ namespace Client.MirScenes
                 {
                     Text = "登录",
                     AutoSize = true,
-                    ForeColour = Color.Gold,
+                    ForeColour = CommonColor.Gold,
                     Parent = this,
                     Visible = false,
                 };
@@ -40,7 +40,7 @@ namespace Client.MirScenes
                 {
                     Text = "账号",
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Parent = this,
                     Visible = false,
                 };
@@ -49,7 +49,7 @@ namespace Client.MirScenes
                 {
                     Text = "密码",
                     AutoSize = true,
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     Parent = this,
                     Visible = false,
                 };
@@ -125,13 +125,13 @@ namespace Client.MirScenes
                 {
                     _accountIDValid = false;
                     AccountIDTextBox.Border = !string.IsNullOrEmpty(AccountIDTextBox.Text);
-                    AccountIDTextBox.BorderColour = Color.Red;
+                    AccountIDTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _accountIDValid = true;
                     AccountIDTextBox.Border = true;
-                    AccountIDTextBox.BorderColour = Color.Green;
+                    AccountIDTextBox.BorderColour = CommonColor.Green;
                 }
                 // 登录按钮可用态取决于账号与密码两者，账号变化也需刷新按钮（之前只在密码框变更时刷新）。
                 RefreshLoginButton();
@@ -145,13 +145,13 @@ namespace Client.MirScenes
                 {
                     _passwordValid = false;
                     PasswordTextBox.Border = !string.IsNullOrEmpty(PasswordTextBox.TextBox.Text);
-                    PasswordTextBox.BorderColour = Color.Red;
+                    PasswordTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _passwordValid = true;
                     PasswordTextBox.Border = true;
-                    PasswordTextBox.BorderColour = Color.Green;
+                    PasswordTextBox.BorderColour = CommonColor.Green;
                 }
 
                 RefreshLoginButton();

@@ -25,7 +25,7 @@ namespace Client.MirObjects
             EffectFrameIndex, EffectFrameInterval, QuestIndex;
 
         public ushort Image;
-        public Color Colour = Color.White;
+        public Color Colour = CommonColor.White;
         /// <summary>原始页游 NPC 显示缩放（来自 ObjectNPC.Scale，即 NPCInfo.OriginSettings.ScalePercent/100）。</summary>
         public float Scale = 1f;
 
@@ -155,34 +155,34 @@ namespace Client.MirObjects
             switch (Poison)
             {
                 case PoisonType.None:
-                    DrawColour = Color.White;
+                    DrawColour = CommonColor.White;
                     break;
                 case PoisonType.Green:
-                    DrawColour = Color.Green;
+                    DrawColour = CommonColor.Green;
                     break;
                 case PoisonType.Red:
-                    DrawColour = Color.Red;
+                    DrawColour = CommonColor.Red;
                     break;
                 case PoisonType.Bleeding:
-                    DrawColour = Color.DarkRed;
+                    DrawColour = CommonColor.DarkRed;
                     break;
                 case PoisonType.Slow:
-                    DrawColour = Color.Purple;
+                    DrawColour = CommonColor.Purple;
                     break;
                 case PoisonType.Stun:
                 case PoisonType.Dazed:
-                    DrawColour = Color.Yellow;
+                    DrawColour = CommonColor.Yellow;
                     break;
                 case PoisonType.Blindness:
-                    DrawColour = Color.MediumVioletRed;
+                    DrawColour = CommonColor.MediumVioletRed;
                     break;
                 case PoisonType.Frozen:
-                    DrawColour = Color.Blue;
+                    DrawColour = CommonColor.Blue;
                     break;
                 case PoisonType.Paralysis:
                 case PoisonType.LRParalysis:
                     //case PoisonType.FlamingMutantWeb:
-                    DrawColour = Color.Gray;
+                    DrawColour = CommonColor.Gray;
                     break;
             }
 
@@ -392,7 +392,7 @@ namespace Client.MirObjects
 
             int imageIndex = 981 + ((int)QuestIcon * 2) + QuestIndex;
 
-            Libraries.Prguse.Draw(imageIndex, DrawLocation.Add(offSet).Add(size.Width / 2 - 28, -40), Color.White, false);
+            Libraries.Prguse.Draw(imageIndex, DrawLocation.Add(offSet).Add(size.Width / 2 - 28, -40), CommonColor.White, false);
         }
 
         public override bool MouseOver(Point p)
@@ -429,7 +429,7 @@ namespace Client.MirObjects
             if (BodyLibrary == null) return;
 
             if (DrawWingFrame > 0)
-                BodyLibrary.DrawBlend(DrawWingFrame, DrawLocation, Color.White, true);
+                BodyLibrary.DrawBlend(DrawWingFrame, DrawLocation, CommonColor.White, true);
         }
 
         public override void DrawName()
@@ -456,7 +456,7 @@ namespace Client.MirObjects
         public void CreateNPCLabel(string word, int wordOrder)
         {
             TempLabel = null;
-            var setForeColour = (wordOrder == 0 ? NameColour : Color.White);
+            var setForeColour = (wordOrder == 0 ? NameColour : CommonColor.White);
             for (int i = 0; i < LabelList.Count; i++)
             {
                 if (LabelList[i].Text != word || LabelList[i].ForeColour != setForeColour) continue;
@@ -469,10 +469,10 @@ namespace Client.MirObjects
             TempLabel = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 ForeColour = setForeColour,
                 OutLine = true,
-                OutLineColour = Color.Black,
+                OutLineColour = CommonColor.Black,
                 Text = word,
             };
 

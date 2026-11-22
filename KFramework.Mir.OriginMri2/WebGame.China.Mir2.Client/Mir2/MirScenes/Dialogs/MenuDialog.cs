@@ -73,7 +73,7 @@ namespace Client.MirScenes.Dialogs
                 if (ArmorCell.Item != null)
                 {
                     RealItem = Functions.GetRealItem(ArmorCell.Item.Info, Level, Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw((int)RealItem.Image, new Point(DisplayLocation.X + 0, DisplayLocation.Y + -20), Color.White, true, 1F);
+                    Libraries.StateItems.Draw((int)RealItem.Image, new Point(DisplayLocation.X + 0, DisplayLocation.Y + -20), CommonColor.White, true, 1F);
 
                     if (RealItem.Effect > 0)
                     {
@@ -81,7 +81,7 @@ namespace Client.MirScenes.Dialogs
 
                         int genderOffset = MapObject.User.Gender == MirGender.Male ? 0 : 1;
 
-                        Libraries.Prguse2.DrawBlend(1200 + wingOffset + genderOffset, new Point(DisplayLocation.X, DisplayLocation.Y - 20), Color.White, true, 1F);
+                        Libraries.Prguse2.DrawBlend(1200 + wingOffset + genderOffset, new Point(DisplayLocation.X, DisplayLocation.Y - 20), CommonColor.White, true, 1F);
                     }
                 }
 
@@ -89,12 +89,12 @@ namespace Client.MirScenes.Dialogs
                 {
                     RealItem = Functions.GetRealItem(WeaponCell.Item.Info, Level, Class, GameScene.ItemInfoList);
                     Libraries.StateItems.Draw((int)RealItem.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20),
-                    Color.White, true, 1F);
+                    CommonColor.White, true, 1F);
 
                 }
 
                 if (HelmetCell.Item != null)
-                    Libraries.StateItems.Draw((int)HelmetCell.Item.Info.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20), Color.White, true, 1F);
+                    Libraries.StateItems.Draw((int)HelmetCell.Item.Info.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20), CommonColor.White, true, 1F);
                 else
                 {
                     int hair = 441 + Hair + (Class == MirClass.Assassin ? 20 : 0) + (Gender == MirGender.Male ? 0 : 40);
@@ -102,7 +102,7 @@ namespace Client.MirScenes.Dialogs
                     int offSetX = Class == MirClass.Assassin ? (Gender == MirGender.Male ? 6 : 4) : 0;
                     int offSetY = Class == MirClass.Assassin ? (Gender == MirGender.Male ? 25 : 18) : 0;
 
-                    Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY - 20), Color.White, true, 1F);
+                    Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY - 20), CommonColor.White, true, 1F);
                 }
             };
 
@@ -763,7 +763,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Rectangle section = new Rectangle(0, 0, (int)((SoundBar.Size.Width - 2) * percent), SoundBar.Size.Height);
 
-                SoundBar.Library.Draw(SoundBar.Index, section, SoundBar.DisplayLocation, Color.White, false);
+                SoundBar.Library.Draw(SoundBar.Index, section, SoundBar.DisplayLocation, CommonColor.White, false);
                 VolumeBar.Location = new Point(159 + section.Width, 218);
             }
             else
@@ -783,7 +783,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Rectangle section = new Rectangle(0, 0, (int)((MusicSoundBar.Size.Width - 2) * percent), MusicSoundBar.Size.Height);
 
-                MusicSoundBar.Library.Draw(MusicSoundBar.Index, section, MusicSoundBar.DisplayLocation, Color.White, false);
+                MusicSoundBar.Library.Draw(MusicSoundBar.Index, section, MusicSoundBar.DisplayLocation, CommonColor.White, false);
                 MusicVolumeBar.Location = new Point(159 + section.Width, 244);
             }
             else

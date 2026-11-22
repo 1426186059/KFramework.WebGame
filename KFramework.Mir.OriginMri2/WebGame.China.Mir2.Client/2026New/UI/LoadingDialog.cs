@@ -1,7 +1,6 @@
 using Client.MirGraphics;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
-using Color = MirEngine.Color;
 using GraphicsDevice = KFramework.MonoGame.GraphicsDevice;
 namespace Client.MirControls
 {
@@ -49,7 +48,7 @@ namespace Client.MirControls
         {
             Location = new Point(0, 0);
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
-            BackColour = Color.Black;
+            BackColour = CommonColor.Black;
             DrawControlTexture = true;
 
             // 背景图：用 MirImageControl（ImageKey 经 manifest 解析加载，组件自带异步下载/解码/绘制）
@@ -87,7 +86,7 @@ namespace Client.MirControls
                 AnchorPos = new Point(0, _barCenterOffset - 46),
                 Size = new Size(640, 24),
                 Text = _status,
-                ForeColour = Color.FromArgb(235, 235, 235),
+                ForeColour = CommonColor.FromArgb(235, 235, 235),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _statusLabel.ApplyAnchor();
@@ -99,7 +98,7 @@ namespace Client.MirControls
                 AnchorPos = new Point(0, _barCenterOffset + 28),
                 Size = new Size(640, 28),
                 Text = "0%",
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
             _percentLabel.ApplyAnchor();

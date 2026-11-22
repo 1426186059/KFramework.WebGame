@@ -95,8 +95,8 @@ namespace Client.MirControls
 
         public MirDropDownBox()
         {
-            BackColour = Color.FromArgb(255,6,6,6);
-            ForeColour = Color.White;
+            BackColour = CommonColor.FromArgb(255,6,6,6);
+            ForeColour = CommonColor.White;
             Enabled = false;
             _label = new MirLabel
             {
@@ -199,13 +199,13 @@ namespace Client.MirControls
                     Location = new Point(0, 15 + (index * 13)),
                     Size = new Size(Size.Width - 16, 16),
                     ForeColour = ForeColour,
-                    BackColour = Color.FromArgb(255, 20, 20, 20),
+                    BackColour = CommonColor.FromArgb(255, 20, 20, 20),
                     Font = new Font(Settings.FontName, 8F)
                 };
-                lbl.MouseEnter += (o, e) => lbl.BackColour = Color.FromArgb(255, 140, 70, 0);
-                lbl.MouseLeave += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
-                lbl.MouseDown += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
-                lbl.MouseUp += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
+                lbl.MouseEnter += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 140, 70, 0);
+                lbl.MouseLeave += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
+                lbl.MouseDown += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
+                lbl.MouseUp += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);
                 lbl.Click += (o, e) => SelectOption(index);
                 lbl.BeforeDraw += (o, e) =>
                 {

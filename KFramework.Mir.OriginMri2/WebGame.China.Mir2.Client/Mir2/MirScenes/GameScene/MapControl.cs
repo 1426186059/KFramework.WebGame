@@ -446,7 +446,7 @@ public sealed class MapControl : MirControl
 
         Size = new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height);
         DrawControlTexture = true;
-        BackColour = Color.Black;
+        BackColour = CommonColor.Black;
 
         MouseDown += OnMouseDown;
         MouseMove += (o, e) => MouseLocation = ScreenToWorld(e.Location);
@@ -701,7 +701,7 @@ public sealed class MapControl : MirControl
         if (FloorValid && DXManager.FloorTexture != null)
         {
             // 地板纹理(世界区域尺寸)与 ControlTexture 同尺寸，1:1 原尺寸贴图。
-            DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, rtW, rtH), Vector3.Zero, Color.White);
+            DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, rtW, rtH), Vector3.Zero, CommonColor.White);
         }
 
         DrawObjects();
@@ -792,7 +792,7 @@ public sealed class MapControl : MirControl
         DXManager.Draw(tex,
             new Rectangle(0, 0, tex.Width, tex.Height),
             drawRect,
-            Color.White);
+            CommonColor.White);
         DXManager.RenderTransform = savedTransform;
 
         if (MapObject.User.Dead) DXManager.SetGrayscale(false);
@@ -821,7 +821,7 @@ public sealed class MapControl : MirControl
         var floorT0 = DateTime.Now;   // 采样：单次地板烘焙耗时
         Surface oldSurface = DXManager.CurrentSurface;
         DXManager.SetSurface(DXManager.FloorSurface);
-        DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
+        DXManager.Device.Clear(ClearFlags.Target, CommonColor.Empty, 0, 0);
 
         int pending = 0;
         if (MapImg > 0 && TileCols > 0 && TileRows > 0)

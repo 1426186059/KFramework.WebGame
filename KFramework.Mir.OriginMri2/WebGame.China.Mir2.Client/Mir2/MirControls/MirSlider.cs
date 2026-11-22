@@ -1,7 +1,6 @@
 using System;
 using SlimDX;
 using Client.MirSounds;
-using Color = MirEngine.Color;
 
 namespace Client.MirControls
 {

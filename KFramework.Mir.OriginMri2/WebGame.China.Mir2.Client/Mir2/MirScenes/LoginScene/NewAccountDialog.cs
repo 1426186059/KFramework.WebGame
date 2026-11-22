@@ -37,7 +37,7 @@ namespace Client.MirScenes
             {
                 // 布局照 FGUI「创建账户_CreateAccountUI.xml」(918x670)：底图 + 8 个输入框 + 确定/取消。
                 // 具体坐标集中在 LoginSceneLayout 与 ApplyLayout()，改样式不必翻遍整个构造函数。
-                BackColour = Color.FromArgb(0, 0, 0, 0);
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0);
                 Border = false;
                 LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgCreateAccount, LoginSceneLayout.CreatePanel);
 
@@ -52,7 +52,7 @@ namespace Client.MirScenes
                 Password1TextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 129),
                     MaxLength = Globals.MaxPasswordLength,
                     Parent = this,
@@ -66,7 +66,7 @@ namespace Client.MirScenes
                 Password2TextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 155),
                     MaxLength = Globals.MaxPasswordLength,
                     Parent = this,
@@ -80,7 +80,7 @@ namespace Client.MirScenes
                 UserNameTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 189),
                     MaxLength = 20,
                     Parent = this,
@@ -94,7 +94,7 @@ namespace Client.MirScenes
                 BirthDateTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 215),
                     MaxLength = 10,
                     Parent = this,
@@ -107,7 +107,7 @@ namespace Client.MirScenes
                 QuestionTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 250),
                     MaxLength = 30,
                     Parent = this,
@@ -120,7 +120,7 @@ namespace Client.MirScenes
                 AnswerTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 276),
                     MaxLength = 30,
                     Parent = this,
@@ -133,7 +133,7 @@ namespace Client.MirScenes
                 EMailTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 311),
                     MaxLength = 50,
                     Parent = this,
@@ -147,7 +147,7 @@ namespace Client.MirScenes
                 Description = new MirLabel
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(15, 340),
                     Parent = this,
                     Size = new Size(300, 70),
@@ -157,7 +157,7 @@ namespace Client.MirScenes
                 AccountIDTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(226, 103),
                     MaxLength = Globals.MaxAccountIDLength,
                     Parent = this,
@@ -202,7 +202,7 @@ namespace Client.MirScenes
                 Description.Location = LoginSceneLayout.CreateDescriptionAt;
                 Description.Size = LoginSceneLayout.CreateDescriptionSz;
                 Description.Border = false;
-                Description.ForeColour = Color.White;
+                Description.ForeColour = CommonColor.White;
             }
 
 
@@ -213,12 +213,12 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(AccountIDTextBox.Text) || !reg.IsMatch(AccountIDTextBox.Text))
                 {
                     _accountIDValid = false;
-                    AccountIDTextBox.BorderColour = Color.Red;
+                    AccountIDTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _accountIDValid = true;
-                    AccountIDTextBox.BorderColour = Color.Green;
+                    AccountIDTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -229,12 +229,12 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(Password1TextBox.Text) || !reg.IsMatch(Password1TextBox.Text))
                 {
                     _password1Valid = false;
-                    Password1TextBox.BorderColour = Color.Red;
+                    Password1TextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _password1Valid = true;
-                    Password1TextBox.BorderColour = Color.Green;
+                    Password1TextBox.BorderColour = CommonColor.Green;
                 }
                 Password2TextBox_TextChanged(sender, e);
             }
@@ -246,12 +246,12 @@ namespace Client.MirScenes
                     Password1TextBox.Text != Password2TextBox.Text)
                 {
                     _password2Valid = false;
-                    Password2TextBox.BorderColour = Color.Red;
+                    Password2TextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _password2Valid = true;
-                    Password2TextBox.BorderColour = Color.Green;
+                    Password2TextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -261,17 +261,17 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(EMailTextBox.Text))
                 {
                     _eMailValid = true;
-                    EMailTextBox.BorderColour = Color.Gray;
+                    EMailTextBox.BorderColour = CommonColor.Gray;
                 }
                 else if (!reg.IsMatch(EMailTextBox.Text) || EMailTextBox.Text.Length > 50)
                 {
                     _eMailValid = false;
-                    EMailTextBox.BorderColour = Color.Red;
+                    EMailTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _eMailValid = true;
-                    EMailTextBox.BorderColour = Color.Green;
+                    EMailTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -280,17 +280,17 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(UserNameTextBox.Text))
                 {
                     _userNameValid = true;
-                    UserNameTextBox.BorderColour = Color.Gray;
+                    UserNameTextBox.BorderColour = CommonColor.Gray;
                 }
                 else if (UserNameTextBox.Text.Length > 20)
                 {
                     _userNameValid = false;
-                    UserNameTextBox.BorderColour = Color.Red;
+                    UserNameTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _userNameValid = true;
-                    UserNameTextBox.BorderColour = Color.Green;
+                    UserNameTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -300,17 +300,17 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(BirthDateTextBox.Text))
                 {
                     _birthDateValid = true;
-                    BirthDateTextBox.BorderColour = Color.Gray;
+                    BirthDateTextBox.BorderColour = CommonColor.Gray;
                 }
                 else if (!DateTime.TryParse(BirthDateTextBox.Text, out dateTime) || BirthDateTextBox.Text.Length > 10)
                 {
                     _birthDateValid = false;
-                    BirthDateTextBox.BorderColour = Color.Red;
+                    BirthDateTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _birthDateValid = true;
-                    BirthDateTextBox.BorderColour = Color.Green;
+                    BirthDateTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -319,17 +319,17 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(QuestionTextBox.Text))
                 {
                     _questionValid = true;
-                    QuestionTextBox.BorderColour = Color.Gray;
+                    QuestionTextBox.BorderColour = CommonColor.Gray;
                 }
                 else if (QuestionTextBox.Text.Length > 30)
                 {
                     _questionValid = false;
-                    QuestionTextBox.BorderColour = Color.Red;
+                    QuestionTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _questionValid = true;
-                    QuestionTextBox.BorderColour = Color.Green;
+                    QuestionTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -338,17 +338,17 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(AnswerTextBox.Text))
                 {
                     _answerValid = true;
-                    AnswerTextBox.BorderColour = Color.Gray;
+                    AnswerTextBox.BorderColour = CommonColor.Gray;
                 }
                 else if (AnswerTextBox.Text.Length > 30)
                 {
                     _answerValid = false;
-                    AnswerTextBox.BorderColour = Color.Red;
+                    AnswerTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _answerValid = true;
-                    AnswerTextBox.BorderColour = Color.Green;
+                    AnswerTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }

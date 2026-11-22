@@ -253,7 +253,7 @@ namespace Client.MirScenes
 
         protected override void OnEnabledChanged()
         {
-            ForeColour = Enabled ? Color.White : Color.Gray;
+            ForeColour = Enabled ? CommonColor.White : CommonColor.Gray;
             base.OnEnabledChanged();
         }
     }

@@ -414,7 +414,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Location = new Point(0, 0),
                 Size = new Size(115, 17),
-                BackColour = Color.Empty,
+                BackColour = CommonColor.Empty,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
@@ -436,20 +436,20 @@ namespace Client.MirScenes.Dialogs
 
             if (Friend.Online)
             {
-                NameLabel.ForeColour = Color.Green;
+                NameLabel.ForeColour = CommonColor.Green;
             }
             else
             {
-                NameLabel.ForeColour = Color.White;
+                NameLabel.ForeColour = CommonColor.White;
             }
 
             if (Selected)
             {
-                NameLabel.BackColour = Color.Gray;
+                NameLabel.BackColour = CommonColor.Gray;
             }
             else
             {
-                NameLabel.BackColour = Color.Empty;
+                NameLabel.BackColour = CommonColor.Empty;
             }
         }
 
@@ -495,7 +495,7 @@ namespace Client.MirScenes.Dialogs
 
             MemoTextBox = new MirTextBox
             {
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F),
                 Location = new Point(15, 30),

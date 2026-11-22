@@ -2,7 +2,6 @@ using Client.MirGraphics;
 using Client.MirScenes;
 using KFramework.MonoGame;
 using WebGame.Mir2.MonoGame.Client;   // CMain
-using Color = MirEngine.Color;
 
 namespace Client.MirObjects
 {
@@ -80,7 +79,7 @@ namespace Client.MirObjects
             int y = DrawLocation.Y - src.Height / 2;
             Rectangle dst = new Rectangle(x, y, src.Width, src.Height);
 
-            DXManager.Draw(sprite.Texture, src, dst, Color.White,
+            DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
                            (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), SpriteEffects.None);
         }
     }
@@ -206,7 +205,7 @@ namespace Client.MirObjects
             int y = screenY - src.Height / 2;
             Rectangle dst = new Rectangle(x, y, src.Width, src.Height);
 
-            DXManager.Draw(sprite.Texture, src, dst, Color.White,
+            DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
                            (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), SpriteEffects.None);
         }
     }

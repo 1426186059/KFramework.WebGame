@@ -77,7 +77,7 @@ namespace Client.MirScenes
             Disposing += (o, e) => SoundManager.StopMusic();
 
             // EXML 的 bg 是 1920x1080 居中黑色 eui.Rect，容器底部 100px 就是这块黑底。
-            BackColour = Color.Black;
+            BackColour = CommonColor.Black;
 
             Characters = characters ?? new List<SelectInfo>();
             SortList();
@@ -266,7 +266,7 @@ namespace Client.MirScenes
                 Location = R(x, y),
                 Size = Sz(w, h),
                 Text = text,
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
             };
         }
@@ -293,10 +293,10 @@ namespace Client.MirScenes
             if (!string.IsNullOrEmpty(caption))
             {
                 MirLabel cap = Label(parent, x, y, w, h, caption);
-                cap.ForeColour = b.Enabled ? Color.White : Color.Gray;
+                cap.ForeColour = b.Enabled ? CommonColor.White : CommonColor.Gray;
                 b.EnabledChanged += (o, e) =>
                 {
-                    if (!cap.IsDisposed) cap.ForeColour = b.Enabled ? Color.White : Color.Gray;
+                    if (!cap.IsDisposed) cap.ForeColour = b.Enabled ? CommonColor.White : CommonColor.Gray;
                 };
                 // 按钮真实尺寸/可见性变化时，文字层同步，避免文字错位或按钮隐藏后字还在。
                 b.SizeChanged += (o, e) => { if (!cap.IsDisposed) cap.Size = b.Size; };
@@ -467,7 +467,7 @@ namespace Client.MirScenes
                 // 未选中的槽变暗（页游 img_roleg* 的 getgray()）。
                 // 只用 ForeColour 压暗，不动全局灰度状态/不透明度，避免影响整屏其它控件。
                 bool dim = has && i != _selected;
-                Color tint = dim ? Color.FromArgb(255, 130, 130, 130) : Color.White;
+                Color tint = dim ? CommonColor.FromArgb(255, 130, 130, 130) : CommonColor.White;
                 _slotModel[i].ForeColour = tint;
                 _slotAnim[i].ForeColour = tint;
             }

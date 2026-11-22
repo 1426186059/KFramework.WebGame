@@ -351,7 +351,7 @@ namespace Client.MirObjects
             if (_originModel > 0)
             {
                 Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
-                                                     FrameIndex, DrawLocation.X, DrawLocation.Y, Color.White,
+                                                     FrameIndex, DrawLocation.X, DrawLocation.Y, CommonColor.White,
                                                      standX: 30, standY: 165);
                 return;
             }

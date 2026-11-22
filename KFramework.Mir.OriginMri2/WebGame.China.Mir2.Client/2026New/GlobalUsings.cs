@@ -1,4 +1,5 @@
 global using MirEngine;
+global using Color = KFramework.MonoGame.Color;
 global using Keys = KFramework.MonoGame.Keys;
 global using MouseButtons = KFramework.MonoGame.MouseButton;
 global using TextStyle = KFramework.MonoGame.TextStyle;

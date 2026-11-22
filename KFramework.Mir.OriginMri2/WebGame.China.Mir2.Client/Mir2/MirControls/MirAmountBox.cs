@@ -82,7 +82,7 @@ namespace Client.MirControls
             {
                 Parent = this,
                 Border = true,
-                BorderColour = Color.Lime,
+                BorderColour = CommonColor.Lime,
                 Location = new Point(58, 43),
                 Size = new Size(132, 19),
             };
@@ -121,7 +121,7 @@ namespace Client.MirControls
             {
                 AutoSize = true,
                 Location = new Point(60, 43),
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 Parent = this,
                 NotControl = true,
                 Text = message
@@ -174,7 +174,7 @@ namespace Client.MirControls
         {
             if (uint.TryParse(InputTextBox.Text, out Amount) && Amount >= MinAmount)
             {
-                InputTextBox.BorderColour = Color.Lime;
+                InputTextBox.BorderColour = CommonColor.Lime;
 
                 OKButton.Visible = true;
                 if (Amount > MaxAmount)
@@ -185,11 +185,11 @@ namespace Client.MirControls
                 }
 
                 if (Amount == MaxAmount)
-                    InputTextBox.BorderColour = Color.Orange;
+                    InputTextBox.BorderColour = CommonColor.Orange;
             }
             else
             {
-                InputTextBox.BorderColour = Color.Red;
+                InputTextBox.BorderColour = CommonColor.Red;
                 OKButton.Visible = false;
             }
         }

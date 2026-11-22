@@ -689,7 +689,7 @@ public static class Mir2OriginObjectLibrary
             dx = 2 * screenX - dx - dw;
         float dy = screenY + (oy - cy) * scale;
         DXManager.Draw(sprite.Texture, src, new RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
-                       colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), drawEffects);
+                       colour ?? CommonColor.White, MirBlend.Normal.ToBlendState(), drawEffects);
         return true;
     }
 
@@ -707,7 +707,7 @@ public static class Mir2OriginObjectLibrary
 
         var src = sprite.SourceRectangle;
         DXManager.Draw(sprite.Texture, src, new Rectangle(x, y, src.Width, src.Height),
-                       colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);
+                       colour ?? CommonColor.White, MirBlend.Normal.ToBlendState(), effects);
         return true;
     }
 
@@ -730,7 +730,7 @@ public static class Mir2OriginObjectLibrary
         int w = Math.Max(1, (int)Math.Round(src.Width * scale));
         int h = Math.Max(1, (int)Math.Round(src.Height * scale));
         var dst = new Rectangle(x + (boxW - w) / 2, y + (boxH - h) / 2, w, h);
-        DXManager.Draw(sprite.Texture, src, dst, colour ?? KFramework.MonoGame.Color.White,
+        DXManager.Draw(sprite.Texture, src, dst, colour ?? CommonColor.White,
                        MirBlend.Normal.ToBlendState(), SpriteEffects.None);
         return true;
     }

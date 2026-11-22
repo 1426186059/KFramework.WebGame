@@ -358,11 +358,11 @@ namespace WebGame.Mir2.MonoGame.Client
             {
                 HintBaseLabel = new MirControl
                 {
-                    BackColour = MirEngine.Color.FromArgb(255, 0, 0, 0),
+                    BackColour = CommonColor.FromArgb(255, 0, 0, 0),
                     Border = true,
                     DrawControlTexture = true,
-                    BorderColour = MirEngine.Color.FromArgb(255, 144, 144, 0),
-                    ForeColour = MirEngine.Color.Yellow,
+                    BorderColour = CommonColor.FromArgb(255, 144, 144, 0),
+                    ForeColour = CommonColor.Yellow,
                     NotControl = true,
                     Opacity = 0.5F
                 };
@@ -373,8 +373,8 @@ namespace WebGame.Mir2.MonoGame.Client
                 HintTextLabel = new MirLabel
                 {
                     AutoSize = true,
-                    BackColour = MirEngine.Color.Transparent,
-                    ForeColour = MirEngine.Color.Yellow,
+                    BackColour = CommonColor.Transparent,
+                    ForeColour = CommonColor.Yellow,
                     Parent = HintBaseLabel,
                 };
 
@@ -422,7 +422,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 // 原版在这里先判 DXManager.DeviceLost（D3D 设备丢失 → AttemptReset 后 return）。
                 // WebGL 无「设备丢失」概念，本移植的 DXManager 也无该成员，故略去。
 
-                DXManager.Device.Clear(SlimDX.Direct3D9.ClearFlags.Target, MirEngine.Color.Black, 0, 0);
+                DXManager.Device.Clear(SlimDX.Direct3D9.ClearFlags.Target, CommonColor.Black, 0, 0);
                 DXManager.Device.BeginScene();
                 DXManager.BeginSprite(MirBlend.Normal);
                 DXManager.SetSurface(null);                          // 原版 DXManager.SetSurface(DXManager.MainSurface)

@@ -264,7 +264,7 @@ namespace Client.MirControls
 
             _font = ScaleFont(new Font(Settings.FontName, 12F));
             _outLine = true;
-            _outLineColour = Color.Black; 
+            _outLineColour = CommonColor.Black; 
             _text = string.Empty;
         }
         
@@ -298,7 +298,7 @@ namespace Client.MirControls
             // 若让 TextRenderer 每次自己开收批，就是 5 段。
             var savedSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
-            DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
+            DXManager.GDevice.Clear(CommonColor.FromArgb((uint)back));
             try
             {
                 DXManager.BeginSprite(MirBlend.Normal);
@@ -364,7 +364,7 @@ namespace Client.MirControls
             _outLine = false;
 
             OutLineColourChanged = null;
-            _outLineColour = Color.Empty;
+            _outLineColour = CommonColor.Empty;
 
             TextChanged = null;
             _text = null;

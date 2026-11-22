@@ -55,7 +55,7 @@ namespace Client.MirScenes.Dialogs
             new MirLabel
             {
                 Parent = this, Text = "玛法2001纪元", Font = bigFont,
-                ForeColour = Color.FromArgb(255, 255, 228, 100), OutLine = true,
+                ForeColour = CommonColor.FromArgb(255, 255, 228, 100), OutLine = true,
                 Location = new Point(80, 118), AutoSize = true, NotControl = true
             };
 
@@ -63,7 +63,7 @@ namespace Client.MirScenes.Dialogs
             new MirLabel
             {
                 Parent = this, Text = "寻找共同梦想！", Font = bigFont,
-                ForeColour = Color.FromArgb(255, 40, 239, 1), OutLine = true,
+                ForeColour = CommonColor.FromArgb(255, 40, 239, 1), OutLine = true,
                 Location = new Point(136, 394), AutoSize = true, NotControl = true
             };
 
@@ -95,11 +95,11 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = "y_common-sheet#com_z_btn_1",
                 HoverAtlasFrame = "com_z_btn_1_1",
                 PressedAtlasFrame = "com_z_btn_1_1",
-                BackColour = Color.FromArgb(0, 0, 0, 0),
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0),
                 Border = false,
                 Text = "关闭",
                 CenterText = true,
-                FontColour = Color.White,
+                FontColour = CommonColor.White,
                 Sound = SoundList.ButtonA,
             };
             OkButton.Click += (o, e) => Hide();
@@ -213,16 +213,16 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = p,
                 Text = text,
-                ForeColour = Color.Yellow,
+                ForeColour = CommonColor.Yellow,
                 Sound = SoundList.ButtonC,
                 Font = font
             };
 
 
-            temp.MouseEnter += (o, e) => temp.ForeColour = Color.Red;
-            temp.MouseLeave += (o, e) => temp.ForeColour = Color.Yellow;
-            temp.MouseDown += (o, e) => temp.ForeColour = Color.Yellow;
-            temp.MouseUp += (o, e) => temp.ForeColour = Color.Red;
+            temp.MouseEnter += (o, e) => temp.ForeColour = CommonColor.Red;
+            temp.MouseLeave += (o, e) => temp.ForeColour = CommonColor.Yellow;
+            temp.MouseDown += (o, e) => temp.ForeColour = CommonColor.Yellow;
+            temp.MouseUp += (o, e) => temp.ForeColour = CommonColor.Red;
 
             temp.Click += (o, e) =>
             {

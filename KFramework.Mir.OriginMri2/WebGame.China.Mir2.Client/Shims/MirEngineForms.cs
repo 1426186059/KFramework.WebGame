@@ -19,7 +19,7 @@ namespace MirEngine
     }
 
     // 轻量适配层：把引擎自带的 KFramework.MonoGame.TextBox（位于 KFramework.MonoGame.TextRenderer）
-    // 暴露成本工程既有的 WinForms 风格 API（MirEngine.Color / Font / Point / Size / Keys / 事件参数），
+    // 暴露成本工程既有的 WinForms 风格 API（KFramework.MonoGame.Color / Font / Point / Size / Keys / 事件参数），
     // 所有调用方（MirTextBox 及各个对话框处理器）按原签名直接使用，无需改动。
     // 引擎侧保持自洽（只用引擎类型），类型桥接集中在本适配器内完成。
     public class TextBox : IDisposable

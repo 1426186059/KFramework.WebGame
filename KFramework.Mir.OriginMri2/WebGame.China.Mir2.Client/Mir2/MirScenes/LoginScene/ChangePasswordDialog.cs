@@ -26,7 +26,7 @@ namespace Client.MirScenes
             public ChangePasswordDialog()
             {
                 // 布局照 FGUI「修改密码_DChangePasswordUI.xml」：底图 639x452 + 4 个输入框 + 确定/取消。
-                BackColour = Color.FromArgb(0, 0, 0, 0);
+                BackColour = CommonColor.FromArgb(0, 0, 0, 0);
                 Border = false;
                 LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgChangePassword, LoginSceneLayout.ChangePanel);
 
@@ -42,7 +42,7 @@ namespace Client.MirScenes
                 AccountIDTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(178, 75),
                     MaxLength = Globals.MaxAccountIDLength,
                     Parent = this,
@@ -55,7 +55,7 @@ namespace Client.MirScenes
                 CurrentPasswordTextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(178, 113),
                     MaxLength = Globals.MaxPasswordLength,
                     Parent = this,
@@ -68,7 +68,7 @@ namespace Client.MirScenes
                 NewPassword1TextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(178, 151),
                     MaxLength = Globals.MaxPasswordLength,
                     Parent = this,
@@ -81,7 +81,7 @@ namespace Client.MirScenes
                 NewPassword2TextBox = new MirTextBox
                 {
                     Border = true,
-                    BorderColour = Color.Gray,
+                    BorderColour = CommonColor.Gray,
                     Location = new Point(178, 188),
                     MaxLength = Globals.MaxPasswordLength,
                     Parent = this,
@@ -126,12 +126,12 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(AccountIDTextBox.Text) || !reg.IsMatch(AccountIDTextBox.Text))
                 {
                     _accountIDValid = false;
-                    AccountIDTextBox.BorderColour = Color.Red;
+                    AccountIDTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _accountIDValid = true;
-                    AccountIDTextBox.BorderColour = Color.Green;
+                    AccountIDTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -142,12 +142,12 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(CurrentPasswordTextBox.Text) || !reg.IsMatch(CurrentPasswordTextBox.Text))
                 {
                     _currentPasswordValid = false;
-                    CurrentPasswordTextBox.BorderColour = Color.Red;
+                    CurrentPasswordTextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _currentPasswordValid = true;
-                    CurrentPasswordTextBox.BorderColour = Color.Green;
+                    CurrentPasswordTextBox.BorderColour = CommonColor.Green;
                 }
                 RefreshConfirmButton();
             }
@@ -158,12 +158,12 @@ namespace Client.MirScenes
                 if (string.IsNullOrEmpty(NewPassword1TextBox.Text) || !reg.IsMatch(NewPassword1TextBox.Text))
                 {
                     _newPassword1Valid = false;
-                    NewPassword1TextBox.BorderColour = Color.Red;
+                    NewPassword1TextBox.BorderColour = CommonColor.Red;
                 }
                 else
                 {
                     _newPassword1Valid = true;
-                    NewPassword1TextBox.BorderColour = Color.Green;
+                    NewPassword1TextBox.BorderColour = CommonColor.Green;
                 }
                 NewPassword2TextBox_TextChanged(sender, e);
             }
@@ -177,7 +177,7 @@ namespace Client.MirScenes
                 else
                 {
                     _newPassword2Valid = false;
-                    NewPassword2TextBox.BorderColour = Color.Red;
+                    NewPassword2TextBox.BorderColour = CommonColor.Red;
                 }
                 RefreshConfirmButton();
             }

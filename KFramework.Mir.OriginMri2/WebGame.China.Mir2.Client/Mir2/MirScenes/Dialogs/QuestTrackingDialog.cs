@@ -352,7 +352,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = mShowNode_Bg,
                 Location = new Point(0, 0),
                 Size = mShowNode_Bg.Size,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Border = false,
                 ShowScrollBar = false,
             };
@@ -371,7 +371,7 @@ namespace Client.MirScenes.Dialogs
             var label = new MirLabel
             {
                 AutoSize = true,
-                BackColour = Color.Transparent,
+                BackColour = CommonColor.Transparent,
                 Font = QuestFont,
                 ForeColour = colour,
                 OutLine = true,

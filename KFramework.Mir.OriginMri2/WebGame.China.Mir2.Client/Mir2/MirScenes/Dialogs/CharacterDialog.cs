@@ -138,7 +138,7 @@ namespace Client.MirScenes.Dialogs
                 normal.Click += (o, e) => ShowPage(index);
                 normal.Label.Text = TabNames[i];
                 normal.Label.OutLine = true;
-                normal.Label.ForeColour = Color.Gray;
+                normal.Label.ForeColour = CommonColor.Gray;
                 normal.Label.Location = new Point(0, 10);
                 _tabButtons[i] = normal;
             }
@@ -158,7 +158,7 @@ namespace Client.MirScenes.Dialogs
                 };
                 selected.Label.Text = TabNames[i];
                 selected.Label.OutLine = true;
-                selected.Label.ForeColour = Color.White;
+                selected.Label.ForeColour = CommonColor.White;
                 selected.Label.Location = new Point(5, 10);
                 selected.Label.Size = new Size(20, 92);
                 _tabSelectButtons[i] = selected;
@@ -188,7 +188,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 NotControl = true,
                 Text = title + "暂未开放",
-                ForeColour = Color.White,
+                ForeColour = CommonColor.White,
                 OutLine = true,
                 Location = new Point(70, 180),
             };
@@ -700,7 +700,7 @@ namespace Client.MirScenes.Dialogs
                     Size = new Size(103, StatusRowHeight),
                     Location = new Point(2, y),
                     DrawFormat = new TextStyle(TextAnchor.MiddleRight),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     OutLine = true,
                     NotControl = true,
                 };
@@ -709,7 +709,7 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = false,
                     Size = new Size(160, StatusRowHeight),
                     Location = new Point(110, y),
-                    ForeColour = Color.White,
+                    ForeColour = CommonColor.White,
                     OutLine = true,
                     NotControl = true,
                 };
