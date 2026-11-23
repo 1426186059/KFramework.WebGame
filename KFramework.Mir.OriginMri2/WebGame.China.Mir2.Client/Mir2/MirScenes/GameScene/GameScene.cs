@@ -275,6 +275,9 @@ namespace Client.MirScenes
         public MirLabel[] OutputLines = new MirLabel[10];
         public List<OutPutMessage> OutputMessages = new List<OutPutMessage>();
 
+        // 选中目标时屏幕正上方的血条面板（原始传奇 NorMonsterBloodSkin）
+        private TargetHealthDialog _targetHealth;
+
         public long OutputDelay;
 
         public GameScene()
@@ -420,6 +423,14 @@ namespace Client.MirScenes
             TimerControl = new TimerDialog { Parent = this, Visible = false };
             CompassControl = new CompassDialog { Parent = this, Visible = false };
             RollControl = new RollDialog { Parent = this, Visible = false };
+
+            // 选中目标血条：屏幕正上方居中（原始 NorMonsterBloodSkin 移植）
+            _targetHealth = new TargetHealthDialog
+            {
+                Parent = this,
+                Location = new Point((Settings.ScreenWidth - 320) / 2, 10),
+                Visible = false
+            };
 
             for (int i = 0; i < OutputLines.Length; i++)
             {
@@ -1365,6 +1376,8 @@ namespace Client.MirScenes
             UpdateMouseCursor();
 
             SoundManager.ProcessDelayedSounds();
+
+            _targetHealth?.RefreshTarget();
         }
 
         public void DialogProcess()

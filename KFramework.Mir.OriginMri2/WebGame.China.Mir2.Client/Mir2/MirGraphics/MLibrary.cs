@@ -26,6 +26,30 @@ namespace Client.MirGraphics
         private BinaryReader _reader;
         private Stream _stream;
 
+        // 缺资源兜底：.Lib 里找不到图时画 KDefaultRes 默认贴图（品红方块），一眼定位缺失资源。
+        private static readonly HashSet<string> _missingLogged = new HashSet<string>();
+        private void DrawMissing(int index, Point point)
+        {
+            DrawMissing(index, new RectangleF(point.X, point.Y, 32, 32));
+        }
+        private void DrawMissing(int index, int x, int y)
+        {
+            DrawMissing(index, new RectangleF(x, y, 32, 32));
+        }
+        private void DrawMissing(int index, RectangleF destRect)
+        {
+            if (destRect.X >= Settings.ScreenWidth || destRect.Y >= Settings.ScreenHeight ||
+                destRect.Right < 0 || destRect.Bottom < 0) return;
+
+            Color magenta = CommonColor.FromArgb(255, 255, 0, 255);
+            DXManager.Draw(KFramework.MonoGameExtend.KDefaultRes.DefaultTexture2D,
+                           new Rectangle(0, 0, 1, 1), destRect, magenta);
+
+            string key = FileName + ":" + index;
+            if (_missingLogged.Add(key))
+                KFramework.MonoGame.PrintTool.LogError("[缺图兜底] " + key + " -> KDefaultRes 默认图（品红块）");
+        }
+
         public FrameSet Frames
         {
             get { return _frames; }
@@ -307,7 +331,10 @@ namespace Client.MirGraphics
 
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, x, y);
                 return;
+            }
 
             if (x + mi.Width < 0 || y + mi.Height < 0)
                 return;
@@ -321,7 +348,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
             if (offSet) point.Offset(mi.X, mi.Y);
 
@@ -337,7 +367,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
             if (offSet) point.Offset(mi.X, mi.Y);
 
@@ -353,7 +386,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
             if (offSet) point.Offset(mi.X, mi.Y);
 
@@ -371,7 +407,11 @@ namespace Client.MirGraphics
         public void DrawBlend(int index, Point point, Size size, Color colour, float rate = 1)
         {
             MImage mi = CheckImage(index);
-            if (mi == null) return;
+            if (mi == null)
+            {
+                DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
+                return;
+            }
 
             if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + size.Width < 0 || point.Y + size.Height < 0) return;
 
@@ -385,7 +425,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
             if (offSet) point.Offset(mi.X, mi.Y);
 
@@ -407,7 +450,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
 
             if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
@@ -427,7 +473,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
                 return;
+            }
 
             if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + size.Width < 0 || point.Y + size.Height < 0)
                 return;
@@ -443,7 +492,11 @@ namespace Client.MirGraphics
         public void Draw(int index, Rectangle section, RectangleF destRect, Color colour, float opacity = 1f)
         {
             MImage mi = CheckImage(index);
-            if (mi == null) return;
+            if (mi == null)
+            {
+                DrawMissing(index, destRect);
+                return;
+            }
 
             if (destRect.X >= Settings.ScreenWidth || destRect.Y >= Settings.ScreenHeight || destRect.X + destRect.Width < 0 || destRect.Y + destRect.Height < 0) return;
 
@@ -460,7 +513,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point);
                 return;
+            }
 
             if (offSet) point.Offset(mi.X, mi.Y);
 
@@ -484,7 +540,10 @@ namespace Client.MirGraphics
 
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, x, y - 32);
                 return;
+            }
             y -= mi.Height;
             if (y >= Settings.ScreenHeight)
                 return;
@@ -499,7 +558,10 @@ namespace Client.MirGraphics
         {
             MImage mi = CheckImage(index);
             if (mi == null)
+            {
+                DrawMissing(index, point.X, point.Y - 32);
                 return;
+            }
 
             point.Y -= mi.Height;
 
