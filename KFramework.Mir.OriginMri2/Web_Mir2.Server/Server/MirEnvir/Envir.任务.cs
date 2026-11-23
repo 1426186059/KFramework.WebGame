@@ -2,6 +2,7 @@
 using Server.Library.MirDatabase;
 using Server.MirDatabase;
 using Server.MirObjects;
+using Shared.Helpers;
 using System.IO;
 using System.Text.Json;
 
@@ -60,7 +61,7 @@ namespace Server.MirEnvir
                 string f4 = Directory.GetFiles(baseDir, "4config*.json").FirstOrDefault();
                 if (f4 != null)
                 {
-                    var cfg4 = JsonSerializer.Deserialize<OriginMir2Config4>(File.ReadAllText(f4), JsonConfigOptions);
+                    var cfg4 = JsonTool.FromJson<OriginMir2Config4>(File.ReadAllText(f4), AppJsonContext.Default.OriginMir2Config4);
                     if (cfg4?._task != null)
                         foreach (var kv in cfg4._task)
                             if (int.TryParse(kv.Key, out int id) && kv.Value != null)
@@ -70,7 +71,7 @@ namespace Server.MirEnvir
                 string f5 = Directory.GetFiles(baseDir, "5config*.json").FirstOrDefault();
                 if (f5 != null)
                 {
-                    var cfg5 = JsonSerializer.Deserialize<OriginMir2Config5>(File.ReadAllText(f5), JsonConfigOptions);
+                    var cfg5 = JsonTool.FromJson<OriginMir2Config5>(File.ReadAllText(f5), AppJsonContext.Default.OriginMir2Config5);
                     if (cfg5?.goals != null)
                         foreach (var kv in cfg5.goals)
                             if (int.TryParse(kv.Key, out int id) && kv.Value != null)
@@ -80,7 +81,7 @@ namespace Server.MirEnvir
                 string f0 = Directory.GetFiles(baseDir, "0config*.json").FirstOrDefault();
                 if (f0 != null)
                 {
-                    var cfg0 = JsonSerializer.Deserialize<OriginMir2Config0>(File.ReadAllText(f0), JsonConfigOptions);
+                    var cfg0 = JsonTool.FromJson<OriginMir2Config0>(File.ReadAllText(f0), AppJsonContext.Default.OriginMir2Config0);
                     if (cfg0?.global != null && cfg0.global.TryGetValue("9201", out var g) && g != null)
                     {
                         // value 形如 "1#[主线]&201#[转生]&..."：按 & 拆项，再按 # 拆 type#前缀。

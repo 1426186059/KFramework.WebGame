@@ -1,5 +1,6 @@
 // ReSharper disable InconsistentNaming
 
+using Shared.Helpers;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -4150,7 +4151,7 @@ public static class GameLanguage
 
         try
         {
-            var language = JsonSerializer.Deserialize<TextMap>(File.ReadAllText(languageJsonPath), CustomJsonSerializerOptions);
+            var language = JsonTool.FromJson<TextMap>(File.ReadAllText(languageJsonPath), CustomJsonSerializerOptions);
             foreach (var item in ClientTextMap.Text)
             {
                 if (language.Text.TryGetValue(item.Key, out var value))
@@ -4182,7 +4183,7 @@ public static class GameLanguage
     public static void SaveClientLanguage(string languageJsonPath)
     {
         File.Delete(languageJsonPath);
-        File.WriteAllText(languageJsonPath, JsonSerializer.Serialize(ClientTextMap, CustomJsonSerializerOptions));
+        File.WriteAllText(languageJsonPath, JsonTool.ToJson(ClientTextMap, CustomJsonSerializerOptions));
     }
 
 
@@ -4196,7 +4197,7 @@ public static class GameLanguage
 
         try
         {
-            var language = JsonSerializer.Deserialize<TextMap>(File.ReadAllText(languageJsonPath), CustomJsonSerializerOptions);
+            var language = JsonTool.FromJson<TextMap>(File.ReadAllText(languageJsonPath), CustomJsonSerializerOptions);
             foreach (var item in ServerTextMap.Text)
             {
                 if (language.Text.TryGetValue(item.Key, out var value))
@@ -4228,7 +4229,7 @@ public static class GameLanguage
     public static void SaveServerLanguage(string languageIniPath)
     {
         File.Delete(languageIniPath);
-        File.WriteAllText(languageIniPath, JsonSerializer.Serialize(ServerTextMap, CustomJsonSerializerOptions));
+        File.WriteAllText(languageIniPath, JsonTool.ToJson(ServerTextMap, CustomJsonSerializerOptions));
     }
 
     public static string GetLocalization(this TextMap map, ClientTextKeys key)

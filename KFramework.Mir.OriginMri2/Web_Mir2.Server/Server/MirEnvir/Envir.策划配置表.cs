@@ -14,6 +14,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using Library.Network;
 using S = ServerPackets;
+using Shared.Helpers;
 using System.Net.Http;
 using System.IO;
 using System.Text.Json;
@@ -61,7 +62,7 @@ namespace Server.MirEnvir
                     return false;
                 }
 
-                MapInfoList = JsonSerializer.Deserialize<List<MapInfoTable>>(
+                MapInfoList = JsonTool.FromJson<List<MapInfoTable>>(
                     NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfoTable>();
                 // SafeZoneInfo.Info 已 [JsonIgnore]，反序列化后手动挂回所属地图（SetBind 依赖 szi.Info.Index）。
                 foreach (MapInfoTable mi in MapInfoList)
@@ -157,7 +158,7 @@ namespace Server.MirEnvir
                     return;
                 }
 
-                var cfg = JsonSerializer.Deserialize<OriginMir2Config4>(File.ReadAllText(file), JsonConfigOptions);
+                var cfg = JsonTool.FromJson<OriginMir2Config4>(File.ReadAllText(file), AppJsonContext.Default.OriginMir2Config4);
                 if (cfg?.npcstore == null) return;
 
                 foreach (var store in cfg.npcstore)
@@ -186,7 +187,7 @@ namespace Server.MirEnvir
                     MessageQueue.Enqueue("原始传奇条件表未找到 0config*.json（ExcelConfig 目录）");
                     return;
                 }
-                var cfg = JsonSerializer.Deserialize<OriginMir2Config0>(File.ReadAllText(file), JsonConfigOptions);
+                var cfg = JsonTool.FromJson<OriginMir2Config0>(File.ReadAllText(file), AppJsonContext.Default.OriginMir2Config0);
                 if (cfg?.conditions != null)
                 {
                     foreach (var kv in cfg.conditions)
@@ -326,22 +327,16 @@ namespace Server.MirEnvir
         }
 
         private T LoadConfig<T>(string baseDir, string fileName) where T : class
-            => JsonSerializer.Deserialize<T>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonConfigOptions);
+            => JsonTool.FromJson<T>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonTool.ConfigOptions);
 
         private List<T> LoadConfigList<T>(string baseDir, string fileName)
-            => JsonSerializer.Deserialize<List<T>>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonConfigOptions) ?? new List<T>();
+            => JsonTool.FromJson<List<T>>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonTool.ConfigOptions) ?? new List<T>();
 
         private sealed class ConfigMeta
         {
             public int version { get; set; }
             public int customVersion { get; set; }
         }
-
-        // 与 MapInfoTable 一致：不再使用 ReferenceHandler.Preserve，配置表里禁止出现 $id/$ref/$values 元数据。
-        private static readonly JsonSerializerOptions JsonConfigOptions = new JsonSerializerOptions
-        {
-            TypeInfoResolver = new JsonConfigResolver(),
-        };
 
         // MapInfoTable 不再使用 ReferenceHandler.Preserve：SafeZoneInfo.Info 已用 [JsonIgnore] 排除，
         // 因此文件里不再出现 $id/$ref/$values 元数据（编辑器曾误把 $id 写成数字导致加载失败）。
