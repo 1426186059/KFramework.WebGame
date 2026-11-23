@@ -589,11 +589,24 @@ namespace Client.MirObjects
         {
             return false;
         }
+        // ===== 原始传奇头顶血条（EntityInfo.setBlood / red_blood + empty_blood）=====
+        // JS 权威：血条底图 empty_blood、填充 red_blood，二者 x=-width/2 居中、y=-bloodY+1；
+        // bloodY 默认 78（实体配置可覆盖）。填充按比例裁剪（NorMonsterBloodView: icon.width=220*pct）。
+        // 图集来自 BloodFont（default.res.json subkeys：red_blood/yellow_blood/empty_blood）。
+        private static int _originBloodRequested;
+        private MirLabel _bloodLabel;
+
+        private static void EnsureOriginBloodSheet()
+        {
+            if (System.Threading.Interlocked.Exchange(ref _originBloodRequested, 1) != 0) return;
+            _ = Mir2AtlasLibrary.GetSheetAsync("BloodFont_json");
+        }
+
+        /// <summary>原始血条相对脚底 DrawLocation 的上移像素（JS EntityInfo._bloodY 默认 78）。</summary>
+        protected virtual int BloodYOffset => 78;
+
         public void DrawHealth()
         {
-            string name = Name;
-            if (Name.Contains("(")) name = Name.Substring(Name.IndexOf("(") + 1, Name.Length - Name.IndexOf("(") - 2);
-
             if (Dead) return;
             if (Race != ObjectType.Player && Race != ObjectType.Monster && Race != ObjectType.Hero) return;
 
@@ -602,35 +615,56 @@ namespace Client.MirObjects
                 if (!ShouldDrawHealth()) return;
             }
 
-            Libraries.Prguse2.Draw(0, DisplayRectangle.X + 8, DisplayRectangle.Y - 64);
-            int index = 1;
+            EnsureOriginBloodSheet();
 
-            switch (Race)
+            if (!Mir2AtlasLibrary.TryGetFrame("BloodFont_json", "empty_blood", out var bg) || bg?.Texture == null ||
+                !Mir2AtlasLibrary.TryGetFrame("BloodFont_json", "red_blood", out var fill) || fill?.Texture == null)
+                return; // 原始素材未就绪，本帧不画（图集异步加载，下一帧自然出现）
+
+            // 以底图自然宽度为准；填充图按同一宽度、相同左边缘对齐，避免两者宽度不一致导致错位。
+            int barW = Math.Max(1, (int)bg.SourceRectangle.Width);
+            int barH = Math.Max(1, (int)bg.SourceRectangle.Height);
+            int barX = DrawLocation.X - barW / 2;                 // JS: x = -width>>1
+            int barY = DrawLocation.Y - BloodYOffset + 1;         // JS: y = -_bloodY + 1
+
+            DXManager.Draw(bg.Texture, bg.SourceRectangle,
+                           new Rectangle(barX, barY, barW, barH), CommonColor.White, MirBlend.Normal.ToBlendState());
+
+            float pct = PercentHealth / 100F;
+            if (pct > 1f) pct = 1f;
+            int fillW = (int)(barW * pct);
+            if (fillW > 0)
             {
-                case ObjectType.Player:
-                    index = 12;
-                    if (GroupDialog.GroupList.Contains(name) && name != User.Name) index = 10;
-                    break;
-                case ObjectType.Monster:
-                    if (GroupDialog.GroupList.Contains(name) || name == User.Name) index = 11;
-                    break;
-                case ObjectType.Hero:
-                    if (GroupDialog.GroupList.Contains(MapObject.HeroObject?.OwnerName)) // Fails but not game breaking
-                    {
-                        index = 11;
-                    }
-                    if (HeroObject.HeroObject?.OwnerName == User.Name)
-                    {
-                        index = 1;
-                        if ((MapObject.HeroObject.Class != MirClass.Warrior && HeroObject.Level > 7) || (MapObject.HeroObject.Class == MirClass.Warrior && HeroObject.Level > 25))
-                        {
-                            Libraries.Prguse2.Draw(10, new Rectangle(0, 0, (int)(32 * PercentMana / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 60), CommonColor.White, false);
-                        }
-                    }
-                    break;
+                // 填充从左侧裁剪，高度与底图对齐（原版 icon.width = 220 * pct）。
+                Rectangle fillSrc = new Rectangle(fill.SourceRectangle.X, fill.SourceRectangle.Y,
+                                                  Math.Min(fillW, fill.SourceRectangle.Width), fill.SourceRectangle.Height);
+                DXManager.Draw(fill.Texture, fillSrc,
+                               new Rectangle(barX, barY, fillW, barH), CommonColor.White, MirBlend.Normal.ToBlendState());
             }
 
-            Libraries.Prguse2.Draw(index, new Rectangle(0, 0, (int)(32 * PercentHealth / 100F), 4), new Point(DisplayRectangle.X + 8, DisplayRectangle.Y - 64), CommonColor.White, false);
+            DrawBloodLabel(barX + barW / 2, barY + barH / 2);
+        }
+
+        /// <summary>血条中央数值 Label：原始 BloodFont 位图字体（如 100%）；怪物只有百分比，玩家显示 HP/MaxHP。</summary>
+        private void DrawBloodLabel(int centerX, int centerY)
+        {
+            // 怪物/英雄服务端只下发 PercentHealth；玩家也统一显示百分比（原始 BloodFont 口径）。
+            string text = $"{PercentHealth}%";
+
+            if (_bloodLabel == null)
+            {
+                _bloodLabel = new MirLabel
+                {
+                    Font = new Font(Settings.FontName, 9F),
+                    ForeColour = CommonColor.White,
+                    OutLineColour = CommonColor.Black
+                };
+                _bloodLabel.Disposing += (o, e) => _bloodLabel = null;
+                LabelList.Add(_bloodLabel);
+            }
+            _bloodLabel.Text = text;
+            _bloodLabel.Location = new Point(centerX - _bloodLabel.Size.Width / 2, centerY - _bloodLabel.Size.Height / 2);
+            _bloodLabel.Draw();
         }
 
         public void DrawPoison()
