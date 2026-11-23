@@ -60,7 +60,8 @@ namespace Server.MirDatabase
         [JsonPropertyName("mapId")] public string mapId { get; set; } = "";
         [JsonPropertyName("x")] public string x { get; set; } = "";
         [JsonPropertyName("y")] public string y { get; set; } = "";
-        [JsonPropertyName("descType")] public int descType { get; set; }
+        // 原始配置有 4 条显式 descType:null，用 int? 避免整表反序列化失败。
+        [JsonPropertyName("descType")] public int? descType { get; set; }
     }
 
     // ===================== 5config.mapnpc：NPC 摆放表 =====================
@@ -103,7 +104,8 @@ namespace Server.MirDatabase
         [JsonPropertyName("areaDis")] public int areaDis { get; set; }
         [JsonPropertyName("params")] public int @params { get; set; }
         [JsonPropertyName("index")] public int index { get; set; }
-        [JsonPropertyName("isAuto")] public int isAuto { get; set; }
+        // 原始配置有 4 条显式 isAuto:null，用 int? 避免整表反序列化失败。
+        [JsonPropertyName("isAuto")] public int? isAuto { get; set; }
         [JsonPropertyName("notargeteff")] public int notargeteff { get; set; }
         [JsonPropertyName("tips1")] public string tips1 { get; set; } = "";
         [JsonPropertyName("piaozi")] public string piaozi { get; set; } = "";

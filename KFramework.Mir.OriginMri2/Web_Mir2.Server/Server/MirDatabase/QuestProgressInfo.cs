@@ -1,5 +1,6 @@
 using Server.MirObjects;
 using Server.MirEnvir;
+using System.Text.RegularExpressions;
 
 namespace Server.MirDatabase
 {
@@ -437,28 +438,114 @@ namespace Server.MirDatabase
             TaskList = new List<string>();
             Targets = new List<QuestTaskTarget>();
 
+            // 原始传奇任务：追踪文字直接读权威原表（4config._task / 5config.goals），
+            // 忠实复刻原版 MobileTaskViewItem.dataChanged 的两段式 goInfo/completeinfo。
+            if (Info != null && Info.OriginSettings != null && Envir.OriginTasks.Count > 0)
+            {
+                UpdateOriginQuestTasks();
+                return;
+            }
+
             UpdateKillTasks();
             UpdateItemTasks();
             UpdateFlagTasks();
-            UpdateBuyGoalTask();
             UpdateGotoTask();
         }
 
         /// <summary>
-        /// 原始传奇 goal type=532「买物品」引导任务（如任务14 买一本技能书）：
-        /// 这类任务没有 Kill/Item/Flag 进度，若不在这里加一行，追踪面板只有任务名、目标行空白。
-        /// 用原版 goal.goInfo（"买 一本技能书"）填目标行，点击目标指向交付 NPC（书店老板）。
+        /// 原始传奇任务追踪文字：完全按原版 dataChanged 逻辑读权威表。
+        /// 进行中(Accepted)：遍历目标，取 5config.goals[goalId].goInfo，按 "|" 拆成
+        ///   info0(前缀，白) + info1(目标，绿)，info1 里的 {0} 替换为 "当前/总数"；
+        ///   goal.type=342(物品)时 info1 显示物品名（cm.item[param]）。
+        /// 完成(Finish)或无进度：取 4config._task[id].completeinfo 按 "|" 拆成 info0 + info1。
+        /// 客户端 QuestTrackingItem.Bind 会把 info1 染绿，这里只负责拼出两段文字。
         /// </summary>
-        private void UpdateBuyGoalTask()
+        private void UpdateOriginQuestTasks()
         {
-            if (Info == null || Info.OriginSettings == null || Info.OriginSettings.GoalType != 532) return;
-            if (Completed) return; // 完成后由 UpdateGotoTask 显示"找到 书店老板"
+            var os = Info.OriginSettings;
 
-            string text = Info.OriginSettings.GoalInfo;
-            if (string.IsNullOrEmpty(text)) text = Info.TaskDescription.Count > 0 ? Info.TaskDescription[0] : Info.Name;
+            // 原表取不到时回退到落表的清洗字段（保证老版本/缺分片也能显示）
+            OriginTaskTable orgTask = null;
+            if (os.OriginTaskId > 0) Envir.OriginTasks.TryGetValue(os.OriginTaskId, out orgTask);
+            string completeInfo = orgTask != null && !string.IsNullOrEmpty(orgTask.completeinfo)
+                ? orgTask.completeinfo : os.CompleteInfo;
+
+            // 完成待交：显示 completeinfo（"找到  |书店老板" → "找到 书店老板"）
+            if (Completed)
+            {
+                if (!string.IsNullOrEmpty(completeInfo))
+                {
+                    TaskList.Add(StripOriginSeparator(completeInfo));
+                    Targets.Add(MakeFinishNPCTarget());
+                }
+                return;
+            }
+
+            // 进行中：优先按权威 goals 表渲染目标行
+            OriginGoalTable orgGoal = null;
+            if (os.GoalId > 0) Envir.OriginGoals.TryGetValue(os.GoalId, out orgGoal);
+
+            if (orgGoal != null && !string.IsNullOrEmpty(orgGoal.goInfo))
+            {
+                BuildOriginGoalLine(orgGoal);
+                return;
+            }
+
+            // 回退：用落表的 GoalInfo（转换器已把 | 清成空格、{0} 换成总数）
+            if (!string.IsNullOrEmpty(os.GoalInfo))
+            {
+                TaskList.Add(StripOriginSeparator(os.GoalInfo));
+                Targets.Add(MakeNPCTarget());
+            }
+        }
+
+        /// <summary>按原版 dataChanged 的 Accepted 分支拼一行目标文字，并挂对应传送目标。</summary>
+        private void BuildOriginGoalLine(OriginGoalTable goal)
+        {
+            string[] parts = goal.goInfo.Split('|');
+            string info0 = parts.Length > 0 ? parts[0] : string.Empty;
+            string info1 = parts.Length > 1 ? parts[1] : string.Empty;
+
+            // 原版：type=342 物品目标显示物品名（cm.item[parseInt(param)] 的 [3]）；其余用 {0} 替换进度。
+            if (goal.type == 342 && int.TryParse(goal.param, out int itemId) && itemId > 0)
+            {
+                var item = Envir.GetItemInfo(itemId);
+                info1 = item != null ? item.Name : info1;
+            }
+            else
+            {
+                int current = GetOriginGoalProgress();
+                int total = Math.Max(1, goal.count);
+                info1 = Regex.Replace(info1, @"\{\d+\}", current + "/" + total);
+            }
+
+            string text = (info0 + info1).Trim();
+            if (string.IsNullOrEmpty(text)) text = StripOriginSeparator(Info.OriginSettings.GoalInfo);
 
             TaskList.Add(text);
-            Targets.Add(MakeNPCTarget()); // 点击目标打开 NPC（书店老板）面板
+
+            // 目标类型：击杀类挂怪物坐标，其余挂交付 NPC。
+            QuestTaskTarget monsterTarget = null;
+            if (KillTaskCount.Count > 0 && KillTaskCount[0].Info != null && KillTaskCount[0].Info.Monster != null)
+                monsterTarget = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
+            Targets.Add(monsterTarget ?? MakeNPCTarget());
+        }
+
+        /// <summary>当前目标的进度值：击杀优先，其次收集，均无进度(如买书)时按完成标记取 0/1。</summary>
+        private int GetOriginGoalProgress()
+        {
+            if (KillTaskCount.Count > 0) return KillTaskCount[0].Count;
+            if (ItemTaskCount.Count > 0) return ItemTaskCount[0].Count;
+            var os = Info.OriginSettings;
+            if (os != null && os.GoalType == 532) return BuyGoalDone ? 1 : 0;
+            return 0;
+        }
+
+        /// <summary>去掉原版两段分隔符 "|"（两段文字在客户端拼成一行显示）。</summary>
+        private static string StripOriginSeparator(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            return text.Replace("|", string.Empty).Trim();
         }
 
         public void UpdateKillTasks()

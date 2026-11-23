@@ -130,6 +130,15 @@ namespace Server.MirEnvir
         public Dictionary<int, List<OriginStoreItemTable>> OriginStores = new Dictionary<int, List<OriginStoreItemTable>>();
         /// <summary>原始传奇显示条件表（0config.conditions，id → 条件），用于 npcstore.showCondition 过滤。</summary>
         public Dictionary<int, OriginConditionTable> OriginConditions = new Dictionary<int, OriginConditionTable>();
+
+        // ===== 原始传奇任务权威表（4config._task / 5config.goals / 0config.global）：追踪面板文字直接读这些表 =====
+        /// <summary>原始传奇任务主表 4config._task，key = 任务 id（name / completeinfo / goals / type / fnpc / tnpc）。</summary>
+        public Dictionary<int, OriginTaskTable> OriginTasks = new Dictionary<int, OriginTaskTable>();
+        /// <summary>原始传奇任务目标表 5config.goals，key = goal id（goInfo / type / count / param / mapId / x / y）。</summary>
+        public Dictionary<int, OriginGoalTable> OriginGoals = new Dictionary<int, OriginGoalTable>();
+        /// <summary>原始传奇任务类型名前缀 0config.global[9201]，key = type，value = "[主线]" 等前缀。</summary>
+        public Dictionary<int, string> OriginTaskTypeNames = new Dictionary<int, string>();
+
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
         public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();
         public List<GameShopItemTable> GameShopList = new List<GameShopItemTable>();
@@ -1102,6 +1111,8 @@ namespace Server.MirEnvir
                     LoadOriginStores(baseDir);
                     // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
                     LoadOriginConditions(baseDir);
+                    // 原始传奇任务权威表（4config._task / 5config.goals / 0config.global[9201]）：追踪面板文字直接读原表
+                    LoadOriginQuestTables(baseDir);
                 }
                 QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
@@ -1255,6 +1266,63 @@ namespace Server.MirEnvir
             catch (Exception ex)
             {
                 MessageQueue.Enqueue("加载原始传奇条件表失败: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 加载原始传奇任务权威表（仿 LoadOriginStores 的整文件 DTO 写法）：
+        /// 4config._task → OriginTasks；5config.goals → OriginGoals；0config.global[9201] → OriginTaskTypeNames。
+        /// 任务追踪面板（QuestProgressInfo.UpdateTasks）直接读这些原表生成文字，忠实原版 dataChanged。
+        /// </summary>
+        private void LoadOriginQuestTables(string baseDir)
+        {
+            OriginTasks.Clear();
+            OriginGoals.Clear();
+            OriginTaskTypeNames.Clear();
+
+            try
+            {
+                string f4 = Directory.GetFiles(baseDir, "4config*.json").FirstOrDefault();
+                if (f4 != null)
+                {
+                    var cfg4 = JsonSerializer.Deserialize<OriginMir2Config4>(File.ReadAllText(f4), JsonConfigOptions);
+                    if (cfg4?._task != null)
+                        foreach (var kv in cfg4._task)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginTasks[id] = kv.Value;
+                }
+
+                string f5 = Directory.GetFiles(baseDir, "5config*.json").FirstOrDefault();
+                if (f5 != null)
+                {
+                    var cfg5 = JsonSerializer.Deserialize<OriginMir2Config5>(File.ReadAllText(f5), JsonConfigOptions);
+                    if (cfg5?.goals != null)
+                        foreach (var kv in cfg5.goals)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginGoals[id] = kv.Value;
+                }
+
+                string f0 = Directory.GetFiles(baseDir, "0config*.json").FirstOrDefault();
+                if (f0 != null)
+                {
+                    var cfg0 = JsonSerializer.Deserialize<OriginMir2Config0>(File.ReadAllText(f0), JsonConfigOptions);
+                    if (cfg0?.global != null && cfg0.global.TryGetValue("9201", out var g) && g != null)
+                    {
+                        // value 形如 "1#[主线]&201#[转生]&..."：按 & 拆项，再按 # 拆 type#前缀。
+                        foreach (var item in g.value.Split('&', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            var parts = item.Split('#');
+                            if (parts.Length >= 2 && int.TryParse(parts[0], out int type))
+                                OriginTaskTypeNames[type] = parts[1];
+                        }
+                    }
+                }
+
+                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇任务权威表: {OriginTasks.Count} 任务 / {OriginGoals.Count} 目标 / {OriginTaskTypeNames.Count} 类型前缀（4config._task + 5config.goals + 0config.global[9201]）");
+            }
+            catch (Exception ex)
+            {
+                MessageQueue.Enqueue("加载原始传奇任务权威表失败: " + ex.Message);
             }
         }
 
