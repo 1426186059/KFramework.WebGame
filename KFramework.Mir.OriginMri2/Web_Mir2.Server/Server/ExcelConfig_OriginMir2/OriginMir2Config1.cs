@@ -1,7 +1,5 @@
 // 原始传奇配置分片 1config 的根类（对应 1config10.25341.1.json）。
-// 1config 只有 item 一张表（17166 条，稀疏列对象），语义映射已在 Tools/Mir2ItemConverter
-// 和服务器 ItemInfoTable 完成；这里用 OriginItemTable 显式声明整表（56 列带注释），
-// 加载进来方便与导出的 ItemInfo.json 对比排查。
+// 1config 只有 item 一张表（17166 条，稀疏列对象），用 OriginItemTable 显式声明整表（56 列带注释）。
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 

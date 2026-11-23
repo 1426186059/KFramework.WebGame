@@ -34,11 +34,6 @@ public sealed class QuestInfoOut
     // 原始传奇 2config.box 按原版 BoxUtil 结构展开的奖励项（与服务器 OriginBoxRewardTable 同形），
     // 经验(4)/金币(1,499) 同时落到顶层数值字段，其余按 ItemId 由服务器解析成物品。
     public List<QuestOriginBoxRewardOut> OriginRewards = new();
-    // 旧版三组平行数组：继续输出以便旧服务器配置兼容，新服务器优先读 OriginRewards。
-    public List<int> RewardItemIndices = new();
-    public List<int> RewardItemCounts = new();
-    public List<int> RewardCareers = new();
-
     // ===== 原始传奇任务字段（拍平到顶层，用原版键名；与服务器 QuestInfoTable 同形）=====
     public string source = "";          // "_task"=原始传奇配置；空=旧脚本任务
     public int originTaskId;            // 原版 _task.id
@@ -390,9 +385,6 @@ public static class Program
             // 伪物品 4=经验、1/499=金币同时落到顶层数值字段；其余按 ItemId 由服务器解析成物品。
             uint gold = 0, exp = 0;
             var originRewards = new List<QuestOriginBoxRewardOut>();
-            var rewardItemIndices = new List<int>();
-            var rewardItemCounts = new List<int>();
-            var rewardCareers = new List<int>();
 
             void AddRewardItem(QuestOriginBoxRewardOut? reward)
             {
@@ -404,9 +396,6 @@ public static class Program
                 bool hit = itemNames.ContainsKey(reward.ItemId);
                 if (hit) rewardItemHit++;
                 originRewards.Add(reward);
-                rewardItemIndices.Add(reward.ItemId);
-                rewardItemCounts.Add(reward.Count);
-                rewardCareers.Add(reward.Career);
             }
 
             foreach (var seg in rewards.Split('&', StringSplitOptions.RemoveEmptyEntries))
@@ -497,9 +486,6 @@ public static class Program
             outInfo.GoldReward = gold;
             outInfo.ExpReward = exp;
             outInfo.OriginRewards = originRewards;
-            outInfo.RewardItemIndices = rewardItemIndices;
-            outInfo.RewardItemCounts = rewardItemCounts;
-            outInfo.RewardCareers = rewardCareers;
             list.Add(outInfo);
         }
 
@@ -543,7 +529,7 @@ public static class Program
             w.WriteLine("  RequiredQuest <- 反查 _task.next（谁指向本任务，谁就是前置任务）");
             w.WriteLine("  Type         <- taskgroupid 1..6 记 Story(3)，其余 General(0)；不用 Daily/Repeatable 避免每日重置");
             w.WriteLine("  GoldReward / ExpReward <- rewards 指向 2config.box，展开 items 后伪道具 499=金币 / 4=主角经验");
-            w.WriteLine("  RewardItemIndices/Counts/Careers <- box.items 的其余物品（物品id/数量/职业），服务器按 Index 解析成 FixedRewards");
+            w.WriteLine("  OriginRewards <- box.items 的其余物品（物品id/数量/职业），服务器按 Index 解析成 FixedRewards");
             w.WriteLine("  原始传奇字段拍平到 QuestInfo 顶层（用原版键名 fnpc/tnpc/next/state/taskgroupid/condition/");
             w.WriteLine("      rewards/reward/tip3/completeinfo/goalid/goaltype/goalcount/.../alternate），不再有 OriginSettings 嵌套。");
             w.WriteLine("  source='_task' 表示内嵌配置任务；originKillRefs / OriginRewards 用 Index 精确引用，服务器按 Index 解析。");

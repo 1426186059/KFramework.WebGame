@@ -1,7 +1,6 @@
 #nullable enable
 
 // 1config.item：原始传奇物品表（17166 条，key=物品id，值=稀疏列对象 {"列号": 值}）。
-// 仅用于整表加载进 OriginMir2Config1 供与 ExcelConfig/ItemInfo.json 对比排查，运行时不用。
 // 字段名/类型依据：js 目录全部 12 个 JS 的逐列访问 + 0config~5config 跨表核验 + Mir2ItemConverter 映射；
 // 与 Mir2ReverseWeb 的 _itemFieldOverrides 有 3 处冲突（col12/18/22），以 JS 实测为准。
 // 注意 col21/22/26 是「按子类型多义」列（同一列在不同 c21 下含义不同），已用中性名并在各行注明。

@@ -1,7 +1,6 @@
 // 原始传奇 0config~5config 六个分片根类的公共基类。
-// 作用：分片里已建好 DTO 的表走强类型属性；其余大量未用的表通过 [JsonExtensionData]
-// 原样收进 ExtraTables（表 → JsonElement），不丢数据、不影响加载，以后要用某张表时
-// 只要在对应根类里加一个具体 DTO 属性，该表就自动从 ExtraTables 转为强类型，加载代码不用改。
+// 作用：分片里已建好 DTO 的表走强类型属性；其余表通过 [JsonExtensionData] 原样收进 ExtraTables（表 → JsonElement），
+// 不丢数据。以后要给某张表建 DTO 时，只需在对应根类加一个强类型属性，该表即自动从 ExtraTables 转为强类型。
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;

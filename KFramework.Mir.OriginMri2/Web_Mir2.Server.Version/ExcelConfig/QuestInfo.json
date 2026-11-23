@@ -39,9 +39,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 1,
     "fnpc": 10011,
@@ -152,21 +149,6 @@
         "Raw": "1405008-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1405002,
-      1405005,
-      1405008
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 2,
     "fnpc": 10011,
@@ -253,9 +235,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 3,
     "fnpc": 12581,
@@ -365,21 +344,6 @@
         "OpenDayMax": 0,
         "Raw": "1000610-1-1-3"
       }
-    ],
-    "RewardItemIndices": [
-      1000610,
-      1000610,
-      1000610
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
     ],
     "source": "_task",
     "originTaskId": 4,
@@ -498,21 +462,6 @@
         "Raw": "1000612-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000612,
-      1000612,
-      1000612
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 5,
     "fnpc": 13731,
@@ -609,15 +558,6 @@
         "OpenDayMax": 0,
         "Raw": "8015-20-100"
       }
-    ],
-    "RewardItemIndices": [
-      8015
-    ],
-    "RewardItemCounts": [
-      20
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 6,
@@ -736,21 +676,6 @@
         "Raw": "1000612-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000612,
-      1000612,
-      1000612
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 7,
     "fnpc": 13751,
@@ -847,15 +772,6 @@
         "OpenDayMax": 0,
         "Raw": "1000629-1-100"
       }
-    ],
-    "RewardItemIndices": [
-      1000629
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 8,
@@ -974,21 +890,6 @@
         "Raw": "1000618-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000619,
-      1000620,
-      1000618
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 9,
     "fnpc": 13771,
@@ -1106,21 +1007,6 @@
         "Raw": "1000618-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000619,
-      1000620,
-      1000618
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 10,
     "fnpc": 13781,
@@ -1207,9 +1093,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 11,
     "fnpc": 14741,
@@ -1320,21 +1203,6 @@
         "Raw": "1000606-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000606,
-      1000606,
-      1000606
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 12,
     "fnpc": 12751,
@@ -1414,9 +1282,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 13,
     "fnpc": 10201,
@@ -1517,18 +1382,6 @@
         "Raw": "1000642-1-1-0-2-0-0-0"
       }
     ],
-    "RewardItemIndices": [
-      1000647,
-      1000642
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 14,
     "fnpc": 10121,
@@ -1608,9 +1461,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 15,
     "fnpc": 10121,
@@ -1690,9 +1540,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 16,
     "fnpc": 10071,
@@ -1823,27 +1670,6 @@
         "Raw": "1000664-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      404,
-      405,
-      1000664,
-      1000664,
-      1000664
-    ],
-    "RewardItemCounts": [
-      50,
-      50,
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0,
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 17,
     "fnpc": 13791,
@@ -1933,15 +1759,6 @@
         "OpenDayMax": 0,
         "Raw": "9205-1-100"
       }
-    ],
-    "RewardItemIndices": [
-      9205
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 18,
@@ -2090,30 +1907,6 @@
         "Raw": "4646-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      11021,
-      12051,
-      13041,
-      4645,
-      4646,
-      4646
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3,
-      0,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 19,
     "fnpc": 13801,
@@ -2231,21 +2024,6 @@
         "Raw": "1000653-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000651,
-      1000652,
-      1000653
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 20,
     "fnpc": 13811,
@@ -2332,9 +2110,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 21,
     "fnpc": 13821,
@@ -2431,15 +2206,6 @@
         "OpenDayMax": 0,
         "Raw": "8015-20-100"
       }
-    ],
-    "RewardItemIndices": [
-      8015
-    ],
-    "RewardItemCounts": [
-      20
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 22,
@@ -2558,21 +2324,6 @@
         "Raw": "4646-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      4645,
-      4646,
-      4646
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 23,
     "fnpc": 13831,
@@ -2682,21 +2433,6 @@
         "OpenDayMax": 0,
         "Raw": "1000657-1-1-3"
       }
-    ],
-    "RewardItemIndices": [
-      1000655,
-      1000656,
-      1000657
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
     ],
     "source": "_task",
     "originTaskId": 24,
@@ -2808,21 +2544,6 @@
         "Raw": "1000670-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000668,
-      1000669,
-      1000670
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 25,
     "fnpc": 10091,
@@ -2933,21 +2654,6 @@
         "Raw": "1000670-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000668,
-      1000669,
-      1000670
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 26,
     "fnpc": 13031,
@@ -3038,15 +2744,6 @@
         "Raw": "8443-1-100"
       }
     ],
-    "RewardItemIndices": [
-      8443
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 27,
     "fnpc": 12741,
@@ -3126,9 +2823,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 28,
     "fnpc": 13841,
@@ -3225,15 +2919,6 @@
         "OpenDayMax": 0,
         "Raw": "8015-20-100"
       }
-    ],
-    "RewardItemIndices": [
-      8015
-    ],
-    "RewardItemCounts": [
-      20
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 29,
@@ -3382,30 +3067,6 @@
         "Raw": "1000683-1-1-3-2-0-0-0"
       }
     ],
-    "RewardItemIndices": [
-      1000680,
-      1000679,
-      1000682,
-      1000681,
-      1000684,
-      1000683
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      1,
-      2,
-      2,
-      3,
-      3
-    ],
     "source": "_task",
     "originTaskId": 30,
     "fnpc": 13861,
@@ -3503,15 +3164,6 @@
         "Raw": "4645-1-100"
       }
     ],
-    "RewardItemIndices": [
-      4645
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 31,
     "fnpc": 13871,
@@ -3608,15 +3260,6 @@
         "OpenDayMax": 0,
         "Raw": "8015-20-100"
       }
-    ],
-    "RewardItemIndices": [
-      8015
-    ],
-    "RewardItemCounts": [
-      20
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 32,
@@ -3735,21 +3378,6 @@
         "Raw": "1000662-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000663,
-      1000661,
-      1000662
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 33,
     "fnpc": 12971,
@@ -3860,21 +3488,6 @@
         "Raw": "4646-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      4645,
-      4646,
-      4646
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 34,
     "fnpc": 10201,
@@ -3984,21 +3597,6 @@
         "OpenDayMax": 0,
         "Raw": "13051-1-1-3"
       }
-    ],
-    "RewardItemIndices": [
-      11031,
-      12081,
-      13051
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
     ],
     "source": "_task",
     "originTaskId": 35,
@@ -4117,21 +3715,6 @@
         "Raw": "1000704-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000704,
-      1000704,
-      1000704
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 36,
     "fnpc": 13881,
@@ -4249,21 +3832,6 @@
         "Raw": "1000704-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000704,
-      1000704,
-      1000704
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 37,
     "fnpc": 13891,
@@ -4370,18 +3938,6 @@
         "OpenDayMax": 0,
         "Raw": "13061-1-1-3"
       }
-    ],
-    "RewardItemIndices": [
-      1000685,
-      13061
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      3
     ],
     "source": "_task",
     "originTaskId": 38,
@@ -4500,21 +4056,6 @@
         "Raw": "1000703-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000703,
-      1000703,
-      1000703
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 39,
     "fnpc": 13911,
@@ -4611,15 +4152,6 @@
         "OpenDayMax": 0,
         "Raw": "8439-1-100"
       }
-    ],
-    "RewardItemIndices": [
-      8439
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 40,
@@ -4731,21 +4263,6 @@
         "Raw": "1000662-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000663,
-      1000661,
-      1000662
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 41,
     "fnpc": 12441,
@@ -4855,21 +4372,6 @@
         "OpenDayMax": 0,
         "Raw": "4646-1-1-3"
       }
-    ],
-    "RewardItemIndices": [
-      4645,
-      4646,
-      4646
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      2,
-      3
     ],
     "source": "_task",
     "originTaskId": 42,
@@ -4991,24 +4493,6 @@
         "Raw": "8312-1-100"
       }
     ],
-    "RewardItemIndices": [
-      11041,
-      12091,
-      13031,
-      8312
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3,
-      0
-    ],
     "source": "_task",
     "originTaskId": 43,
     "fnpc": 10811,
@@ -5095,9 +4579,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 44,
     "fnpc": 13921,
@@ -5215,21 +4696,6 @@
         "Raw": "1000698-1-1-3"
       }
     ],
-    "RewardItemIndices": [
-      1000696,
-      1000697,
-      1000698
-    ],
-    "RewardItemCounts": [
-      1,
-      1,
-      1
-    ],
-    "RewardCareers": [
-      1,
-      2,
-      3
-    ],
     "source": "_task",
     "originTaskId": 45,
     "fnpc": 13931,
@@ -5326,15 +4792,6 @@
         "OpenDayMax": 0,
         "Raw": "8015-20-100"
       }
-    ],
-    "RewardItemIndices": [
-      8015
-    ],
-    "RewardItemCounts": [
-      20
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 46,
@@ -5433,15 +4890,6 @@
         "Raw": "8292-1-100"
       }
     ],
-    "RewardItemIndices": [
-      8292
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 47,
     "fnpc": 14111,
@@ -5539,15 +4987,6 @@
         "Raw": "8291-1-100"
       }
     ],
-    "RewardItemIndices": [
-      8291
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 48,
     "fnpc": 14121,
@@ -5627,9 +5066,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 49,
     "fnpc": 10821,
@@ -5720,15 +5156,6 @@
         "Raw": "4645-1-100"
       }
     ],
-    "RewardItemIndices": [
-      4645
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 50,
     "fnpc": 13051,
@@ -5808,9 +5235,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 51,
     "fnpc": 14131,
@@ -5897,9 +5321,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 52,
     "fnpc": 14141,
@@ -5979,9 +5400,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 53,
     "fnpc": 14151,
@@ -6068,9 +5486,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 54,
     "fnpc": 14161,
@@ -6161,15 +5576,6 @@
         "Raw": "41-300-100"
       }
     ],
-    "RewardItemIndices": [
-      41
-    ],
-    "RewardItemCounts": [
-      300
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 55,
     "fnpc": 14171,
@@ -6256,9 +5662,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 56,
     "fnpc": 14181,
@@ -6338,9 +5741,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 57,
     "fnpc": 12431,
@@ -6420,9 +5820,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 58,
     "fnpc": 14631,
@@ -6502,9 +5899,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 59,
     "fnpc": 10821,
@@ -6584,9 +5978,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 60,
     "fnpc": 10821,
@@ -6673,9 +6064,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 61,
     "fnpc": 10821,
@@ -6755,9 +6143,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 62,
     "fnpc": 11371,
@@ -6837,9 +6222,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 63,
     "fnpc": 11371,
@@ -6926,9 +6308,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 64,
     "fnpc": 14511,
@@ -7015,9 +6394,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 65,
     "fnpc": 12921,
@@ -7097,9 +6473,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 66,
     "fnpc": 12331,
@@ -7179,9 +6552,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 67,
     "fnpc": 14531,
@@ -7268,9 +6638,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 68,
     "fnpc": 14541,
@@ -7357,9 +6724,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 69,
     "fnpc": 12661,
@@ -7435,9 +6799,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 4000,
     "fnpc": 56,
@@ -7513,9 +6874,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 4001,
     "fnpc": 56,
@@ -7591,9 +6949,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 4002,
     "fnpc": 56,
@@ -7669,9 +7024,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 4004,
     "fnpc": 56,
@@ -7757,15 +7109,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5001,
@@ -7860,15 +7203,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5002,
     "fnpc": 10811,
@@ -7961,15 +7295,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5003,
@@ -8064,15 +7389,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5004,
     "fnpc": 10811,
@@ -8165,15 +7481,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5005,
@@ -8268,15 +7575,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5006,
     "fnpc": 10811,
@@ -8369,15 +7667,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5007,
@@ -8472,15 +7761,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5008,
     "fnpc": 10811,
@@ -8573,15 +7853,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5009,
@@ -8676,15 +7947,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5010,
     "fnpc": 10811,
@@ -8777,15 +8039,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5011,
@@ -8880,15 +8133,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5012,
     "fnpc": 10811,
@@ -8981,15 +8225,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5013,
@@ -9084,15 +8319,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5014,
     "fnpc": 10811,
@@ -9185,15 +8411,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5015,
@@ -9288,15 +8505,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5016,
     "fnpc": 10811,
@@ -9389,15 +8597,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5017,
@@ -9492,15 +8691,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5018,
     "fnpc": 10811,
@@ -9593,15 +8783,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5019,
@@ -9696,15 +8877,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5020,
     "fnpc": 10811,
@@ -9797,15 +8969,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5021,
@@ -9900,15 +9063,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5022,
     "fnpc": 10811,
@@ -10001,15 +9155,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5023,
@@ -10104,15 +9249,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5024,
     "fnpc": 10811,
@@ -10205,15 +9341,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5025,
@@ -10308,15 +9435,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5026,
     "fnpc": 10811,
@@ -10409,15 +9527,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5027,
@@ -10512,15 +9621,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5028,
     "fnpc": 10811,
@@ -10613,15 +9713,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5029,
@@ -10716,15 +9807,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5030,
     "fnpc": 10811,
@@ -10817,15 +9899,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5031,
@@ -10920,15 +9993,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5032,
     "fnpc": 10811,
@@ -11021,15 +10085,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5033,
@@ -11124,15 +10179,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5034,
     "fnpc": 10811,
@@ -11225,15 +10271,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5035,
@@ -11328,15 +10365,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5036,
     "fnpc": 10811,
@@ -11429,15 +10457,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5037,
@@ -11532,15 +10551,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5038,
     "fnpc": 10811,
@@ -11633,15 +10643,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5039,
@@ -11736,15 +10737,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5040,
     "fnpc": 10811,
@@ -11837,15 +10829,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5041,
@@ -11940,15 +10923,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5042,
     "fnpc": 10811,
@@ -12041,15 +11015,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5043,
@@ -12144,15 +11109,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5044,
     "fnpc": 10811,
@@ -12245,15 +11201,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5045,
@@ -12348,15 +11295,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5046,
     "fnpc": 10811,
@@ -12449,15 +11387,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5047,
@@ -12552,15 +11481,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5048,
     "fnpc": 10811,
@@ -12653,15 +11573,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5049,
@@ -12756,15 +11667,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5050,
     "fnpc": 10811,
@@ -12857,15 +11759,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5051,
@@ -12960,15 +11853,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5052,
     "fnpc": 10811,
@@ -13061,15 +11945,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5053,
@@ -13164,15 +12039,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5054,
     "fnpc": 10811,
@@ -13265,15 +12131,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5055,
@@ -13368,15 +12225,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5056,
     "fnpc": 10811,
@@ -13469,15 +12317,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5057,
@@ -13572,15 +12411,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5058,
     "fnpc": 10811,
@@ -13673,15 +12503,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5059,
@@ -13776,15 +12597,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5060,
     "fnpc": 10811,
@@ -13877,15 +12689,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5061,
@@ -13980,15 +12783,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5062,
     "fnpc": 10811,
@@ -14081,15 +12875,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5063,
@@ -14184,15 +12969,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5064,
     "fnpc": 10811,
@@ -14285,15 +13061,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5065,
@@ -14388,15 +13155,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5066,
     "fnpc": 10811,
@@ -14489,15 +13247,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5067,
@@ -14592,15 +13341,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5068,
     "fnpc": 10811,
@@ -14693,15 +13433,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5069,
@@ -14796,15 +13527,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5070,
     "fnpc": 10811,
@@ -14897,15 +13619,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5071,
@@ -15000,15 +13713,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5072,
     "fnpc": 10811,
@@ -15101,15 +13805,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5073,
@@ -15204,15 +13899,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5074,
     "fnpc": 10811,
@@ -15305,15 +13991,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5075,
@@ -15408,15 +14085,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5076,
     "fnpc": 10811,
@@ -15509,15 +14177,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5077,
@@ -15612,15 +14271,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5078,
     "fnpc": 10811,
@@ -15713,15 +14363,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5079,
@@ -15816,15 +14457,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5080,
     "fnpc": 10811,
@@ -15917,15 +14549,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5081,
@@ -16020,15 +14643,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5082,
     "fnpc": 10811,
@@ -16121,15 +14735,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5083,
@@ -16224,15 +14829,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5084,
     "fnpc": 10811,
@@ -16325,15 +14921,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5085,
@@ -16428,15 +15015,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5086,
     "fnpc": 10811,
@@ -16529,15 +15107,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5087,
@@ -16632,15 +15201,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5088,
     "fnpc": 10811,
@@ -16733,15 +15293,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5089,
@@ -16836,15 +15387,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5090,
     "fnpc": 10811,
@@ -16937,15 +15479,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5091,
@@ -17040,15 +15573,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5092,
     "fnpc": 10811,
@@ -17141,15 +15665,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5093,
@@ -17244,15 +15759,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5094,
     "fnpc": 10811,
@@ -17346,15 +15852,6 @@
         "Raw": "8237#1"
       }
     ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 5095,
     "fnpc": 10811,
@@ -17447,15 +15944,6 @@
         "OpenDayMax": 0,
         "Raw": "8237#1"
       }
-    ],
-    "RewardItemIndices": [
-      8237
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 5096,
@@ -17560,18 +16048,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6000,
     "fnpc": 13951,
@@ -17674,18 +16150,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6001,
@@ -17790,18 +16254,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6002,
     "fnpc": 13951,
@@ -17904,18 +16356,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6003,
@@ -18020,18 +16460,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6004,
     "fnpc": 13951,
@@ -18134,18 +16562,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6005,
@@ -18250,18 +16666,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6006,
     "fnpc": 13951,
@@ -18364,18 +16768,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6007,
@@ -18480,18 +16872,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6008,
     "fnpc": 13951,
@@ -18594,18 +16974,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6009,
@@ -18710,18 +17078,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6010,
     "fnpc": 13951,
@@ -18824,18 +17180,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6011,
@@ -18940,18 +17284,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6012,
     "fnpc": 13951,
@@ -19054,18 +17386,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6013,
@@ -19170,18 +17490,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6014,
     "fnpc": 13951,
@@ -19284,18 +17592,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6015,
@@ -19400,18 +17696,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6016,
     "fnpc": 13951,
@@ -19514,18 +17798,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6017,
@@ -19630,18 +17902,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6018,
     "fnpc": 13951,
@@ -19744,18 +18004,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6019,
@@ -19860,18 +18108,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6020,
     "fnpc": 13951,
@@ -19974,18 +18210,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6021,
@@ -20090,18 +18314,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6022,
     "fnpc": 13951,
@@ -20204,18 +18416,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6023,
@@ -20320,18 +18520,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6024,
     "fnpc": 13951,
@@ -20434,18 +18622,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6025,
@@ -20550,18 +18726,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6026,
     "fnpc": 13951,
@@ -20664,18 +18828,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6027,
@@ -20780,18 +18932,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6028,
     "fnpc": 13951,
@@ -20894,18 +19034,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6029,
@@ -21010,18 +19138,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6030,
     "fnpc": 13951,
@@ -21124,18 +19240,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6031,
@@ -21240,18 +19344,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6032,
     "fnpc": 13951,
@@ -21354,18 +19446,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6033,
@@ -21470,18 +19550,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6034,
     "fnpc": 13951,
@@ -21584,18 +19652,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6035,
@@ -21700,18 +19756,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6036,
     "fnpc": 13951,
@@ -21814,18 +19858,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6037,
@@ -21930,18 +19962,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6038,
     "fnpc": 13951,
@@ -22044,18 +20064,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6039,
@@ -22160,18 +20168,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6040,
     "fnpc": 13951,
@@ -22274,18 +20270,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6041,
@@ -22390,18 +20374,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6042,
     "fnpc": 13951,
@@ -22504,18 +20476,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6043,
@@ -22620,18 +20580,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6044,
     "fnpc": 13951,
@@ -22734,18 +20682,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6045,
@@ -22850,18 +20786,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6046,
     "fnpc": 13951,
@@ -22964,18 +20888,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6047,
@@ -23080,18 +20992,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6048,
     "fnpc": 13951,
@@ -23194,18 +21094,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6049,
@@ -23310,18 +21198,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6050,
     "fnpc": 13951,
@@ -23424,18 +21300,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6051,
@@ -23540,18 +21404,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6052,
     "fnpc": 13951,
@@ -23654,18 +21506,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6053,
@@ -23770,18 +21610,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6054,
     "fnpc": 13951,
@@ -23884,18 +21712,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6055,
@@ -24000,18 +21816,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6056,
     "fnpc": 13951,
@@ -24114,18 +21918,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6057,
@@ -24230,18 +22022,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6058,
     "fnpc": 13951,
@@ -24344,18 +22124,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6059,
@@ -24460,18 +22228,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6060,
     "fnpc": 13951,
@@ -24574,18 +22330,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6061,
@@ -24690,18 +22434,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6062,
     "fnpc": 13951,
@@ -24804,18 +22536,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6063,
@@ -24920,18 +22640,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6064,
     "fnpc": 13951,
@@ -25034,18 +22742,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6065,
@@ -25150,18 +22846,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6066,
     "fnpc": 13951,
@@ -25264,18 +22948,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6067,
@@ -25380,18 +23052,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6068,
     "fnpc": 13951,
@@ -25494,18 +23154,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6069,
@@ -25610,18 +23258,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6070,
     "fnpc": 13951,
@@ -25724,18 +23360,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6071,
@@ -25840,18 +23464,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6072,
     "fnpc": 13951,
@@ -25954,18 +23566,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6073,
@@ -26070,18 +23670,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6074,
     "fnpc": 13951,
@@ -26184,18 +23772,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6075,
@@ -26300,18 +23876,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6076,
     "fnpc": 13951,
@@ -26414,18 +23978,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6077,
@@ -26530,18 +24082,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6078,
     "fnpc": 13951,
@@ -26644,18 +24184,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6079,
@@ -26760,18 +24288,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6080,
     "fnpc": 13951,
@@ -26874,18 +24390,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6081,
@@ -26990,18 +24494,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6082,
     "fnpc": 13951,
@@ -27104,18 +24596,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6083,
@@ -27220,18 +24700,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6084,
     "fnpc": 13951,
@@ -27334,18 +24802,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6085,
@@ -27450,18 +24906,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6086,
     "fnpc": 13951,
@@ -27564,18 +25008,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6087,
@@ -27680,18 +25112,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6088,
     "fnpc": 13951,
@@ -27794,18 +25214,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6089,
@@ -27910,18 +25318,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6090,
     "fnpc": 13951,
@@ -28024,18 +25420,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6091,
@@ -28140,18 +25524,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6092,
     "fnpc": 13951,
@@ -28254,18 +25626,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6093,
@@ -28370,18 +25730,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6094,
     "fnpc": 13951,
@@ -28484,18 +25832,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6095,
@@ -28600,18 +25936,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6096,
     "fnpc": 13951,
@@ -28714,18 +26038,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6097,
@@ -28830,18 +26142,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6098,
     "fnpc": 13951,
@@ -28944,18 +26244,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6099,
@@ -29060,18 +26348,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6100,
     "fnpc": 13951,
@@ -29174,18 +26450,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6101,
@@ -29290,18 +26554,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6102,
     "fnpc": 13951,
@@ -29404,18 +26656,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6103,
@@ -29520,18 +26760,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6104,
     "fnpc": 13951,
@@ -29634,18 +26862,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6105,
@@ -29750,18 +26966,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6106,
     "fnpc": 13951,
@@ -29864,18 +27068,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6107,
@@ -29980,18 +27172,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6108,
     "fnpc": 13951,
@@ -30094,18 +27274,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6109,
@@ -30210,18 +27378,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6110,
     "fnpc": 13951,
@@ -30324,18 +27480,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6111,
@@ -30440,18 +27584,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6112,
     "fnpc": 13951,
@@ -30554,18 +27686,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6113,
@@ -30670,18 +27790,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6114,
     "fnpc": 13951,
@@ -30784,18 +27892,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6115,
@@ -30900,18 +27996,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6116,
     "fnpc": 13951,
@@ -31014,18 +28098,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6117,
@@ -31130,18 +28202,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6118,
     "fnpc": 13951,
@@ -31244,18 +28304,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6119,
@@ -31360,18 +28408,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6120,
     "fnpc": 13951,
@@ -31474,18 +28510,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6121,
@@ -31590,18 +28614,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6122,
     "fnpc": 13951,
@@ -31704,18 +28716,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6123,
@@ -31820,18 +28820,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6124,
     "fnpc": 13951,
@@ -31934,18 +28922,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6125,
@@ -32050,18 +29026,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6126,
     "fnpc": 13951,
@@ -32164,18 +29128,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6127,
@@ -32280,18 +29232,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6128,
     "fnpc": 13951,
@@ -32394,18 +29334,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6129,
@@ -32510,18 +29438,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6130,
     "fnpc": 13951,
@@ -32624,18 +29540,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6131,
@@ -32740,18 +29644,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6132,
     "fnpc": 13951,
@@ -32854,18 +29746,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6133,
@@ -32970,18 +29850,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6134,
     "fnpc": 13951,
@@ -33084,18 +29952,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6135,
@@ -33200,18 +30056,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6136,
     "fnpc": 13951,
@@ -33314,18 +30158,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6137,
@@ -33430,18 +30262,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6138,
     "fnpc": 13951,
@@ -33544,18 +30364,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6139,
@@ -33660,18 +30468,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6140,
     "fnpc": 13951,
@@ -33774,18 +30570,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6141,
@@ -33890,18 +30674,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6142,
     "fnpc": 13951,
@@ -34004,18 +30776,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6143,
@@ -34120,18 +30880,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6144,
     "fnpc": 13951,
@@ -34234,18 +30982,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6145,
@@ -34350,18 +31086,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6146,
     "fnpc": 13951,
@@ -34464,18 +31188,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6147,
@@ -34580,18 +31292,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6148,
     "fnpc": 13951,
@@ -34694,18 +31394,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6150,
@@ -34810,18 +31498,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6151,
     "fnpc": 13951,
@@ -34924,18 +31600,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6152,
@@ -35040,18 +31704,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6153,
     "fnpc": 13951,
@@ -35154,18 +31806,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6154,
@@ -35270,18 +31910,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6156,
     "fnpc": 13951,
@@ -35384,18 +32012,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6157,
@@ -35500,18 +32116,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6158,
     "fnpc": 13951,
@@ -35614,18 +32218,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6159,
@@ -35730,18 +32322,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6160,
     "fnpc": 13951,
@@ -35844,18 +32424,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6162,
@@ -35960,18 +32528,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6163,
     "fnpc": 13951,
@@ -36074,18 +32630,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6164,
@@ -36190,18 +32734,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6165,
     "fnpc": 13951,
@@ -36304,18 +32836,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6166,
@@ -36420,18 +32940,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6167,
     "fnpc": 13951,
@@ -36534,18 +33042,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6168,
@@ -36650,18 +33146,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6169,
     "fnpc": 13951,
@@ -36764,18 +33248,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6170,
@@ -36880,18 +33352,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6172,
     "fnpc": 13951,
@@ -36994,18 +33454,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6173,
@@ -37110,18 +33558,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6174,
     "fnpc": 13951,
@@ -37224,18 +33660,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6175,
@@ -37340,18 +33764,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6176,
     "fnpc": 13951,
@@ -37454,18 +33866,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6178,
@@ -37570,18 +33970,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6179,
     "fnpc": 13951,
@@ -37684,18 +34072,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6180,
@@ -37800,18 +34176,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6181,
     "fnpc": 13951,
@@ -37914,18 +34278,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6182,
@@ -38030,18 +34382,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6184,
     "fnpc": 13951,
@@ -38144,18 +34484,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6185,
@@ -38260,18 +34588,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6186,
     "fnpc": 13951,
@@ -38374,18 +34690,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6187,
@@ -38490,18 +34794,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6188,
     "fnpc": 13951,
@@ -38604,18 +34896,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6189,
@@ -38720,18 +35000,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6190,
     "fnpc": 13951,
@@ -38834,18 +35102,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6191,
@@ -38950,18 +35206,6 @@
         "Raw": "8291#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6192,
     "fnpc": 13951,
@@ -39064,18 +35308,6 @@
         "OpenDayMax": 0,
         "Raw": "8291#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8291
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6194,
@@ -39180,18 +35412,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6195,
     "fnpc": 13951,
@@ -39294,18 +35514,6 @@
         "OpenDayMax": 0,
         "Raw": "8292#1"
       }
-    ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6196,
@@ -39410,18 +35618,6 @@
         "Raw": "8292#1"
       }
     ],
-    "RewardItemIndices": [
-      8245,
-      8292
-    ],
-    "RewardItemCounts": [
-      1,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6197,
     "fnpc": 13951,
@@ -39524,18 +35720,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6198,
@@ -39640,18 +35824,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6200,
     "fnpc": 13951,
@@ -39754,18 +35926,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6201,
@@ -39870,18 +36030,6 @@
         "Raw": "8293#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6202,
     "fnpc": 13951,
@@ -39984,18 +36132,6 @@
         "OpenDayMax": 0,
         "Raw": "8293#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8293
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6203,
@@ -40100,18 +36236,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6204,
     "fnpc": 13951,
@@ -40214,18 +36338,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6206,
@@ -40330,18 +36442,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6207,
     "fnpc": 13951,
@@ -40444,18 +36544,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6208,
@@ -40560,18 +36648,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6209,
     "fnpc": 13951,
@@ -40674,18 +36750,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6210,
@@ -40790,18 +36854,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6211,
     "fnpc": 13951,
@@ -40904,18 +36956,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6212,
@@ -41020,18 +37060,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6213,
     "fnpc": 13951,
@@ -41134,18 +37162,6 @@
         "OpenDayMax": 0,
         "Raw": "8294#1"
       }
-    ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 6214,
@@ -41250,18 +37266,6 @@
         "Raw": "8294#1"
       }
     ],
-    "RewardItemIndices": [
-      41,
-      8294
-    ],
-    "RewardItemCounts": [
-      3000,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 6215,
     "fnpc": 13951,
@@ -41365,18 +37369,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      10,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7000,
     "fnpc": 55,
@@ -41472,18 +37464,6 @@
         "OpenDayMax": 0,
         "Raw": "1131#1"
       }
-    ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      20,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 7001,
@@ -41581,18 +37561,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      30,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7002,
     "fnpc": 55,
@@ -41688,18 +37656,6 @@
         "OpenDayMax": 0,
         "Raw": "1131#1"
       }
-    ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      40,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 7003,
@@ -41797,18 +37753,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      50,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7004,
     "fnpc": 55,
@@ -41904,18 +37848,6 @@
         "OpenDayMax": 0,
         "Raw": "1131#1"
       }
-    ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      60,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 7005,
@@ -42013,18 +37945,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      70,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7006,
     "fnpc": 55,
@@ -42120,18 +38040,6 @@
         "OpenDayMax": 0,
         "Raw": "1131#1"
       }
-    ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      80,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 7007,
@@ -42229,18 +38137,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      90,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7008,
     "fnpc": 55,
@@ -42336,18 +38232,6 @@
         "OpenDayMax": 0,
         "Raw": "1131#1"
       }
-    ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      10,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
     ],
     "source": "_task",
     "originTaskId": 7009,
@@ -42445,18 +38329,6 @@
         "Raw": "1131#1"
       }
     ],
-    "RewardItemIndices": [
-      86,
-      1131
-    ],
-    "RewardItemCounts": [
-      20,
-      1
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 7010,
     "fnpc": 55,
@@ -42532,9 +38404,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8000,
     "fnpc": 20,
@@ -42610,9 +38479,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8001,
     "fnpc": 20,
@@ -42688,9 +38554,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8002,
     "fnpc": 20,
@@ -42766,9 +38629,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8003,
     "fnpc": 20,
@@ -42844,9 +38704,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8004,
     "fnpc": 20,
@@ -42922,9 +38779,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8005,
     "fnpc": 20,
@@ -43000,9 +38854,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8006,
     "fnpc": 20,
@@ -43078,9 +38929,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8007,
     "fnpc": 20,
@@ -43156,9 +39004,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8008,
     "fnpc": 20,
@@ -43234,9 +39079,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 8009,
     "fnpc": 20,
@@ -43306,9 +39148,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 10001,
     "fnpc": 0,
@@ -43384,9 +39223,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 11001,
     "fnpc": 1003,
@@ -43460,9 +39296,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 101001,
     "fnpc": 0,
@@ -43536,9 +39369,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 102001,
     "fnpc": 0,
@@ -43631,9 +39461,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 102002,
     "fnpc": 0,
@@ -43726,9 +39553,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 102003,
     "fnpc": 0,
@@ -43821,9 +39645,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 102004,
     "fnpc": 0,
@@ -43916,9 +39737,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 103001,
     "fnpc": 0,
@@ -43992,9 +39810,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 104001,
     "fnpc": 0,
@@ -44068,9 +39883,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 104002,
     "fnpc": 0,
@@ -44144,9 +39956,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 104003,
     "fnpc": 0,
@@ -44220,9 +40029,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 104004,
     "fnpc": 0,
@@ -44296,9 +40102,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 104005,
     "fnpc": 0,
@@ -44382,15 +40185,6 @@
         "OpenDayMax": 0,
         "Raw": "8404#1"
       }
-    ],
-    "RewardItemIndices": [
-      8404
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 105001,
@@ -44483,15 +40277,6 @@
         "Raw": "8404#1"
       }
     ],
-    "RewardItemIndices": [
-      8404
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 105002,
     "fnpc": 0,
@@ -44582,15 +40367,6 @@
         "OpenDayMax": 0,
         "Raw": "8404#1"
       }
-    ],
-    "RewardItemIndices": [
-      8404
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 105003,
@@ -44683,15 +40459,6 @@
         "Raw": "8404#1"
       }
     ],
-    "RewardItemIndices": [
-      8404
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 105004,
     "fnpc": 0,
@@ -44772,9 +40539,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 105005,
     "fnpc": 0,
@@ -44858,15 +40622,6 @@
         "OpenDayMax": 0,
         "Raw": "20#200"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      200
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 106001,
@@ -44959,15 +40714,6 @@
         "Raw": "20#200"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      200
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 107001,
     "fnpc": 0,
@@ -45048,9 +40794,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 108001,
     "fnpc": 0,
@@ -45124,9 +40867,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 108002,
     "fnpc": 0,
@@ -45200,9 +40940,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 108003,
     "fnpc": 0,
@@ -45276,9 +41013,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 108004,
     "fnpc": 0,
@@ -45352,9 +41086,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 108005,
     "fnpc": 0,
@@ -45428,9 +41159,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 109001,
     "fnpc": 0,
@@ -45504,9 +41232,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 109002,
     "fnpc": 0,
@@ -45580,9 +41305,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 110001,
     "fnpc": 0,
@@ -45656,9 +41378,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 120001,
     "fnpc": 0,
@@ -45734,9 +41453,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 130001,
     "fnpc": 15227,
@@ -45826,18 +41542,6 @@
         "Raw": "8032#100000"
       }
     ],
-    "RewardItemIndices": [
-      8929,
-      8032
-    ],
-    "RewardItemCounts": [
-      1,
-      100000
-    ],
-    "RewardCareers": [
-      0,
-      0
-    ],
     "source": "_task",
     "originTaskId": 130002,
     "fnpc": 15227,
@@ -45913,9 +41617,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 130003,
     "fnpc": 0,
@@ -45984,9 +41685,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 130004,
     "fnpc": 15227,
@@ -46066,15 +41764,6 @@
         "Raw": "8915#1"
       }
     ],
-    "RewardItemIndices": [
-      8915
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 130005,
     "fnpc": 15227,
@@ -46148,9 +41837,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201001,
     "fnpc": 0,
@@ -46236,15 +41922,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201002,
@@ -46339,15 +42016,6 @@
         "Raw": "8491#1"
       }
     ],
-    "RewardItemIndices": [
-      8491
-    ],
-    "RewardItemCounts": [
-      1
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201003,
     "fnpc": 0,
@@ -46423,9 +42091,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201004,
     "fnpc": 0,
@@ -46511,15 +42176,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201005,
@@ -46614,15 +42270,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201006,
     "fnpc": 0,
@@ -46698,9 +42345,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201007,
     "fnpc": 0,
@@ -46786,15 +42430,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201008,
@@ -46889,15 +42524,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201009,
     "fnpc": 0,
@@ -46973,9 +42599,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201010,
     "fnpc": 0,
@@ -47061,15 +42684,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201011,
@@ -47164,15 +42778,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201012,
     "fnpc": 0,
@@ -47248,9 +42853,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201013,
     "fnpc": 0,
@@ -47336,15 +42938,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201014,
@@ -47439,15 +43032,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201015,
     "fnpc": 0,
@@ -47523,9 +43107,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201016,
     "fnpc": 0,
@@ -47611,15 +43192,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201017,
@@ -47714,15 +43286,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201018,
     "fnpc": 0,
@@ -47798,9 +43361,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201019,
     "fnpc": 0,
@@ -47886,15 +43446,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201020,
@@ -47989,15 +43540,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201021,
     "fnpc": 0,
@@ -48073,9 +43615,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201022,
     "fnpc": 0,
@@ -48161,15 +43700,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201023,
@@ -48264,15 +43794,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201024,
     "fnpc": 0,
@@ -48348,9 +43869,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201025,
     "fnpc": 0,
@@ -48436,15 +43954,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201026,
@@ -48539,15 +44048,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201027,
     "fnpc": 0,
@@ -48623,9 +44123,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201028,
     "fnpc": 0,
@@ -48711,15 +44208,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201029,
@@ -48814,15 +44302,6 @@
         "Raw": "20#500"
       }
     ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
-    ],
     "source": "_task",
     "originTaskId": 201030,
     "fnpc": 0,
@@ -48898,9 +44377,6 @@
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginRewards": [],
-    "RewardItemIndices": [],
-    "RewardItemCounts": [],
-    "RewardCareers": [],
     "source": "_task",
     "originTaskId": 201031,
     "fnpc": 0,
@@ -48986,15 +44462,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201032,
@@ -49088,15 +44555,6 @@
         "OpenDayMax": 0,
         "Raw": "20#500"
       }
-    ],
-    "RewardItemIndices": [
-      20
-    ],
-    "RewardItemCounts": [
-      500
-    ],
-    "RewardCareers": [
-      0
     ],
     "source": "_task",
     "originTaskId": 201033,
