@@ -54,15 +54,15 @@ namespace Server.ExcelConfig
         // JS 确证：寻宝播报用 c[10] 过滤（!c[10]||1===c[10] 则不播报）。
         [JsonPropertyName("10")] public string? ShowCondition { get; set; }
 
-        // 列 11：string，37 条有值且均为数字串。分解/七星升星经验（JS 确证：t+=Number(cm.item[lid][11]) 累加进 selcfg.exp）。
-        [JsonPropertyName("11")] public string? DecomposeExp { get; set; }
+        // 列 11：string，37 条有值且均为数字串。分解为七星经验（JS 确证：t+=Number(cm.item[lid][11]) 累加进 selcfg.exp）。
+        [JsonPropertyName("11")] public string? SevenStarExp { get; set; }
 
         // 列 12：string，2810 条有值，形如 "8684#20"/"67#18"。装备回收列表（JS 确证：按 & 拆段显示「装备回收：物品名*数量」）。
         [JsonPropertyName("12")] public string? RecycleList { get; set; }
 
-        // 列 13：string，585 条有值，形如 "50370001#1#10000"：宝箱id#数量#概率。
-        // 跨表确证：2config.box.50370001.items="13-100-10000" 与本列三段一一对应。
-        [JsonPropertyName("13")] public string? BoxId { get; set; }
+        // 列 13：string，585 条有值，形如 "50370001#1#10000"：宝箱id#数量#概率（后两段语义未完全确证）。
+        // 跨表确证：2config.box.50370001.items="13-100-10000"（13=声望物品，产出100声望）。
+        [JsonPropertyName("13")] public string? BoxReward { get; set; }
 
         // 列 14：int，10333 条有值，1~250205046。等价物品 id（JS 确证：o[14] 与 o[0] 的持有数量合并计算）。
         [JsonPropertyName("14")] public int? EquivalentItemId { get; set; }
@@ -149,14 +149,16 @@ namespace Server.ExcelConfig
         // 列 44：string，94 条有值，形如 "1#1440"/"2#2025-11-30-00-00-00"。有效期/时限配置串。
         [JsonPropertyName("44")] public string? ValidityString { get; set; }
 
-        // 列 45：int，2186 条有值，444~898。图鉴 id（跨表确证：2config.tujian.444=火龙神、893~898=半兽人统帅各等级）。
-        [JsonPropertyName("45")] public int? TujianId { get; set; }
+        // 列 45：int，2186 条有值，444~898。关联图鉴等级 id（跨表确证：2config.tujian.444=火龙神9级、893~898=半兽人统帅24~29级；
+        // 神域/战狂/天地等同一图鉴组装备共享同一 c45）。JS 不直接访问本列，业务用途未完全确证。
+        [JsonPropertyName("45")] public int? TujianLevelId { get; set; }
 
         // 列 48：string，29 条有值，形如 "1#190000|4#53000|5#125800"。属性串格式（同列 40 编码），语义未确证。
         [JsonPropertyName("48")] public string? ExtraAttributes { get; set; }
 
-        // 列 49：int，20 条有值，30/90/270/810/2430（30×3^n）。魂印/法魂/面甲/魂器五阶战力值（1~5 阶顺序递增）。
-        [JsonPropertyName("49")] public int? SoulPower { get; set; }
+        // 列 49：int，20 条有值，30/90/270/810/2430（30×3^n）。魂印/法魂/面甲/魂器 5 阶的阶位评分；
+        // 与 col39 战力(480/960/1920/3600/6000)同步递增，客户端零访问，仅数据规律可证。
+        [JsonPropertyName("49")] public int? SoulStageScore { get; set; }
 
         // 列 50：string，1644 条有值，形如 "9#0#1"/"1#3#1"。职业相关串；转换器取首段作职业兜底。
         [JsonPropertyName("50")] public string? CareerString { get; set; }
@@ -183,9 +185,10 @@ namespace Server.ExcelConfig
         // 列 59：int，1051 条有值，1~3。装备职业归属（转换器优先级高于列 52/50）。
         [JsonPropertyName("59")] public int? EquipCareer { get; set; }
 
-        // 列 60：string，579 条有值，形如 "13#19200"/"58#15552"：声望/货币回收值 物品id#数量。
-        // 跨表确证：13=声望、58=鸿蒙碎晶（item 表 col2）；数值与装备档次一一对应。
-        [JsonPropertyName("60")] public string? ReputationValue { get; set; }
+        // 列 60：string，579 条有值，形如 "13#19200"/"58#15552"：装备回收/分解声望 货币id#数量。
+        // 跨表确证：13=声望、58=鸿蒙碎晶；且与 col13 宝箱配置的第一段产出值一致
+        // （裁决 c13→box 产出 300 声望 = c60 "13#300"）。
+        [JsonPropertyName("60")] public string? RecycleReputation { get; set; }
 
         // 列 61：int，321 条有值，10701~130212。场景特效 id（JS 确证：sceneEffect.init(n.preGro,o[61])）。
         [JsonPropertyName("61")] public int? SceneEffectId { get; set; }
