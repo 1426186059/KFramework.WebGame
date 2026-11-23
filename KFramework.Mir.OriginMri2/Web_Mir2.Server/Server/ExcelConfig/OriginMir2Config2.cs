@@ -10,15 +10,15 @@ namespace Server.MirDatabase
     // 结构为 技能id -> 等级 -> 条件记录。condition 原始为字符串（如 "10100"）。
     public class OriginSkillConditionTable
     {
-        [JsonPropertyName("skillId")] public int skillId { get; set; }
-        [JsonPropertyName("level")] public int level { get; set; }
-        [JsonPropertyName("effLevelID")] public int effLevelID { get; set; }
-        [JsonPropertyName("condition")] public string condition { get; set; } = "";
-        [JsonPropertyName("rate")] public int rate { get; set; }
-        [JsonPropertyName("monHurtAddFix")] public int monHurtAddFix { get; set; }
-        [JsonPropertyName("show")] public string show { get; set; } = "";
-        [JsonPropertyName("cdTime")] public int cdTime { get; set; }
-        [JsonPropertyName("mpCost")] public int mpCost { get; set; }
+        [JsonPropertyName("skillId")] public int skillId { get; set; } // 技能 id
+        [JsonPropertyName("level")] public int level { get; set; } // 技能等级
+        [JsonPropertyName("effLevelID")] public int effLevelID { get; set; } // 生效等级 id
+        [JsonPropertyName("condition")] public string condition { get; set; } = ""; // 学习条件（10000+等级）
+        [JsonPropertyName("rate")] public int rate { get; set; } // 触发概率
+        [JsonPropertyName("monHurtAddFix")] public int monHurtAddFix { get; set; } // 对怪伤害加成
+        [JsonPropertyName("show")] public string show { get; set; } = ""; // 显示文本
+        [JsonPropertyName("cdTime")] public int cdTime { get; set; } // 冷却时间
+        [JsonPropertyName("mpCost")] public int mpCost { get; set; } // 魔法消耗
     }
 
     // ===================== 2config.box：奖励包表 =====================
@@ -30,9 +30,9 @@ namespace Server.MirDatabase
     // 任务奖励包内不存在 '#' 随机组（已在原始配置中全量统计确认）。
     public class OriginBoxTable
     {
-        [JsonPropertyName("id")] public int id { get; set; }
-        [JsonPropertyName("isShow")] public int isShow { get; set; }
-        [JsonPropertyName("items")] public string items { get; set; } = "";
+        [JsonPropertyName("id")] public int id { get; set; } // 奖励包 id
+        [JsonPropertyName("isShow")] public int isShow { get; set; } // 是否展示（1=展示）
+        [JsonPropertyName("items")] public string items { get; set; } = ""; // 奖励项串（; 分隔多项，每项按 - 拆位）
 
         // 由 items 解析出的奖励项（加载期生成，不从 JSON 反序列化）。
         [JsonIgnore]
@@ -65,7 +65,7 @@ namespace Server.MirDatabase
         public int Sex { get; set; }         // [4] 性别限制：0=不限
         public int OpenDayMin { get; set; }  // [5] 开服天数下限
         public int OpenDayMax { get; set; }  // [6] 开服天数上限（原版兼作 condition id）
-        public string Raw { get; set; } = "";
+        public string Raw { get; set; } = ""; // 原始 items 片段
 
         public static OriginBoxRewardTable Parse(string seg)
         {
@@ -95,8 +95,8 @@ namespace Server.MirDatabase
     // 已建具体 DTO 的表：_task_tx / skills_condition / box；其余 84 张表由基类 ExtraTables 全量兜底。
     public class OriginMir2Config2 : OriginConfigRoot
     {
-        [JsonPropertyName("_task_tx")] public Dictionary<string, OriginTaskTable> _task_tx { get; set; } = new();
-        [JsonPropertyName("skills_condition")] public Dictionary<string, Dictionary<string, OriginSkillConditionTable>> skills_condition { get; set; } = new();
-        [JsonPropertyName("box")] public Dictionary<string, OriginBoxTable> box { get; set; } = new();
+        [JsonPropertyName("_task_tx")] public Dictionary<string, OriginTaskTable> _task_tx { get; set; } = new(); // 任务文本线（id → 任务）
+        [JsonPropertyName("skills_condition")] public Dictionary<string, Dictionary<string, OriginSkillConditionTable>> skills_condition { get; set; } = new(); // 技能等级条件（技能id → 等级 → 条件）
+        [JsonPropertyName("box")] public Dictionary<string, OriginBoxTable> box { get; set; } = new(); // 奖励包表（id → 包）
     }
 }
