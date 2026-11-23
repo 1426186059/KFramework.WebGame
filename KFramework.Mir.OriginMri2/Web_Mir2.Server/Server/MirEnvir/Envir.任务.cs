@@ -1,10 +1,8 @@
-// partial 文件：Envir 任务域方法（原始任务表加载 / 技能学习 / 任务查询 / 跨天清理）。
+// partial 文件：Envir 任务域业务方法（技能学习 / 任务查询 / 跨天清理）。
+// 配置表一律在 Envir.配置表.cs 的 LoadExcelConfig 里加载，这里只读内存中的 QuestInfoList/MagicInfoList。
 using Server.Library.MirDatabase;
 using Server.MirDatabase;
 using Server.MirObjects;
-using Shared.Helpers;
-using System.IO;
-using System.Text.Json;
 
 namespace Server.MirEnvir
 {
