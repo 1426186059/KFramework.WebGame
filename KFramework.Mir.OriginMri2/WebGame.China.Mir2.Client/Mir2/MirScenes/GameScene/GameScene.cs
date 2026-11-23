@@ -4004,10 +4004,12 @@ namespace Client.MirScenes
             }
             catch { npcHasQuest = false; }
 
-            // 有对话/商店脚本（书店老板等）：优先显示普通 NPC 面板，让玩家能直接购买；
-            // 只有纯任务 NPC（无对话页、无大按钮）才弹任务面板，避免商店 NPC 被任务面板覆盖。
+            // 原始传奇 checknpcTaskDialog：服务端判定任务待接/待交且点的是该任务 NPC 时，
+            // 直接弹 NPC 任务面板，不再看 NPC 有没有对话/商店内容。
+            // 有对话/商店脚本（书店老板等）则优先普通 NPC 面板，让玩家能直接购买。
             bool hasNpcContent = p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0;
-            if (npcHasQuest && !hasNpcContent)
+            bool showQuestPanel = (p.OpenQuestPanel && npcHasQuest) || (npcHasQuest && !hasNpcContent);
+            if (showQuestPanel)
             {
                 NPCDialog.Hide();
                 QuestListDialog.Show();
@@ -4030,8 +4032,8 @@ namespace Client.MirScenes
             RefineDialog.Hide();
             StorageDialog.Hide();
             TrustMerchantDialog.Hide();
-            // 显示普通 NPC 面板时收起任务面板（哪怕该 NPC 同时挂着任务），否则两层面板叠加。
-            if (!npcHasQuest || hasNpcContent)
+            // 显示普通 NPC 面板时收起任务面板，否则两层面板叠加。
+            if (!showQuestPanel)
                 QuestListDialog.Hide();
         }
 

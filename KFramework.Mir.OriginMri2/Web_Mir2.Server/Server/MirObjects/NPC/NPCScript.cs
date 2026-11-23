@@ -928,7 +928,7 @@ namespace Server.MirObjects
                 var questNPC = NPCObject.Get(objectID);
                 bool hasQuest = questNPC != null && PlayerHasQuestAt(player, questNPC);
                 if (hasQuest)
-                    player.Enqueue(new S.NPCResponse { Page = new List<string>() });
+                    player.Enqueue(new S.NPCResponse { Page = new List<string>(), OpenQuestPanel = TakeQuestPanelFlag(player) });
             }
 
             player.NPCData.Remove("NPCInputStr");
@@ -979,9 +979,17 @@ namespace Server.MirObjects
                 originStoreBuy = callingNPC?.Info?.OriginSettings != null && callingNPC.Info.OriginSettings.StoreId > 0;
             }
             if (!originStoreBuy)
-                player.Enqueue(new S.NPCResponse { Page = player.NPCSpeech });
+                player.Enqueue(new S.NPCResponse { Page = player.NPCSpeech, OpenQuestPanel = TakeQuestPanelFlag(player) });
 
             ProcessSpecial(player, page);
+        }
+
+        /// <summary>消费一次性「打开任务面板」标记（原始传奇 checknpcTaskDialog 的移植）。</summary>
+        private static bool TakeQuestPanelFlag(PlayerObject player)
+        {
+            bool value = player.OpenQuestPanelOnNextNPCResponse;
+            player.OpenQuestPanelOnNextNPCResponse = false;
+            return value;
         }
 
         private void ProcessSegment(PlayerObject player, NPCPage page, NPCSegment segment, uint objectID)

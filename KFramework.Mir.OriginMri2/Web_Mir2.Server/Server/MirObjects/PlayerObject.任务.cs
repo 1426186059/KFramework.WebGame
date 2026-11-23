@@ -59,9 +59,9 @@ namespace Server.MirObjects
                         if (map != null) Teleport(map, dest);
                     }
 
-                    // 打开发放 NPC 的任务面板/对话（客户端据此隐藏任务跟踪面板）
+                    // 原始传奇 checknpcTaskDialog：任务处于待接(NotAccepted)状态 → 弹 NPC 任务面板。
                     if (!Dead)
-                        CallNPC(npcObj.ObjectID, NPCScript.MainKey);
+                        CallNPC(npcObj.ObjectID, NPCScript.MainKey, openQuestPanel: true);
                 }
                 return;
             }

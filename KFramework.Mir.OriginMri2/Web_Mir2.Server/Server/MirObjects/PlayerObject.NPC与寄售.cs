@@ -84,13 +84,17 @@ namespace Server.MirObjects
             CallNPCNextPage();
         }
 
-        public void CallNPC(uint objectID, string key)
+        public void CallNPC(uint objectID, string key, bool openQuestPanel = false)
         {
             if (Dead)
             {
                 MessageQueue.Enqueue($"[NPC诊断] CallNPC 被拒: 玩家已死亡");
                 return;
             }
+
+            // 原始传奇 checknpcTaskDialog：仅"任务待接/待交且点的是该任务 NPC"时要求弹任务面板。
+            // 由调用方（任务追踪入口）按任务 state 判定后传入，不用跨帧残留标记。
+            OpenQuestPanelOnNextNPCResponse = openQuestPanel;
 
             // 先告知客户端当前交互的 NPC（GameScene.NPCID），否则 S.NPCResponse 处理时取不到 NPC，
             // 任务面板/对话面板的"与谁对话"判定会失效，导致面板不弹出。
@@ -137,6 +141,8 @@ namespace Server.MirObjects
 
             if (!found) MessageQueue.Enqueue($"[NPC诊断] 未在 CurrentMap.NPCs 找到 ObjectID={objectID}（可能来自其他地图或客户端发错 ID）");
 
+            // 本次没有产生 NPCResponse 时也要清除，避免误影响下一次普通对话。
+            OpenQuestPanelOnNextNPCResponse = false;
             CallNPCNextPage();
         }
         private void CallNPCNextPage()

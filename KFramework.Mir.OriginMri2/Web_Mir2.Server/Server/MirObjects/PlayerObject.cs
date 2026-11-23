@@ -126,6 +126,9 @@ namespace Server.MirObjects
         public NPCPage NPCPage;
         public Dictionary<NPCSegment, bool> NPCSuccess = new Dictionary<NPCSegment, bool>();
         public bool NPCDelayed;
+        // 原始传奇 checknpcTaskDialog：任务追踪点击 NPC 时置位，下一次 S.NPCResponse 消费它，
+        // 让客户端弹「NPC 任务面板」而非普通对话面板。一次性标记，发完即清。
+        public bool OpenQuestPanelOnNextNPCResponse;
         public List<string> NPCSpeech = new List<string>();
         public Dictionary<string, object> NPCData = new Dictionary<string, object>();
 

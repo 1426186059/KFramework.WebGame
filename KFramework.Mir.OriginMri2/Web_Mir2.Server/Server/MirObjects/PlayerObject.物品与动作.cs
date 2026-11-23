@@ -3545,7 +3545,7 @@ namespace Server.MirObjects
         {
             MessageQueue.Enqueue($"[传送诊断] 收到 TeleportToQuestTarget map={mapIndex} x={x} y={y} monster={monsterIndex}");
 
-            if (!HasQuestTarget(mapIndex, x, y, out uint npcObjectId))
+            if (!HasQuestTarget(mapIndex, x, y, out uint npcObjectId, out bool questFinished))
             {
                 MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 返回 false, 不放行传送");
                 return;
@@ -3606,7 +3606,11 @@ namespace Server.MirObjects
             {
                 NPCObject targetNpc = Envir.NPCs.FirstOrDefault(n => n.ObjectID == npcObjectId);
                 if (targetNpc != null && !Dead)
-                    CallNPC(targetNpc.ObjectID, NPCScript.MainKey);
+                {
+                    // 原始传奇 checknpcTaskDialog：只有任务已完成待交(state=Finish)才弹任务面板；
+                    // 进行中(state=Accepted，如"买一本技能书")仍走普通 NPC 面板，让玩家用商店功能。
+                    CallNPC(targetNpc.ObjectID, NPCScript.MainKey, openQuestPanel: questFinished);
+                }
             }
         }
 
@@ -3633,9 +3637,11 @@ namespace Server.MirObjects
         // 该目标对应的 NPC 运行时 ObjectID（取自任务数据本身，无需客户端额外传字段）。
         // 交付/返回类目标用 FinishNpcIndex，接取/寻找类目标用起始 NpcIndex；
         // EnsureQuestNPC 已把这两者覆盖为运行时世界唯一索引(ObjectID)。
-        private bool HasQuestTarget(uint mapIndex, int x, int y, out uint npcObjectId)
+        // questFinished 输出目标任务的待交状态(state=Finish)，用于 checknpcTaskDialog 面板判定。
+        private bool HasQuestTarget(uint mapIndex, int x, int y, out uint npcObjectId, out bool questFinished)
         {
             npcObjectId = 0;
+            questFinished = false;
             MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 开始, CurrentQuests.Count={CurrentQuests.Count}, 请求 map={mapIndex} x={x} y={y}");
             for (int i = 0; i < CurrentQuests.Count; i++)
             {
@@ -3658,7 +3664,10 @@ namespace Server.MirObjects
                     {
                         // 仅 NPC 类目标需要打开面板；怪物类目标（打怪/收集）不打扰附近 NPC。
                         if (t.Type == QuestTargetType.NPC)
+                        {
                             npcObjectId = quest.Completed ? (uint)quest.Info.FinishNpcIndex : (uint)quest.Info.NpcIndex;
+                            questFinished = quest.Completed;
+                        }
                         return true;
                     }
                 }

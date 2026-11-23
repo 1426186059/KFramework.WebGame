@@ -3045,6 +3045,9 @@ namespace ServerPackets
 
         public List<string> Page;
 
+        // 原始传奇 checknpcTaskDialog：服务端判定时打开「NPC 任务面板」而非普通对话面板。
+        public bool OpenQuestPanel;
+
         protected override void ReadPacket(BinaryReader reader)
         {
             Page = new List<string>();
@@ -3053,6 +3056,8 @@ namespace ServerPackets
 
             for (int i = 0; i < count; i++)
                 Page.Add(reader.ReadString());
+
+            OpenQuestPanel = reader.ReadBoolean();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
@@ -3060,6 +3065,8 @@ namespace ServerPackets
 
             for (int i = 0; i < Page.Count; i++)
                 writer.Write(Page[i]);
+
+            writer.Write(OpenQuestPanel);
         }
     }
     public sealed class ObjectHide : Packet
