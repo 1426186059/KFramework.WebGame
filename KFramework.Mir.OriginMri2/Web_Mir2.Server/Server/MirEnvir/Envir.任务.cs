@@ -55,6 +55,7 @@ namespace Server.MirEnvir
             OriginTasks.Clear();
             OriginGoals.Clear();
             OriginTaskTypeNames.Clear();
+            OriginTextStyles.Clear();
 
             try
             {
@@ -76,6 +77,10 @@ namespace Server.MirEnvir
                         foreach (var kv in cfg5.goals)
                             if (int.TryParse(kv.Key, out int id) && kv.Value != null)
                                 OriginGoals[id] = kv.Value;
+                    if (cfg5?.textstyle != null)
+                        foreach (var kv in cfg5.textstyle)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginTextStyles[id] = kv.Value;
                 }
 
                 string f0 = Directory.GetFiles(baseDir, "0config*.json").FirstOrDefault();
@@ -94,7 +99,7 @@ namespace Server.MirEnvir
                     }
                 }
 
-                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇任务权威表: {OriginTasks.Count} 任务 / {OriginGoals.Count} 目标 / {OriginTaskTypeNames.Count} 类型前缀（4config._task + 5config.goals + 0config.global[9201]）");
+                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇任务权威表: {OriginTasks.Count} 任务 / {OriginGoals.Count} 目标 / {OriginTaskTypeNames.Count} 类型前缀 / {OriginTextStyles.Count} 文字样式（4config._task + 5config.goals + 0config.global + 5config.textstyle）");
             }
             catch (Exception ex)
             {

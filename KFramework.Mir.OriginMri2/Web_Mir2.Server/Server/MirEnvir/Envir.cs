@@ -138,6 +138,8 @@ namespace Server.MirEnvir
         public Dictionary<int, OriginGoalTable> OriginGoals = new Dictionary<int, OriginGoalTable>();
         /// <summary>原始传奇任务类型名前缀 0config.global[9201]，key = type，value = "[主线]" 等前缀。</summary>
         public Dictionary<int, string> OriginTaskTypeNames = new Dictionary<int, string>();
+        /// <summary>原始传奇富文本样式表 5config.textstyle（Logic.getCol(id)），key = 样式 id，任务追踪取 31(白)/32(绿)。</summary>
+        public Dictionary<int, OriginTextStyleTable> OriginTextStyles = new Dictionary<int, OriginTextStyleTable>();
 
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
         public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();

@@ -144,11 +144,25 @@ namespace Server.MirDatabase
         [JsonPropertyName("box")] public Dictionary<string, OriginBoxTable> box { get; set; } = new();
     }
 
-    // 5config：目标表 + NPC 摆放 + 技能表。
+    // ===================== 5config.textstyle：富文本样式表（任务追踪文字颜色来源） =====================
+    // 原版 Logic.getCol(id) = cm.textstyle[id].textColor；任务追踪 info0=31(白) / info1=32(绿+下划线) / 标题=28/29(金)。
+    public class OriginTextStyleTable
+    {
+        [JsonPropertyName("id")] public int id { get; set; }
+        [JsonPropertyName("stroke")] public int stroke { get; set; }
+        [JsonPropertyName("bold")] public int bold { get; set; }
+        [JsonPropertyName("size")] public int size { get; set; }
+        [JsonPropertyName("underline")] public int underline { get; set; }
+        [JsonPropertyName("textColor")] public string textColor { get; set; } = "";
+        [JsonPropertyName("strokeColor")] public string strokeColor { get; set; } = "";
+    }
+
+    // 5config：目标表 + NPC 摆放 + 技能表 + 富文本样式表。
     public class OriginMir2Config5
     {
         [JsonPropertyName("goals")] public Dictionary<string, OriginGoalTable> goals { get; set; } = new();
         [JsonPropertyName("mapnpc")] public Dictionary<string, OriginMapNpcTable> mapnpc { get; set; } = new();
         [JsonPropertyName("skill")] public Dictionary<string, OriginSkillTable> skill { get; set; } = new();
+        [JsonPropertyName("textstyle")] public Dictionary<string, OriginTextStyleTable> textstyle { get; set; } = new();
     }
 }

@@ -122,6 +122,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     _taskLabels[i] = owner.NewLabel(CommonColor.White, true);
                     _taskLabels[i].Parent = this;
+                    _taskLabels[i].RichText = true;   // 服务端下发原版 textstyle 富文本（买=白 / 技能书=绿+下划线）
                     _taskLabels[i].NotControl = true;
                 }
 
@@ -241,6 +242,14 @@ namespace Client.MirScenes.Dialogs
                         ? entry.Quest.Targets[line] : null;
                     _targets[line] = target;
                     line++;
+
+                    // 服务端已按原版 textstyle 拼好富文本（含 <color=...>）：整行直接显示，
+                    // 颜色/下划线由配置决定（买=白 / 技能书=绿），客户端不再二次染绿破坏标记。
+                    if (text.Contains("<color="))
+                    {
+                        SetLabel(_taskLabels[line - 1], text, 10, lineY, CommonColor.White, true);
+                        continue;
+                    }
 
                     if (target != null && target.MapIndex > 0 && !string.IsNullOrEmpty(target.Name))
                     {

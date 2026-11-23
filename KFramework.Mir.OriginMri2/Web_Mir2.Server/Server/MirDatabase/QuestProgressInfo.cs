@@ -519,8 +519,11 @@ namespace Server.MirDatabase
                 info1 = Regex.Replace(info1, @"\{\d+\}", current + "/" + total);
             }
 
-            string text = (info0 + info1).Trim();
-            if (string.IsNullOrEmpty(text)) text = StripOriginSeparator(Info.OriginSettings.GoalInfo);
+            // 原版两段式颜色：info0=textstyle[31]（白），info1=textstyle[32]（绿+下划线），
+            // 颜色/描边/下划线全部读 5config.textstyle 配置（Logic.getCol），不再硬编码。
+            string text = BuildOriginRichText(info0, info1, 31, 32);
+            if (string.IsNullOrEmpty(info0) && string.IsNullOrEmpty(info1))
+                text = StripOriginSeparator(Info.OriginSettings.GoalInfo);
 
             TaskList.Add(text);
 
@@ -529,6 +532,35 @@ namespace Server.MirDatabase
             if (KillTaskCount.Count > 0 && KillTaskCount[0].Info != null && KillTaskCount[0].Info.Monster != null)
                 monsterTarget = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
             Targets.Add(monsterTarget ?? MakeNPCTarget());
+        }
+
+        /// <summary>
+        /// 按原版 textstyle 配置拼两段富文本（客户端 MirLabel.RichText 解析 &lt;color=#RRGGBB&gt;&lt;u&gt;...）。
+        /// 客户端 QuestTrackingItem.Bind 见到 &lt;color= 标记会整行直接显示，不再二次染绿。
+        /// </summary>
+        private static string BuildOriginRichText(string info0, string info1, int style0, int style1)
+        {
+            string part0 = OriginStyledText(info0, style0);
+            string part1 = OriginStyledText(info1, style1);
+            return (part0 + part1).Trim();
+        }
+
+        private static string OriginStyledText(string text, int styleId)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+
+            OriginTextStyleTable style = null;
+            if (Envir.OriginTextStyles.TryGetValue(styleId, out style) && style != null)
+            {
+                string hex = style.textColor.StartsWith("#") ? style.textColor : "#" + style.textColor;
+                string body = text;
+                if (style.underline == 1) body = "<u>" + body + "</u>";
+                if (style.bold == 1) body = "<b>" + body + "</b>";
+                return "<color=" + hex + ">" + body + "</color>";
+            }
+
+            // textstyle 未加载时回退纯文本（info1 仍需可辨识：客户端旧逻辑会按 target 染绿）
+            return text;
         }
 
         /// <summary>当前目标的进度值：击杀优先，其次收集，均无进度(如买书)时按完成标记取 0/1。</summary>

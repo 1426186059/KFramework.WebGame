@@ -4004,12 +4004,15 @@ namespace Client.MirScenes
             }
             catch { npcHasQuest = false; }
 
-            if (npcHasQuest)
+            // 有对话/商店脚本（书店老板等）：优先显示普通 NPC 面板，让玩家能直接购买；
+            // 只有纯任务 NPC（无对话页、无大按钮）才弹任务面板，避免商店 NPC 被任务面板覆盖。
+            bool hasNpcContent = p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0;
+            if (npcHasQuest && !hasNpcContent)
             {
                 NPCDialog.Hide();
                 QuestListDialog.Show();
             }
-            else if (p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0)
+            else if (hasNpcContent)
             {
                 NPCDialog.Show();
             }
@@ -4027,7 +4030,8 @@ namespace Client.MirScenes
             RefineDialog.Hide();
             StorageDialog.Hide();
             TrustMerchantDialog.Hide();
-            if (!npcHasQuest)
+            // 显示普通 NPC 面板时收起任务面板（哪怕该 NPC 同时挂着任务），否则两层面板叠加。
+            if (!npcHasQuest || hasNpcContent)
                 QuestListDialog.Hide();
         }
 
