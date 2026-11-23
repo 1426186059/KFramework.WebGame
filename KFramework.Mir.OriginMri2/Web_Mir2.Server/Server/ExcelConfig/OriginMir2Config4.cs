@@ -32,6 +32,10 @@ namespace Server.MirDatabase
     {
         [JsonPropertyName("npcstore")]
         public Dictionary<int, Dictionary<int, OriginStoreItemTable>> npcstore { get; set; } = new();
+
+        /// <summary>4config._task 任务权威表（key = 任务 id），单条 DTO 见 OriginTaskTable。</summary>
+        [JsonPropertyName("_task")]
+        public Dictionary<string, OriginTaskTable> _task { get; set; } = new();
     }
 
     /// <summary>0config.conditions 单条条件（原始传奇 Logic.checkCondition 用）。</summary>

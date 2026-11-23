@@ -440,7 +440,25 @@ namespace Server.MirDatabase
             UpdateKillTasks();
             UpdateItemTasks();
             UpdateFlagTasks();
+            UpdateBuyGoalTask();
             UpdateGotoTask();
+        }
+
+        /// <summary>
+        /// 原始传奇 goal type=532「买物品」引导任务（如任务14 买一本技能书）：
+        /// 这类任务没有 Kill/Item/Flag 进度，若不在这里加一行，追踪面板只有任务名、目标行空白。
+        /// 用原版 goal.goInfo（"买 一本技能书"）填目标行，点击目标指向交付 NPC（书店老板）。
+        /// </summary>
+        private void UpdateBuyGoalTask()
+        {
+            if (Info == null || Info.OriginSettings == null || Info.OriginSettings.GoalType != 532) return;
+            if (Completed) return; // 完成后由 UpdateGotoTask 显示"找到 书店老板"
+
+            string text = Info.OriginSettings.GoalInfo;
+            if (string.IsNullOrEmpty(text)) text = Info.TaskDescription.Count > 0 ? Info.TaskDescription[0] : Info.Name;
+
+            TaskList.Add(text);
+            Targets.Add(MakeNPCTarget()); // 点击目标打开 NPC（书店老板）面板
         }
 
         public void UpdateKillTasks()
