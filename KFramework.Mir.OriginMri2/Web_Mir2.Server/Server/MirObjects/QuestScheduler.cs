@@ -85,7 +85,10 @@ namespace Server.MirObjects
             if (quest.OriginSettings != null && quest.OriginSettings.SkillGoals.Count > 0) return;
 
             bool auto = quest.OriginSettings != null && quest.OriginSettings.State == 2;
-            if (auto) _player.AutoAcceptQuest(quest.Index);
+            // 任务链自动推进下一环时不弹默认NPC面板：玩家可能正停在书店老板等对话界面操作，
+            // AutoAcceptQuest 里的 CallDefaultNPC(OnAcceptQuest) 会 S.NPCUpdate 把面板切到任务NPC，
+            // 打断当前操作。下一次玩家主动点NPC时仍是正常面板。
+            if (auto) _player.AutoAcceptQuest(quest.Index, showNPC: false);
             else _player.OfferQuest(quest.Index);
         }
 

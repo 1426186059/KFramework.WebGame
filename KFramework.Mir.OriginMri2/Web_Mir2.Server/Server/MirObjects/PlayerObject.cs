@@ -300,6 +300,7 @@ namespace Server.MirObjects
             // 原始传奇技能：登录时补齐占位/自动学会（需书技能保持 0 级待书）。
             LearnOriginSkills(false);
             CheckSkillGoalQuests(); // 已学会对应技能的"学习技能"支线在登录时补发奖励
+            CheckBuyGoalQuests();   // 532 买物品引导任务：背包已有书时补判完成
         }
 
         /// <summary>
@@ -8604,6 +8605,8 @@ namespace Server.MirObjects
                 {
                     NPCScript script = NPCScript.Get(NPCScriptID);
                     script.Buy(this, index, count);
+
+                    CheckBuyGoalQuests(); // 原始传奇532买物品引导任务：买到本职业技能书即完成
                 }
             }
         }
@@ -12162,6 +12165,57 @@ namespace Server.MirObjects
         }
 
         /// <summary>
+        /// 原始传奇 goal type=532「买物品」引导任务（任务14 买一本技能书等）：
+        /// 玩家在 NPC 商店买到物品后，背包里持有即视为完成，物品留在背包可直接使用/学习。
+        /// 购买成功后、接取任务、登录时调用。
+        /// </summary>
+        public void CheckBuyGoalQuests()
+        {
+            var buyQuests = CurrentQuests.Where(q => q.Info != null && q.Info.OriginSettings != null && q.Info.OriginSettings.GoalType == 532 && !q.BuyGoalDone).ToList();
+            if (buyQuests.Count == 0) return;
+
+            foreach (QuestProgressInfo q in buyQuests)
+            {
+                if (!HasOriginBuyGoalItem(q.Info)) continue;
+
+                q.BuyGoalDone = true;
+                if (q.CheckCompleted())
+                {
+                    SendUpdateQuest(q, QuestState.Remove);
+                    TrackQuest(q.Info.Index, false);
+                    GrantQuestCompletion(q.Info); // 发经验/金币/物品奖励
+                    if (!CompletedQuests.Contains(q.Info.Index)) CompletedQuests.Add(q.Info.Index);
+                    GetCompletedQuests();
+                    ReceiveOutputMessage($"任务完成：{q.Info.Name}", OutputMessageType.Quest);
+                    // 不调 CallDefaultNPC(OnFinishQuest)：那会 Enqueue S.NPCUpdate 把玩家正在操作的
+                    // 书店老板面板强行切成默认NPC(任务)面板。买书完成只需静默推进下一环。
+                    QuestScheduler.AdvanceAfterComplete(q.Info);
+                }
+            }
+        }
+
+        /// <summary>原始传奇 532 目标是否达成：背包里持有本职业 1 级技能书（战士11011/法师12011/道士13011）。</summary>
+        private bool HasOriginBuyGoalItem(QuestInfoTable info)
+        {
+            // param=257=技能书，255=药品。当前实现 532 目标均按"买到本职业1级技能书"判定。
+            int bookIndex = Class switch
+            {
+                MirClass.Warrior => 11011,
+                MirClass.Wizard => 12011,
+                MirClass.Taoist => 13011,
+                _ => 0
+            };
+            if (bookIndex == 0) return false;
+
+            for (int i = 0; i < Info.Inventory.Length; i++)
+            {
+                UserItem item = Info.Inventory[i];
+                if (item != null && item.Info != null && item.Info.Index == bookIndex) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 原始传奇"学习技能"支线（type=516，原版无 fnpc/tnpc）：学会本职业对应技能即自动领奖。
         /// 学会技能（技能书 / 升级自动学）、登录、升级时调用。
         /// </summary>
@@ -12303,7 +12357,7 @@ namespace Server.MirObjects
         /// 不要求玩家身处 NPC 附近——这是与手动 AcceptQuest 的关键区别，
         /// 目的是让任务"一个接一个"地推给玩家。
         /// </summary>
-        public void AutoAcceptQuest(int index)
+        public void AutoAcceptQuest(int index, bool showNPC = true)
         {
             if (index <= 0) return;
             if (CurrentQuests.Exists(e => e.Index == index)) return;
@@ -12322,7 +12376,11 @@ namespace Server.MirObjects
             // autoGuide 会让客户端跑 A*；目标 NPC 格子不可走时会穷举整张地图，WASM 单线程直接卡死。
             SendUpdateQuest(quest, QuestState.Add, tracked, false);
 
-            CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
+            // 532 买物品引导任务：若玩家背包已有对应技能书（先买后接），立即判定完成。
+            CheckBuyGoalQuests();
+
+            if (showNPC)
+                CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
 
         /// <summary>

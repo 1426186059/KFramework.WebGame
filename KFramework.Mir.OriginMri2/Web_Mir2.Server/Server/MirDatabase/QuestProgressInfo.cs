@@ -23,6 +23,11 @@ namespace Server.MirDatabase
         public List<QuestItemTaskProgress> ItemTaskCount = new List<QuestItemTaskProgress>();
         public List<QuestFlagTaskProgress> FlagTaskSet = new List<QuestFlagTaskProgress>();
 
+        // 原始传奇 goal type=532「购买物品」引导任务（如任务14买一本技能书）的完成标记。
+        // 该目标没有 Kill/Item/Flag 进度，若不加这道闸，CheckCompleted 会因零目标立即完成、
+        // 任务被秒跳过而不显示。买书后由 PlayerObject.CheckBuyGoalQuests 置位，书留在玩家背包。
+        public bool BuyGoalDone;
+
         public List<string> TaskList = new List<string>();
 
         // 任务追踪栏“点击传送”目标（与 TaskList 一一对应：怪物/NPC + 地图坐标）。
@@ -327,6 +332,10 @@ namespace Server.MirDatabase
 
             bool canComplete = true;
 
+            // 原始传奇 goal type=532 买物品引导任务：必须先买到东西才完成，不能因零目标秒完成。
+            if (Info != null && Info.OriginSettings != null && Info.OriginSettings.GoalType == 532 && !BuyGoalDone)
+                canComplete = false;
+
             for (int j = 0; j < KillTaskCount.Count; j++)
             {
                 if (KillTaskCount[j].Complete) continue;
@@ -600,11 +609,13 @@ namespace Server.MirDatabase
         private QuestTaskTarget MakeNPCTarget()
         {
             NPCInfoTable npc = Info.NpcInfo;
-            // 兜底解析：部分任务可能尚未绑定 NpcInfo，尝试用索引定位 NPC
-            if (npc == null && Info.NpcIndex != 0)
-                npc = Envir.GetNPCInfo((int)Info.NpcIndex);
-            if (npc == null && Info.FinishNpcIndex != 0)
-                npc = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
+            // 兜底：只用 OriginSettings 里的配置索引（StartNpcId/FinishNpcId）查 NPCInfo。
+            // NpcIndex/FinishNpcIndex 存的是运行时 ObjectID，绝不能当配置索引查——会误命中
+            // NPCInfo(854) 这类 MapIndex=854@(63,71) 的占位坏 NPC，导致任务追踪传送到不存在的地图。
+            if (npc == null && Info.OriginSettings != null && Info.OriginSettings.StartNpcId > 0)
+                npc = Envir.GetNPCInfo(Info.OriginSettings.StartNpcId);
+            if (npc == null && Info.OriginSettings != null && Info.OriginSettings.FinishNpcId > 0)
+                npc = Envir.GetNPCInfo(Info.OriginSettings.FinishNpcId);
             if (npc == null)
             {
                 // 仍未找到：返回“不可导航”的占位目标，避免 Targets 出现 null 导致序列化崩溃
@@ -628,23 +639,58 @@ namespace Server.MirDatabase
             };
         }
 
+        /// <summary>
+        /// 按 NPC 配置 Index 找第一个运行中的实例，取其真实地图/坐标。
+        /// 同一个 NPC（如夏家店老板 10091）可能在多个地图各有一个实例（103 比奇省、154 盟重、
+        /// 甚至室内衣服店），配置里的 MapIndex/Location 只是初始摆放，不能当传送目标写死。
+        /// 绝不能拿 ObjectID 当 NPCInfo 配置索引查——两套编号体系，会误命中 MapIndex=854 的坏 NPC。
+        /// </summary>
+        private QuestTaskTarget MakeNPCTargetByConfigIndex(int npcConfigIndex)
+        {
+            if (npcConfigIndex <= 0) return null;
+
+            for (int i = 0; i < Envir.NPCs.Count; i++)
+            {
+                var npc = Envir.NPCs[i];
+                if (npc == null || npc.Info == null || npc.Info.Index != npcConfigIndex) continue;
+                if (npc.CurrentMap == null || npc.CurrentMap.Info == null) continue;
+
+                return new QuestTaskTarget
+                {
+                    Type = QuestTargetType.NPC,
+                    Name = npc.Name,
+                    MapIndex = (uint)npc.CurrentMap.Info.Index,
+                    X = npc.CurrentLocation.X,
+                    Y = npc.CurrentLocation.Y
+                };
+            }
+
+            // 实例尚未生成：退回 NPCInfo 配置摆放（第一个 Placement）
+            NPCInfoTable npcInfo = Envir.GetNPCInfo(npcConfigIndex);
+            if (npcInfo != null)
+                return new QuestTaskTarget
+                {
+                    Type = QuestTargetType.NPC,
+                    Name = npcInfo.Name,
+                    MapIndex = (uint)npcInfo.MapIndex,
+                    X = npcInfo.Location.X,
+                    Y = npcInfo.Location.Y
+                };
+            return null;
+        }
+
         private QuestTaskTarget MakeFinishNPCTarget()
         {
-            // 交任务（返回）目标：使用 FinishNpcIndex（静态 NPCInfoTable 索引）定位交任务 NPC；
-            // 兼容旧数据把 FinishNpcIndex 存为运行时 ObjectID 的情况。
+            // 交任务（返回）目标：优先按 NPC 配置索引找运行时实例（可能在任意地图、有多个分身），
+            // 取真实 CurrentMap/CurrentLocation，而不是配置写死的 MapIndex/Location。
+            if (Info.OriginSettings != null)
+            {
+                var t = MakeNPCTargetByConfigIndex(Info.OriginSettings.FinishNpcId);
+                if (t != null) return t;
+            }
+            // 兜底：旧数据没有 OriginSettings 时用 FinishNpcIndex 按 ObjectID 找运行时实例。
             if (Info.FinishNpcIndex != 0)
             {
-                NPCInfoTable npcInfo = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
-                if (npcInfo != null)
-                    return new QuestTaskTarget
-                    {
-                        Type = QuestTargetType.NPC,
-                        Name = npcInfo.Name,
-                        MapIndex = (uint)npcInfo.MapIndex,
-                        X = npcInfo.Location.X,
-                        Y = npcInfo.Location.Y
-                    };
-
                 var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcIndex);
                 if (npc != null && npc.CurrentMap != null)
                     return new QuestTaskTarget

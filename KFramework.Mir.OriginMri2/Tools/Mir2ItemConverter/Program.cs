@@ -271,6 +271,21 @@ public static class Program
                 if (skillBookSubType == 64 || skillBookSubType == 216)
                     outItem.Type = 20;
 
+                // 传送类：原始 col21=61(回城)/60(随机)，精确覆盖回城石405+回城卷8135、随机石404+随机传送卷8151。
+                // 服务端 UseItem 的 ItemType.Scroll 分支按 Shape 处理：1=回城(TT)、2=随机(RT)；
+                // 转换器原本不设 Type/Shape，这四件落成 Type=0，右键没反应（石头/卷轴都不能用）。
+                // 客户端 MirItemCell 对 Scroll 会正常发包，服务端据此执行对应传送。
+                if (skillBookSubType == 61)
+                {
+                    outItem.Type = 17;   // ItemType.Scroll
+                    outItem.Shape = 1;   // TT 回城
+                }
+                else if (skillBookSubType == 60)
+                {
+                    outItem.Type = 17;   // ItemType.Scroll
+                    outItem.Shape = 2;   // RT 随机传送
+                }
+
                 if (outItem.Type == 0) unknownType++;
 
                 // RequiredClass <- 职业：col59(装备归属) > col52(技能书) > col50 首段(兜底)。

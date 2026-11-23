@@ -3987,6 +3987,11 @@ namespace Client.MirScenes
                 return;
             }
             NPCTeleporterDialog.Hide();
+
+            // 打开 NPC 对话/任务面板时停止自动战斗与自动寻路，避免玩家在看对话/任务时被自动拉走或继续打怪。
+            MapControl.AutoFight = false;
+            MapControl.AutoPath = false;
+
             NPCDialog.NewText(p.Page);
 
             // NPC 有可接/可交任务：直接弹任务面板，不再弹 NPC 菜单（省得玩家多一步点击）
