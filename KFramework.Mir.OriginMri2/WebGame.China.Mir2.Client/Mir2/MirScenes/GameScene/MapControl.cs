@@ -2282,43 +2282,57 @@ public sealed class MapControl : MirControl
             {
                 long now = CMain.Time;
                 bool hasMissile = steps.Any(s => s.type == 2 && s.effect > 0);
+                // 命中步骤（type=1）及其音效：原始 JS 在子弹 flyComplete 时才播放，
+                // 位置=目标身上并上移 SKILL_HitTestY(60) 到身体中部。
+                SkillEffectTable hitStep = steps.FirstOrDefault(s => s.type == 1 && s.effect > 0);
                 foreach (SkillEffectTable step in steps)
                 {
                     long start = now + Math.Max(0, step.delaytime);
                     if (step.type == 2 && step.effect > 0)
                     {
-                        // 飞行子弹：沿施法者→目标插值，抵达后播放命中特效。
+                        // 飞行子弹：原始 addSkillBullet 创建时即播放音效（不按 delaytime 延后）。
+                        if (step.sound > 0)
+                            SoundManager.PlaySound(step.sound);
+
                         int flyMs = Math.Max(1, step.delaytime);
                         OriginMissile missile = new OriginMissile(step.effect, actor, target, location, flightDuration: flyMs);
-                        if (target != null)
+                        if (target != null && hitStep != null)
                         {
-                            int hitEffect = steps.FirstOrDefault(s => s.type == 1)?.effect ?? 0;
-                            if (hitEffect > 0)
+                            int hitEffect = hitStep.effect;
+                            int hitSound = hitStep.sound;
+                            MapObject hitTarget = target;
+                            missile.Complete += (o, e) =>
                             {
-                                MapObject hitTarget = target;
-                                missile.Complete += (o, e) =>
+                                if (hitTarget.CurrentAction != MirAction.Dead)
                                 {
-                                    if (hitTarget.CurrentAction != MirAction.Dead)
-                                        hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
-                                };
-                            }
+                                    hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget,
+                                        yOffset: OriginMissile.SkillHitTestY));
+                                    // 命中音效在子弹抵达时播放（原版 flyComplete 内的 sound）。
+                                    if (hitSound > 0)
+                                        SoundManager.PlaySound(hitSound);
+                                }
+                            };
                         }
                         actor.Effects.Add(missile);
                     }
                     else if (step.type == 1 && step.effect > 0)
                     {
-                        // 有飞行子弹时命中特效由 Complete 触发（原版 delaytime=0 是相对落地时刻）。
+                        // 有飞行子弹时命中特效/音效由 Complete 触发（原版 delaytime=0 是相对落地时刻）。
                         if (!hasMissile && target != null)
-                            target.Effects.Add(new OriginEffect(step.effect, target, start));
+                        {
+                            target.Effects.Add(new OriginEffect(step.effect, target, start,
+                                yOffset: OriginMissile.SkillHitTestY));
+                            if (step.sound > 0)
+                                SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
+                        }
                     }
                     else if (step.effect > 0)
                     {
-                        // type=0 起手挂施法者；其余无目标也挂施法者，确保可见。
+                        // type=0 起手挂施法者；音效立即播放（原版 initEffects 起手 sound）。
                         actor.Effects.Add(new OriginEffect(step.effect, actor, start));
+                        if (step.sound > 0)
+                            SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
                     }
-
-                    if (step.sound > 0)
-                        SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
                 }
             }
             else

@@ -17,8 +17,11 @@ namespace Client.MirObjects
         private readonly int _direction;
         private readonly int _intval;
         private readonly bool _addBlend;
+        private readonly int _yOffset;     // 屏幕Y偏移：命中特效上移到身体中部(SKILL_HitTestY=60)
+        private readonly float _scale;     // 原始传奇 action show/100 缩放；<=0 表示不缩放
 
-        public OriginEffect(int effectId, MapObject owner, long starttime = 0)
+        public OriginEffect(int effectId, MapObject owner, long starttime = 0,
+                            int yOffset = 0, float scale = 1f)
             : base(null, 0, 1, 0, owner, starttime)
         {
             if (!ExcelTableMgr.TryGetEffect(effectId, out var effect))
@@ -32,6 +35,8 @@ namespace Client.MirObjects
             _direction = effect.dir;
             _intval = effect.intval > 0 ? effect.intval : 50;
             _addBlend = effect.blendmode == "add";
+            _yOffset = yOffset;
+            _scale = scale > 0 ? scale : 1f;
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
                                             Mir2OriginObjectLibrary.PriorityVisible);
@@ -75,9 +80,18 @@ namespace Client.MirObjects
                 return;
 
             Rectangle src = sprite.SourceRectangle;
-            int x = DrawLocation.X - src.Width / 2;
-            int y = DrawLocation.Y - src.Height / 2;
-            Rectangle dst = new Rectangle(x, y, src.Width, src.Height);
+            // 特效精灵是裁剪后的单帧（如 136x98），必须用帧中心锚定；
+            // 绝不能用 modelInfo.standx/standy(~537，那是整张大画布的枢轴)，否则会偏移几百像素画到远处。
+            // 命中特效再上移 SKILL_HitTestY(60) 到身体中部。
+            int cx = src.Width / 2, cy = src.Height / 2;
+
+            int anchorX = DrawLocation.X;
+            int anchorY = DrawLocation.Y - _yOffset;
+            int w = Math.Max(1, (int)Math.Round(src.Width * _scale));
+            int h = Math.Max(1, (int)Math.Round(src.Height * _scale));
+            int x = anchorX - (int)Math.Round(cx * _scale);
+            int y = anchorY - (int)Math.Round(cy * _scale);
+            Rectangle dst = new Rectangle(x, y, w, h);
 
             DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
                            (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), SpriteEffects.None);
@@ -196,17 +210,34 @@ namespace Client.MirObjects
             // 保证整条飞行轨迹都落在身体上半部，而不是贴着地面从身上穿过。
             screenY -= _startYOffset;
 
+            // 原始传奇 SkillBullet：用 effect.dir(4) 的精灵帧，靠 t.rotation=orientation-90 旋转朝向目标，
+            // 位置由 tween 平滑驱动。这里完全照搬：固定用 dir=_direction 的帧，按 source→目标算旋转角。
+            // 注意原始子弹动画是多帧（同一火球自转），这里按飞行进度推进帧，不是固定帧 0。
             int frame = CurrentFrame % _totalFrames;
             if (!Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, _model, _action, _direction, frame, out var sprite) || sprite == null)
                 return;
 
             Rectangle src = sprite.SourceRectangle;
-            int x = screenX - src.Width / 2;
-            int y = screenY - src.Height / 2;
-            Rectangle dst = new Rectangle(x, y, src.Width, src.Height);
+            // 必须用裁剪帧中心锚定；standx/standy(~537)是大画布枢轴，用了会把子弹偏移几百像素到远处。
+            int cx = src.Width / 2, cy = src.Height / 2;
 
+            // 原始: rotation = DirectionUtil.orientation(x1,y1,x2,y2) - 90 (度)，egret rotation 是度，
+            // MonoGame 是弧度：atan2(dy,dx) - π/2 即为等价弧度。
+            float rotation = 0f;
+            if (Target != null)
+            {
+                float dx = Destination.X - _source.X;
+                float dy = Destination.Y - _source.Y;
+                rotation = (float)Math.Atan2(dy, dx) - (float)(Math.PI / 2);
+            }
+
+            // 引擎 Draw(RectangleF,...) 的 X/Y 即锚点落点，origin 是源帧内像素锚点；
+            // 二者合起来 = 把帧内(cx,cy)点对齐到屏幕(screenX,screenY)，不能再手动减 cx。
+            RectangleF dst = new RectangleF(screenX, screenY, src.Width, src.Height);
+            var origin = new KFramework.MonoGame.Vector2(cx, cy);
             DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
-                           (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), SpriteEffects.None);
+                           (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(),
+                           rotation, origin);
         }
     }
 }

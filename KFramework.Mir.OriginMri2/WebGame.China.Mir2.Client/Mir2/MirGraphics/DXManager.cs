@@ -330,6 +330,18 @@ void main()
             CMain.DPSCounter++;
         }
 
+        /// <summary>带旋转的绘制：原始传奇飞行子弹(dir=4 精灵 + rotation 朝向目标)用。</summary>
+        public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, RectangleF destRect,
+                                KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState,
+                                float rotation, KFramework.MonoGame.Vector2 origin)
+        {
+            if (texture == null) return;
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            Batch.Draw(texture, destRect, sourceRect, color, rotation, origin,
+                       (KFramework.MonoGame.Vector2?)null, KFramework.MonoGame.SpriteEffects.None, 0f);
+            CMain.DPSCounter++;
+        }
+
         /// <summary>浮点目标矩形版（含翻转）：用于缩放精灵的亚像素定位，避免整型取整导致的逐帧抖动。</summary>
         public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, RectangleF destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState, KFramework.MonoGame.SpriteEffects effects)
         {
