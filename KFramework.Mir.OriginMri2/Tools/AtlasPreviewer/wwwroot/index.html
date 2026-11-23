@@ -41,6 +41,15 @@
     <button id="loadBtn">加载</button>
   </div>
   <div class="bar">
+    <label>类型：
+      <select id="atlasTypeSelect">
+        <option value="">全部</option>
+        <option value="atlas">普通图集 (sheet)</option>
+        <option value="movieclip">MovieClip 动画</option>
+        <option value="font">位图字体 (font)</option>
+        <option value="other">其它</option>
+      </select>
+    </label>
     <label>图集：
       <select id="atlasSelect"><option value="">（先粘贴路径并加载）</option></select>
     </label>
@@ -63,7 +72,7 @@
   </div>
 </header>
 
-<div id="grid"><div class="empty">把本地图集文件夹路径粘贴到上方输入框，点“加载”，工具会遍历该目录下所有 *-sheet.json（含子目录）</div></div>
+<div id="grid"><div class="empty">把本地图集文件夹路径粘贴到上方输入框，点“加载”，工具会遍历该目录下所有图集 JSON（普通图集 / MovieClip / 位图字体，含子目录）</div></div>
 
 <div id="toast"></div>
 <script>
@@ -78,6 +87,7 @@ const loadBtn = document.getElementById('loadBtn');
 const atlasSelect = document.getElementById('atlasSelect');
 const atlasSearch = document.getElementById('atlasSearch');
 const atlasCountEl = document.getElementById('atlasCount');
+const atlasTypeSelect = document.getElementById('atlasTypeSelect');
 
 // 模糊匹配：query 各字符按出现顺序（可不连续）命中 text 即匹配；空 query 全匹配。
 function fuzzyMatch(text, query) {
@@ -94,19 +104,33 @@ function fuzzyMatch(text, query) {
   return true;
 }
 
-// 按图集名模糊过滤下拉项（占位项始终显示），并显示匹配计数。
+// 单个图集的类型标签：位图字体优先，否则按后端判定的 kind。
+function typeLabel(a) {
+  if (a.font) return 'font';
+  return a.kind || 'atlas';
+}
+// 图集类型下拉是否命中：font 是 atlas 的子类，选 atlas 时也应包含 font 图集。
+function typeMatch(a, t) {
+  if (!t) return true;
+  if (t === 'atlas') return typeLabel(a) === 'atlas' || typeLabel(a) === 'font';
+  return typeLabel(a) === t;
+}
+// 按类型 + 图集名模糊过滤下拉项（占位项始终显示），并显示匹配计数。
 function filterAtlasOptions() {
   const q = atlasSearch.value;
+  const t = atlasTypeSelect.value;
   let visible = 0;
   for (const opt of atlasSelect.options) {
     if (opt.value === '') { opt.style.display = ''; continue; }
-    const show = fuzzyMatch(opt.textContent, q);
+    const a = atlases[+opt.value];
+    const show = typeMatch(a, t) && fuzzyMatch(opt.textContent, q);
     opt.style.display = show ? '' : 'none';
     if (show) visible++;
   }
   atlasCountEl.textContent = atlases.length ? ('匹配 ' + visible + ' / ' + atlases.length + ' 个图集') : '';
 }
 atlasSearch.addEventListener('input', filterAtlasOptions);
+atlasTypeSelect.addEventListener('change', filterAtlasOptions);
 // 回车直接选中第一个匹配项
 atlasSearch.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
@@ -122,6 +146,9 @@ let currentRoot = '';
 let currentFrames = [];
 let currentImg = null;
 let currentAtlasName = '';
+// 已解码 PNG 缓存：同一张图集图来回切换不必重新下载+解码（大图集 PNG 可达数 MB，这是切换卡顿的主因之一）。
+const imgCache = new Map();
+let selectSeq = 0; // 快速连续切换时只应用最后一次，避免旧图集返回覆盖新选择
 
 // 粘贴路径 -> 服务端遍历列出图集
 async function loadRoot() {
@@ -135,12 +162,15 @@ async function loadRoot() {
     atlases = data.atlases || [];
     atlasSelect.innerHTML = '<option value="">— 选择图集 —</option>';
     atlases.forEach((a, i) => {
-      const o = document.createElement('option'); o.value = i; o.textContent = a.name; atlasSelect.appendChild(o);
+      const o = document.createElement('option');
+      o.value = i;
+      o.textContent = a.name + '  [' + typeLabel(a) + ']';
+      atlasSelect.appendChild(o);
     });
     filterAtlasOptions();
     grid.innerHTML = atlases.length
-      ? '<div class="empty">已发现 ' + atlases.length + ' 个图集，请从下拉选择</div>'
-      : '<div class="empty">该路径下没找到 *-sheet.json</div>';
+      ? '<div class="empty">已发现 ' + atlases.length + ' 个图集（普通图集 / MovieClip / 位图字体），请从下拉选择</div>'
+      : '<div class="empty">该路径下没找到图集 JSON（需含 frames/res/mc 字段）</div>';
   } catch (e) { grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
 }
 loadBtn.addEventListener('click', loadRoot);
@@ -157,17 +187,34 @@ atlasSelect.addEventListener('change', async e => {
   document.getElementById('atlasName').textContent = sheetKey;
   document.getElementById('atlasInfoBar').style.display = '';
   if (!a) return;
+  const seq = ++selectSeq;
+  grid.innerHTML = '<div class="empty">正在加载图集…</div>';
   try {
     const res = await fetch('/api/atlas?root=' + encodeURIComponent(currentRoot) + '&rel=' + encodeURIComponent(a.relPath));
     const data = await res.json();
+    if (seq !== selectSeq) return; // 期间又选了别的图集，丢弃这次结果
     if (!res.ok) { grid.innerHTML = '<div class="empty">错误：' + (data.error || res.status) + '</div>'; return; }
     const frames = data.frames || [];
     if (!data.pngUrl) { grid.innerHTML = '<div class="empty">该图集没有 png 地址</div>'; return; }
-    const img = new Image();
-    img.onload = () => { currentImg = img; currentFrames = frames; render(); };
-    img.onerror = () => alert('png 加载失败');
-    img.src = data.pngUrl;
-  } catch (e) { grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
+
+    const url = data.pngUrl;
+    let img = imgCache.get(url);
+    if (img && img.complete && img.naturalWidth > 0) {
+      // 已解码，直接用，零等待
+      currentImg = img; currentFrames = frames; render();
+      return;
+    }
+    if (!img) {
+      img = new Image();
+      imgCache.set(url, img);
+    }
+    img.onload = () => {
+      if (seq !== selectSeq) return;
+      currentImg = img; currentFrames = frames; render();
+    };
+    img.onerror = () => { imgCache.delete(url); if (seq === selectSeq) grid.innerHTML = '<div class="empty">png 加载失败：' + url + '</div>'; };
+    img.src = url;
+  } catch (e) { if (seq === selectSeq) grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
 });
 
 // 复制文本到剪贴板（localhost 为安全上下文可用 navigator.clipboard；否则降级到 textarea+execCommand），并弹提示。
@@ -197,7 +244,11 @@ function render() {
   countEl.textContent = frames.length + ' / ' + currentFrames.length + ' 帧';
   grid.innerHTML = '';
   if (!frames.length) { grid.innerHTML = '<div class="empty">无匹配帧</div>'; return; }
+
   const img = currentImg;
+  // DocumentFragment：所有 card 先在内存里拼好，最后一次插入 DOM。
+  // 原来逐个 grid.appendChild 会触发 N 次浏览器重排，图集几百上千帧时就是选择的卡顿来源。
+  const frag = document.createDocumentFragment();
   for (const f of frames) {
     if (f.w <= 0 || f.h <= 0) continue;
     const cw = Math.max(1, Math.round(THUMB_H * (f.w / f.h)));
@@ -214,8 +265,9 @@ function render() {
     const dm = document.createElement('div');
     dm.className = 'dim'; dm.textContent = f.w + '×' + f.h;
     card.appendChild(cv); card.appendChild(nm); card.appendChild(dm);
-    grid.appendChild(card);
+    frag.appendChild(card);
   }
+  grid.appendChild(frag);
 }
 filterInput.addEventListener('input', render);
 
