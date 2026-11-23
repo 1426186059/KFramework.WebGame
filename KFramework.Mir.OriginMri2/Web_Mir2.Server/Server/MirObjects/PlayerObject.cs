@@ -12106,6 +12106,9 @@ namespace Server.MirObjects
 
             foreach (var reward in quest.Info.FixedRewards)
             {
+                // 原始传奇 box 里同一奖励按职业分三支（1战/2法/3道），只发玩家职业那一支。
+                if (reward.Career > 0 && reward.Career != (int)Class + 1) continue;
+
                 ushort count = reward.Count;
 
                 UserItem rewardItem;

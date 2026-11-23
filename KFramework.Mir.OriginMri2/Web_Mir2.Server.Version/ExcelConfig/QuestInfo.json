@@ -34,7 +34,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 440,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -82,7 +82,10 @@
         "FinishNpcId": 10011
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 2,
@@ -119,7 +122,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 1800,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -174,7 +177,22 @@
         "FinishNpcId": 3000
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1405002,
+      1405005,
+      1405008
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 3,
@@ -211,7 +229,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 1200,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -259,7 +277,10 @@
         "FinishNpcId": 3001
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 4,
@@ -296,7 +317,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 1600,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -351,7 +372,22 @@
         "FinishNpcId": 3002
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000610,
+      1000610,
+      1000610
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 5,
@@ -388,7 +424,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 2000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -443,7 +479,22 @@
         "FinishNpcId": 3003
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000612,
+      1000612,
+      1000612
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 6,
@@ -480,7 +531,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 2000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -535,7 +586,16 @@
         "FinishNpcId": 3004
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8015
+    ],
+    "RewardItemCounts": [
+      20
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7,
@@ -572,7 +632,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 2400,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -627,7 +687,22 @@
         "FinishNpcId": 3005
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000612,
+      1000612,
+      1000612
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 8,
@@ -664,7 +739,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 2800,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -719,7 +794,16 @@
         "FinishNpcId": 3006
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000629
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 9,
@@ -756,7 +840,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 8000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -811,7 +895,22 @@
         "FinishNpcId": 3007
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000619,
+      1000620,
+      1000618
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 10,
@@ -848,7 +947,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 12000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -903,7 +1002,22 @@
         "FinishNpcId": 10201
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000619,
+      1000620,
+      1000618
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 11,
@@ -981,7 +1095,10 @@
         "FinishNpcId": 10201
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 12,
@@ -1018,7 +1135,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 30000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1066,7 +1183,22 @@
         "FinishNpcId": 10201
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000606,
+      1000606,
+      1000606
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 13,
@@ -1102,8 +1234,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 500,
+    "ExpReward": 30000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1151,7 +1283,10 @@
         "FinishNpcId": 10121
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 14,
@@ -1188,7 +1323,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 38000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1236,7 +1371,19 @@
         "FinishNpcId": 10121
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000647,
+      1000642
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 15,
@@ -1272,8 +1419,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 10000,
+    "ExpReward": 130000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1321,7 +1468,10 @@
         "FinishNpcId": 10031
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 16,
@@ -1358,7 +1508,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 180000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1406,7 +1556,10 @@
         "FinishNpcId": 13791
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 17,
@@ -1443,7 +1596,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 180000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1491,7 +1644,28 @@
         "FinishNpcId": 13791
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      404,
+      405,
+      1000664,
+      1000664,
+      1000664
+    ],
+    "RewardItemCounts": [
+      50,
+      50,
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0,
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 18,
@@ -1528,7 +1702,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 180000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1583,7 +1757,16 @@
         "FinishNpcId": 13791
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      9205
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 19,
@@ -1620,7 +1803,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 180000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1675,7 +1858,31 @@
         "FinishNpcId": 10781
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      11021,
+      12051,
+      13041,
+      4645,
+      4646,
+      4646
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3,
+      0,
+      2,
+      3
+    ]
   },
   {
     "Index": 20,
@@ -1711,8 +1918,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 10000,
+    "ExpReward": 220000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1767,7 +1974,22 @@
         "FinishNpcId": 13821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000651,
+      1000652,
+      1000653
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 21,
@@ -1804,7 +2026,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 280000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1859,7 +2081,10 @@
         "FinishNpcId": 14091
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 22,
@@ -1896,7 +2121,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 280000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -1951,7 +2176,16 @@
         "FinishNpcId": 13831
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8015
+    ],
+    "RewardItemCounts": [
+      20
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 23,
@@ -1988,7 +2222,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 300000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2036,7 +2270,22 @@
         "FinishNpcId": 21009
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      4645,
+      4646,
+      4646
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      2,
+      3
+    ]
   },
   {
     "Index": 24,
@@ -2073,7 +2322,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 300000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2121,7 +2370,22 @@
         "FinishNpcId": 21009
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000655,
+      1000656,
+      1000657
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 25,
@@ -2158,7 +2422,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 300000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2206,7 +2470,22 @@
         "FinishNpcId": 13031
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000668,
+      1000669,
+      1000670
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 26,
@@ -2243,7 +2522,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 300000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2291,7 +2570,22 @@
         "FinishNpcId": 10771
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000668,
+      1000669,
+      1000670
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 27,
@@ -2328,7 +2622,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 300000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2376,7 +2670,16 @@
         "FinishNpcId": 10761
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8443
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 28,
@@ -2412,8 +2715,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 10000,
+    "ExpReward": 307396,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2468,7 +2771,10 @@
         "FinishNpcId": 13851
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 29,
@@ -2505,7 +2811,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 337396,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2560,7 +2866,16 @@
         "FinishNpcId": 13861
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8015
+    ],
+    "RewardItemCounts": [
+      20
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 30,
@@ -2597,7 +2912,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 387396,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2652,7 +2967,31 @@
         "FinishNpcId": 13871
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000680,
+      1000679,
+      1000682,
+      1000681,
+      1000684,
+      1000683
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3
+    ]
   },
   {
     "Index": 31,
@@ -2689,7 +3028,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 357396,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2744,7 +3083,16 @@
         "FinishNpcId": 12981
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      4645
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 32,
@@ -2781,7 +3129,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 353272,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2836,7 +3184,16 @@
         "FinishNpcId": 12971
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8015
+    ],
+    "RewardItemCounts": [
+      20
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 33,
@@ -2873,7 +3230,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 350000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -2921,7 +3278,22 @@
         "FinishNpcId": 10201
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000663,
+      1000661,
+      1000662
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 34,
@@ -2958,7 +3330,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 350000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3006,7 +3378,22 @@
         "FinishNpcId": 10761
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      4645,
+      4646,
+      4646
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      2,
+      3
+    ]
   },
   {
     "Index": 35,
@@ -3043,7 +3430,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 356920,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3098,7 +3485,22 @@
         "FinishNpcId": 13051
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      11031,
+      12081,
+      13051
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 36,
@@ -3135,7 +3537,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 356920,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3190,7 +3592,22 @@
         "FinishNpcId": 13891
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000704,
+      1000704,
+      1000704
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 37,
@@ -3226,8 +3643,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 10000,
+    "ExpReward": 356920,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3282,7 +3699,22 @@
         "FinishNpcId": 13901
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000704,
+      1000704,
+      1000704
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 38,
@@ -3319,7 +3751,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 356920,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3374,7 +3806,19 @@
         "FinishNpcId": 13911
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000685,
+      13061
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      3
+    ]
   },
   {
     "Index": 39,
@@ -3411,7 +3855,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 452960,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3466,7 +3910,22 @@
         "FinishNpcId": 14101
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000703,
+      1000703,
+      1000703
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 40,
@@ -3503,7 +3962,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 500000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3551,7 +4010,16 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8439
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 41,
@@ -3588,7 +4056,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 420000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3636,7 +4104,22 @@
         "FinishNpcId": 12441
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000663,
+      1000661,
+      1000662
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 42,
@@ -3673,7 +4156,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 450000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3721,7 +4204,22 @@
         "FinishNpcId": 10811
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      4645,
+      4646,
+      4646
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      2,
+      3
+    ]
   },
   {
     "Index": 43,
@@ -3758,7 +4256,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 604148,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3813,7 +4311,25 @@
         "FinishNpcId": 13921
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      11041,
+      12091,
+      13031,
+      8312
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3,
+      0
+    ]
   },
   {
     "Index": 44,
@@ -3849,8 +4365,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 10000,
+    "ExpReward": 605380,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3905,7 +4421,10 @@
         "FinishNpcId": 13931
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 45,
@@ -3942,7 +4461,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 704764,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -3997,7 +4516,22 @@
         "FinishNpcId": 13941
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      1000696,
+      1000697,
+      1000698
+    ],
+    "RewardItemCounts": [
+      1,
+      1,
+      1
+    ],
+    "RewardCareers": [
+      1,
+      2,
+      3
+    ]
   },
   {
     "Index": 46,
@@ -4034,7 +4568,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 734148,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4089,7 +4623,16 @@
         "FinishNpcId": 14111
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8015
+    ],
+    "RewardItemCounts": [
+      20
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 47,
@@ -4126,7 +4669,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 792960,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4181,7 +4724,16 @@
         "FinishNpcId": 14121
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8292
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 48,
@@ -4218,7 +4770,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 1000000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4266,7 +4818,16 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      8291
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 49,
@@ -4302,8 +4863,8 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
-    "ExpReward": 0,
+    "GoldReward": 20000,
+    "ExpReward": 1000000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4351,7 +4912,10 @@
         "FinishNpcId": 10771
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 50,
@@ -4388,7 +4952,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4436,7 +5000,16 @@
         "FinishNpcId": 14131
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      4645
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 51,
@@ -4473,7 +5046,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 265000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4528,7 +5101,10 @@
         "FinishNpcId": 14141
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 52,
@@ -4565,7 +5141,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4613,7 +5189,10 @@
         "FinishNpcId": 14151
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 53,
@@ -4650,7 +5229,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 290000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4705,7 +5284,10 @@
         "FinishNpcId": 14161
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 54,
@@ -4742,7 +5324,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4790,7 +5372,10 @@
         "FinishNpcId": 14171
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 55,
@@ -4827,7 +5412,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 290000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4882,7 +5467,16 @@
         "FinishNpcId": 14181
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [
+      41
+    ],
+    "RewardItemCounts": [
+      300
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 56,
@@ -4919,7 +5513,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -4967,7 +5561,10 @@
         "FinishNpcId": 10771
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 57,
@@ -5045,7 +5642,10 @@
         "FinishNpcId": 12431
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 58,
@@ -5123,7 +5723,10 @@
         "FinishNpcId": 14581
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 59,
@@ -5160,7 +5763,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5208,7 +5811,10 @@
         "FinishNpcId": 12921
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 60,
@@ -5245,7 +5851,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5300,7 +5906,10 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 61,
@@ -5337,7 +5946,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5385,7 +5994,10 @@
         "FinishNpcId": 11371
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 62,
@@ -5422,7 +6034,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5470,7 +6082,10 @@
         "FinishNpcId": 11371
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 63,
@@ -5507,7 +6122,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5562,7 +6177,10 @@
         "FinishNpcId": 14511
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 64,
@@ -5599,7 +6217,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5654,7 +6272,10 @@
         "FinishNpcId": 14521
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 65,
@@ -5691,7 +6312,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5739,7 +6360,10 @@
         "FinishNpcId": 12921
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 66,
@@ -5776,7 +6400,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5824,7 +6448,10 @@
         "FinishNpcId": 12331
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 67,
@@ -5861,7 +6488,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -5916,7 +6543,10 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 68,
@@ -5953,7 +6583,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -6008,7 +6638,10 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 69,
@@ -6045,7 +6678,7 @@
     "ItemTasks": [],
     "FlagTasks": [],
     "GoldReward": 0,
-    "ExpReward": 0,
+    "ExpReward": 200000,
     "CreditReward": 0,
     "FixedRewards": [],
     "SelectRewards": [],
@@ -6093,7 +6726,10 @@
         "FinishNpcId": 10821
       },
       "State": 2
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 4000,
@@ -6167,7 +6803,10 @@
         "FinishNpcId": 56
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 4001,
@@ -6241,7 +6880,10 @@
         "FinishNpcId": 56
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 4002,
@@ -6315,7 +6957,10 @@
         "FinishNpcId": 56
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 4004,
@@ -6389,7 +7034,10 @@
         "FinishNpcId": 56
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 5001,
@@ -6477,7 +7125,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5002,
@@ -6565,7 +7222,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5003,
@@ -6653,7 +7319,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5004,
@@ -6741,7 +7416,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5005,
@@ -6829,7 +7513,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5006,
@@ -6917,7 +7610,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5007,
@@ -7005,7 +7707,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5008,
@@ -7093,7 +7804,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5009,
@@ -7181,7 +7901,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5010,
@@ -7269,7 +7998,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5011,
@@ -7357,7 +8095,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5012,
@@ -7445,7 +8192,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5013,
@@ -7533,7 +8289,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5014,
@@ -7621,7 +8386,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5015,
@@ -7709,7 +8483,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5016,
@@ -7797,7 +8580,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5017,
@@ -7885,7 +8677,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5018,
@@ -7973,7 +8774,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5019,
@@ -8061,7 +8871,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5020,
@@ -8149,7 +8968,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5021,
@@ -8237,7 +9065,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5022,
@@ -8325,7 +9162,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5023,
@@ -8413,7 +9259,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5024,
@@ -8501,7 +9356,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5025,
@@ -8589,7 +9453,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5026,
@@ -8677,7 +9550,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5027,
@@ -8765,7 +9647,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5028,
@@ -8853,7 +9744,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5029,
@@ -8941,7 +9841,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5030,
@@ -9029,7 +9938,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5031,
@@ -9117,7 +10035,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5032,
@@ -9205,7 +10132,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5033,
@@ -9293,7 +10229,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5034,
@@ -9381,7 +10326,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5035,
@@ -9469,7 +10423,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5036,
@@ -9557,7 +10520,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5037,
@@ -9645,7 +10617,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5038,
@@ -9733,7 +10714,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5039,
@@ -9821,7 +10811,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5040,
@@ -9909,7 +10908,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5041,
@@ -9997,7 +11005,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5042,
@@ -10085,7 +11102,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5043,
@@ -10173,7 +11199,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5044,
@@ -10261,7 +11296,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5045,
@@ -10349,7 +11393,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5046,
@@ -10437,7 +11490,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5047,
@@ -10525,7 +11587,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5048,
@@ -10613,7 +11684,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5049,
@@ -10701,7 +11781,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5050,
@@ -10789,7 +11878,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5051,
@@ -10877,7 +11975,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5052,
@@ -10965,7 +12072,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5053,
@@ -11053,7 +12169,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5054,
@@ -11141,7 +12266,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5055,
@@ -11229,7 +12363,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5056,
@@ -11317,7 +12460,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5057,
@@ -11405,7 +12557,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5058,
@@ -11493,7 +12654,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5059,
@@ -11581,7 +12751,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5060,
@@ -11669,7 +12848,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5061,
@@ -11757,7 +12945,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5062,
@@ -11845,7 +13042,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5063,
@@ -11933,7 +13139,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5064,
@@ -12021,7 +13236,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5065,
@@ -12109,7 +13333,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5066,
@@ -12197,7 +13430,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5067,
@@ -12285,7 +13527,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5068,
@@ -12373,7 +13624,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5069,
@@ -12461,7 +13721,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5070,
@@ -12549,7 +13818,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5071,
@@ -12637,7 +13915,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5072,
@@ -12725,7 +14012,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5073,
@@ -12813,7 +14109,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5074,
@@ -12901,7 +14206,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5075,
@@ -12989,7 +14303,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5076,
@@ -13077,7 +14400,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5077,
@@ -13165,7 +14497,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5078,
@@ -13253,7 +14594,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5079,
@@ -13341,7 +14691,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5080,
@@ -13429,7 +14788,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5081,
@@ -13517,7 +14885,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5082,
@@ -13605,7 +14982,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5083,
@@ -13693,7 +15079,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5084,
@@ -13781,7 +15176,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5085,
@@ -13869,7 +15273,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5086,
@@ -13957,7 +15370,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5087,
@@ -14045,7 +15467,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5088,
@@ -14133,7 +15564,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5089,
@@ -14221,7 +15661,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5090,
@@ -14309,7 +15758,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5091,
@@ -14397,7 +15855,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5092,
@@ -14485,7 +15952,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5093,
@@ -14573,7 +16049,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5094,
@@ -14661,7 +16146,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5095,
@@ -14749,7 +16243,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 5096,
@@ -14837,7 +16340,16 @@
         "FinishNpcId": 10811
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8237
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 6000,
@@ -14931,7 +16443,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6001,
@@ -15025,7 +16549,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6002,
@@ -15119,7 +16655,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6003,
@@ -15213,7 +16761,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6004,
@@ -15307,7 +16867,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6005,
@@ -15401,7 +16973,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6006,
@@ -15495,7 +17079,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6007,
@@ -15589,7 +17185,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6008,
@@ -15683,7 +17291,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6009,
@@ -15777,7 +17397,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6010,
@@ -15871,7 +17503,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6011,
@@ -15965,7 +17609,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6012,
@@ -16059,7 +17715,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6013,
@@ -16153,7 +17821,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6014,
@@ -16247,7 +17927,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6015,
@@ -16341,7 +18033,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6016,
@@ -16435,7 +18139,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6017,
@@ -16529,7 +18245,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6018,
@@ -16623,7 +18351,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6019,
@@ -16717,7 +18457,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6020,
@@ -16811,7 +18563,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6021,
@@ -16905,7 +18669,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6022,
@@ -16999,7 +18775,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6023,
@@ -17093,7 +18881,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6024,
@@ -17187,7 +18987,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6025,
@@ -17281,7 +19093,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6026,
@@ -17375,7 +19199,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6027,
@@ -17469,7 +19305,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6028,
@@ -17563,7 +19411,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6029,
@@ -17657,7 +19517,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6030,
@@ -17751,7 +19623,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6031,
@@ -17845,7 +19729,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6032,
@@ -17939,7 +19835,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6033,
@@ -18033,7 +19941,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6034,
@@ -18127,7 +20047,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6035,
@@ -18221,7 +20153,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6036,
@@ -18315,7 +20259,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6037,
@@ -18409,7 +20365,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6038,
@@ -18503,7 +20471,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6039,
@@ -18597,7 +20577,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6040,
@@ -18691,7 +20683,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6041,
@@ -18785,7 +20789,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6042,
@@ -18879,7 +20895,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6043,
@@ -18973,7 +21001,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6044,
@@ -19067,7 +21107,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6045,
@@ -19161,7 +21213,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6046,
@@ -19255,7 +21319,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6047,
@@ -19349,7 +21425,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6048,
@@ -19443,7 +21531,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6049,
@@ -19537,7 +21637,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6050,
@@ -19631,7 +21743,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6051,
@@ -19725,7 +21849,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6052,
@@ -19819,7 +21955,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6053,
@@ -19913,7 +22061,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6054,
@@ -20007,7 +22167,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6055,
@@ -20101,7 +22273,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6056,
@@ -20195,7 +22379,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6057,
@@ -20289,7 +22485,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6058,
@@ -20383,7 +22591,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6059,
@@ -20477,7 +22697,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6060,
@@ -20571,7 +22803,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6061,
@@ -20665,7 +22909,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6062,
@@ -20759,7 +23015,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6063,
@@ -20853,7 +23121,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6064,
@@ -20947,7 +23227,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6065,
@@ -21041,7 +23333,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6066,
@@ -21135,7 +23439,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6067,
@@ -21229,7 +23545,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6068,
@@ -21323,7 +23651,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6069,
@@ -21417,7 +23757,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6070,
@@ -21511,7 +23863,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6071,
@@ -21605,7 +23969,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6072,
@@ -21699,7 +24075,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6073,
@@ -21793,7 +24181,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6074,
@@ -21887,7 +24287,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6075,
@@ -21981,7 +24393,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6076,
@@ -22075,7 +24499,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6077,
@@ -22169,7 +24605,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6078,
@@ -22263,7 +24711,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6079,
@@ -22357,7 +24817,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6080,
@@ -22451,7 +24923,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6081,
@@ -22545,7 +25029,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6082,
@@ -22639,7 +25135,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6083,
@@ -22733,7 +25241,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6084,
@@ -22827,7 +25347,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6085,
@@ -22921,7 +25453,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6086,
@@ -23015,7 +25559,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6087,
@@ -23109,7 +25665,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6088,
@@ -23203,7 +25771,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6089,
@@ -23297,7 +25877,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6090,
@@ -23391,7 +25983,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6091,
@@ -23485,7 +26089,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6092,
@@ -23579,7 +26195,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6093,
@@ -23673,7 +26301,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6094,
@@ -23767,7 +26407,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6095,
@@ -23861,7 +26513,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6096,
@@ -23955,7 +26619,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6097,
@@ -24049,7 +26725,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6098,
@@ -24143,7 +26831,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6099,
@@ -24237,7 +26937,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6100,
@@ -24331,7 +27043,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6101,
@@ -24425,7 +27149,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6102,
@@ -24519,7 +27255,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6103,
@@ -24613,7 +27361,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6104,
@@ -24707,7 +27467,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6105,
@@ -24801,7 +27573,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6106,
@@ -24895,7 +27679,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6107,
@@ -24989,7 +27785,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6108,
@@ -25083,7 +27891,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6109,
@@ -25177,7 +27997,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6110,
@@ -25271,7 +28103,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6111,
@@ -25365,7 +28209,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6112,
@@ -25459,7 +28315,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6113,
@@ -25553,7 +28421,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6114,
@@ -25647,7 +28527,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6115,
@@ -25741,7 +28633,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6116,
@@ -25835,7 +28739,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6117,
@@ -25929,7 +28845,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6118,
@@ -26023,7 +28951,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6119,
@@ -26117,7 +29057,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6120,
@@ -26211,7 +29163,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6121,
@@ -26305,7 +29269,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6122,
@@ -26399,7 +29375,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6123,
@@ -26493,7 +29481,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6124,
@@ -26587,7 +29587,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6125,
@@ -26681,7 +29693,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6126,
@@ -26775,7 +29799,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6127,
@@ -26869,7 +29905,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6128,
@@ -26963,7 +30011,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6129,
@@ -27057,7 +30117,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6130,
@@ -27151,7 +30223,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6131,
@@ -27245,7 +30329,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6132,
@@ -27339,7 +30435,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6133,
@@ -27433,7 +30541,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6134,
@@ -27527,7 +30647,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6135,
@@ -27621,7 +30753,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6136,
@@ -27715,7 +30859,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6137,
@@ -27809,7 +30965,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6138,
@@ -27903,7 +31071,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6139,
@@ -27997,7 +31177,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6140,
@@ -28091,7 +31283,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6141,
@@ -28185,7 +31389,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6142,
@@ -28279,7 +31495,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6143,
@@ -28373,7 +31601,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6144,
@@ -28467,7 +31707,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6145,
@@ -28561,7 +31813,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6146,
@@ -28655,7 +31919,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6147,
@@ -28749,7 +32025,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6148,
@@ -28843,7 +32131,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6150,
@@ -28937,7 +32237,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6151,
@@ -29031,7 +32343,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6152,
@@ -29125,7 +32449,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6153,
@@ -29219,7 +32555,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6154,
@@ -29313,7 +32661,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6156,
@@ -29407,7 +32767,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6157,
@@ -29501,7 +32873,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6158,
@@ -29595,7 +32979,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6159,
@@ -29689,7 +33085,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6160,
@@ -29783,7 +33191,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6162,
@@ -29877,7 +33297,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6163,
@@ -29971,7 +33403,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6164,
@@ -30065,7 +33509,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6165,
@@ -30159,7 +33615,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6166,
@@ -30253,7 +33721,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6167,
@@ -30347,7 +33827,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6168,
@@ -30441,7 +33933,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6169,
@@ -30535,7 +34039,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6170,
@@ -30629,7 +34145,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6172,
@@ -30723,7 +34251,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6173,
@@ -30817,7 +34357,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6174,
@@ -30911,7 +34463,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6175,
@@ -31005,7 +34569,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6176,
@@ -31099,7 +34675,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6178,
@@ -31193,7 +34781,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6179,
@@ -31287,7 +34887,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6180,
@@ -31381,7 +34993,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6181,
@@ -31475,7 +35099,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6182,
@@ -31569,7 +35205,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6184,
@@ -31663,7 +35311,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6185,
@@ -31757,7 +35417,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6186,
@@ -31851,7 +35523,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6187,
@@ -31945,7 +35629,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6188,
@@ -32039,7 +35735,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6189,
@@ -32133,7 +35841,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6190,
@@ -32227,7 +35947,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6191,
@@ -32321,7 +36053,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6192,
@@ -32415,7 +36159,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6194,
@@ -32509,7 +36265,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8291
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6195,
@@ -32603,7 +36371,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6196,
@@ -32697,7 +36477,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6197,
@@ -32791,7 +36583,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8245,
+      8292
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6198,
@@ -32885,7 +36689,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6200,
@@ -32979,7 +36795,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6201,
@@ -33073,7 +36901,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6202,
@@ -33167,7 +37007,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6203,
@@ -33261,7 +37113,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8293
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6204,
@@ -33355,7 +37219,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6206,
@@ -33449,7 +37325,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6207,
@@ -33543,7 +37431,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6208,
@@ -33637,7 +37537,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6209,
@@ -33731,7 +37643,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6210,
@@ -33825,7 +37749,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6211,
@@ -33919,7 +37855,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6212,
@@ -34013,7 +37961,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6213,
@@ -34107,7 +38067,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6214,
@@ -34201,7 +38173,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 6215,
@@ -34295,7 +38279,19 @@
         "FinishNpcId": 13951
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8495,
+      8294
+    ],
+    "RewardItemCounts": [
+      1,
+      1
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 7000,
@@ -34329,7 +38325,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 10,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34382,7 +38378,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7001,
@@ -34416,7 +38421,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 20,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34469,7 +38474,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7002,
@@ -34503,7 +38517,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 30,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34556,7 +38570,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7003,
@@ -34590,7 +38613,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 40,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34643,7 +38666,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7004,
@@ -34677,7 +38709,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 50,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34730,7 +38762,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7005,
@@ -34764,7 +38805,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 60,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34817,7 +38858,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7006,
@@ -34851,7 +38901,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 70,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34904,7 +38954,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7007,
@@ -34938,7 +38997,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 80,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -34991,7 +39050,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7008,
@@ -35025,7 +39093,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 90,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -35078,7 +39146,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7009,
@@ -35112,7 +39189,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 10,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -35165,7 +39242,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 7010,
@@ -35199,7 +39285,7 @@
     "FlagTasks": [],
     "GoldReward": 0,
     "ExpReward": 0,
-    "CreditReward": 0,
+    "CreditReward": 20,
     "FixedRewards": [],
     "SelectRewards": [],
     "OriginSettings": {
@@ -35252,7 +39338,16 @@
         "FinishNpcId": 55
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      1131
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 8000,
@@ -35284,7 +39379,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35333,7 +39428,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8001,
@@ -35365,7 +39463,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35414,7 +39512,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8002,
@@ -35446,7 +39547,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35495,7 +39596,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8003,
@@ -35527,7 +39631,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35576,7 +39680,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8004,
@@ -35608,7 +39715,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35657,7 +39764,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8005,
@@ -35689,7 +39799,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35738,7 +39848,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8006,
@@ -35770,7 +39883,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35826,7 +39939,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8007,
@@ -35858,7 +39974,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -35914,7 +40030,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8008,
@@ -35946,7 +40065,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -36002,7 +40121,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 8009,
@@ -36034,7 +40156,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 1,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -36090,7 +40212,10 @@
         "FinishNpcId": 20
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 10001,
@@ -36232,7 +40357,10 @@
         "FinishNpcId": 1003
       },
       "State": 1
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 101001,
@@ -36304,7 +40432,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 102001,
@@ -36376,7 +40507,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 102002,
@@ -36448,7 +40582,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 102003,
@@ -36520,7 +40657,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 102004,
@@ -36592,7 +40732,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 103001,
@@ -36664,7 +40807,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 104001,
@@ -36736,7 +40882,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 104002,
@@ -36808,7 +40957,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 104003,
@@ -36880,7 +41032,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 104004,
@@ -36952,7 +41107,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 104005,
@@ -37024,7 +41182,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 105001,
@@ -37110,7 +41271,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      8404
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 105002,
@@ -37196,7 +41366,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      8404
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 105003,
@@ -37282,7 +41461,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      8404
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 105004,
@@ -37368,7 +41556,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      8404
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 105005,
@@ -37440,7 +41637,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 106001,
@@ -37526,7 +41726,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      200
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 107001,
@@ -37612,7 +41821,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      200
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 108001,
@@ -37684,7 +41902,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 108002,
@@ -37756,7 +41977,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 108003,
@@ -37828,7 +42052,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 108004,
@@ -37900,7 +42127,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 108005,
@@ -37972,7 +42202,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 109001,
@@ -38044,7 +42277,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 109002,
@@ -38116,7 +42352,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 110001,
@@ -38146,7 +42385,7 @@
     "KillTasks": [],
     "ItemTasks": [],
     "FlagTasks": [],
-    "GoldReward": 0,
+    "GoldReward": 10000,
     "ExpReward": 0,
     "CreditReward": 0,
     "FixedRewards": [],
@@ -38195,7 +42434,10 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [],
+    "RewardItemCounts": [],
+    "RewardCareers": []
   },
   {
     "Index": 120001,
@@ -38419,7 +42661,19 @@
         }
       ],
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8929,
+      8032
+    ],
+    "RewardItemCounts": [
+      1,
+      65535
+    ],
+    "RewardCareers": [
+      0,
+      0
+    ]
   },
   {
     "Index": 130003,
@@ -38634,7 +42888,16 @@
         }
       ],
       "State": 1
-    }
+    },
+    "RewardItemIndices": [
+      8915
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201001,
@@ -38796,7 +43059,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201003,
@@ -38877,7 +43149,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      8491
+    ],
+    "RewardItemCounts": [
+      1
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201004,
@@ -39039,7 +43320,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201006,
@@ -39120,7 +43410,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201007,
@@ -39282,7 +43581,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201009,
@@ -39363,7 +43671,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201010,
@@ -39525,7 +43842,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201012,
@@ -39606,7 +43932,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201013,
@@ -39768,7 +44103,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201015,
@@ -39849,7 +44193,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201016,
@@ -40011,7 +44364,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201018,
@@ -40092,7 +44454,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201019,
@@ -40254,7 +44625,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201021,
@@ -40335,7 +44715,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201022,
@@ -40497,7 +44886,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201024,
@@ -40578,7 +44976,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201025,
@@ -40740,7 +45147,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201027,
@@ -40821,7 +45237,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201028,
@@ -40983,7 +45408,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201030,
@@ -41064,7 +45498,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201031,
@@ -41226,7 +45669,16 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   },
   {
     "Index": 201033,
@@ -41307,6 +45759,15 @@
         "FinishNpcId": 0
       },
       "State": 0
-    }
+    },
+    "RewardItemIndices": [
+      20
+    ],
+    "RewardItemCounts": [
+      500
+    ],
+    "RewardCareers": [
+      0
+    ]
   }
 ]

@@ -70,6 +70,10 @@ public class QuestItemReward
     public ItemInfoTable Item { get; set; }
     public ushort Count { get; set; } = 1;
 
+    // 原始传奇 box 奖励的职业限制：0=不限，1=战士，2=法师，3=道士（MirClass + 1）。
+    // 只参与服务端发奖筛选，不写入玩家存档/协议。
+    public int Career { get; set; }
+
     public QuestItemReward() { }
 
     public QuestItemReward(BinaryReader reader)

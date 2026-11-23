@@ -1,4 +1,5 @@
 using Server.MirObjects;
+using System.Linq;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Server.MirEnvir;
@@ -162,6 +163,12 @@ namespace Server.MirDatabase
         public List<QuestItemReward> FixedRewards { get; set; } = new List<QuestItemReward>();
         public List<QuestItemReward> SelectRewards { get; set; } = new List<QuestItemReward>();
 
+        // 原始传奇奖励包（2config.box）由构建期展开成三组平行数组，加载时按索引解析成 FixedRewards。
+        // 职业值：0=不限，1=战士，2=法师，3=道士（与 MirClass + 1 对齐）。
+        public List<int> RewardItemIndices { get; set; } = new List<int>();
+        public List<int> RewardItemCounts { get; set; } = new List<int>();
+        public List<int> RewardCareers { get; set; } = new List<int>();
+
         private Regex _regexMessage = new Regex("\"([^\"]*)\"");
 
 
@@ -252,7 +259,6 @@ namespace Server.MirDatabase
         }
 
         // 把内嵌配置展开成运行时对象：文本段落 + 按 Index 解析的物品奖励/击杀目标。
-        // GoldReward / ExpReward 已由转换器从伪道具（499 金币 / 4 经验）算好并写进 JSON，这里不再改动。
         public void LoadFromOrigin()
         {
             var o = OriginSettings;
@@ -277,19 +283,18 @@ namespace Server.MirDatabase
 
             GotoMessage = o.CompleteInfo.Length > 0 ? o.CompleteInfo : o.GoalInfo;
 
-            if (o.FixedRewards != null)
+            // 真实奖励由构建期从原始传奇 2config.box 展开（经验/金币/功勋已写入顶层字段，
+            // 物品写入三组平行数组），这里按 Index 解析成运行时物品对象，不再从 reward 文本猜解。
+            for (int i = 0; i < RewardItemIndices.Count; i++)
             {
-                foreach (var r in o.FixedRewards)
-                {
-                    ItemInfoTable item = Envir.GetItemInfo(r.ItemIndex);
-                    if (item == null) continue;
+                ItemInfoTable item = Envir.GetItemInfo(RewardItemIndices[i]);
+                if (item == null) continue;
 
-                    FixedRewards.Add(new QuestItemReward
-                    {
-                        Item = item,
-                        Count = (ushort)Math.Min(r.Count, ushort.MaxValue)
-                    });
-                }
+                int rawCount = i < RewardItemCounts.Count ? RewardItemCounts[i] : 1;
+                ushort count = (ushort)(rawCount > 65535 ? 65535 : (rawCount < 1 ? 1 : rawCount));
+                int career = i < RewardCareers.Count ? RewardCareers[i] : 0;
+
+                FixedRewards.Add(new QuestItemReward { Item = item, Count = count, Career = career });
             }
 
             if (o.KillTasks != null)
@@ -604,7 +609,7 @@ namespace Server.MirDatabase
                 RewardGold = GoldReward,
                 RewardExp = ExpReward,
                 RewardCredit = CreditReward,
-                RewardsFixedItem = FixedRewards,
+                RewardsFixedItem = viewer == null ? FixedRewards : FixedRewards.Where(r => r.Career == 0 || r.Career == (int)viewer.Class + 1).ToList(),
                 RewardsSelectItem = SelectRewards,
                 StartNpcName = startNpc != null ? startNpc.Name : "???NPC???"
             };
