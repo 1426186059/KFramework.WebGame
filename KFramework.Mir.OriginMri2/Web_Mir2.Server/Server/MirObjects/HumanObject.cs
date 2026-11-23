@@ -4144,6 +4144,10 @@ namespace Server.MirObjects
 
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
+            // 原始传奇数据驱动特效：广播飞行物，客户端据此按 5config.skillEffects 播 CDN 飞行/命中特效
+            // （经典 .Lib Missile 图集已移除，飞行物只能靠这条回包驱动；Spell 即原始 skillId）。
+            CurrentMap.Broadcast(new S.ObjectProjectile { Spell = magic.Spell, Source = ObjectID, Destination = target.ObjectID }, CurrentLocation);
+
             int delay = Functions.MaxDistance(CurrentLocation, target.CurrentLocation) * 50 + 500; //50 MS per Step
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, magic, damage, target, target.CurrentLocation);

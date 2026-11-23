@@ -4876,6 +4876,42 @@ namespace Client.MirScenes
 
             if (source == null) return;
 
+            // 原始传奇技能（值即 skillId）：飞行物回包驱动 CDN 特效（经典 .Lib Missile 已移除）。
+            // 与经典 FireBounce 分支互斥——原始技能走这里，经典技能走下面 switch。
+            int originId = (int)p.Spell;
+            if (originId > 218 && ExcelTableMgr.TryGetSkillEffects(originId, 1, out var steps))
+            {
+                SkillEffectTable flyStep = steps.FirstOrDefault(s => s.type == 2 && s.effect > 0);
+                SkillEffectTable hitStep = steps.FirstOrDefault(s => s.type == 1 && s.effect > 0);
+                MapObject target = MapControl.GetObject(p.Destination);
+
+                if (flyStep != null)
+                {
+                    if (flyStep.sound > 0)
+                        SoundManager.PlaySound(flyStep.sound);
+                    Point dest = target != null ? target.CurrentLocation : source.CurrentLocation;
+                    // 飞行时长按经典 Missile.Process 口径：距离*50ms（与服务端 Fireball 的 delay 一致）。
+                    // 不再读本地 skillEffects.delaytime——时序由经典逻辑决定，原始数据只用来选特效资源。
+                    int flight = Math.Max(1, Functions.MaxDistance(source.CurrentLocation, dest) * 50);
+                    OriginMissile missile = new OriginMissile(flyStep.effect, source, target, dest,
+                                                              flightDuration: flight);
+                    if (target != null && hitStep != null)
+                    {
+                        int hitEffect = hitStep.effect, hitSound = hitStep.sound;
+                        MapObject hitTarget = target;
+                        missile.Complete += (o, e) =>
+                        {
+                            if (hitTarget.CurrentAction == MirAction.Dead) return;
+                            hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget,
+                                yOffset: OriginMissile.SkillHitTestY));
+                            if (hitSound > 0) SoundManager.PlaySound(hitSound);
+                        };
+                    }
+                    source.Effects.Add(missile);
+                }
+                return;
+            }
+
             switch (p.Spell)
             {
                 case Spell.FireBounce: // 火焰弹

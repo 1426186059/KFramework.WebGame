@@ -2254,10 +2254,6 @@ public sealed class MapControl : MirControl
 
         GameScene.LogTime = CMain.Time + Globals.LogDelay;
 
-        // CD 由服务端 S.Magic{Cast=true} 回包驱动（见 GameScene.Magic），发起瞬间不记 CastTime。
-        // 否则瞬发技能（灵魂火符/施毒术）在服务端 cast=false（目标非法/未带符）时技能没放出，
-        // 客户端却已进入 CD，反复按键会一直弹"1秒内无法释放"。
-
         if (actor == User)
         {
             User.QueuedAction = new QueuedAction { Action = MirAction.Spell, Direction = dir, Location = User.CurrentLocation, Params = new List<object>() };
@@ -2271,77 +2267,6 @@ public sealed class MapControl : MirControl
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
         }
 
-        // 数据驱动施法特效：按 5config.skillEffects 的权威时序播放（delaytime/type/pos）。
-        // 原始技能（>218）本就只有这条链路；旧技能（<=218）走经典 .Lib 特效的资源已移除，
-        // 全部靠这里补 CDN 特效。key = skillId*100+等级（如 1201101=火球术Lv1），
-        // 找不到时序时回退到"所有 EffectIds 同时挂目标"的旧行为，保证不炸。
-        if (magic.EffectIds != null && magic.EffectIds.Length > 0)
-        {
-            int originId = (int)magic.Spell; // Spell 枚举值即原始传奇 skillId
-            if (originId > 0 && ExcelTableMgr.TryGetSkillEffects(originId, magic.Level, out var steps))
-            {
-                long now = CMain.Time;
-                bool hasMissile = steps.Any(s => s.type == 2 && s.effect > 0);
-                // 命中步骤（type=1）及其音效：原始 JS 在子弹 flyComplete 时才播放，
-                // 位置=目标身上并上移 SKILL_HitTestY(60) 到身体中部。
-                SkillEffectTable hitStep = steps.FirstOrDefault(s => s.type == 1 && s.effect > 0);
-                foreach (SkillEffectTable step in steps)
-                {
-                    long start = now + Math.Max(0, step.delaytime);
-                    if (step.type == 2 && step.effect > 0)
-                    {
-                        // 飞行子弹：原始 addSkillBullet 创建时即播放音效（不按 delaytime 延后）。
-                        if (step.sound > 0)
-                            SoundManager.PlaySound(step.sound);
-
-                        int flyMs = Math.Max(1, step.delaytime);
-                        OriginMissile missile = new OriginMissile(step.effect, actor, target, location, flightDuration: flyMs);
-                        if (target != null && hitStep != null)
-                        {
-                            int hitEffect = hitStep.effect;
-                            int hitSound = hitStep.sound;
-                            MapObject hitTarget = target;
-                            missile.Complete += (o, e) =>
-                            {
-                                if (hitTarget.CurrentAction != MirAction.Dead)
-                                {
-                                    hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget,
-                                        yOffset: OriginMissile.SkillHitTestY));
-                                    // 命中音效在子弹抵达时播放（原版 flyComplete 内的 sound）。
-                                    if (hitSound > 0)
-                                        SoundManager.PlaySound(hitSound);
-                                }
-                            };
-                        }
-                        actor.Effects.Add(missile);
-                    }
-                    else if (step.type == 1 && step.effect > 0)
-                    {
-                        // 有飞行子弹时命中特效/音效由 Complete 触发（原版 delaytime=0 是相对落地时刻）。
-                        if (!hasMissile && target != null)
-                        {
-                            target.Effects.Add(new OriginEffect(step.effect, target, start,
-                                yOffset: OriginMissile.SkillHitTestY));
-                            if (step.sound > 0)
-                                SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
-                        }
-                    }
-                    else if (step.effect > 0)
-                    {
-                        // type=0 起手挂施法者；音效立即播放（原版 initEffects 起手 sound）。
-                        actor.Effects.Add(new OriginEffect(step.effect, actor, start));
-                        if (step.sound > 0)
-                            SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
-                    }
-                }
-            }
-            else
-            {
-                MapObject effectOwner = target ?? actor;
-                foreach (int effectId in magic.EffectIds)
-                    effectOwner.Effects.Add(new OriginEffect(effectId, effectOwner));
-            }
-        }
     }
 
     public static MirDirection MouseDirection(float ratio = 45F) //22.5 = 16
