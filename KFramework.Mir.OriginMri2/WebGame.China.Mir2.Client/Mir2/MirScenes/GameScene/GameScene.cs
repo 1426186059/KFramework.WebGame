@@ -110,6 +110,7 @@ namespace Client.MirScenes
         public QuestDiaryDialog QuestLogDialog;
         public QuestTrackingDialog QuestTrackingDialog;
         public TaskCompleteEffect TaskCompleteEffect;
+        public QuickActionDialog QuickActionDialog;
 
         public RankingDialog RankingDialog;
 
@@ -378,6 +379,7 @@ namespace Client.MirScenes
             QuestTrackingDialog = new QuestTrackingDialog { Parent = this, Visible = false };
             QuestLogDialog = new QuestDiaryDialog { Parent = this, Visible = false };
             TaskCompleteEffect = new TaskCompleteEffect { Parent = this };
+            QuickActionDialog = new QuickActionDialog { Parent = this, Visible = false };
 
             RankingDialog = new RankingDialog { Parent = this, Visible = false };
 
@@ -1259,6 +1261,7 @@ namespace Client.MirScenes
             TimerControl.Process();
             CompassControl.Process();
             RankingDialog.Process();
+            QuickActionDialog.Process(CMain.Time);
 
             MirItemCell cell = MouseControl as MirItemCell;
 
@@ -3346,6 +3349,50 @@ namespace Client.MirScenes
 
             // “获得”亮绿，其余白色（引擎 MirLabel 支持 <color=...> 富文本标签）；固定中文绕过远程语言包
             OutputMessage($"<color=lime>获得</color> {p.Item.FriendlyName} x{p.Item.Count}");
+
+            TryShowQuickAction(p.Item);
+        }
+
+        /// <summary>
+        /// 原始传奇 NoticeUseItemView / NoticeWearEquipView：
+        /// 获得技能书 → 快捷使用；获得战力更高的装备 → 快捷装备。仅这两种情况弹窗。
+        /// </summary>
+        private void TryShowQuickAction(UserItem item)
+        {
+            if (item == null || item.Info == null || QuickActionDialog == null) return;
+
+            ulong uid = item.UniqueID;
+            Action use = () =>
+            {
+                MirItemCell cell = InventoryDialog.GetCell(uid) ?? BeltDialog.GetCell(uid);
+                if (cell != null) cell.UseItem();
+            };
+
+            if (item.Info.Type == ItemType.Book)
+            {
+                QuickActionDialog.ShowUse(item, use);
+                return;
+            }
+
+            if (!QuickActionDialog.IsEquipment(item.Info.Type)) return;
+
+            int power = QuickActionDialog.PowerOf(item);
+            if (power <= 0) return;
+
+            // 与当前已穿戴的同类型装备比较，只有战力更高才提示。
+            int best = 0;
+            if (User != null && User.Equipment != null)
+            {
+                foreach (UserItem equipped in User.Equipment)
+                {
+                    if (equipped == null || equipped.Info == null || equipped.Info.Type != item.Info.Type) continue;
+                    int ep = QuickActionDialog.PowerOf(equipped);
+                    if (ep > best) best = ep;
+                }
+            }
+
+            if (power > best)
+                QuickActionDialog.ShowEquip(item, power - best, use);
         }
         private void GainedQuestItem(S.GainedQuestItem p)
         {
