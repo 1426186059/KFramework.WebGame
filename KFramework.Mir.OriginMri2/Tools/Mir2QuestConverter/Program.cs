@@ -323,19 +323,31 @@ public static class Program
             if (goal != null && goal.Type == 335)
             {
                 string[] ps = goal.Param.Split('#', StringSplitOptions.RemoveEmptyEntries);
-                if (ps.Length == 1 && int.TryParse(ps[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int monsterId))
+                // 原版 goal.param 可能是多个怪物 id（"6000034#6000035#..."），语义是"击杀其中若干只"。
+                // 咱们的服务器 QuestKillTask 要求每个都完成，直接全拆会改变目标数量；
+                // 取第一个能解析的怪物作为代表目标，保证任务有目标、不会「接取即完成」。
+                int pickedMonster = 0;
+                foreach (string p in ps)
+                {
+                    if (!int.TryParse(p, NumberStyles.Integer, CultureInfo.InvariantCulture, out int candidate)) continue;
+                    if (!monsterNames.ContainsKey(candidate)) continue;
+                    pickedMonster = candidate;
+                    break;
+                }
+                if (pickedMonster != 0)
                 {
                     killRefs++;
-                    bool hit = monsterNames.ContainsKey(monsterId);
+                    bool hit = monsterNames.ContainsKey(pickedMonster);
                     if (hit) killHit++;
                     settings.KillTasks.Add(new QuestOriginKillOut
                     {
-                        MonsterIndex = monsterId,
+                        MonsterIndex = pickedMonster,
                         Count = Math.Max(1, goal.Count),
-                        MonsterName = monsterNames.GetValueOrDefault(monsterId) ?? "",
+                        MonsterName = monsterNames.GetValueOrDefault(pickedMonster) ?? "",
                         MonsterResolved = hit
                     });
-                    withSingleKill++;
+                    if (ps.Length == 1) withSingleKill++;
+                    else { settings.GoalMultiTarget = true; withMultiKill++; }
                 }
                 else if (ps.Length > 1)
                 {

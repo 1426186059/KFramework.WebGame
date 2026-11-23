@@ -425,7 +425,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000034,
+          "Count": 3,
+          "MonsterName": "稻草人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "驱赶猎鹰",
         "Tip3": "这些该死的猎鹰到底是哪来的，没完没了了...赶紧处理完回家吃饭。",
@@ -510,7 +517,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000030,
+          "Count": 3,
+          "MonsterName": "多钩猫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "难缠的盔甲虫",
         "Tip3": "最近不太安生，魔物蠢蠢欲动的，还没赶去支援，这会儿自己也遭到袭击了...",
@@ -595,7 +609,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000032,
+          "Count": 3,
+          "MonsterName": "钉耙猫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "探查魔物",
         "Tip3": "最近魔物有点活跃，恐怕有事要发生，最好去一探究竟。",
@@ -680,7 +701,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000004,
+          "Count": 3,
+          "MonsterName": "半兽人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "多角虫之变",
         "Tip3": "大英雄，谢谢您。您能再次出山帮我们对付魔物真的太好了，要知道当年您以一己之力镇压了多少魔物，您可是我们的偶像啊！",
@@ -765,7 +793,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000016,
+          "Count": 3,
+          "MonsterName": "森林雪人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "采集样本",
         "Tip3": "红蛇这种魔物非常稀有，能弄到这些样本素材真是不容易，回去定要好好研究研究。",
@@ -1530,7 +1565,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000029,
+          "Count": 3,
+          "MonsterName": "洞蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "打怪升级一",
         "Tip3": "有10倍经验点，打怪获得的经验超多吧。",
@@ -1615,7 +1657,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000029,
+          "Count": 3,
+          "MonsterName": "洞蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "必备补给",
         "Tip3": "出门在外还是要备点药品的，这些你先拿着吧。",
@@ -1700,7 +1749,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000029,
+          "Count": 5,
+          "MonsterName": "洞蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "解救民兵之三",
         "Tip3": "你竟然跟那个憨憨打这种赌，要知道骷髅战士非常难缠的，常常战斗过程中会突然出现好几只，都不知道哪里出现的··",
@@ -1785,7 +1841,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000029,
+          "Count": 5,
+          "MonsterName": "洞蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "解救民兵之四",
         "Tip3": "这里黑漆漆的，到处都是行走的骷髅···他们会不会吃人····",
@@ -1870,7 +1933,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000630,
+          "Count": 1,
+          "MonsterName": "[精]骷髅精灵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "解救民兵之五",
         "Tip3": "我一直想尝试干掉那些红色的家伙，可惜咱实力没像您这么强大，不过能亲眼看到那些家伙被干掉也能满足一下我的小小心愿",
@@ -2380,7 +2450,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 5,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "搭救矿工",
         "Tip3": "我在这里挖矿，没想到这些僵尸突然袭击了过来····",
@@ -2465,7 +2542,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 5,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "带回矿工之二",
         "Tip3": "我没什么事情的，我是来找老吴的···老吴可是我的结拜大哥··我必须带他回去····",
@@ -2550,7 +2634,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 1,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "带回矿工之三",
         "Tip3": "天呐，怎么会有僵尸这么恶心的东西，快滚开···",
@@ -2635,7 +2726,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 5,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "走失的矿工",
         "Tip3": "来呀，来战个痛快，谁先倒下谁是王八蛋··我还没用力你就倒下了",
@@ -2720,7 +2818,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000506,
+          "Count": 1,
+          "MonsterName": "[精]尸王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "走失的矿工",
         "Tip3": "腿脚不灵便，结果被遗忘在这里了···本想逃走结果被暴躁的尸王给堵住了，差点就插翅难飞了，还好你们来··",
@@ -2975,7 +3080,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000085,
+          "Count": 5,
+          "MonsterName": "蜈蚣",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "传送阵",
         "Tip3": "玛法大陆上存在巨大的传送阵，我可以帮你进行传送。",
@@ -3060,7 +3172,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000094,
+          "Count": 5,
+          "MonsterName": "巨型蠕虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "淘金者的麻烦之二",
         "Tip3": "前面的··风紧，扯呼····",
@@ -3145,7 +3264,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000092,
+          "Count": 5,
+          "MonsterName": "跳跳蜂",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "悲剧的淘金者",
         "Tip3": "终于快到目的地了，路上的怪物真麻烦",
@@ -3230,7 +3356,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000090,
+          "Count": 5,
+          "MonsterName": "钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "淘金者的麻烦之四",
         "Tip3": "怎么这些魔物越来越多了···哎呀，我回不去了，怎么办···我要死在这里了",
@@ -3662,7 +3795,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000101,
+          "Count": 7,
+          "MonsterName": "黑野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓洞穴的守墓人",
         "Tip3": "原本石墓空空荡荡的，我们这些将死之人被派过来看着这些古代墓穴，谁曾想来了一群野猪，还越来越多，整天哼哼唧唧的太烦人了",
@@ -3747,7 +3887,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000088,
+          "Count": 7,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓洞穴的守墓人",
         "Tip3": "终于安静了，那些恶蛆吵也快吵死我了，虽然我已经半只脚踏进了这里，不对，我不是已经在这里了么",
@@ -3832,7 +3979,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000099,
+          "Count": 7,
+          "MonsterName": "红野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "守墓人的牢骚",
         "Tip3": "我一把老骨头了还要守着这石墓，我太难了。",
@@ -3917,7 +4071,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000104,
+          "Count": 7,
+          "MonsterName": "蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓洞穴的守墓人",
         "Tip3": "我来石墓的时候进门是先迈的左脚，还是右脚呢···我想起来昨天好像是先迈的右脚，但前天好像是迈的左脚···",
@@ -4002,7 +4163,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓洞穴的守墓人",
         "Tip3": "没想到这冷冷清清的石墓都有人来，你竟然还知道我想要张白野猪皮······",
@@ -4342,7 +4510,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000108,
+          "Count": 5,
+          "MonsterName": "大老鼠",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "祖玛寺庙的秘密·一",
         "Tip3": "谢谢你的帮助，在过来的路上我们收集了很多资料，对研究非常有帮助",
@@ -4512,7 +4687,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000108,
+          "Count": 5,
+          "MonsterName": "大老鼠",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "祖玛寺庙的秘密·三",
         "Tip3": "暂时安全了，不知道你来之前有没有人给你这边的资料？相传祖玛寺庙存活着祖玛教主，乃万恶之源。任何靠近的活物都会被变成雕像",
@@ -4682,7 +4864,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000108,
+          "Count": 5,
+          "MonsterName": "大老鼠",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "探索祖玛寺庙",
         "Tip3": "这边暂时安全了，多谢你的帮助",
@@ -5093,7 +5282,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000508,
+          "Count": 1,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "试炼伏魔殿",
         "Tip3": "这是材料副本，可以通过门票进入。",
@@ -5348,7 +5544,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000169,
+          "Count": 10,
+          "MonsterName": "红野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "封魔人",
         "Tip3": "也不是什么秘密，就是在上次玛法大陆战争后期，国王派人策反了沃玛教主的军队，这也是为什么我们能迅速赢得战争的原因",
@@ -5433,7 +5636,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000169,
+          "Count": 10,
+          "MonsterName": "红野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "封魔的原因",
         "Tip3": "虽然沃玛教主的军队成为我们的人，但非我族类，其心必异。国王命令我们将沃玛教主的军队封印在了这里，因此这里才得名封魔谷",
@@ -5688,7 +5898,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000220,
+          "Count": 10,
+          "MonsterName": "牛头魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "个人首领",
         "Tip3": "挑战个人首领获取高级装备吧",
@@ -5773,7 +5990,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000220,
+          "Count": 10,
+          "MonsterName": "牛头魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "挑战个人首领",
         "Tip3": "迫不及待了吧，赶紧吧",
@@ -6235,7 +6459,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000029,
+          "Count": 5,
+          "MonsterName": "洞蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "半兽古墓魔物(1/12)",
         "Tip3": "",
@@ -6316,7 +6547,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 5,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "比奇矿区魔物(2/12)",
         "Tip3": "",
@@ -6397,7 +6635,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000060,
+          "Count": 5,
+          "MonsterName": "僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "比奇矿区魔物(3/12)",
         "Tip3": "",
@@ -6478,7 +6723,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000123,
+          "Count": 8,
+          "MonsterName": "弓箭护卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "地牢地区魔物(4/12)",
         "Tip3": "",
@@ -6559,7 +6811,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000123,
+          "Count": 8,
+          "MonsterName": "弓箭护卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "地牢地区魔物(5/12)",
         "Tip3": "",
@@ -6640,7 +6899,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000123,
+          "Count": 8,
+          "MonsterName": "弓箭护卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "地牢地区魔物(6/12)",
         "Tip3": "",
@@ -6721,7 +6987,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000101,
+          "Count": 8,
+          "MonsterName": "黑野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓一层魔物(7/12)",
         "Tip3": "",
@@ -6802,7 +7075,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000101,
+          "Count": 8,
+          "MonsterName": "黑野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓一层魔物(8/12)",
         "Tip3": "",
@@ -6883,7 +7163,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000101,
+          "Count": 8,
+          "MonsterName": "黑野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓一层魔物(9/12)",
         "Tip3": "",
@@ -6964,7 +7251,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000101,
+          "Count": 12,
+          "MonsterName": "黑野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "石墓一层魔物(10/12)",
         "Tip3": "",
@@ -7045,7 +7339,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000108,
+          "Count": 12,
+          "MonsterName": "大老鼠",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "祖玛寺庙魔物(11/12)",
         "Tip3": "",
@@ -7126,7 +7427,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000108,
+          "Count": 12,
+          "MonsterName": "大老鼠",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "祖玛寺庙魔物(12/12)",
         "Tip3": "",
@@ -7207,7 +7515,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000303,
+          "Count": 10,
+          "MonsterName": "沃玛勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境三层魔物(1/12)",
         "Tip3": "",
@@ -7288,7 +7603,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000303,
+          "Count": 10,
+          "MonsterName": "沃玛勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境三层魔物(2/12)",
         "Tip3": "",
@@ -7369,7 +7691,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000303,
+          "Count": 10,
+          "MonsterName": "沃玛勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境三层魔物(3/12)",
         "Tip3": "",
@@ -7450,7 +7779,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000303,
+          "Count": 10,
+          "MonsterName": "沃玛勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境三层魔物(4/12)",
         "Tip3": "",
@@ -7531,7 +7867,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境四层魔物(5/12)",
         "Tip3": "",
@@ -7612,7 +7955,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境四层魔物(6/12)",
         "Tip3": "",
@@ -7693,7 +8043,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境四层魔物(7/12)",
         "Tip3": "",
@@ -7774,7 +8131,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境四层魔物(8/12)",
         "Tip3": "",
@@ -7855,7 +8219,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(9/12)",
         "Tip3": "",
@@ -7936,7 +8307,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(10/12)",
         "Tip3": "",
@@ -8017,7 +8395,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(11/12)",
         "Tip3": "",
@@ -8098,7 +8483,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(12/12)",
         "Tip3": "",
@@ -8179,7 +8571,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(1/12)",
         "Tip3": "",
@@ -8260,7 +8659,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(2/12)",
         "Tip3": "",
@@ -8341,7 +8747,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000324,
+          "Count": 15,
+          "MonsterName": "骷髅锤兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境五层魔物(3/12)",
         "Tip3": "",
@@ -8422,7 +8835,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境六层魔物(4/12)",
         "Tip3": "",
@@ -8503,7 +8923,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境六层魔物(5/12)",
         "Tip3": "",
@@ -8584,7 +9011,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000306,
+          "Count": 15,
+          "MonsterName": "黑色恶蛆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境六层魔物(6/12)",
         "Tip3": "",
@@ -8665,7 +9099,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(7/12)",
         "Tip3": "",
@@ -8746,7 +9187,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(8/12)",
         "Tip3": "",
@@ -8827,7 +9275,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(9/12)",
         "Tip3": "",
@@ -8908,7 +9363,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(10/12)",
         "Tip3": "",
@@ -8989,7 +9451,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(11/12)",
         "Tip3": "",
@@ -9070,7 +9539,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(12/12)",
         "Tip3": "",
@@ -9151,7 +9627,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(1/12)",
         "Tip3": "",
@@ -9232,7 +9715,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(2/12)",
         "Tip3": "",
@@ -9313,7 +9803,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000110,
+          "Count": 20,
+          "MonsterName": "祖玛弓箭手",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境七层魔物(3/12)",
         "Tip3": "",
@@ -9394,7 +9891,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(4/12)",
         "Tip3": "",
@@ -9475,7 +9979,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(5/12)",
         "Tip3": "",
@@ -9556,7 +10067,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000327,
+          "Count": 20,
+          "MonsterName": "牛魔侍卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境八层魔物(6/12)",
         "Tip3": "",
@@ -9637,7 +10155,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(7/12)",
         "Tip3": "",
@@ -9718,7 +10243,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(8/12)",
         "Tip3": "",
@@ -9799,7 +10331,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(9/12)",
         "Tip3": "",
@@ -9880,7 +10419,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(10/12)",
         "Tip3": "",
@@ -9961,7 +10507,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(11/12)",
         "Tip3": "",
@@ -10042,7 +10595,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(12/12)",
         "Tip3": "",
@@ -10123,7 +10683,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(1/12)",
         "Tip3": "",
@@ -10204,7 +10771,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(2/12)",
         "Tip3": "",
@@ -10285,7 +10859,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(3/12)",
         "Tip3": "",
@@ -10366,7 +10947,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000339,
+          "Count": 20,
+          "MonsterName": "月魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境九层魔物(4/12)",
         "Tip3": "",
@@ -10447,7 +11035,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(5/12)",
         "Tip3": "",
@@ -10528,7 +11123,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(6/12)",
         "Tip3": "",
@@ -10609,7 +11211,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(7/12)",
         "Tip3": "",
@@ -10690,7 +11299,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(8/12)",
         "Tip3": "",
@@ -10771,7 +11387,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(9/12)",
         "Tip3": "",
@@ -10852,7 +11475,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(10/12)",
         "Tip3": "",
@@ -10933,7 +11563,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(11/12)",
         "Tip3": "",
@@ -11014,7 +11651,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000836,
+          "Count": 20,
+          "MonsterName": "魔龙巨蛾",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "幻境十层魔物(12/12)",
         "Tip3": "",
@@ -11095,7 +11739,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(1/12)",
         "Tip3": "",
@@ -11176,7 +11827,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(2/12)",
         "Tip3": "",
@@ -11257,7 +11915,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(3/12)",
         "Tip3": "",
@@ -11338,7 +12003,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(4/12)",
         "Tip3": "",
@@ -11419,7 +12091,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(5/12)",
         "Tip3": "",
@@ -11500,7 +12179,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000818,
+          "Count": 15,
+          "MonsterName": "火龙战将",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域一层魔物(6/12)",
         "Tip3": "",
@@ -11581,7 +12267,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(7/12)",
         "Tip3": "",
@@ -11662,7 +12355,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(8/12)",
         "Tip3": "",
@@ -11743,7 +12443,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(9/12)",
         "Tip3": "",
@@ -11824,7 +12531,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(10/12)",
         "Tip3": "",
@@ -11905,7 +12619,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(11/12)",
         "Tip3": "",
@@ -11986,7 +12707,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(12/12)",
         "Tip3": "",
@@ -12067,7 +12795,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(1/12)",
         "Tip3": "",
@@ -12148,7 +12883,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(2/12)",
         "Tip3": "",
@@ -12229,7 +12971,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(3/12)",
         "Tip3": "",
@@ -12310,7 +13059,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(4/12)",
         "Tip3": "",
@@ -12391,7 +13147,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(5/12)",
         "Tip3": "",
@@ -12472,7 +13235,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000824,
+          "Count": 15,
+          "MonsterName": "巨镰蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域二层魔物(6/12)",
         "Tip3": "",
@@ -12553,7 +13323,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(7/12)",
         "Tip3": "",
@@ -12634,7 +13411,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(8/12)",
         "Tip3": "",
@@ -12715,7 +13499,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(9/12)",
         "Tip3": "",
@@ -12796,7 +13587,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(10/12)",
         "Tip3": "",
@@ -12877,7 +13675,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(11/12)",
         "Tip3": "",
@@ -12958,7 +13763,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(12/12)",
         "Tip3": "",
@@ -13039,7 +13851,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(1/12)",
         "Tip3": "",
@@ -13120,7 +13939,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(2/12)",
         "Tip3": "",
@@ -13201,7 +14027,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(3/12)",
         "Tip3": "",
@@ -13282,7 +14115,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(4/12)",
         "Tip3": "",
@@ -13363,7 +14203,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(5/12)",
         "Tip3": "",
@@ -13444,7 +14291,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000828,
+          "Count": 15,
+          "MonsterName": "火尾黑狐王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域三层魔物(6/12)",
         "Tip3": "",
@@ -13525,7 +14379,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(7/12)",
         "Tip3": "",
@@ -13606,7 +14467,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(8/12)",
         "Tip3": "",
@@ -13687,7 +14555,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(9/12)",
         "Tip3": "",
@@ -13768,7 +14643,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(10/12)",
         "Tip3": "",
@@ -13849,7 +14731,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(11/12)",
         "Tip3": "",
@@ -13930,7 +14819,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000832,
+          "Count": 15,
+          "MonsterName": "雪域寒冰魔",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "圣域四层魔物(12/12)",
         "Tip3": "",
@@ -14017,7 +14913,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000065,
+          "Count": 1,
+          "MonsterName": "[精]尸王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14104,7 +15007,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000028,
+          "Count": 1,
+          "MonsterName": "[精]骷髅精灵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14191,7 +15101,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14278,7 +15195,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14365,7 +15289,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14452,7 +15383,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14539,7 +15477,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000065,
+          "Count": 1,
+          "MonsterName": "[精]尸王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14626,7 +15571,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000028,
+          "Count": 1,
+          "MonsterName": "[精]骷髅精灵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14713,7 +15665,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14800,7 +15759,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14887,7 +15853,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -14974,7 +15947,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15061,7 +16041,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000065,
+          "Count": 1,
+          "MonsterName": "[精]尸王",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15148,7 +16135,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000028,
+          "Count": 1,
+          "MonsterName": "[精]骷髅精灵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15235,7 +16229,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15322,7 +16323,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15409,7 +16417,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -15496,7 +16511,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16147,7 +17169,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16234,7 +17263,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16321,7 +17357,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16408,7 +17451,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16495,7 +17545,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16582,7 +17639,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16669,7 +17733,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16756,7 +17827,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16843,7 +17921,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -16930,7 +18015,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17017,7 +18109,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17104,7 +18203,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17191,7 +18297,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000439,
+          "Count": 1,
+          "MonsterName": "[精]白野猪",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17278,7 +18391,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000440,
+          "Count": 1,
+          "MonsterName": "[精]邪恶蝎蛇",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17365,7 +18485,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17452,7 +18579,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17539,7 +18673,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -17626,7 +18767,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18277,7 +19425,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18364,7 +19519,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18451,7 +19613,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18538,7 +19707,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18625,7 +19801,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18712,7 +19895,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18799,7 +19989,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18886,7 +20083,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -18973,7 +20177,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19060,7 +20271,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19147,7 +20365,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19234,7 +20459,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19321,7 +20553,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000442,
+          "Count": 1,
+          "MonsterName": "[精]沃玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19408,7 +20647,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000441,
+          "Count": 1,
+          "MonsterName": "[精]半兽勇士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19495,7 +20741,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19582,7 +20835,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19669,7 +20929,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -19756,7 +21023,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20407,7 +21681,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20494,7 +21775,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20581,7 +21869,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20668,7 +21963,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20755,7 +22057,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20842,7 +22151,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -20929,7 +22245,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21016,7 +22339,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21103,7 +22433,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21190,7 +22527,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21277,7 +22621,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21364,7 +22715,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21451,7 +22809,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000443,
+          "Count": 1,
+          "MonsterName": "[精]邪恶钳虫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21538,7 +22903,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000444,
+          "Count": 1,
+          "MonsterName": "[精]变异史莱姆",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21625,7 +22997,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21712,7 +23091,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21799,7 +23185,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -21886,7 +23279,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22537,7 +23937,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22624,7 +24031,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22711,7 +24125,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22798,7 +24219,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22885,7 +24313,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -22972,7 +24407,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23059,7 +24501,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23146,7 +24595,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23233,7 +24689,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23320,7 +24783,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23407,7 +24877,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23494,7 +24971,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23581,7 +25065,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23668,7 +25159,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000445,
+          "Count": 1,
+          "MonsterName": "[精]骷髅长枪兵",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23755,7 +25253,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23842,7 +25347,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -23929,7 +25441,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -24016,7 +25535,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -24667,7 +26193,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -24754,7 +26287,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -24841,7 +26381,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -24928,7 +26475,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25015,7 +26569,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25102,7 +26663,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25189,7 +26757,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25276,7 +26851,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25363,7 +26945,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25450,7 +27039,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25537,7 +27133,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25624,7 +27227,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25711,7 +27321,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000321,
+          "Count": 1,
+          "MonsterName": "[精]虹魔猪卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25798,7 +27415,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25885,7 +27509,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -25972,7 +27603,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -26059,7 +27697,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -26146,7 +27791,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -26797,7 +28449,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -26884,7 +28543,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -26971,7 +28637,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27058,7 +28731,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27145,7 +28825,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27232,7 +28919,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27319,7 +29013,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27406,7 +29107,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27493,7 +29201,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27580,7 +29295,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27667,7 +29389,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000322,
+          "Count": 1,
+          "MonsterName": "[精]虹魔蝎卫",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27754,7 +29483,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000451,
+          "Count": 1,
+          "MonsterName": "[精]祖玛卫士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27841,7 +29577,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -27928,7 +29671,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -28015,7 +29765,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -28666,7 +30423,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -28753,7 +30517,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -28840,7 +30611,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -28927,7 +30705,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29014,7 +30799,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29101,7 +30893,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29188,7 +30987,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29275,7 +31081,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29362,7 +31175,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29449,7 +31269,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29536,7 +31363,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000452,
+          "Count": 1,
+          "MonsterName": "[精]祖玛雕像",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29623,7 +31457,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000453,
+          "Count": 1,
+          "MonsterName": "[精]牛魔祭司",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29710,7 +31551,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29797,7 +31645,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -29884,7 +31739,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30535,7 +32397,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30622,7 +32491,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30709,7 +32585,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30796,7 +32679,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000457,
+          "Count": 1,
+          "MonsterName": "[精]血僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30883,7 +32773,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000460,
+          "Count": 1,
+          "MonsterName": "[精]魔龙力士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -30970,7 +32867,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31057,7 +32961,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31144,7 +33055,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31231,7 +33149,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000457,
+          "Count": 1,
+          "MonsterName": "[精]血僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31318,7 +33243,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000460,
+          "Count": 1,
+          "MonsterName": "[精]魔龙力士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31405,7 +33337,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000454,
+          "Count": 1,
+          "MonsterName": "[精]牛魔将军",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31492,7 +33431,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000456,
+          "Count": 1,
+          "MonsterName": "[精]血巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31579,7 +33525,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000458,
+          "Count": 1,
+          "MonsterName": "[精]邪恶巨人",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31666,7 +33619,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000457,
+          "Count": 1,
+          "MonsterName": "[精]血僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -31753,7 +33713,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000460,
+          "Count": 1,
+          "MonsterName": "[精]魔龙力士",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "精英挑战",
         "Tip3": "",
@@ -35125,7 +37092,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000048,
+          "Count": 1,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "挑战首领(一)",
         "Tip3": "",
@@ -35204,7 +37178,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000048,
+          "Count": 3,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "挑战首领(二)",
         "Tip3": "",
@@ -35283,7 +37264,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000048,
+          "Count": 5,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "挑战首领(三)",
         "Tip3": "",
@@ -35362,7 +37350,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000048,
+          "Count": 10,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "挑战首领(四)",
         "Tip3": "",
@@ -35513,7 +37508,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000508,
+          "Count": 1,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "个人首领",
         "Tip3": "",
@@ -35592,7 +37594,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000520,
+          "Count": 1,
+          "MonsterName": "变异僵尸",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "勇闯天关",
         "Tip3": "",
@@ -36247,7 +38256,14 @@
       "GoalParams": "6001600#6001601#6001602",
       "GoalMultiTarget": true,
       "FixedRewards": [],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6001600,
+          "Count": 10,
+          "MonsterName": "☆食铁兽☆",
+          "MonsterResolved": true
+        }
+      ],
       "State": 0
     }
   },
@@ -36394,7 +38410,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000683,
+          "Count": 1,
+          "MonsterName": "雪域魔王",
+          "MonsterResolved": true
+        }
+      ],
       "State": 1
     }
   },
@@ -36602,7 +38625,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6001317,
+          "Count": 1,
+          "MonsterName": "邪恶宝箱",
+          "MonsterResolved": true
+        }
+      ],
       "State": 1
     }
   },
@@ -36748,7 +38778,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000048,
+          "Count": 1,
+          "MonsterName": "沃玛教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -36984,7 +39021,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000203,
+          "Count": 1,
+          "MonsterName": "虹魔教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -37220,7 +39264,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000635,
+          "Count": 1,
+          "MonsterName": "魔龙教主",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -37456,7 +39507,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000647,
+          "Count": 1,
+          "MonsterName": "火龙神",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -37692,7 +39750,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -37928,7 +39993,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -38164,7 +40236,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -38400,7 +40479,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -38636,7 +40722,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -38872,7 +40965,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",
@@ -39108,7 +41208,14 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
+      "KillTasks": [
+        {
+          "MonsterIndex": 6000659,
+          "Count": 1,
+          "MonsterName": "绿魔蜘蛛",
+          "MonsterResolved": true
+        }
+      ],
       "Alternate": {
         "Name": "首领试炼",
         "Tip3": "只有消灭魔物首领才能获得超脱。(注：魔物首领实力极强，推荐邀请好友协助)",

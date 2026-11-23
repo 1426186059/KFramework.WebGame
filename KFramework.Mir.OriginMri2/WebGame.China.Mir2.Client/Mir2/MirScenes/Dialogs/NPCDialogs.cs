@@ -189,6 +189,8 @@ namespace Client.MirScenes.Dialogs
 
         void PositionBar_OnMoving(object sender, MouseEventArgs e)
         {
+            if (PositionBar == null) return;
+
             int x = 417;
             int y = PositionBar.Location.Y;
 
@@ -209,7 +211,9 @@ namespace Client.MirScenes.Dialogs
 
         private void UpdatePositionBar()
         {
-            if (CurrentLines.Count <= MaximumLines) return;
+            // PositionBar 从未实例化（旧代码残留），多行文本曾走到这里空引用，导致主循环停止、浏览器卡死。
+            if (PositionBar == null) return;
+            if (CurrentLines == null || CurrentLines.Count <= MaximumLines) return;
 
             int interval = 108 / (CurrentLines.Count - MaximumLines);
 

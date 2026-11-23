@@ -895,10 +895,12 @@ namespace Server.MirObjects
                 return;
             }
 
+            bool matched = false;
             for (int i = 0; i < NPCPages.Count; i++)
             {
                 NPCPage page = NPCPages[i];
                 if (!String.Equals(page.Key, key, StringComparison.CurrentCultureIgnoreCase)) continue;
+                matched = true;
 
                 player.NPCSpeech = new List<string>();
                 player.NPCSuccess.Clear();
@@ -917,7 +919,53 @@ namespace Server.MirObjects
                 Response(player, page);
             }
 
+            // 纯任务 NPC（如"被困的民兵"）没有对话脚本（FileName 为空、NPCPages 为空），
+            // 点它本就不需要 NPC 对话文字。仅当该 NPC 对玩家确实有可接/可交任务时，
+            // 才发一个空 NPCResponse 让客户端弹任务面板；否则什么都不做（无脚本无任务 = 无面板），
+            // 更不会误伤有脚本 NPC 的正常对话（脚本页存在时 matched=true，走不到这里）。
+            if (!matched && key == MainKey)
+            {
+                var questNPC = NPCObject.Get(objectID);
+                bool hasQuest = questNPC != null && PlayerHasQuestAt(player, questNPC);
+                if (hasQuest)
+                    player.Enqueue(new S.NPCResponse { Page = new List<string>() });
+            }
+
             player.NPCData.Remove("NPCInputStr");
+        }
+
+        /// <summary>
+        /// 该 NPC 对玩家是否有可接/可交任务（复刻客户端 NPCObject.GetAvailableQuests 的判定）：
+        ///  - 可交：玩家进行中任务的交付 NPC 是这个 NPC（包括目标已达成待交的任务）；
+        ///  - 可接：这个 NPC 关联的任务里有玩家可接（CanOffer）且未完成的。
+        /// </summary>
+        private static bool PlayerHasQuestAt(PlayerObject player, NPCObject npc)
+        {
+            // 可交：进行中任务的交付 NPC = 该 NPC。
+            // 注意不能排除 progress.Completed —— 目标达成待交的任务正是要弹面板让玩家领奖的，
+            // 只排除已领奖（CompletedQuests）的任务，与客户端 GetAvailableQuests 一致。
+            foreach (var progress in player.CurrentQuests)
+            {
+                if (progress == null || progress.Info == null) continue;
+                if (player.CompletedQuests.Contains(progress.Info.Index)) continue;
+                if (progress.Info.FinishNpcIndex == npc.ObjectID) return true;
+            }
+
+            // 可接：NPC 关联任务里可接的（等级/职业/前置任务/追踪条件都满足）
+            if (npc.Quests != null)
+            {
+                foreach (var info in npc.Quests)
+                {
+                    if (info == null || player.CompletedQuests.Contains(info.Index)) continue;
+                    if (!info.CanOffer(player)) continue;
+                    if (!Envir.CheckOriginShowCondition(player, info.OriginSettings?.Condition)) continue;
+                    // 发放 NPC = 该 NPC 即为可接（客户端 GetAvailableQuests 只判 CanAccept，不看交付 NPC）。
+                    // 不要求同 NPC 自交：任务19"解救民兵之二"发放=被困的民兵、交付=奋战的民兵，
+                    // 点被困的民兵仍要能弹面板接取。
+                    if (info.NpcIndex == npc.ObjectID) return true;
+                }
+            }
+            return false;
         }
 
         private void Response(PlayerObject player, NPCPage page)

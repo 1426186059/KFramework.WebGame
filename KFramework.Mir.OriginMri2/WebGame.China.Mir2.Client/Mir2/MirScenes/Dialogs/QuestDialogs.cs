@@ -351,19 +351,10 @@ namespace Client.MirScenes.Dialogs
             }
             _npcNameLabel.Text = npcName;
 
-            List<string> desc;
-            if (SelectedQuest.Taken && !SelectedQuest.QuestInfo.SameFinishNPC
-                && SelectedQuest.QuestInfo.CompletionDescription.Count > 0
-                && GameScene.NPCID == SelectedQuest.QuestInfo.FinishNPCIndex)
-            {
-                desc = SelectedQuest.QuestInfo.CompletionDescription;
-            }
-            else
-            {
-                desc = SelectedQuest.QuestInfo.Description;
-            }
-
-            RenderDescription(desc);
+            // 任务描述始终用 Description（原版 description/tip 正文）。
+            // CompletionDescription 是 reward 前半段的奖励文本，只在下方奖励区（QuestRewards）显示，
+            // 绝不能覆盖任务描述——否则比奇老兵处会把"任务奖励：440经验值..."当成任务说明。
+            RenderDescription(SelectedQuest.QuestInfo.Description);
         }
 
         // 渲染任务描述：解析内联颜色/链接标签（{文字/颜色}、[ITEM:idx|名] 等，与 NPC 对话同一套格式）。
@@ -681,22 +672,13 @@ namespace Client.MirScenes.Dialogs
             //add quest title at the beginning
             CurrentLines.Insert(0, QuestTypeLabel.Decorate(Quest.QuestInfo.Type, Quest.QuestInfo.Name));
 
-            if (Quest.Taken && !Quest.QuestInfo.SameFinishNPC && Quest.QuestInfo.CompletionDescription.Count > 0 && GameScene.Scene.QuestListDialog.CurrentNPCID == Quest.QuestInfo.FinishNPCIndex)
+            // 任务行描述始终用 Description；奖励文本（CompletionDescription）只在奖励区显示，不覆盖描述。
+            foreach (var line in Quest.QuestInfo.Description)
             {
-                foreach (var line in Quest.QuestInfo.CompletionDescription)
-                {
-                    CurrentLines.Add(line);
-                }
+                CurrentLines.Add(line);
             }
-            else
-            {
-                foreach (var line in Quest.QuestInfo.Description)
-                {
-                    CurrentLines.Add(line);
-                }
 
-                AdjustDescription();
-            }
+            AdjustDescription();
 
             NewText(CurrentLines);
         }
