@@ -83,7 +83,8 @@ namespace Server.MirEnvir
                     LoadOriginStores(baseDir);
                     // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
                     LoadOriginConditions(baseDir);
-                    // 原始传奇任务权威表（4config._task / 5config.goals / 0config.global[9201]）：追踪面板文字直接读原表
+                    // 原始传奇配置表全部加载备用（静态数据，将来用）：
+                    // 4config._task / 5config.goals / 0config.global[9201] / 5config.textstyle
                     LoadOriginQuestTables(baseDir);
                 }
                 QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");

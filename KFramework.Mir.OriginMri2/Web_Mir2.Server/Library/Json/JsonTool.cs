@@ -15,6 +15,9 @@ namespace Shared.Helpers
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         IncludeFields = true)]
     [JsonSerializable(typeof(OriginMir2Config0))]
+    [JsonSerializable(typeof(OriginMir2Config1))]
+    [JsonSerializable(typeof(OriginMir2Config2))]
+    [JsonSerializable(typeof(OriginMir2Config3))]
     [JsonSerializable(typeof(OriginMir2Config4))]
     [JsonSerializable(typeof(OriginMir2Config5))]
     [JsonSerializable(typeof(TextMap))]

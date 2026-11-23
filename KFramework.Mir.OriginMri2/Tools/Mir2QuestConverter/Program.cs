@@ -31,6 +31,13 @@ public sealed class QuestInfoOut
     public uint GoldReward, ExpReward, CreditReward;
     public List<object> FixedRewards = new();
     public List<object> SelectRewards = new();
+    // 原始传奇 2config.box 按原版 BoxUtil 结构展开的奖励项（与服务器 OriginBoxRewardTable 同形），
+    // 经验(4)/金币(1,499) 同时落到顶层数值字段，其余按 ItemId 由服务器解析成物品。
+    public List<QuestOriginBoxRewardOut> OriginRewards = new();
+    // 旧版三组平行数组：继续输出以便旧服务器配置兼容，新服务器优先读 OriginRewards。
+    public List<int> RewardItemIndices = new();
+    public List<int> RewardItemCounts = new();
+    public List<int> RewardCareers = new();
     public QuestOriginSettingsOut OriginSettings = new();
 }
 
@@ -52,6 +59,12 @@ public sealed class QuestOriginSettingsOut
     public string GoalInfo = "", GoalParams = "";
     public bool GoalMultiTarget;
 
+    // 任务追踪面板文字（构建期按原版 dataChanged + 5config.textstyle 拼好，服务器只读不转换）：
+    // 进行中目标的富文本（两段：info0=textstyle[31] 白 + info1=textstyle[32] 绿+下划线，{0} 已替换为总数）。
+    public string TrackingGoalRich = "";
+    // 完成待交的富文本（completeinfo 两段）。
+    public string TrackingCompleteRich = "";
+
     // 按 Index 精确引用，避免按名字查找重名物品/怪物。
     public List<QuestOriginRewardOut> FixedRewards = new();
     public List<QuestOriginKillOut> KillTasks = new();
@@ -64,6 +77,42 @@ public sealed class QuestOriginSettingsOut
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public QuestOriginAlternateOut? Alternate;
 
 
+}
+
+// 与服务器 OriginBoxRewardTable 同形：对应原版 2config.box.items 单条奖励按 '-' 拆分的位置。
+public sealed class QuestOriginBoxRewardOut
+{
+    public int ItemId;      // [0] 物品id：4=经验，1/499=金币
+    public int Count;       // [1] 数量
+    public int Weight;      // [2] 权重/概率
+    public int Career;      // [3] 职业限制：0=不限 1=战 2=法 3=道
+    public int Sex;         // [4] 性别限制
+    public int OpenDayMin;  // [5] 开服天数下限
+    public int OpenDayMax;  // [6] 开服天数上限（原版兼作 condition id）
+    public string Raw = "";
+
+    public static QuestOriginBoxRewardOut? Parse(string seg)
+    {
+        if (string.IsNullOrEmpty(seg)) return null;
+        string[] g = seg.Split('#')[0].Split('-');
+        if (g.Length < 2 || !int.TryParse(g[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int itemId) ||
+            !int.TryParse(g[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int count)) return null;
+
+        static int At(string[] parts, int index)
+            => index < parts.Length && int.TryParse(parts[index], NumberStyles.Integer, CultureInfo.InvariantCulture, out int v) ? v : 0;
+
+        return new QuestOriginBoxRewardOut
+        {
+            ItemId = itemId,
+            Count = count,
+            Weight = At(g, 2),
+            Career = At(g, 3),
+            Sex = At(g, 4),
+            OpenDayMin = At(g, 5),
+            OpenDayMax = At(g, 6),
+            Raw = seg
+        };
+    }
 }
 
 public sealed class QuestOriginRewardOut
@@ -100,11 +149,12 @@ public static class Program
 {
     private const string ConfigVersion = "10.25341.1";
 
-    private const int PseudoItemExp = 4;    // 主角经验
-    private const int PseudoItemGold = 499; // 金币
+    private const int PseudoItemExp = 4;       // 主角经验
+    private const int PseudoItemGold = 499;    // 金币（box.items 里的写法）
+    private const int PseudoItemGoldLegacy = 1; // 金币（老任务 rewards 直接写的写法）
 
     private sealed record ConditionRow(int Type, string Param, string Txt);
-    private sealed record GoalRow(int Type, string Param, int Count, string Info, int MapId, int X, int Y);
+    private sealed record GoalRow(int Type, string Param, int Count, string Info, int MapId, int X, int Y, string RawInfo);
 
     public static int Main(string[] args)
     {
@@ -161,14 +211,28 @@ public static class Program
         foreach (var e in GetTable(doc5, "goals").EnumerateObject())
         {
             if (!int.TryParse(e.Name, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id)) continue;
+            string rawGoInfo = GetStr(e.Value, "goInfo");
             goals[id] = new GoalRow(
                 TryInt(e.Value, "type", out int gt) ? gt : 0,
                 GetStr(e.Value, "param"),
                 TryInt(e.Value, "count", out int gc) ? gc : 1,
-                Clean(GetStr(e.Value, "goInfo")),
+                Clean(rawGoInfo),
                 TryInt(e.Value, "mapId", out int gm) ? gm : 0,
                 TryInt(e.Value, "x", out int gx) ? gx : 0,
-                TryInt(e.Value, "y", out int gy) ? gy : 0);
+                TryInt(e.Value, "y", out int gy) ? gy : 0,
+                rawGoInfo);
+        }
+
+        // 5config.textstyle：任务追踪两段文字的颜色（Logic.getCol）。31=info0 白，32=info1 绿+下划线。
+        var textStyles = new Dictionary<int, (string Color, bool Underline, bool Bold)>();
+        foreach (var e in GetTable(doc5, "textstyle").EnumerateObject())
+        {
+            if (!int.TryParse(e.Name, NumberStyles.Integer, CultureInfo.InvariantCulture, out int sid)) continue;
+            string color = GetStr(e.Value, "textColor");
+            if (color.Length > 0 && !color.StartsWith("#", StringComparison.Ordinal)) color = "#" + color;
+            bool underline = TryInt(e.Value, "underline", out int ul) && ul == 1;
+            bool bold = TryInt(e.Value, "bold", out int bd) && bd == 1;
+            textStyles[sid] = (color, underline, bold);
         }
 
         var itemNames = ReadIndexNames(docItem.RootElement);
@@ -184,6 +248,7 @@ public static class Program
 
         var taskTable = GetTable(doc4, "_task");
         var altTable = GetTable(doc2, "_task_tx");
+        var boxTable = GetTable(doc2, "box");
         var tasks = new List<(int Id, JsonElement Data)>();
         foreach (var e in taskTable.EnumerateObject())
         {
@@ -231,7 +296,8 @@ public static class Program
             }
 
             string tip3 = Clean(GetStr(o, "tip3"));
-            string completeInfo = Clean(GetStr(o, "completeinfo"));
+            string rawCompleteInfo = GetStr(o, "completeinfo"); // 富文本用原文（含 | 两段）
+            string completeInfo = Clean(rawCompleteInfo);
             string rewardText = Clean(GetStr(o, "reward"));
             string rewards = GetStr(o, "rewards");
             if (tip3.Length > 0) withTip3++;
@@ -306,6 +372,10 @@ public static class Program
             string gotoMessage = completeInfo.Length > 0 ? completeInfo : goalInfo;
             var taskDescription = Lines(goalInfo.Length > 0 ? goalInfo : completeInfo);
 
+            // 任务追踪面板两段式富文本（构建期按原版 dataChanged + textstyle 拼好）
+            string trackingGoalRich = goal != null ? BuildTrackingRich(goal.RawInfo, textStyles) : "";
+            string trackingCompleteRich = BuildTrackingRich(rawCompleteInfo, textStyles);
+
             var settings = new QuestOriginSettingsOut
             {
                 OriginTaskId = id,
@@ -331,28 +401,61 @@ public static class Program
                 GoalY = goal?.Y ?? 0,
                 GoalInfo = goalInfo,
                 GoalParams = goal?.Param ?? "",
+                TrackingGoalRich = trackingGoalRich,
+                TrackingCompleteRich = trackingCompleteRich,
                 SkillGoals = skillGoals
             };
 
-            // rewards: "itemId#数量&itemId#数量..."；4=经验、499=金币是伪道具，直接落到数值字段。
+            // 原始传奇 _task.rewards 有两种写法（对应原版 BoxUtil.getItemOrBox）：
+            //   1) box 包："boxId#份数"（& 可分隔多个包），真正奖励在 2config.box[id].items；
+            //      items 用 ';' 分隔固定项，每项 "物品id-数量-权重-职业-性别-开服下限-开服上限"。
+            //   2) 直接物品："物品id#数量&..."，部分老任务仍在用。
+            // 每项按原版 BoxUtil 结构解析成 QuestOriginBoxRewardOut（与服务器 OriginBoxRewardTable 同形），
+            // 伪物品 4=经验、1/499=金币同时落到顶层数值字段；其余按 ItemId 由服务器解析成物品。
             uint gold = 0, exp = 0;
+            var originRewards = new List<QuestOriginBoxRewardOut>();
+            var rewardItemIndices = new List<int>();
+            var rewardItemCounts = new List<int>();
+            var rewardCareers = new List<int>();
+
+            void AddRewardItem(QuestOriginBoxRewardOut? reward)
+            {
+                if (reward == null) return;
+                if (reward.ItemId == PseudoItemExp) { exp += (uint)Math.Max(0, reward.Count); return; }
+                if (reward.ItemId == PseudoItemGold || reward.ItemId == PseudoItemGoldLegacy) { gold += (uint)Math.Max(0, reward.Count); return; }
+
+                rewardItemRefs++;
+                bool hit = itemNames.ContainsKey(reward.ItemId);
+                if (hit) rewardItemHit++;
+                originRewards.Add(reward);
+                rewardItemIndices.Add(reward.ItemId);
+                rewardItemCounts.Add(reward.Count);
+                rewardCareers.Add(reward.Career);
+                settings.FixedRewards.Add(new QuestOriginRewardOut
+                {
+                    ItemIndex = reward.ItemId,
+                    Count = (uint)Math.Max(0, reward.Count),
+                    ItemName = itemNames.GetValueOrDefault(reward.ItemId) ?? "",
+                    ItemResolved = hit
+                });
+            }
+
             foreach (var seg in rewards.Split('&', StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] kv = seg.Split('#');
-                if (kv.Length < 2 || !int.TryParse(kv[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int itemId)) continue;
-                uint count = uint.TryParse(kv[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out uint c) ? c : 1;
-                if (itemId == PseudoItemGold) { gold += count; continue; }
-                if (itemId == PseudoItemExp) { exp += count; continue; }
-                rewardItemRefs++;
-                bool hit = itemNames.ContainsKey(itemId);
-                if (hit) rewardItemHit++;
-                settings.FixedRewards.Add(new QuestOriginRewardOut
+                if (!int.TryParse(kv[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int refId)) continue;
+                int directCount = kv.Length > 1 && int.TryParse(kv[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int dc) ? dc : 1;
+
+                if (boxTable.TryGetProperty(refId.ToString(CultureInfo.InvariantCulture), out var boxEl))
                 {
-                    ItemIndex = itemId,
-                    Count = count,
-                    ItemName = itemNames.GetValueOrDefault(itemId) ?? "",
-                    ItemResolved = hit
-                });
+                    string itemsRaw = GetStr(boxEl, "items");
+                    foreach (var itemSeg in itemsRaw.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                        AddRewardItem(QuestOriginBoxRewardOut.Parse(itemSeg));
+                }
+                else
+                {
+                    AddRewardItem(new QuestOriginBoxRewardOut { ItemId = refId, Count = directCount, Raw = seg });
+                }
             }
             totalGold += gold;
             totalExp += exp;
@@ -427,6 +530,10 @@ public static class Program
                 Type = (byte)taskType,
                 GoldReward = gold,
                 ExpReward = exp,
+                OriginRewards = originRewards,
+                RewardItemIndices = rewardItemIndices,
+                RewardItemCounts = rewardItemCounts,
+                RewardCareers = rewardCareers,
                 OriginSettings = settings
             });
         }
@@ -470,7 +577,8 @@ public static class Program
             w.WriteLine("  RequiredMinLevel/MaxLevel <- condition 引用 0config.conditions（1=等级下限，2=低于N级→N-1）");
             w.WriteLine("  RequiredQuest <- 反查 _task.next（谁指向本任务，谁就是前置任务）");
             w.WriteLine("  Type         <- taskgroupid 1..6 记 Story(3)，其余 General(0)；不用 Daily/Repeatable 避免每日重置");
-            w.WriteLine("  GoldReward / ExpReward <- rewards 里伪道具 499=金币 / 4=主角经验");
+            w.WriteLine("  GoldReward / ExpReward <- rewards 指向 2config.box，展开 items 后伪道具 499=金币 / 4=主角经验");
+            w.WriteLine("  RewardItemIndices/Counts/Careers <- box.items 的其余物品（物品id/数量/职业），服务器按 Index 解析成 FixedRewards");
             w.WriteLine("  OriginSettings <- 内嵌：条件/目标/奖励/NPC/任务链 + 另一条任务线 Alternate（不再复制原始 Raw）");
             w.WriteLine("      FixedRewards / KillTasks 用 ItemIndex / MonsterIndex 精确引用，服务器启动按 Index 解析，");
             w.WriteLine("      避开按名字查找（换表后旧名字大量失配）的问题。");
@@ -573,6 +681,31 @@ public static class Program
         if (p.ValueKind == JsonValueKind.String &&
             int.TryParse(p.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int s)) { value = s; return true; }
         return false;
+    }
+
+    // 按原版 MobileTaskViewItem.dataChanged 把 goInfo/completeinfo 拼成两段富文本：
+    // info0 = textstyle[31]（白），info1 = textstyle[32]（绿+下划线）。
+    // {0} 保留为 {0} 占位符，由服务器运行时替换成"当前/总数"。
+    static string BuildTrackingRich(string raw, Dictionary<int, (string Color, bool Underline, bool Bold)> styles)
+    {
+        if (string.IsNullOrEmpty(raw)) return "";
+        string[] parts = raw.Split('|');
+        string info0 = parts.Length > 0 ? parts[0] : "";
+        string info1 = parts.Length > 1 ? parts[1] : "";
+        return Styled(info0, 31, styles) + Styled(info1, 32, styles);
+    }
+
+    static string Styled(string text, int styleId, Dictionary<int, (string Color, bool Underline, bool Bold)> styles)
+    {
+        if (string.IsNullOrEmpty(text)) return "";
+        text = Regex.Replace(text, @"<br\s*/?>", "\n", RegexOptions.IgnoreCase);
+        text = Regex.Replace(text, @"<[^>]+>", ""); // 去掉原配置里的 HTML 标签，避免与富文本标签冲突
+        text = WebUtility.HtmlDecode(text);
+        if (!styles.TryGetValue(styleId, out var st) || st.Color.Length == 0) return text;
+        string body = text;
+        if (st.Underline) body = "<u>" + body + "</u>";
+        if (st.Bold) body = "<b>" + body + "</b>";
+        return "<color=" + st.Color + ">" + body + "</color>";
     }
 
     static string Clean(string s)

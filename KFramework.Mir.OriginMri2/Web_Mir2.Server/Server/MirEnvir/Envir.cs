@@ -131,15 +131,18 @@ namespace Server.MirEnvir
         /// <summary>原始传奇显示条件表（0config.conditions，id → 条件），用于 npcstore.showCondition 过滤。</summary>
         public Dictionary<int, OriginConditionTable> OriginConditions = new Dictionary<int, OriginConditionTable>();
 
-        // ===== 原始传奇任务权威表（4config._task / 5config.goals / 0config.global）：追踪面板文字直接读这些表 =====
-        /// <summary>原始传奇任务主表 4config._task，key = 任务 id（name / completeinfo / goals / type / fnpc / tnpc）。</summary>
+        // ===== 原始传奇配置表类库（2config.box / 4config._task / 5config.goals / 0config.global / 5config.textstyle）=====
+        // 全部加载备用（静态配置数据，将来用）；当前任务追踪文字走构建期转换好的 QuestInfo.json 字段。
         public Dictionary<int, OriginTaskTable> OriginTasks = new Dictionary<int, OriginTaskTable>();
-        /// <summary>原始传奇任务目标表 5config.goals，key = goal id（goInfo / type / count / param / mapId / x / y）。</summary>
         public Dictionary<int, OriginGoalTable> OriginGoals = new Dictionary<int, OriginGoalTable>();
-        /// <summary>原始传奇任务类型名前缀 0config.global[9201]，key = type，value = "[主线]" 等前缀。</summary>
         public Dictionary<int, string> OriginTaskTypeNames = new Dictionary<int, string>();
-        /// <summary>原始传奇富文本样式表 5config.textstyle（Logic.getCol(id)），key = 样式 id，任务追踪取 31(白)/32(绿)。</summary>
         public Dictionary<int, OriginTextStyleTable> OriginTextStyles = new Dictionary<int, OriginTextStyleTable>();
+        /// <summary>原始传奇 2config.box 奖励包表（id → 包，Rewards 已按 OriginBoxRewardTable 解析）。</summary>
+        public Dictionary<int, OriginBoxTable> OriginBoxes = new Dictionary<int, OriginBoxTable>();
+
+        /// <summary>原始传奇 0config~5config 六个分片根类（key = 分片号）。所有顶层表全量加载：
+        /// 根类里声明过的表走强类型，其余表在 OriginConfigRoot.ExtraTables（表名 → JsonElement），以后用到再补具体 DTO。</summary>
+        public Dictionary<int, OriginConfigRoot> OriginConfigs = new Dictionary<int, OriginConfigRoot>();
 
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
         public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();

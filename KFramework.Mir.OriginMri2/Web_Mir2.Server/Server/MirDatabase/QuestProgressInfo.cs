@@ -438,9 +438,10 @@ namespace Server.MirDatabase
             TaskList = new List<string>();
             Targets = new List<QuestTaskTarget>();
 
-            // 原始传奇任务：追踪文字直接读权威原表（4config._task / 5config.goals），
-            // 忠实复刻原版 MobileTaskViewItem.dataChanged 的两段式 goInfo/completeinfo。
-            if (Info != null && Info.OriginSettings != null && Envir.OriginTasks.Count > 0)
+            // 原始传奇任务：追踪文字读构建期转换好的富文本字段（QuestInfo.json，不再运行时读原始表）。
+            if (Info != null && Info.OriginSettings != null &&
+                (!string.IsNullOrEmpty(Info.OriginSettings.TrackingGoalRich) ||
+                 !string.IsNullOrEmpty(Info.OriginSettings.TrackingCompleteRich)))
             {
                 UpdateOriginQuestTasks();
                 return;
@@ -453,114 +454,50 @@ namespace Server.MirDatabase
         }
 
         /// <summary>
-        /// 原始传奇任务追踪文字：完全按原版 dataChanged 逻辑读权威表。
-        /// 进行中(Accepted)：遍历目标，取 5config.goals[goalId].goInfo，按 "|" 拆成
-        ///   info0(前缀，白) + info1(目标，绿)，info1 里的 {0} 替换为 "当前/总数"；
-        ///   goal.type=342(物品)时 info1 显示物品名（cm.item[param]）。
-        /// 完成(Finish)或无进度：取 4config._task[id].completeinfo 按 "|" 拆成 info0 + info1。
-        /// 客户端 QuestTrackingItem.Bind 会把 info1 染绿，这里只负责拼出两段文字。
+        /// 原始传奇任务追踪文字：读构建期（Mir2QuestConverter）按原版 dataChanged + 5config.textstyle
+        /// 拼好的两段富文本（QuestInfo.json 的 TrackingGoalRich / TrackingCompleteRich）。
+        /// 服务器不做任何配置转换，只把 {0} 占位符替换成运行时进度"当前/总数"。
         /// </summary>
         private void UpdateOriginQuestTasks()
         {
             var os = Info.OriginSettings;
+            int current = GetOriginGoalProgress();
+            int total = Math.Max(1, os.GoalCount > 0 ? os.GoalCount : 1);
+            string progress = current + "/" + total;
 
-            // 原表取不到时回退到落表的清洗字段（保证老版本/缺分片也能显示）
-            OriginTaskTable orgTask = null;
-            if (os.OriginTaskId > 0) Envir.OriginTasks.TryGetValue(os.OriginTaskId, out orgTask);
-            string completeInfo = orgTask != null && !string.IsNullOrEmpty(orgTask.completeinfo)
-                ? orgTask.completeinfo : os.CompleteInfo;
-
-            // 完成待交：显示 completeinfo（"找到  |书店老板" → "找到 书店老板"）
+            // 完成待交：显示 completeinfo 富文本（"找到 书店老板"）
             if (Completed)
             {
-                if (!string.IsNullOrEmpty(completeInfo))
+                string completeRich = FillProgress(os.TrackingCompleteRich, progress);
+                if (string.IsNullOrEmpty(completeRich)) completeRich = StripOriginSeparator(os.CompleteInfo);
+                if (!string.IsNullOrEmpty(completeRich))
                 {
-                    TaskList.Add(StripOriginSeparator(completeInfo));
+                    TaskList.Add(completeRich);
                     Targets.Add(MakeFinishNPCTarget());
                 }
                 return;
             }
 
-            // 进行中：优先按权威 goals 表渲染目标行
-            OriginGoalTable orgGoal = null;
-            if (os.GoalId > 0) Envir.OriginGoals.TryGetValue(os.GoalId, out orgGoal);
+            // 进行中：显示目标富文本（"买 一本技能书" / "击杀 鸡2/3只"）
+            string goalRich = FillProgress(os.TrackingGoalRich, progress);
+            if (string.IsNullOrEmpty(goalRich)) goalRich = StripOriginSeparator(os.GoalInfo);
 
-            if (orgGoal != null && !string.IsNullOrEmpty(orgGoal.goInfo))
+            if (!string.IsNullOrEmpty(goalRich))
             {
-                BuildOriginGoalLine(orgGoal);
-                return;
-            }
-
-            // 回退：用落表的 GoalInfo（转换器已把 | 清成空格、{0} 换成总数）
-            if (!string.IsNullOrEmpty(os.GoalInfo))
-            {
-                TaskList.Add(StripOriginSeparator(os.GoalInfo));
-                Targets.Add(MakeNPCTarget());
+                TaskList.Add(goalRich);
+                // 目标类型：击杀类挂怪物坐标，其余挂交付 NPC。
+                QuestTaskTarget monsterTarget = null;
+                if (KillTaskCount.Count > 0 && KillTaskCount[0].Info != null && KillTaskCount[0].Info.Monster != null)
+                    monsterTarget = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
+                Targets.Add(monsterTarget ?? MakeNPCTarget());
             }
         }
 
-        /// <summary>按原版 dataChanged 的 Accepted 分支拼一行目标文字，并挂对应传送目标。</summary>
-        private void BuildOriginGoalLine(OriginGoalTable goal)
+        /// <summary>把构建期富文本里的 {0}/{1} 进度占位符替换成"当前/总数"。客户端见到 &lt;color= 会整行按配置色显示。</summary>
+        private static string FillProgress(string rich, string progress)
         {
-            string[] parts = goal.goInfo.Split('|');
-            string info0 = parts.Length > 0 ? parts[0] : string.Empty;
-            string info1 = parts.Length > 1 ? parts[1] : string.Empty;
-
-            // 原版：type=342 物品目标显示物品名（cm.item[parseInt(param)] 的 [3]）；其余用 {0} 替换进度。
-            if (goal.type == 342 && int.TryParse(goal.param, out int itemId) && itemId > 0)
-            {
-                var item = Envir.GetItemInfo(itemId);
-                info1 = item != null ? item.Name : info1;
-            }
-            else
-            {
-                int current = GetOriginGoalProgress();
-                int total = Math.Max(1, goal.count);
-                info1 = Regex.Replace(info1, @"\{\d+\}", current + "/" + total);
-            }
-
-            // 原版两段式颜色：info0=textstyle[31]（白），info1=textstyle[32]（绿+下划线），
-            // 颜色/描边/下划线全部读 5config.textstyle 配置（Logic.getCol），不再硬编码。
-            string text = BuildOriginRichText(info0, info1, 31, 32);
-            if (string.IsNullOrEmpty(info0) && string.IsNullOrEmpty(info1))
-                text = StripOriginSeparator(Info.OriginSettings.GoalInfo);
-
-            TaskList.Add(text);
-
-            // 目标类型：击杀类挂怪物坐标，其余挂交付 NPC。
-            QuestTaskTarget monsterTarget = null;
-            if (KillTaskCount.Count > 0 && KillTaskCount[0].Info != null && KillTaskCount[0].Info.Monster != null)
-                monsterTarget = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
-            Targets.Add(monsterTarget ?? MakeNPCTarget());
-        }
-
-        /// <summary>
-        /// 按原版 textstyle 配置拼两段富文本（客户端 MirLabel.RichText 解析 &lt;color=#RRGGBB&gt;&lt;u&gt;...）。
-        /// 客户端 QuestTrackingItem.Bind 见到 &lt;color= 标记会整行直接显示，不再二次染绿。
-        /// </summary>
-        private static string BuildOriginRichText(string info0, string info1, int style0, int style1)
-        {
-            string part0 = OriginStyledText(info0, style0);
-            string part1 = OriginStyledText(info1, style1);
-            return (part0 + part1).Trim();
-        }
-
-        private static string OriginStyledText(string text, int styleId)
-        {
-            if (string.IsNullOrEmpty(text)) return string.Empty;
-
-            OriginTextStyleTable style = null;
-            if (Envir.OriginTextStyles.TryGetValue(styleId, out style) && style != null)
-            {
-                string hex = style.textColor.StartsWith("#") ? style.textColor : "#" + style.textColor;
-                string body = text;
-                if (style.underline == 1) body = "<u>" + body + "</u>";
-                if (style.bold == 1) body = "<b>" + body + "</b>";
-                return "<color=" + hex + ">" + body + "</color>";
-            }
-
-            // textstyle 未加载时回退纯文本（info1 仍需可辨识：客户端旧逻辑会按 target 染绿）
-            return text;
+            if (string.IsNullOrEmpty(rich)) return string.Empty;
+            return Regex.Replace(rich, @"\{\d+\}", progress);
         }
 
         /// <summary>当前目标的进度值：击杀优先，其次收集，均无进度(如买书)时按完成标记取 0/1。</summary>

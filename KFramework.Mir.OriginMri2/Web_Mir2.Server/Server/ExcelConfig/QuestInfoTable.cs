@@ -42,6 +42,11 @@ namespace Server.MirDatabase
         public string GoalParams { get; set; } = "";
         public bool GoalMultiTarget { get; set; }
 
+        // 任务追踪面板文字：构建期由 Mir2QuestConverter 按原版 dataChanged + 5config.textstyle 拼好的两段富文本，
+        // 服务器只读不转换。进行中 {0} 由运行时替换为"当前/总数"。
+        public string TrackingGoalRich { get; set; } = "";
+        public string TrackingCompleteRich { get; set; } = "";
+
         // 按 Index 精确引用，服务器启动时解析成 ItemInfoTable / MonsterInfoTable，避开按名字查找重名的问题。
         public List<QuestOriginReward> FixedRewards { get; set; } = new List<QuestOriginReward>();
         public List<QuestOriginKill> KillTasks { get; set; } = new List<QuestOriginKill>();
@@ -174,7 +179,11 @@ namespace Server.MirDatabase
         public List<QuestItemReward> FixedRewards { get; set; } = new List<QuestItemReward>();
         public List<QuestItemReward> SelectRewards { get; set; } = new List<QuestItemReward>();
 
-        // 原始传奇奖励包（2config.box）由构建期展开成三组平行数组，加载时按索引解析成 FixedRewards。
+        // 原始传奇奖励包（2config.box）由构建期按原版 BoxUtil 结构展开成 OriginBoxRewardTable 列表，
+        // 加载时按 ItemId 解析成 FixedRewards。经验(4)/金币(1,499) 已单独落到顶层数值字段。
+        public List<OriginBoxRewardTable> OriginRewards { get; set; } = new List<OriginBoxRewardTable>();
+
+        // 旧版并行数组结构（构建期早期产物），仅用于兼容旧 QuestInfo.json；新表一律用 OriginRewards。
         // 职业值：0=不限，1=战士，2=法师，3=道士（与 MirClass + 1 对齐）。
         public List<int> RewardItemIndices { get; set; } = new List<int>();
         public List<int> RewardItemCounts { get; set; } = new List<int>();
@@ -300,18 +309,35 @@ namespace Server.MirDatabase
 
             GotoMessage = o.CompleteInfo.Length > 0 ? o.CompleteInfo : o.GoalInfo;
 
-            // 真实奖励由构建期从原始传奇 2config.box 展开（经验/金币/功勋已写入顶层字段，
-            // 物品写入三组平行数组），这里按 Index 解析成运行时物品对象，不再从 reward 文本猜解。
-            for (int i = 0; i < RewardItemIndices.Count; i++)
+            // 真实奖励由构建期从原始传奇 2config.box 按原版 BoxUtil 结构展开成 OriginRewards
+            // （经验/金币已写入顶层数值字段），这里按 ItemId 解析成运行时物品对象。
+            // 旧 QuestInfo.json 没有 OriginRewards 时回落到三组平行数组，保证旧存档/旧配置可用。
+            if (OriginRewards != null && OriginRewards.Count > 0)
             {
-                ItemInfoTable item = Envir.GetItemInfo(RewardItemIndices[i]);
-                if (item == null) continue;
+                foreach (var reward in OriginRewards)
+                {
+                    if (reward == null || reward.ItemId == 4 || reward.ItemId == 1 || reward.ItemId == 499) continue;
 
-                int rawCount = i < RewardItemCounts.Count ? RewardItemCounts[i] : 1;
-                ushort count = (ushort)(rawCount > 65535 ? 65535 : (rawCount < 1 ? 1 : rawCount));
-                int career = i < RewardCareers.Count ? RewardCareers[i] : 0;
+                    ItemInfoTable item = Envir.GetItemInfo(reward.ItemId);
+                    if (item == null) continue;
 
-                FixedRewards.Add(new QuestItemReward { Item = item, Count = count, Career = career });
+                    ushort count = (ushort)(reward.Count > 65535 ? 65535 : (reward.Count < 1 ? 1 : reward.Count));
+                    FixedRewards.Add(new QuestItemReward { Item = item, Count = count, Career = reward.Career });
+                }
+            }
+            else
+            {
+                for (int i = 0; i < RewardItemIndices.Count; i++)
+                {
+                    ItemInfoTable item = Envir.GetItemInfo(RewardItemIndices[i]);
+                    if (item == null) continue;
+
+                    int rawCount = i < RewardItemCounts.Count ? RewardItemCounts[i] : 1;
+                    ushort count = (ushort)(rawCount > 65535 ? 65535 : (rawCount < 1 ? 1 : rawCount));
+                    int career = i < RewardCareers.Count ? RewardCareers[i] : 0;
+
+                    FixedRewards.Add(new QuestItemReward { Item = item, Count = count, Career = career });
+                }
             }
 
             if (o.KillTasks != null)
