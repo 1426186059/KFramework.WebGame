@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
-    public class OriginConfigRoot
-    {
-        /// <summary>本分片中未在根类显式声明的所有顶层表（表名 → 原始 JsonElement）。</summary>
-        [JsonExtensionData]
-        public Dictionary<string, JsonElement> ExtraTables { get; set; } = new();
-    }
+public class OriginConfigRoot
+{
+    /// <summary>本分片中未在根类显式声明的所有顶层表（表名 → 原始 JsonElement）。</summary>
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtraTables { get; set; } = new();
+}
 }

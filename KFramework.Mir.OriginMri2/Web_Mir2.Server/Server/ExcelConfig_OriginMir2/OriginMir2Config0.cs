@@ -1,9 +1,10 @@
 // 原始传奇配置分片 0config 的表 DTO（对应 0config10.25341.1.json）。
 // 已建具体 DTO 的表：conditions / global；其余 100 张表由基类 ExtraTables 全量兜底。
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     /// <summary>0config.conditions 单条条件（原始传奇 Logic.checkCondition 用）。</summary>
     public class OriginConditionTable
@@ -28,5 +29,8 @@ namespace Server.MirDatabase
     {
         [JsonPropertyName("conditions")] public Dictionary<string, OriginConditionTable> conditions { get; set; } = new(); // 条件表（id → 条件）
         [JsonPropertyName("global")] public Dictionary<string, OriginGlobalTable> global { get; set; } = new(); // 全局配置表（id → 值）
+        // ↓ 以下为工具转换/排查用表，运行时不直接参与逻辑，但加载进来方便与导出结果对比。
+        [JsonPropertyName("map")] public Dictionary<string, OriginMapTable> map { get; set; } = new(); // 地图表（991）：任务目标地图名 / 地图像素尺寸（Mir2QuestConverter、MapInfoEditor）
+        [JsonPropertyName("attribute_score")] public Dictionary<string, OriginAttributeScoreTable> attribute_score { get; set; } = new(); // 属性名表（150）：物品 col40 属性串解析（Mir2ItemConverter）
     }
 }

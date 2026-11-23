@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Server.MirEnvir;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     // 原始传奇任务内嵌配置字段已拍平进 QuestInfoTable（用原版键名 fnpc/tnpc/next/state/...），
     // source 非空即表示任务内容来自配置表（不走 Envir/Quests/*.txt）。辅助类型保留在下方。

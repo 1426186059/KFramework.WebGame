@@ -1,7 +1,7 @@
 using System.Drawing;
 ﻿using Server.MirEnvir;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     public class ConquestInfoTable
     {

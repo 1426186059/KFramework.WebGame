@@ -136,7 +136,7 @@ namespace Server.Database
                 Table.Columns.Add(col.DataPropertyName, col.ValueType);
             }
 
-            foreach (MirDatabase.MonsterInfoTable item in Envir.MonsterInfoList)
+            foreach (ExcelConfig.MonsterInfoTable item in Envir.MonsterInfoList)
             {
                 DataRow row = Table.NewRow();
 

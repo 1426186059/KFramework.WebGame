@@ -15,7 +15,7 @@ namespace Server.MirForms.VisualMapInfo.Class
                 FocusModeActivated(null, null);
         }
 
-        public static Server.MirDatabase.MapInfoTable
+        public static Server.ExcelConfig.MapInfoTable
             MapInfoTable;
 
         public static int

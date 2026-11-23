@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     // ===================== 2config.skills_condition：技能等级条件表 =====================
     // 结构为 技能id -> 等级 -> 条件记录。condition 原始为字符串（如 "10100"）。
@@ -98,5 +98,8 @@ namespace Server.MirDatabase
         [JsonPropertyName("_task_tx")] public Dictionary<string, OriginTaskTable> _task_tx { get; set; } = new(); // 任务文本线（id → 任务）
         [JsonPropertyName("skills_condition")] public Dictionary<string, Dictionary<string, OriginSkillConditionTable>> skills_condition { get; set; } = new(); // 技能等级条件（技能id → 等级 → 条件）
         [JsonPropertyName("box")] public Dictionary<string, OriginBoxTable> box { get; set; } = new(); // 奖励包表（id → 包）
+        // ↓ 工具转换/排查用表，运行时不直接参与逻辑。
+        // 模型动作表（4725）：modelId → action("1"/"2"/...) → {intval/totaldir/standx/standy}，动画导出与帧间隔来源。
+        [JsonPropertyName("modelInfo")] public Dictionary<string, Dictionary<string, OriginModelInfoTable>> modelInfo { get; set; } = new();
     }
 }

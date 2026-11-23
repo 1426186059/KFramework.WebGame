@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     // ===================== 5config.goals：任务目标表 =====================
     // key = 目标 id（如 532000001）。mapId/x/y 原始为字符串，保持 string。
@@ -93,5 +93,10 @@ namespace Server.MirDatabase
         [JsonPropertyName("mapnpc")] public Dictionary<string, OriginMapNpcTable> mapnpc { get; set; } = new(); // NPC 摆放表（id → 摆放点）
         [JsonPropertyName("skill")] public Dictionary<string, OriginSkillTable> skill { get; set; } = new(); // 技能表（id → 技能）
         [JsonPropertyName("textstyle")] public Dictionary<string, OriginTextStyleTable> textstyle { get; set; } = new(); // 富文本样式表（id → 样式）
+        // ↓ 工具转换/排查用表，运行时不直接参与逻辑。
+        [JsonPropertyName("soundnormal")] public Dictionary<string, Dictionary<string, OriginSoundNormalTable>> soundnormal { get; set; } = new(); // 地图背景音（4组：group → mapId → 音频记录），MapInfoEditor 用
+        [JsonPropertyName("skillEffects")] public Dictionary<string, List<OriginSkillEffectTable>> skillEffects { get; set; } = new(); // 技能特效归属（key=技能id或技能id*100+等级 → 特效记录数组），Mir2SkillConverter/动画导出用
+        [JsonPropertyName("effect")] public Dictionary<string, OriginEffectTable> effect { get; set; } = new(); // 特效表（2336）：effectId → model，动画导出取名用
+        [JsonPropertyName("title")] public Dictionary<string, OriginTitleTable> title { get; set; } = new(); // 称号表（2503）：称号 model 特效取名用
     }
 }

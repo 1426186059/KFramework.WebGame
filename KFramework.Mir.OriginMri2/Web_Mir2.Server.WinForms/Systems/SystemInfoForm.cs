@@ -49,7 +49,7 @@ namespace Server
                 FishingMobIndexComboBox.Items.Add(Envir.MonsterInfoList[i]);
             }
 
-            MirDatabase.MonsterInfoTable fishingMob = Envir.GetMonsterInfo(Settings.FishingMonster);
+            ExcelConfig.MonsterInfoTable fishingMob = Envir.GetMonsterInfo(Settings.FishingMonster);
 
             if (fishingMob != null)
                 FishingMobIndexComboBox.SelectedIndex = Envir.GetMonsterInfo(Settings.FishingMonster).Index - 1;
@@ -276,7 +276,7 @@ namespace Server
         {
             if (ActiveControl != sender) return;
 
-            MirDatabase.MonsterInfoTable mob = Envir.MonsterInfoList[FishingMobIndexComboBox.SelectedIndex];
+            ExcelConfig.MonsterInfoTable mob = Envir.MonsterInfoList[FishingMobIndexComboBox.SelectedIndex];
 
             if (mob == null) return;
 

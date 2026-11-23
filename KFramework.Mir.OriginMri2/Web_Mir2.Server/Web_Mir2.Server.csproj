@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Server\ExcelConfig\" />
+    <Folder Include="Server\ExcelConfig_OriginMir2\ConfigTable\" />
   </ItemGroup>
 
 </Project>

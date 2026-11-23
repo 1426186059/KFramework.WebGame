@@ -38,7 +38,7 @@ namespace Server.MirForms
                     MapInfoTable newMapInfo = null;
                     if ((newMapInfo = EditEnvir.MapInfoList.FirstOrDefault(it => it.FileName == fileName)) == null)
                     {
-                        newMapInfo = new MirDatabase.MapInfoTable { Index = ++EditEnvir.MapIndex, FileName = fileName };
+                        newMapInfo = new ExcelConfig.MapInfoTable { Index = ++EditEnvir.MapIndex, FileName = fileName };
                         isNew=true;
                     }
                     newMapInfo.Title = b[1].Replace("*", " "); // Assign MapName from variable, replacing asterisk with space

@@ -1,7 +1,7 @@
 using System.Drawing;
 using Server.MirEnvir;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     // 原始传奇 NPC 内嵌配置：非 null 表示对话/功能数据直接来自配置表，不走 Envir/NPCs/*.txt。
     public class NPCOriginSettings

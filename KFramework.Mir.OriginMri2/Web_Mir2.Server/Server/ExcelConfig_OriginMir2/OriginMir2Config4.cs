@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     // ===================== 4config._task / 2config._task_tx：任务表 DTO =====================
     // 两表字段集合一致，共用同一 DTO；任务权威表在 4config._task，故放在本文件。key = 任务 id。
@@ -59,5 +59,8 @@ namespace Server.MirDatabase
         [JsonPropertyName("npcstore")] public Dictionary<int, Dictionary<int, OriginStoreItemTable>> npcstore { get; set; } = new(); // 商店表（商店id → 商品记录）
         // 4config._task 任务权威表（key = 任务 id），单条 DTO 见 OriginTaskTable
         [JsonPropertyName("_task")] public Dictionary<string, OriginTaskTable> _task { get; set; } = new();
+        // ↓ 工具转换/排查用表，运行时不直接参与逻辑。
+        // 怪物表（4848）：name/model/level/attribute/bossDrop/gather，Mir2MonsterConverter 导出 MonsterInfo.json 的源表。
+        [JsonPropertyName("monster")] public Dictionary<string, OriginMonsterTable> monster { get; set; } = new();
     }
 }

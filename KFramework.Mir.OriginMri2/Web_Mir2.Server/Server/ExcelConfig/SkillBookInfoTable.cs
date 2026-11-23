@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     /// <summary>
     /// 原始传奇技能书映射（Tools 构建期从 1config.item 导出，ExcelConfig/SkillBookInfo.json）：

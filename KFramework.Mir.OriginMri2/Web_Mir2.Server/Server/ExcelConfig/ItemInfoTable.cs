@@ -3,6 +3,9 @@
 
 using System.Text.RegularExpressions;
 
+namespace Server.ExcelConfig
+{
+
 public class ItemInfoTable
 {
     public int Index { get; set; }
@@ -280,5 +283,7 @@ public class ItemInfoTable
     {
         return string.Format("{0}: {1}", Index, Name);
     }
+
+}
 
 }

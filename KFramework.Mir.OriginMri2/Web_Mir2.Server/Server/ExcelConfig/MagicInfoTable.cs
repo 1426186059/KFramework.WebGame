@@ -2,7 +2,7 @@ using System;
 using Server.MirEnvir;
 using S = ServerPackets;
 
-namespace Server.MirDatabase
+namespace Server.ExcelConfig
 {
     public class MagicInfoTable
     {

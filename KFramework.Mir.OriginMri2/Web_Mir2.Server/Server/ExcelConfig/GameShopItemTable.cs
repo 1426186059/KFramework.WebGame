@@ -1,6 +1,8 @@
 // 元宝商城物品配置表 DTO，统一放 Server/ExcelConfig 目录管理。
 // 从 Library/Data/ItemData.cs 迁出（类体未改动，仅换文件位置）。
 
+namespace Server.ExcelConfig
+{
 public class GameShopItemTable
 {
     public int ItemIndex { get; set; }
@@ -94,5 +96,7 @@ public class GameShopItemTable
     {
         return string.Format("{0}: {1}", GIndex, Info.Name);
     }
+
+}
 
 }
