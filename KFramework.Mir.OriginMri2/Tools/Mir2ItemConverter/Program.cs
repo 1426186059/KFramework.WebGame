@@ -261,6 +261,16 @@ public static class Program
                 if (TryGetInt(item, "23", out int equipPart) && equipPart == 405)
                     outItem.Type = 47;
 
+                // 技能书：原始 col21=64(1级激活书)/216(4~7级升级书)，col5 恒为"道具"，名字无"书"字，
+                // 只靠类别/名字猜会落成 Type=0(Nothing)。客户端 MirItemCell.UseItem() 只对
+                // Potion/Scroll/Book/Food/Script/Pets/Transform 发包，Type=0 右键根本不发 C.UseItem，
+                // 导致灵魂火符/基本剑术等技能书全部点不动。这里按 col21 精确识别，设 Type=20(Book)。
+                // 241 本技能书正好对应 SkillBookInfo.json 的 241 条；服务端 UseItem 的技能书分支在
+                // switch(Type) 之前提前处理并 return，不会与 case ItemType.Book 冲突。
+                int skillBookSubType = GetIntN(item, "21") ?? 0;
+                if (skillBookSubType == 64 || skillBookSubType == 216)
+                    outItem.Type = 20;
+
                 if (outItem.Type == 0) unknownType++;
 
                 // RequiredClass <- 职业：col59(装备归属) > col52(技能书) > col50 首段(兜底)。

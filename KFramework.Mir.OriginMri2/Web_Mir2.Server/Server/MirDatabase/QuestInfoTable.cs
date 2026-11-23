@@ -284,6 +284,12 @@ namespace Server.MirDatabase
             FixedRewards.Clear();
             KillTasks.Clear();
 
+            // 交任务 NPC：原始传奇内嵌任务用 FinishNpcId 指定交付 NPC（如任务24=夏家店老板10091），
+            // 与发放 NPC（StartNpcId，如比奇老兵10201）往往不同。不设置的话 FinishNpcIndex 会
+            // 回退到 NpcIndex（发放NPC），任务追踪栏点击传送就指向错误地图（比奇老兵的854而非夏家店老板的103）。
+            if (o.FinishNpcId > 0)
+                FinishNpcIndex = (uint)o.FinishNpcId;
+
             AddLines(Description, o.Tip3);
             AddLines(TaskDescription, o.GoalInfo.Length > 0 ? o.GoalInfo : o.CompleteInfo);
             AddLines(ReturnDescription, o.CompleteInfo);
