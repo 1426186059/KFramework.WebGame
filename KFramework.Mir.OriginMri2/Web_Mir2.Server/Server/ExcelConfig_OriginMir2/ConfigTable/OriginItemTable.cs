@@ -39,9 +39,10 @@ namespace Server.ExcelConfig
         // 列 5：string，16246 条有值。中文类别串（"武器"/"宝箱"/"洪荒武器"…），转换器 -> ItemType。
         [JsonPropertyName("5")] public string? Category { get; set; }
 
-        // 列 7：int，15553 条有值，1=普通(15550)、5=黄金系列(3 件黄金屠龙/黄金嗜魂法杖/赤金逍遥扇)。
-        // 客户端 12 个 JS 全部零访问，具体系统语义无法再查；保留原值。
-        [JsonPropertyName("7")] public int? Field7 { get; set; }
+        // 列 7：int，15553 条有值，1=普通(15550)、5=特殊级(仅黄金屠龙/黄金嗜魂法杖/赤金逍遥扇 3 件)。
+        // 数据确证：这 3 件描述同为「特殊级◆可交易◆可拍卖」、col4=7、col9=13，
+        // 是独立的「特殊级」档位标记；客户端 JS 不直接读本列，但值语义可由道具描述确证。
+        [JsonPropertyName("7")] public int? SpecialGradeFlag { get; set; }
 
         // 列 8：int，1989 条有值，4~31702。显示模式（JS 确证：999=常规装备图标，25=图鉴鱼）。
         [JsonPropertyName("8")] public int? DisplayMode { get; set; }
@@ -106,8 +107,10 @@ namespace Server.ExcelConfig
         // 列 27：int，48 条有值，1~60。消耗冷却标记（JS 确证：o[27] → itemCDs + sendNotif(667,{type:2})）。
         [JsonPropertyName("27")] public int? ConsumeCDFlag { get; set; }
 
-        // 列 28：int，23 条有值且恒为 1（宠物蛋/特殊道具）。客户端零访问，语义无法再查；保留原值。
-        [JsonPropertyName("28")] public int? Field28 { get; set; }
+        // 列 28：int，23 条有值且恒为 1。跨表/数据确证：有值物品恰是 6 个神宠蛋(830~835) + 17 个屠魔勋章(43750000~16)，
+        // 全部是「背包中即可生效/可孵化出宠物」的特殊道具；同名的普通宠物蛋(860~865)、荣誉勋章无此列。
+        // 即「特殊功能道具（宠物蛋/世界神器）」标记，客户端 JS 不直接读本列。
+        [JsonPropertyName("28")] public int? SpecialFunctionFlag { get; set; }
 
         // 列 29：int，38 条有值，1~1000。每日限购/可刷新次数（JS 确证：config[29] 与 itemSurplusNum 显示「今日已刷新 x/y」）。
         [JsonPropertyName("29")] public int? DailyLimit { get; set; }
@@ -115,8 +118,11 @@ namespace Server.ExcelConfig
         // 列 30：int，6 条有值且恒为 1。可丢弃/可销毁标志（JS 确证：1==config[30] → btn_delete.visible=true）。
         [JsonPropertyName("30")] public int? CanDiscard { get; set; }
 
-        // 列 31：int，39 条有值且恒为 1（月卡/卷轴类道具）。客户端零访问，语义无法再查；保留原值。
-        [JsonPropertyName("31")] public int? Field31 { get; set; }
+        // 列 31：int，39 条有值且恒为 1。数据确证：有值物品全部是「血龙魔晶/先天神髓/宝石碎片/魂珠碎片/
+        // 印记碎片/经脉精华/帮贡令/经验/月卡/BOSS卷轴」等可直接折算为资源或经验的成长道具，
+        // 且 col33(自动使用) 全为 0、col10(寻宝播报) 全缺——即「可被系统直接结算的成长道具」标记。
+        // 客户端 JS 不直接读本列，语义由物品集合与关联列反推。
+        [JsonPropertyName("31")] public int? AutoSettleGrowthFlag { get; set; }
 
         // 列 32：int，416 条有值，1/3。使用数量模式（JS 确证：1=sendReqUseItem(1,…)，3=数量>1 弹批量选择框 UI 683）。
         [JsonPropertyName("32")] public int? UseCountMode { get; set; }
@@ -124,11 +130,14 @@ namespace Server.ExcelConfig
         // 列 33：int，4937 条有值，0/1。获得时自动使用标志（JS 确证：1==config[33]&&id!=405 → sendReqUseItem(count,…)）。
         [JsonPropertyName("33")] public int? AutoUseOnGain { get; set; }
 
-        // 列 35：int，14912 条有值，1~11017426。客户端 12 个 JS 零访问、跨表无对应 id 空间；保留原值。
-        [JsonPropertyName("35")] public int? Field35 { get; set; }
+        // 列 35：int，14912 条有值，1~11017426。物品排序权重（JS 确证：Logic.a(e.config,35) 作为仓库/寻宝列表
+        // compare() 的最后一级排序键，排在大类 col1 与颜色 col9 之后；两个 JS 包共 24 处调用）。
+        [JsonPropertyName("35")] public int? SortWeight { get; set; }
 
-        // 列 37：int，17097 条有值，60(15937)/40(1130)/120(27)/30/61/62。客户端零访问；保留原值。
-        [JsonPropertyName("37")] public int Field37 { get; set; }
+        // 列 37：int，17097 条有值，60(15937)/40(1130)/120(27)/30/61/62；69 条缺列（多为新手装/展示宝箱）。
+        // 数据确证：与 col35 排序权重强相关(有值组 87% 有 c35，缺列组 0%)，是与排序/展示绑定的分组档位值；
+        // 客户端 JS 不直接读本列，具体系统语义未能确证，保留原值。
+        [JsonPropertyName("37")] public int DisplayGroup { get; set; }
 
         // 列 39：int，4092 条有值，1~9666666。基础战力值（JS 确证：getAllPower 里 a+=item[39]）；另用于回收过滤与 checkNbvalue 比较。
         [JsonPropertyName("39")] public int? PowerValue { get; set; }
@@ -153,8 +162,10 @@ namespace Server.ExcelConfig
         // 神域/战狂/天地等同一图鉴组装备共享同一 c45）。JS 不直接访问本列，业务用途未完全确证。
         [JsonPropertyName("45")] public int? TujianLevelId { get; set; }
 
-        // 列 48：string，29 条有值，形如 "1#190000|4#53000|5#125800"。属性串格式（同列 40 编码），语义未确证。
-        [JsonPropertyName("48")] public string? ExtraAttributes { get; set; }
+        // 列 48：string，29 条有值，形如 "1#190000|4#53000|5#125800"。属性串（同列 40 编码）。
+        // 数据确证：28 条属「至尊神器」且数值恰为同物品 col40 的 1.5 倍（如 col40 1#128000 → col48 1#190000），
+        // 即进阶/满阶属性上限，与当前属性 col40 配套。
+        [JsonPropertyName("48")] public string? MaxAttributes { get; set; }
 
         // 列 49：int，20 条有值，30/90/270/810/2430（30×3^n）。魂印/法魂/面甲/魂器 5 阶的阶位评分；
         // 与 col39 战力(480/960/1920/3600/6000)同步递增，客户端零访问，仅数据规律可证。
@@ -169,8 +180,10 @@ namespace Server.ExcelConfig
         // 列 52：int，484 条有值，0~3。职业 1=战/2=法/3=道（JS 确证：Logic.getCareerName(o[52])）；技能书职业来源。
         [JsonPropertyName("52")] public int? Career { get; set; }
 
-        // 列 54：string，284 条有值，形如 "4#100|5#100|92#100|93#100|94#100|95#100"。属性串格式，语义未确证。
-        [JsonPropertyName("54")] public string? BonusAttributes { get; set; }
+        // 列 54：string，284 条有值，形如 "4#100|5#100|92#100|93#100|94#100|95#100"。属性串（同列 40 编码）。
+        // 数据确证：以主印/辅印/衣服/手镯等为主，数值与 col39 战力同步（如 c54 4#100|5#100 ↔ c39=100），
+        // 是装备的「基础/加成属性」参考值，与 col40 当前属性分开存。
+        [JsonPropertyName("54")] public string? BaseAttributes { get; set; }
 
         // 列 56：int，374 条有值，1/2。性别（JS 确证：ia=o[56]，缺失时回退玩家性别）；转换器 -> RequiredGender。
         [JsonPropertyName("56")] public int? Gender { get; set; }
