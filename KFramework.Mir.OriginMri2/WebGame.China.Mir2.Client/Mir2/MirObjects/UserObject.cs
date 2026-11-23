@@ -1,4 +1,4 @@
-using Client.MirScenes;
+﻿using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
@@ -617,16 +617,16 @@ namespace Client.MirObjects
                 ClientMagic magic = Magics[i];
                 switch (magic.Spell)
                 {
-                    case Spell.Fencing:
+                    case Spell.Fencing: // 基本剑术
                         Stats[Stat.Accuracy] += magic.Level * 3;
                         //Stats[Stat.MaxAC] += (magic.Level + 1) * 3;
                         break;
-                    case Spell.Slaying:
+                    case Spell.Slaying: // 攻杀剑术
                     // case Spell.FatalSword:
                         Stats[Stat.Accuracy] += magic.Level;
                         Stats[Stat.MaxDC] += slayingLvPlus[magic.Level];
                         break;
-                    case Spell.SpiritSword:
+                    case Spell.SpiritSword: // 精神力战法
                         Stats[Stat.Accuracy] += spiritSwordLvPlus[magic.Level];
                         // Stats[Stat.Accuracy] += magic.Level;
                         // Stats[Stat.MaxDC] += (int)(Stats[Stat.MaxSC] * (magic.Level + 1) * 0.1F);

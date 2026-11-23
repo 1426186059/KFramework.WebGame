@@ -143,7 +143,8 @@ namespace Server.MirObjects
                     return;
                 }
 
-                magic = GetMagic(Spell.FireBall);
+                // 原始传奇火球术 spell=12011（原 31 仅作旧引擎残留，服务端已改数据驱动）。
+                magic = GetMagic((Spell)12011);
                 if (CanUseMagic(magic))
                 {
                     BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);

@@ -1,4 +1,4 @@
-// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
+﻿// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
 using System.Drawing;
 using C = ClientPackets;
 using Server.MirDatabase;

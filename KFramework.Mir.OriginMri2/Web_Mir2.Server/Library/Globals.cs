@@ -49,6 +49,7 @@
 
     public static int[] FishingRodShapes = new int[] { 49, 50 };
 
+    // 原始传奇技能全部用原始 id 作为 Spell 键。远程技能按 5config.skill 的 releaseDis/Aoe 归入。
     public static Spell[] RangedSpells = new Spell[]
     {
         Spell.FireBall,

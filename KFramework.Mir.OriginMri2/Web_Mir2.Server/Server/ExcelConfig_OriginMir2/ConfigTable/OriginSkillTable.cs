@@ -1,11 +1,11 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Server.ExcelConfig
 {
     // 5config.skill：技能表，key = 技能 id（Spell id）。
     public class OriginSkillTable
     {
-        [JsonPropertyName("id")] public int id { get; set; } // 技能 id（Spell）
+        [JsonPropertyName("id")] public Spell id { get; set; } // 技能 id（Spell）
         [JsonPropertyName("name")] public string name { get; set; } = ""; // 技能名
         [JsonPropertyName("icon")] public string icon { get; set; } = ""; // 图标
         [JsonPropertyName("cls")] public int cls { get; set; } // 职业（1战 2法 3道）

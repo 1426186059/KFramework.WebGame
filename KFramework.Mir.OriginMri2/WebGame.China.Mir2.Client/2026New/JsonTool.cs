@@ -17,8 +17,11 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(ModelInfoTable))]
 [JsonSerializable(typeof(OriginMir2Config2))]
 [JsonSerializable(typeof(OriginMir2Config0))]
-// 5config 分片（effect 表：施法特效；soundnormal 表：地图 BGM）。
+// 5config 分片（effect 表：施法特效；skillEffects：特效时序；soundnormal 表：地图 BGM）。
 [JsonSerializable(typeof(EffectTable))]
+[JsonSerializable(typeof(SkillEffectTable))]
+[JsonSerializable(typeof(List<SkillEffectTable>))]
+[JsonSerializable(typeof(Dictionary<string, List<SkillEffectTable>>))]
 [JsonSerializable(typeof(SoundNormalTable))]
 [JsonSerializable(typeof(Dictionary<string, SoundNormalTable>))]
 [JsonSerializable(typeof(Dictionary<string, Dictionary<string, SoundNormalTable>>))]

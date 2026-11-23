@@ -38,6 +38,32 @@ public static partial class ExcelTableMgr
         return _config5.effect.TryGetValue(effectId, out effect) && effect != null;
     }
 
+    /// <summary>
+    /// 取某技能的特效时序条目（5config.skillEffects）：优先 skillId*100+等级，回退 skillId 直键。
+    /// 键形态：1201101 = 火球术 12011 Lv1。查不到返回 false。
+    /// </summary>
+    public static bool TryGetSkillEffects(int skillId, int level, [NotNullWhen(true)] out List<SkillEffectTable>? list)
+    {
+        list = null;
+        if (_config5?.skillEffects == null) return false;
+        if (_config5.skillEffects.TryGetValue((skillId * 100 + Math.Max(1, level)).ToString(), out list) && list != null && list.Count > 0)
+            return true;
+        // 部分技能只有单一等级条目（如火球术仅有 1201101），高等级沿用它。
+        string prefix = skillId.ToString();
+        foreach (var kv in _config5.skillEffects)
+        {
+            if (kv.Key.StartsWith(prefix) && kv.Value != null && kv.Value.Count > 0)
+            {
+                list = kv.Value;
+                return true;
+            }
+        }
+        if (_config5.skillEffects.TryGetValue(skillId.ToString(), out list) && list != null && list.Count > 0)
+            return true;
+        list = null;
+        return false;
+    }
+
     /// <summary>取某模型登记的动作号列表（用于预加载/遍历方向）。查不到或为空返回 false。</summary>
     public static bool TryGetModelActions(int model, [NotNullWhen(true)] out List<int>? actions)
     {

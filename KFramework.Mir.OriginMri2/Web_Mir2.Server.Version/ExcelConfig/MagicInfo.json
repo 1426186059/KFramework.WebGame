@@ -3224,7 +3224,7 @@
   },
   {
     "Name": "基本剑术",
-    "Spell": 1,
+    "Spell": 11011,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -3275,7 +3275,7 @@
   },
   {
     "Name": "攻杀剑术",
-    "Spell": 2,
+    "Spell": 11021,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -3328,7 +3328,7 @@
   },
   {
     "Name": "刺杀剑术",
-    "Spell": 3,
+    "Spell": 11031,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -3384,7 +3384,7 @@
   },
   {
     "Name": "半月弯刀",
-    "Spell": 4,
+    "Spell": 11041,
     "BaseCost": 3,
     "LevelCost": 0,
     "Icon": 0,
@@ -3440,7 +3440,7 @@
   },
   {
     "Name": "野蛮冲撞",
-    "Spell": 5,
+    "Spell": 11051,
     "BaseCost": 5,
     "LevelCost": 1,
     "Icon": 0,
@@ -3491,7 +3491,7 @@
   },
   {
     "Name": "烈火剑法",
-    "Spell": 8,
+    "Spell": 11061,
     "BaseCost": 8,
     "LevelCost": 2,
     "Icon": 0,
@@ -3601,7 +3601,7 @@
   },
   {
     "Name": "逐日剑法",
-    "Spell": 15,
+    "Spell": 11081,
     "BaseCost": 42,
     "LevelCost": 6,
     "Icon": 0,
@@ -3708,7 +3708,7 @@
   },
   {
     "Name": "狮子吼",
-    "Spell": 9,
+    "Spell": 11101,
     "BaseCost": 12,
     "LevelCost": 6,
     "Icon": 0,
@@ -3863,7 +3863,7 @@
   },
   {
     "Name": "火球术",
-    "Spell": 31,
+    "Spell": 12011,
     "BaseCost": 1,
     "LevelCost": 1,
     "Icon": 0,
@@ -3918,7 +3918,7 @@
   },
   {
     "Name": "抗拒火环",
-    "Spell": 32,
+    "Spell": 12021,
     "BaseCost": 2,
     "LevelCost": 6,
     "Icon": 0,
@@ -4025,7 +4025,7 @@
   },
   {
     "Name": "地狱火",
-    "Spell": 35,
+    "Spell": 12041,
     "BaseCost": 10,
     "LevelCost": 10,
     "Icon": 0,
@@ -4079,7 +4079,7 @@
   },
   {
     "Name": "雷电术",
-    "Spell": 33,
+    "Spell": 12051,
     "BaseCost": 2,
     "LevelCost": 2,
     "Icon": 0,
@@ -4139,7 +4139,7 @@
   },
   {
     "Name": "大火球",
-    "Spell": 34,
+    "Spell": 12061,
     "BaseCost": 5,
     "LevelCost": 1,
     "Icon": 0,
@@ -4194,7 +4194,7 @@
   },
   {
     "Name": "瞬间移动",
-    "Spell": 37,
+    "Spell": 12071,
     "BaseCost": 10,
     "LevelCost": 10,
     "Icon": 0,
@@ -4248,7 +4248,7 @@
   },
   {
     "Name": "爆裂火焰",
-    "Spell": 38,
+    "Spell": 12081,
     "BaseCost": 8,
     "LevelCost": 2,
     "Icon": 0,
@@ -4302,7 +4302,7 @@
   },
   {
     "Name": "火墙",
-    "Spell": 39,
+    "Spell": 12091,
     "BaseCost": 24,
     "LevelCost": 4,
     "Icon": 0,
@@ -4355,7 +4355,7 @@
   },
   {
     "Name": "疾光电影",
-    "Spell": 36,
+    "Spell": 12101,
     "BaseCost": 20,
     "LevelCost": 20,
     "Icon": 0,
@@ -4464,7 +4464,7 @@
   },
   {
     "Name": "魔法盾",
-    "Spell": 43,
+    "Spell": 12121,
     "BaseCost": 20,
     "LevelCost": 20,
     "Icon": 0,
@@ -4518,7 +4518,7 @@
   },
   {
     "Name": "冰咆哮",
-    "Spell": 41,
+    "Spell": 12131,
     "BaseCost": 18,
     "LevelCost": 2,
     "Icon": 0,
@@ -4578,7 +4578,7 @@
   },
   {
     "Name": "灭天火",
-    "Spell": 47,
+    "Spell": 12141,
     "BaseCost": 25,
     "LevelCost": 7,
     "Icon": 0,
@@ -4638,7 +4638,7 @@
   },
   {
     "Name": "流星火雨",
-    "Spell": 52,
+    "Spell": 12151,
     "BaseCost": 40,
     "LevelCost": 0,
     "Icon": 0,
@@ -4807,7 +4807,7 @@
   },
   {
     "Name": "分身术",
-    "Spell": 48,
+    "Spell": 12181,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -4858,7 +4858,7 @@
   },
   {
     "Name": "治愈术",
-    "Spell": 61,
+    "Spell": 13011,
     "BaseCost": 2,
     "LevelCost": 6,
     "Icon": 0,
@@ -4912,7 +4912,7 @@
   },
   {
     "Name": "精神力战法",
-    "Spell": 62,
+    "Spell": 13021,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -4963,7 +4963,7 @@
   },
   {
     "Name": "施毒术",
-    "Spell": 63,
+    "Spell": 13031,
     "BaseCost": 2,
     "LevelCost": 4,
     "Icon": 0,
@@ -5017,7 +5017,7 @@
   },
   {
     "Name": "灵魂火符",
-    "Spell": 64,
+    "Spell": 13041,
     "BaseCost": 2,
     "LevelCost": 2,
     "Icon": 0,
@@ -5074,7 +5074,7 @@
   },
   {
     "Name": "召唤骷髅",
-    "Spell": 65,
+    "Spell": 13051,
     "BaseCost": 8,
     "LevelCost": 16,
     "Icon": 0,
@@ -5127,7 +5127,7 @@
   },
   {
     "Name": "隐身术",
-    "Spell": 67,
+    "Spell": 13061,
     "BaseCost": 5,
     "LevelCost": 5,
     "Icon": 0,
@@ -5180,7 +5180,7 @@
   },
   {
     "Name": "集体隐身术",
-    "Spell": 68,
+    "Spell": 13071,
     "BaseCost": 10,
     "LevelCost": 10,
     "Icon": 0,
@@ -5234,7 +5234,7 @@
   },
   {
     "Name": "幽灵盾",
-    "Spell": 69,
+    "Spell": 13081,
     "BaseCost": 5,
     "LevelCost": 15,
     "Icon": 0,
@@ -5291,7 +5291,7 @@
   },
   {
     "Name": "神圣战甲术",
-    "Spell": 71,
+    "Spell": 13091,
     "BaseCost": 5,
     "LevelCost": 15,
     "Icon": 0,
@@ -5348,7 +5348,7 @@
   },
   {
     "Name": "心灵启示",
-    "Spell": 70,
+    "Spell": 13101,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -5402,7 +5402,7 @@
   },
   {
     "Name": "困魔咒",
-    "Spell": 73,
+    "Spell": 13111,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -5455,7 +5455,7 @@
   },
   {
     "Name": "群体治愈术",
-    "Spell": 75,
+    "Spell": 13121,
     "BaseCost": 20,
     "LevelCost": 12,
     "Icon": 0,
@@ -5509,7 +5509,7 @@
   },
   {
     "Name": "召唤神兽",
-    "Spell": 78,
+    "Spell": 13131,
     "BaseCost": 24,
     "LevelCost": 16,
     "Icon": 0,
@@ -5565,7 +5565,7 @@
   },
   {
     "Name": "噬血术",
-    "Spell": 45,
+    "Spell": 13141,
     "BaseCost": 10,
     "LevelCost": 6,
     "Icon": 0,
@@ -5836,7 +5836,7 @@
   },
   {
     "Name": "护体神盾",
-    "Spell": 12,
+    "Spell": 14011,
     "BaseCost": 0,
     "LevelCost": 0,
     "Icon": 0,
@@ -10535,7 +10535,7 @@
   },
   {
     "Name": "气功波",
-    "Spell": 72,
+    "Spell": 308000,
     "BaseCost": 20,
     "LevelCost": 10,
     "Icon": 0,

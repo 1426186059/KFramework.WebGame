@@ -1,4 +1,4 @@
-using Client.MirControls;
+﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -1029,7 +1029,7 @@ namespace Client.MirScenes
 
             switch (magic.Spell)
             {
-                case Spell.CounterAttack:
+                case Spell.CounterAttack: // 反击
                     if ((CMain.Time < magic.CastTime + magic.Delay))
                     {
                         if (CMain.Time >= OutputDelay)
@@ -1047,18 +1047,21 @@ namespace Client.MirScenes
 
             int cost;
             string prefix = actor == Hero ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Hero) : string.Empty;
-            switch (magic.Spell)
+            // 214 条技能全部用原始 id：按效果 Spell 路由到已有的被动/开关分支。
+            Spell effectSpell = SkillDescriptionHelper.EffectSpellOf(magic);
+            if (effectSpell == Spell.None) effectSpell = magic.Spell;
+            switch (effectSpell)
             {
-                case Spell.Fencing:
-                case Spell.FatalSword:
-                case Spell.MPEater:
-                case Spell.Hemorrhage:
-                case Spell.SpiritSword:
-                case Spell.Slaying:
-                case Spell.Focus:
-                case Spell.Meditation:
+                case Spell.Fencing: // 基本剑术
+                case Spell.FatalSword: // 致命剑
+                case Spell.MPEater: // 吸魔
+                case Spell.Hemorrhage: // 出血
+                case Spell.SpiritSword: // 精神力战法
+                case Spell.Slaying: // 攻杀剑术
+                case Spell.Focus: // 专注
+                case Spell.Meditation: // 冥想
                     return;
-                case Spell.Thrusting:
+                case Spell.Thrusting: // 刺杀剑术
                     if (CMain.Time < ToggleTime) return;
                     actor.Thrusting = !actor.Thrusting;
                     ChatDialog.ReceiveChat(
@@ -1067,7 +1070,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.Thrusting);
                     break;
-                case Spell.HalfMoon:
+                case Spell.HalfMoon: // 半月弯刀
                     if (CMain.Time < ToggleTime) return;
                     actor.HalfMoon = !actor.HalfMoon;
                     ChatDialog.ReceiveChat(
@@ -1076,7 +1079,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.HalfMoon);
                     break;
-                case Spell.CrossHalfMoon:
+                case Spell.CrossHalfMoon: // 半月弯刀（双）
                     if (CMain.Time < ToggleTime) return;
                     actor.CrossHalfMoon = !actor.CrossHalfMoon;
                     ChatDialog.ReceiveChat(
@@ -1085,7 +1088,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.CrossHalfMoon);
                     break;
-                case Spell.DoubleSlash:
+                case Spell.DoubleSlash: // 双斩
                     if (CMain.Time < ToggleTime) return;
                     actor.DoubleSlash = !actor.DoubleSlash;
                     ChatDialog.ReceiveChat(
@@ -1094,7 +1097,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.DoubleSlash);
                     break;
-                case Spell.TwinDrakeBlade:
+                case Spell.TwinDrakeBlade: // 双烈火剑
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
 
@@ -1111,7 +1114,7 @@ namespace Client.MirScenes
                     else
                         actor.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, actor));
                     break;
-                case Spell.FlamingSword:
+                case Spell.FlamingSword: // 烈火剑法
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
 
@@ -1123,7 +1126,7 @@ namespace Client.MirScenes
                     }
                     SendSpellToggle(actor, magic.Spell, true);
                     break;
-                case Spell.CounterAttack:
+                case Spell.CounterAttack: // 反击
                     cost = magic.Level * magic.LevelCost + magic.BaseCost;
                     if (cost > actor.MP)
                     {
@@ -1134,7 +1137,7 @@ namespace Client.MirScenes
                     SoundManager.PlaySound(20000 + (ushort)Spell.CounterAttack * 10);
                     SendSpellToggle(actor, magic.Spell, true);
                     break;
-                case Spell.MentalState:
+                case Spell.MentalState: // 精神状态
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
                     SendSpellToggle(actor, magic.Spell, true);
@@ -4875,7 +4878,7 @@ namespace Client.MirScenes
 
             switch (p.Spell)
             {
-                case Spell.FireBounce:
+                case Spell.FireBounce: // 火焰弹
                     {
                         SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
 
@@ -5246,34 +5249,34 @@ namespace Client.MirScenes
             switch (p.Spell)
             {
                 //Warrior
-                case Spell.Slaying:
+                case Spell.Slaying: // 攻杀剑术
                     actor.Slaying = p.CanUse;
                     break;
-                case Spell.Thrusting:
+                case Spell.Thrusting: // 刺杀剑术
                     actor.Thrusting = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.Thrusting ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UseThrusting) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DoNotUseThrusting)),
                         ChatType.System);
                     break;
-                case Spell.HalfMoon:
+                case Spell.HalfMoon: // 半月弯刀
                     actor.HalfMoon = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.HalfMoon ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UseHalfMoon) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DoNotUseHalfMoon)),
                         ChatType.System);
                     break;
-                case Spell.CrossHalfMoon:
+                case Spell.CrossHalfMoon: // 半月弯刀（双）
                     actor.CrossHalfMoon = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.CrossHalfMoon ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UseCrossHalfMoon) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DoNotUseCrossHalfMoon)),
                         ChatType.System);
                     break;
-                case Spell.DoubleSlash:
+                case Spell.DoubleSlash: // 双斩
                     actor.DoubleSlash = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.DoubleSlash ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UseDoubleSlash) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DoNotUseDoubleSlash)),
                         ChatType.System);
                     break;
-                case Spell.FlamingSword:
+                case Spell.FlamingSword: // 烈火剑法
                     actor.FlamingSword = p.CanUse;
                     if (actor.FlamingSword)
                         ChatDialog.ReceiveChat(prefix + GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WeaponSpiritFire), ChatType.System);

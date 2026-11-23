@@ -51,11 +51,60 @@ public class SoundNormalTable
     public int level { get; set; }
 }
 
+/// <summary>5config.skillEffects 单条记录：技能特效的时序/位置/音效。
+/// 键 = skillId 或 skillId*100+等级（如 1201101 = 火球术 12011 Lv1）。
+/// type: 0=起手(挂施法者)、2=飞行子弹、1=命中(挂目标)；delaytime 为相对施法时刻的毫秒偏移。</summary>
+public class SkillEffectTable
+{
+    [JsonPropertyName("id")]
+    public int id { get; set; }
+
+    [JsonPropertyName("skillid")]
+    public int skillid { get; set; }
+
+    [JsonPropertyName("sound")]
+    public int sound { get; set; }
+
+    [JsonPropertyName("delaytime")]
+    public int delaytime { get; set; }
+
+    [JsonPropertyName("type")]
+    public int type { get; set; }
+
+    [JsonPropertyName("pos")]
+    public int pos { get; set; }
+
+    [JsonPropertyName("effect")]
+    public int effect { get; set; }
+
+    [JsonPropertyName("efftype")]
+    public int efftype { get; set; }
+
+    [JsonPropertyName("x")]
+    public int x { get; set; }
+
+    [JsonPropertyName("y")]
+    public int y { get; set; }
+
+    [JsonPropertyName("front")]
+    public int front { get; set; }
+
+    [JsonPropertyName("sortchange")]
+    public int sortchange { get; set; }
+
+    [JsonPropertyName("param")]
+    public int param { get; set; }
+}
+
 /// <summary>整个 5config 分片 JSON 的 DTO。effect 键为数字字符串，System.Text.Json 自动转 int 字典键。</summary>
 public class OriginMir2Config5
 {
     [JsonPropertyName("effect")]
     public Dictionary<int, EffectTable> effect { get; set; } = new();
+
+    // skillEffects：技能特效权威时序（键 = skillId 或 skillId*100+等级）。
+    [JsonPropertyName("skillEffects")]
+    public Dictionary<string, List<SkillEffectTable>> skillEffects { get; set; } = new();
 
     // soundnormal 按 type 分桶（"1"/"3"/"4"/"5"），每桶是 index → 记录；type=3 即地图 BGM。
     [JsonPropertyName("soundnormal")]

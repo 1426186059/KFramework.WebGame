@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirObjects;
 using Shared;
@@ -506,7 +506,7 @@ namespace Server.MirEnvir
 
                 #region HellFire
 
-                case Spell.HellFire:
+                case Spell.HellFire: // 地狱火
                     value = (int)data[2];
                     dir = (MirDirection)data[4];
                     location = Functions.PointMove((Point)data[3], dir, 1);
@@ -547,12 +547,12 @@ namespace Server.MirEnvir
 
                 #region SummonSkeleton, SummonShinsu, SummonHolyDeva, ArcherSummons
 
-                case Spell.SummonSkeleton:
-                case Spell.SummonShinsu:
-                case Spell.SummonHolyDeva:
-                case Spell.SummonVampire:
-                case Spell.SummonToad:
-                case Spell.SummonSnakes:
+                case Spell.SummonSkeleton: // 召唤骷髅
+                case Spell.SummonShinsu: // 召唤神兽
+                case Spell.SummonHolyDeva: // 召唤骨龙
+                case Spell.SummonVampire: // 召唤吸血鬼
+                case Spell.SummonToad: // 召唤蟾蜍
+                case Spell.SummonSnakes: // 召唤蛇
                     monster = (MonsterObject)data[2];
                     front = (Point)data[3];
 
@@ -565,7 +565,7 @@ namespace Server.MirEnvir
 
                     monster.Master.Pets.Add(monster);
                     break;
-                case Spell.Stonetrap:
+                case Spell.Stonetrap: // 石陷阱
                     monster = (MonsterObject)data[2];
                     front = (Point)data[3];
 
@@ -582,8 +582,8 @@ namespace Server.MirEnvir
 
                 #region FireBang, IceStorm
 
-                case Spell.IceStorm:
-                case Spell.FireBang:
+                case Spell.IceStorm: // 冰咆哮
+                case Spell.FireBang: // 爆裂火焰
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -628,7 +628,7 @@ namespace Server.MirEnvir
 
                 #region MassHiding
 
-                case Spell.MassHiding:
+                case Spell.MassHiding: // 集体隐身术
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -677,8 +677,8 @@ namespace Server.MirEnvir
 
                 #region SoulShield, BlessedArmour
 
-                case Spell.SoulShield:
-                case Spell.BlessedArmour:
+                case Spell.SoulShield: // 幽灵盾
+                case Spell.BlessedArmour: // 神圣战甲术
                     value = (int)data[2];
                     location = (Point)data[3];
                     BuffType type = magic.Spell == Spell.SoulShield ? BuffType.SoulShield : BuffType.BlessedArmour;
@@ -734,7 +734,7 @@ namespace Server.MirEnvir
 
                 #region FireWall
 
-                case Spell.FireWall:
+                case Spell.FireWall: // 火墙
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -820,7 +820,7 @@ namespace Server.MirEnvir
 
                 #region Lightning
 
-                case Spell.Lightning:
+                case Spell.Lightning: // 疾光电影
                     value = (int)data[2];
                     location = (Point)data[3];
                     dir = (MirDirection)data[4];
@@ -853,7 +853,7 @@ namespace Server.MirEnvir
 
                 #region HeavenlySword
 
-                case Spell.HeavenlySword:
+                case Spell.HeavenlySword: // 开天斩
                     value = (int)data[2];
                     location = (Point)data[3];
                     dir = (MirDirection)data[4];
@@ -886,7 +886,7 @@ namespace Server.MirEnvir
 
                 #region MassHealing
 
-                case Spell.MassHealing:
+                case Spell.MassHealing: // 群体治愈术
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -934,10 +934,10 @@ namespace Server.MirEnvir
 
                 #region ThunderStorm
 
-                case Spell.ThunderStorm:
-                case Spell.FlameField:
-                case Spell.NapalmShot:
-                case Spell.StormEscape:
+                case Spell.ThunderStorm: // 地狱雷光
+                case Spell.FlameField: // 狂雷紫电
+                case Spell.NapalmShot: // 燃烧箭
+                case Spell.StormEscape: // 风暴逃脱
                     value = (int)data[2];
                     location = (Point)data[3];
                     for (int y = location.Y - 2; y <= location.Y + 2; y++)
@@ -978,7 +978,7 @@ namespace Server.MirEnvir
 
                 #region MoonMist
 
-                case Spell.MoonMist:
+                case Spell.MoonMist: // 月雾
 
                     value = (int)data[2];
                     location = (Point)data[3];
@@ -1029,7 +1029,7 @@ namespace Server.MirEnvir
 
                 #region LionRoar
 
-                case Spell.LionRoar:
+                case Spell.LionRoar: // 狮子吼
                     location = (Point)data[2];
 
                     for (int y = location.Y - 2; y <= location.Y + 2; y++)
@@ -1067,7 +1067,7 @@ namespace Server.MirEnvir
 
                 #region PoisonCloud
 
-                case Spell.PoisonCloud:
+                case Spell.PoisonCloud: // 毒云术
                     value = (int)data[2];
                     location = (Point)data[3];
                     byte bonusdmg = (byte)data[4];
@@ -1128,7 +1128,7 @@ namespace Server.MirEnvir
 
                 #region IceThrust
 
-                case Spell.IceThrust:
+                case Spell.IceThrust: // 冰刺
                     {
                         location = (Point)data[2];
                         MirDirection direction = (MirDirection)data[3];
@@ -1209,7 +1209,7 @@ namespace Server.MirEnvir
 
                 #region SlashingBurst
 
-                case Spell.SlashingBurst:
+                case Spell.SlashingBurst: // 逐日剑法
                     value = (int)data[2];
                     location = (Point)data[3];
                     dir = (MirDirection)data[4];
@@ -1242,7 +1242,7 @@ namespace Server.MirEnvir
 
                 #region Mirroring
 
-                case Spell.Mirroring:
+                case Spell.Mirroring: // 分身术
                     monster = (MonsterObject)data[2];
                     front = (Point)data[3];
                     bool finish = (bool)data[4];
@@ -1263,7 +1263,7 @@ namespace Server.MirEnvir
 
                 #region Blizzard
 
-                case Spell.Blizzard:
+                case Spell.Blizzard: // 暴风雪
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -1324,7 +1324,7 @@ namespace Server.MirEnvir
 
                 #region MeteorStrike
 
-                case Spell.MeteorStrike:
+                case Spell.MeteorStrike: // 流星火雨
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -1385,7 +1385,7 @@ namespace Server.MirEnvir
 
                 #region TrapHexagon
 
-                case Spell.TrapHexagon:
+                case Spell.TrapHexagon: // 困魔咒
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -1468,7 +1468,7 @@ namespace Server.MirEnvir
 
                 #region Curse
 
-                case Spell.Curse:
+                case Spell.Curse: // 诅咒术
                     value = (int)data[2];
                     location = (Point)data[3];
                     value2 = (int)data[4];
@@ -1531,7 +1531,7 @@ namespace Server.MirEnvir
 
                 #region ExplosiveTrap
 
-                case Spell.ExplosiveTrap:
+                case Spell.ExplosiveTrap: // 爆炸陷阱
                     value = (int)data[2];
                     front = (Point)data[3];
                     int trapID = (int)data[4];
@@ -1603,7 +1603,7 @@ namespace Server.MirEnvir
 
                 #region Plague
 
-                case Spell.Plague:
+                case Spell.Plague: // 瘟疫术
                     // DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, this, magic, magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC])), location, pType);
                     // (int)data[2] === magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]))
                     // (Point)data[3] === location
@@ -1679,7 +1679,7 @@ namespace Server.MirEnvir
 
                 #region Trap
 
-                case Spell.Trap:
+                case Spell.Trap: // 陷阱
                     value = (int)data[2];
                     //location = (Point)data[3];
                     MapObject originalTarget = (MapObject)data[3];
@@ -1732,7 +1732,7 @@ namespace Server.MirEnvir
 
                 #region OneWithNature
 
-                case Spell.OneWithNature:
+                case Spell.OneWithNature: // 天人合一
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -1812,7 +1812,7 @@ namespace Server.MirEnvir
 
                 #region Portal
 
-                case Spell.Portal:                  
+                case Spell.Portal: // 传送门
                     value = (int)data[2];
                     location = (Point)data[3];
                     value2 = (int)data[4];
@@ -1837,7 +1837,7 @@ namespace Server.MirEnvir
 
                 #region DelayedExplosion
 
-                case Spell.DelayedExplosion:
+                case Spell.DelayedExplosion: // 延迟爆炸
                     value = (int)data[2];
                     location = (Point)data[3];
 
@@ -1881,7 +1881,7 @@ namespace Server.MirEnvir
                 #endregion
 
                 #region BattleCry
-                case Spell.BattleCry:
+                case Spell.BattleCry: // 战吼
                     location = (Point)data[2];
 
                     int startX = Math.Max(location.X - 2, 0);
@@ -1928,7 +1928,7 @@ namespace Server.MirEnvir
                 #endregion
                 #region HealingCircle
 
-                case Spell.HealingCircle:
+                case Spell.HealingCircle: // 治愈术（范围）
                     value = (int)data[2];
                     location = (Point)data[3];
 

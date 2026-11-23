@@ -1,4 +1,4 @@
-using Client;
+﻿using Client;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
@@ -2020,18 +2020,18 @@ public sealed class MapControl : MirControl
 
         switch (magic.Spell)
         {
-            case Spell.FireBall:
-            case Spell.GreatFireBall:
-            case Spell.ElectricShock:
-            case Spell.Poisoning:
-            case Spell.ThunderBolt:
-            case Spell.FlameDisruptor:
-            case Spell.SoulFireBall:
-            case Spell.TurnUndead:
-            case Spell.FrostCrunch:
-            case Spell.Vampirism:
-            case Spell.FireBounce:
-            case Spell.MeteorShower:
+            case Spell.FireBall: // 火球术
+            case Spell.GreatFireBall: // 大火球
+            case Spell.ElectricShock: // 电击
+            case Spell.Poisoning: // 施毒术
+            case Spell.ThunderBolt: // 雷电术
+            case Spell.FlameDisruptor: // 灭天火
+            case Spell.SoulFireBall: // 灵魂火符
+            case Spell.TurnUndead: // 驱尸术（复活死尸）
+            case Spell.FrostCrunch: // 寒冰掌
+            case Spell.Vampirism: // 噬血术
+            case Spell.FireBounce: // 火焰弹
+            case Spell.MeteorShower: // 流星雨
                 return true;
             default:
                 return false;
@@ -2092,39 +2092,39 @@ public sealed class MapControl : MirControl
         //Targeting
         switch (magic.Spell)
         {
-            case Spell.FireBall:
-            case Spell.GreatFireBall:
-            case Spell.ElectricShock:
-            case Spell.Poisoning:
-            case Spell.ThunderBolt:
-            case Spell.FlameDisruptor:
-            case Spell.SoulFireBall:
-            case Spell.TurnUndead:
-            case Spell.FrostCrunch:
-            case Spell.Vampirism:
-            case Spell.Revelation:
-            case Spell.Entrapment:
-            case Spell.Hallucination:
-            case Spell.DarkBody:
-            case Spell.FireBounce:
-            case Spell.MeteorShower:
+            case Spell.FireBall: // 火球术
+            case Spell.GreatFireBall: // 大火球
+            case Spell.ElectricShock: // 电击
+            case Spell.Poisoning: // 施毒术
+            case Spell.ThunderBolt: // 雷电术
+            case Spell.FlameDisruptor: // 灭天火
+            case Spell.SoulFireBall: // 灵魂火符
+            case Spell.TurnUndead: // 驱尸术（复活死尸）
+            case Spell.FrostCrunch: // 寒冰掌
+            case Spell.Vampirism: // 噬血术
+            case Spell.Revelation: // 心灵启示
+            case Spell.Entrapment: // 困魔咒
+            case Spell.Hallucination: // 幻象术
+            case Spell.DarkBody: // 暗影术
+            case Spell.FireBounce: // 火焰弹
+            case Spell.MeteorShower: // 流星雨
                 // 统一取"可攻击对象"：点怪物后持续保持，不受鼠标移到技能栏影响。
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.StraightShot:
-            case Spell.DoubleShot:
-            case Spell.ElementalShot:
-            case Spell.DelayedExplosion:
-            case Spell.BindingShot:
-            case Spell.VampireShot:
-            case Spell.PoisonShot:
-            case Spell.CrippleShot:
-            case Spell.NapalmShot:
-            case Spell.SummonVampire:
-            case Spell.SummonToad:
-            case Spell.SummonSnakes:
+            case Spell.StraightShot: // 直射击
+            case Spell.DoubleShot: // 双重射击
+            case Spell.ElementalShot: // 元素箭
+            case Spell.DelayedExplosion: // 延迟爆炸
+            case Spell.BindingShot: // 束缚箭
+            case Spell.VampireShot: // 吸血箭
+            case Spell.PoisonShot: // 毒箭
+            case Spell.CrippleShot: // 残废箭
+            case Spell.NapalmShot: // 燃烧箭
+            case Spell.SummonVampire: // 召唤吸血鬼
+            case Spell.SummonToad: // 召唤蟾蜍
+            case Spell.SummonSnakes: // 召唤蛇
                 if (!actor.HasClassWeapon)
                 {
                     GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MustWearBowForSkill));
@@ -2135,7 +2135,7 @@ public sealed class MapControl : MirControl
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Stonetrap:
+            case Spell.Stonetrap: // 石陷阱
                 if (!User.HasClassWeapon)
                 {
                     GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MustWearBowForSkill));
@@ -2161,11 +2161,11 @@ public sealed class MapControl : MirControl
                 //}
 
                 break;
-            case Spell.Purification:
-            case Spell.Healing:
-            case Spell.UltimateEnhancer:
-            case Spell.EnergyShield:
-            case Spell.PetEnhancer:
+            case Spell.Purification: // 净化术
+            case Spell.Healing: // 治愈术
+            case Spell.UltimateEnhancer: // 强化术
+            case Spell.EnergyShield: // 能量护盾
+            case Spell.PetEnhancer: // 宠物强化
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant &&
                     !(MapObject.CanAttackTargetObject is MonsterObject monster && monster.MasterObjectId == 0))
@@ -2173,28 +2173,28 @@ public sealed class MapControl : MirControl
 
                 if (target == null) target = User;
                 break;
-            case Spell.FireBang:
-            case Spell.MassHiding:
-            case Spell.FireWall:
-            case Spell.TrapHexagon:
-            case Spell.HealingCircle:
-            case Spell.CatTongue:
+            case Spell.FireBang: // 爆裂火焰
+            case Spell.MassHiding: // 集体隐身术
+            case Spell.FireWall: // 火墙
+            case Spell.TrapHexagon: // 困魔咒
+            case Spell.HealingCircle: // 治愈术（范围）
+            case Spell.CatTongue: // 猫舌
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.PoisonCloud:
+            case Spell.PoisonCloud: // 毒云术
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Blizzard:
-            case Spell.MeteorStrike:
+            case Spell.Blizzard: // 暴风雪
+            case Spell.MeteorStrike: // 流星火雨
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Reincarnation:
+            case Spell.Reincarnation: // 重生术
                 // 复活是唯一的例外：目标是死亡玩家，无法被点击选中（选中排除 Dead），
                 // 只能取鼠标悬停的尸体。这里用 MouseObject 是复活专用，不是攻击目标。
                 {
@@ -2203,12 +2203,12 @@ public sealed class MapControl : MirControl
                         target = reviveTarget;
                 }
                 break;
-            case Spell.Trap:
+            case Spell.Trap: // 陷阱
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.FlashDash:
+            case Spell.FlashDash: // 十步一杀
                 if (actor.GetMagic(Spell.FlashDash).Level <= 1 && actor.IsDashAttack() == false)
                 {
                     actor.ClearMagic();
@@ -2271,16 +2271,62 @@ public sealed class MapControl : MirControl
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
         }
 
-        // 数据驱动施法特效：只要服务端下发了权威 EffectIds 就挂 CDN 的 OriginEffect。
-        // 原始技能（>218）本就只有这条链路；旧技能（<=218，如治愈术/施毒术/火球）原先走
-        // Libraries.Magic 的经典 .Lib 特效，但 .Lib 资源已从资源包移除（Libraries.cs:199），
-        // 那些 Effects.Add 现在是空壳。权威 EffectIds 由 5config.skillEffects 下发后，
-        // 用 OriginEffect 补上真实可见的施法特效，不再按 spell 值区分。
+        // 数据驱动施法特效：按 5config.skillEffects 的权威时序播放（delaytime/type/pos）。
+        // 原始技能（>218）本就只有这条链路；旧技能（<=218）走经典 .Lib 特效的资源已移除，
+        // 全部靠这里补 CDN 特效。key = skillId*100+等级（如 1201101=火球术Lv1），
+        // 找不到时序时回退到"所有 EffectIds 同时挂目标"的旧行为，保证不炸。
         if (magic.EffectIds != null && magic.EffectIds.Length > 0)
         {
-            MapObject effectOwner = target ?? actor;
-            foreach (int effectId in magic.EffectIds)
-                effectOwner.Effects.Add(new OriginEffect(effectId, effectOwner));
+            int originId = (int)magic.Spell; // Spell 枚举值即原始传奇 skillId
+            if (originId > 0 && ExcelTableMgr.TryGetSkillEffects(originId, magic.Level, out var steps))
+            {
+                long now = CMain.Time;
+                bool hasMissile = steps.Any(s => s.type == 2 && s.effect > 0);
+                foreach (SkillEffectTable step in steps)
+                {
+                    long start = now + Math.Max(0, step.delaytime);
+                    if (step.type == 2 && step.effect > 0)
+                    {
+                        // 飞行子弹：沿施法者→目标插值，抵达后播放命中特效。
+                        int flyMs = Math.Max(1, step.delaytime);
+                        OriginMissile missile = new OriginMissile(step.effect, actor, target, location, flightDuration: flyMs);
+                        if (target != null)
+                        {
+                            int hitEffect = steps.FirstOrDefault(s => s.type == 1)?.effect ?? 0;
+                            if (hitEffect > 0)
+                            {
+                                MapObject hitTarget = target;
+                                missile.Complete += (o, e) =>
+                                {
+                                    if (hitTarget.CurrentAction != MirAction.Dead)
+                                        hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
+                                };
+                            }
+                        }
+                        actor.Effects.Add(missile);
+                    }
+                    else if (step.type == 1 && step.effect > 0)
+                    {
+                        // 有飞行子弹时命中特效由 Complete 触发（原版 delaytime=0 是相对落地时刻）。
+                        if (!hasMissile && target != null)
+                            target.Effects.Add(new OriginEffect(step.effect, target, start));
+                    }
+                    else if (step.effect > 0)
+                    {
+                        // type=0 起手挂施法者；其余无目标也挂施法者，确保可见。
+                        actor.Effects.Add(new OriginEffect(step.effect, actor, start));
+                    }
+
+                    if (step.sound > 0)
+                        SoundManager.PlaySound(step.sound, delay: Math.Max(0, step.delaytime));
+                }
+            }
+            else
+            {
+                MapObject effectOwner = target ?? actor;
+                foreach (int effectId in magic.EffectIds)
+                    effectOwner.Effects.Add(new OriginEffect(effectId, effectOwner));
+            }
         }
     }
 

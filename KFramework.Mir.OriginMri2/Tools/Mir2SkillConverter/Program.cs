@@ -35,20 +35,10 @@ public static class Program
     private const int LegacySpellMax = 255;
     private const int OriginIdOffset = 1000000;
 
-    // 引擎效果分发键兼容表：服务器 HumanObject/SpellObject/Map 里 255 个 case Spell.* 按旧枚举值
-    // 决定技能效果（火球/治疗/召唤/隐身/被动加成…）。这些原始传奇技能与之语义一致，
-    // 故只有"键"沿用引擎常量；名字、冷却、范围、职业、特效等配置内容仍 100% 来自 5config.skill。
-    // 战斗代码一行都不用改。
-    private static readonly Dictionary<int, int> LegacySpellByOriginId = new()
-    {
-        {11011, 1}, {11021, 2}, {11031, 3}, {11041, 4}, {11051, 5}, {11061, 8},
-        {11081, 15}, {11101, 9}, {12011, 31}, {12021, 32}, {12041, 35}, {12051, 33},
-        {12061, 34}, {12071, 37}, {12081, 38}, {12091, 39}, {12101, 36}, {12121, 43},
-        {12131, 41}, {12141, 47}, {12151, 52}, {12181, 48}, {13011, 61}, {13021, 62},
-        {13031, 63}, {13041, 64}, {13051, 65}, {13061, 67}, {13071, 68}, {13081, 69},
-        {13091, 71}, {13101, 70}, {13111, 73}, {13121, 75}, {13131, 78}, {13141, 45},
-        {14011, 12}, {308000, 72}
-    };
+    // 全部技能统一用原始传奇 skillId 作为 Spell 键（214 条），不再沿用旧引擎 Spell 枚举。
+    // 技能效果由服务端按 5config.skill 的 handlerType + OriginId 数据驱动分派（见 HumanObject.OriginSkillDispatch）。
+    // 仅 id<=255 的 3 条用 1000000+id 偏移避开旧枚举常量，其余直接用 skillId。
+    private static readonly Dictionary<int, int> LegacySpellByOriginId = new();
 
     // 配置表统一无 BOM：File.ReadAllText 会自动吞 BOM，但 python/node 等工具会直接报错。
     private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);

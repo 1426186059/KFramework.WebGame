@@ -1,4 +1,4 @@
-using MirEngine;
+﻿using MirEngine;
 
 public class ClientMagic
 {
