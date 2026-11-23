@@ -292,7 +292,9 @@ namespace Server.MirObjects
         /// 玩家在 NPC 商店买到物品后，背包里持有即视为完成，物品留在背包可直接使用/学习。
         /// 购买成功后、接取任务、登录时调用。
         /// </summary>
-        public void CheckBuyGoalQuests()
+        /// <param name="fromPurchase">true=刚买完书：置为"完成待交"并弹 NPC 任务面板，由玩家点完成才发奖推进；
+        /// false=登录/接取补判：直接完成并发奖推进（兼容老行为）。</param>
+        public void CheckBuyGoalQuests(bool fromPurchase = false)
         {
             var buyQuests = CurrentQuests.Where(q => q.Info != null && q.Info.goaltype == 532 && !q.BuyGoalDone).ToList();
             if (buyQuests.Count == 0) return;
@@ -302,18 +304,24 @@ namespace Server.MirObjects
                 if (!HasOriginBuyGoalItem(q.Info)) continue;
 
                 q.BuyGoalDone = true;
-                if (q.CheckCompleted())
+                if (!q.CheckCompleted()) continue;
+
+                if (fromPurchase)
                 {
-                    SendUpdateQuest(q, QuestState.Remove);
-                    TrackQuest(q.Info.Index, false);
-                    GrantQuestCompletion(q.Info); // 发经验/金币/物品奖励
-                    if (!CompletedQuests.Contains(q.Info.Index)) CompletedQuests.Add(q.Info.Index);
-                    GetCompletedQuests();
-                    ReceiveOutputMessage($"任务完成：{q.Info.Name}", OutputMessageType.Quest);
-                    // 不调 CallDefaultNPC(OnFinishQuest)：那会 Enqueue S.NPCUpdate 把玩家正在操作的
-                    // 书店老板面板强行切成默认NPC(任务)面板。买书完成只需静默推进下一环。
-                    QuestScheduler.AdvanceAfterComplete(q.Info);
+                    // 买书场景：书已入包，任务进入"完成待交"；同步客户端让任务面板出现"领取奖励"按钮，
+                    // 发奖/推进交给玩家点面板 Finish → FinishQuest 完成。
+                    SendUpdateQuest(q, QuestState.Update);
+                    TrackQuest(q.Info.Index, true);
+                    continue;
                 }
+
+                SendUpdateQuest(q, QuestState.Remove);
+                TrackQuest(q.Info.Index, false);
+                GrantQuestCompletion(q.Info); // 发经验/金币/物品奖励
+                if (!CompletedQuests.Contains(q.Info.Index)) CompletedQuests.Add(q.Info.Index);
+                GetCompletedQuests();
+                ReceiveOutputMessage($"任务完成：{q.Info.Name}", OutputMessageType.Quest);
+                QuestScheduler.AdvanceAfterComplete(q.Info);
             }
         }
 

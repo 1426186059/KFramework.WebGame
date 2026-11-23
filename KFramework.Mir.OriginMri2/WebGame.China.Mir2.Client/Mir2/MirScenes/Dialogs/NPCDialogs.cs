@@ -572,7 +572,8 @@ namespace Client.MirScenes.Dialogs
 
         private void BuildBottomLinkButtons(List<(string Text, string Action)> links, int textLines)
         {
-            int y = Math.Max(TextStartY + Math.Min(textLines, MaximumLines) * TextLineHeight + 6, Size.Height - 35);
+            // 底部链接上移，避免 12F 文字（含描边/下划线）压到面板底边之外；正文较长时仍排在正文下方。
+            int y = Math.Max(TextStartY + Math.Min(textLines, MaximumLines) * TextLineHeight + 6, Size.Height - 52);
             int rows = (links.Count + BottomLinkCols - 1) / BottomLinkCols;
 
             for (int i = 0; i < links.Count; i++)

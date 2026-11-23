@@ -1272,7 +1272,9 @@ namespace Server.MirObjects
             // 原始传奇商店商品：不在 Goods/UsedGoods/BuyBack 里，按 NPC 的 StoreId 重新生成并用 UniqueID 匹配
             if (goods == null && callingNPC?.Info?.OriginSettings != null && callingNPC.Info.OriginSettings.StoreId > 0)
             {
-                var originGoods = Envir.GetOriginStoreGoods(callingNPC.Info.OriginSettings.StoreId);
+                // 必须传 player：box 类商品（如书店 115000）按玩家职业展开成真技能书，
+                // 不传则生成宝箱占位物，UniqueID 虽匹配但 Info 错，购买后背包得到宝箱。
+                var originGoods = Envir.GetOriginStoreGoods(callingNPC.Info.OriginSettings.StoreId, player);
                 for (int i = 0; i < originGoods.Count; i++)
                 {
                     if (originGoods[i].UniqueID != index) continue;

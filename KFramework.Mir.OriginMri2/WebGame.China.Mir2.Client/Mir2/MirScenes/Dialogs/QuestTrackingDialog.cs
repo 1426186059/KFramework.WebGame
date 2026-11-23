@@ -167,13 +167,28 @@ namespace Client.MirScenes.Dialogs
             private void TryTeleportTarget(QuestTaskTarget target)
             {
                 if (_quest == null || _isOffered || target == null) return;
-                Network.Enqueue(new C.TeleportToQuestTarget
+
+                C.TeleportToQuestTarget packet = new C.TeleportToQuestTarget
                 {
                     MapIndex = target.MapIndex,
                     X = target.X,
                     Y = target.Y,
                     MonsterIndex = target.MonsterIndex
-                });
+                };
+
+                // 原始传奇跨地图寻路前弹确认："路途遥远，即将传送至XXX"。同图不打扰。
+                bool crossMap = target.MapIndex > 0 && GameScene.Scene != null && GameScene.Scene.MapControl != null
+                    && GameScene.Scene.MapControl.Index != target.MapIndex;
+                if (!crossMap)
+                {
+                    Network.Enqueue(packet);
+                    return;
+                }
+
+                string destination = string.IsNullOrEmpty(target.Name) ? "目的地" : target.Name;
+                MirMessageBox box = new MirMessageBox($"路途遥远，即将传送至{destination}，是否继续？", MirMessageBoxButtons.YesNo, false);
+                box.YesButton.Click += (o, e) => Network.Enqueue(packet);
+                box.Show();
             }
 
             // 整行点击（进行中任务）：传送到第一个有效目标，没有则什么都不做。

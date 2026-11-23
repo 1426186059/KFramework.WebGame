@@ -189,7 +189,12 @@ namespace Server.MirObjects
                     NPCScript script = NPCScript.Get(NPCScriptID);
                     script.Buy(this, index, count);
 
-                    CheckBuyGoalQuests(); // 原始传奇532买物品引导任务：买到本职业技能书即完成
+                    // 原始传奇532买物品引导任务：买到本职业技能书 → 书入包、任务置"完成待交"，
+                    // 弹 NPC 任务面板；由玩家点面板"领取奖励"才真正完成并发奖、推进任务15。
+                    CheckBuyGoalQuests(fromPurchase: true);
+                    bool buyGoalPending = CurrentQuests.Any(q => q.Info != null && q.Info.goaltype == 532 && q.BuyGoalDone && q.Completed);
+                    if (buyGoalPending)
+                        CallNPC(ob.ObjectID, NPCScript.MainKey, openQuestPanel: true); // 商店面板 → NPC任务面板
                 }
             }
         }

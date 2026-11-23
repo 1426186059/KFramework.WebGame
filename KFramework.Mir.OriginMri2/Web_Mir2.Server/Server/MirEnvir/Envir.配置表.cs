@@ -320,6 +320,32 @@ namespace Server.MirEnvir
                 var itemParts = rec.item.Split('#');
                 if (!int.TryParse(itemParts[0], out int itemIndex)) continue;
 
+                // 原始传奇商店条目渲染走 BoxUtil.getItemOrBox：物品 col21==2 且命中 box 时按玩家职业/性别
+                // 展开成奖励包里的那一件（如 115000"技能书" → 11011/12011/13011 三职业各一本），
+                // 展示为单个商品条目。不展开就会把"技能书"占位物（图标 712 宝箱）直接显示出来。
+                if (player != null && OriginBoxes.TryGetValue(itemIndex, out var box) && box.Rewards.Count > 0)
+                {
+                    int career = (int)player.Class + 1;   // MirClass 0-based → box 1战/2法/3道
+                    int sex = (int)player.Gender;         // 0=男 1=女（原版 gd.player.sex）
+                    var picked = box.Rewards.FirstOrDefault(r =>
+                        r.ItemId != 4 && r.ItemId != 1 && r.ItemId != 499 &&
+                        (r.Career <= 0 || r.Career == career) &&
+                        (r.Sex <= 0 || r.Sex == sex));
+                    if (picked != null)
+                    {
+                        var rewardInfo = GetItemInfo(picked.ItemId);
+                        if (rewardInfo != null)
+                        {
+                            UserItem rewardItem = CreateShopItem(rewardInfo, (ulong)(storeId * 100000L + rec.id));
+                            rewardItem.Count = (ushort)Math.Min(Math.Max(1, picked.Count), ushort.MaxValue);
+                            ApplyOriginStoreCost(rewardItem, rec.cost);
+                            result.Add(rewardItem);
+                            continue;
+                        }
+                    }
+                    continue;
+                }
+
                 ItemInfoTable info = GetItemInfo(itemIndex);
                 if (info == null) continue;
 
@@ -327,31 +353,37 @@ namespace Server.MirEnvir
                 if (itemParts.Length > 1 && int.TryParse(itemParts[1], out int count) && count > 0)
                     item.Count = (ushort)Math.Min(count, ushort.MaxValue);
 
-                // 原始传奇 cost = 货币物品id#价格。货币映射：1/499=金币(0)，6=元宝(1，价/100)，41=传奇币(2)
-                var costParts = rec.cost?.Split('#');
-                if (costParts != null && costParts.Length > 1 && int.TryParse(costParts[0], out int currencyId) && int.TryParse(costParts[1], out int price))
-                {
-                    switch (currencyId)
-                    {
-                        case 6: // 元宝，原始传奇单位是分
-                            item.ShopCurrencyType = 1;
-                            item.ShopPrice = (uint)Math.Max(0, price / 100);
-                            break;
-                        case 41: // 传奇币
-                            item.ShopCurrencyType = 2;
-                            item.ShopPrice = (uint)Math.Max(0, price);
-                            break;
-                        default: // 金币(1/499)及其它特殊货币，暂按金币显示与扣费
-                            item.ShopCurrencyType = 0;
-                            item.ShopPrice = (uint)Math.Max(0, price);
-                            break;
-                    }
-                }
+                ApplyOriginStoreCost(item, rec.cost);
 
                 result.Add(item);
             }
 
             return result;
+        }
+
+        // 原始传奇 cost = 货币物品id#价格。货币映射：1/499=金币(0)，6=元宝(1，价/100)，41=传奇币(2)。
+        private static void ApplyOriginStoreCost(UserItem item, string cost)
+        {
+            var costParts = cost?.Split('#');
+            if (costParts == null || costParts.Length < 2 ||
+                !int.TryParse(costParts[0], out int currencyId) ||
+                !int.TryParse(costParts[1], out int price)) return;
+
+            switch (currencyId)
+            {
+                case 6: // 元宝，原始传奇单位是分
+                    item.ShopCurrencyType = 1;
+                    item.ShopPrice = (uint)Math.Max(0, price / 100);
+                    break;
+                case 41: // 传奇币
+                    item.ShopCurrencyType = 2;
+                    item.ShopPrice = (uint)Math.Max(0, price);
+                    break;
+                default: // 金币(1/499)及其它特殊货币，暂按金币显示与扣费
+                    item.ShopCurrencyType = 0;
+                    item.ShopPrice = (uint)Math.Max(0, price);
+                    break;
+            }
         }
 
         private T LoadConfig<T>(string baseDir, string fileName) where T : class
