@@ -4,6 +4,7 @@
 // 仅用于整表加载进 OriginMir2Config1 供与 ExcelConfig/ItemInfo.json 对比排查，运行时不用。
 // 字段名/类型依据：js 目录全部 12 个 JS 的逐列访问 + 0config~5config 跨表核验 + Mir2ItemConverter 映射；
 // 与 Mir2ReverseWeb 的 _itemFieldOverrides 有 3 处冲突（col12/18/22），以 JS 实测为准。
+// 注意 col21/22/26 是「按子类型多义」列（同一列在不同 c21 下含义不同），已用中性名并在各行注明。
 // 稀疏数值列用 int?/uint?：JSON 缺列或 null 时为 null。
 using System.Text.Json.Serialization;
 
@@ -71,11 +72,11 @@ namespace Server.ExcelConfig
         // 列 20：int，17165 条有值，与列 19 几乎恒等（大图标号同源），保留原列便于对比。
         [JsonPropertyName("20")] public uint IconIdMirror { get; set; }
 
-        // 列 21：int，16858 条有值。子类型（JS: 266=限时道具、211/230=触发使用特效、64/216=技能书）。
+        // 列 21：int，16858 条有值。子类型 id，决定使用逻辑：0=货币(9075)、4=幻武(2779)、2=红包宝袋(2170)、228=刺杀(831)、1=货币兑换(275)、216=技能书(255)、66=宝石(220)、198=天神阶(200)、222=宝箱(118)、136=宠物(88)、600=龙纹(61)、266=限时道具、211/230=用时放特效。
         [JsonPropertyName("21")] public int SubType { get; set; }
 
-        // 列 22：string，4709 条有值，形如 "79001"。使用条件 id（JS: checkCondition(r[22])；435 条命中 conditions 表）。
-        [JsonPropertyName("22")] public string? UseConditionId { get; set; }
+        // 列 22：string，4709 条有值（852 纯数值 + 3857 "A#B"，部分用 ; 分段）。按 c21 子类型多义的参数串：216=技能书"技能id#等级"、198=阶数、222=宝箱"id#数量;…"、11=徽章"id#分钟"、204=禁闭时长(时)、236=灵宠时长(分)、136=宠物id、600=龙纹subtype、洪荒=conditions条件id。
+        [JsonPropertyName("22")] public string? UseParam { get; set; }
 
         // 列 23：int，4127 条有值。装备部位 id（JS: gd.player.equipInfo[o[23]]；31~42=衣服、407=疗伤石）。
         [JsonPropertyName("23")] public int? EquipSlot { get; set; }
@@ -86,7 +87,7 @@ namespace Server.ExcelConfig
         // 列 25：int，1578 条有值。需要转生等级（JS: Logic.getReinLvStr(o[25])）。
         [JsonPropertyName("25")] public int? RequiredReinLevel { get; set; }
 
-        // 列 26：string，2886 条有值，形如 "1#501#0#0#0"。功能开启条件串（JS: checkLinkOpen2(o[26])，内联条件参数）。
+        // 列 26：string，2886 条有值，形如 "1#501#0#0#0"。功能开启配置串，首段为分支类型码（JS checkLinkOpen2）：1=按 UI 编号开界面、2=随机传送到某 NPC、3=直接获得物品。
         [JsonPropertyName("26")] public string? UnlockCondition { get; set; }
 
         // 列 27：int，48 条有值。消耗冷却标记（JS: o[27] → itemCDs + sendNotif(667,{type:2})）。
