@@ -11,7 +11,7 @@ namespace Server.MirDatabase
         public bool StartPoint { get; set; }
 
         // 反向指向所属 MapInfoTable，会形成循环引用。序列化时忽略它（不再依赖 $ref），
-        // 由服务端加载后统一重新挂回（见 Envir.LoadDB）。
+        // 由服务端加载后统一重新挂回（见 Envir.LoadExcelConfig）。
         [JsonIgnore]
         public MapInfoTable Info { get; set; }
 

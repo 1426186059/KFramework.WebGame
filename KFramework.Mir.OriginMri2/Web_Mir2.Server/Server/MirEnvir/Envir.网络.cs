@@ -91,7 +91,7 @@ namespace Server.MirEnvir
             Heroes.Clear();
             MonsterCount = 0;
 
-            LoadDB();
+            LoadExcelConfig();
 
             BuffInfoList.Clear();
             foreach (var buff in BuffInfo.Load())

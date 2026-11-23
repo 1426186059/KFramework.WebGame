@@ -53,7 +53,7 @@ namespace Server.MirEnvir
 
         public static Envir Edit { get; } = new Envir();
 
-        // 编辑器实例(EditEnvir)与运行时实例(Main)都会 LoadDB 并把日志写进同一 MessageQueue，
+        // 编辑器实例(EditEnvir)与运行时实例(Main)都会 LoadExcelConfig 并把日志写进同一 MessageQueue，
         // 用该标识区分两条看似重复的加载日志（不是 bug）。
         private string InstanceTag => ReferenceEquals(this, Edit) ? "编辑器" : "运行时";
 
@@ -123,10 +123,10 @@ namespace Server.MirEnvir
         public List<MagicInfoTable> MagicInfoList = new List<MagicInfoTable>();
         public List<NPCInfoTable> NPCInfoList = new List<NPCInfoTable>();
 
-        /// <summary>mapnpc 表：NPC id → 全部摆放点。由 LoadMapNpcPlacements 从 5config 分片读取。</summary>
+        /// <summary>mapnpc 摆放点：NPC id → 全部摆放点。由 LoadOriginMir2Configs 从 NPCInfo 内嵌数据派生。</summary>
         public Dictionary<int, List<NPCPlacement>> MapNpcPlacements = new Dictionary<int, List<NPCPlacement>>();
 
-        /// <summary>原始传奇商店表：StoreId → 商品记录列表（4config.npcstore，由 LoadOriginStores 加载）。</summary>
+        /// <summary>原始传奇商店表：StoreId → 商品记录列表（4config.npcstore，由 LoadOriginMir2Configs 加载）。</summary>
         public Dictionary<int, List<OriginStoreItemTable>> OriginStores = new Dictionary<int, List<OriginStoreItemTable>>();
         /// <summary>原始传奇显示条件表（0config.conditions，id → 条件），用于 npcstore.showCondition 过滤。</summary>
         public Dictionary<int, OriginConditionTable> OriginConditions = new Dictionary<int, OriginConditionTable>();

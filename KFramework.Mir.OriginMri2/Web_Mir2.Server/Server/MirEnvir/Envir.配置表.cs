@@ -1,41 +1,29 @@
-// partial 文件：Envir 策划配置表加载（JSON 运行时表 + 原始传奇分片权威表）。
-using ClientPackets;
-using Server.Library.MirDatabase;
-using Server.Library.Utils;
+// partial 文件：Envir 配置表统一加载入口。
+// LoadExcelConfig → LoadMyExcelConfig（我们自己的 ExcelConfig/*.json）
+//                → LoadOriginMir2Configs（原始传奇 0config~5config 六个分片，先全加载再派生索引）
+//                → PostLoadExcelConfig。只由运行时实例调用。
 using Server.MirDatabase;
-using Server.MirNetwork;
 using Server.MirObjects;
-using Server.MirObjects.Monsters;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text.RegularExpressions;
-using Library.Network;
-using S = ServerPackets;
 using Shared.Helpers;
-using System.Net.Http;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Server.MirEnvir
 {
     public partial class Envir
     {
-        public bool LoadDB()
+        public bool LoadExcelConfig()
         {
             lock (LoadLock)
             {
-                return LoadDBFromJson();
+                return LoadExcelConfigFromJson();
             }
         }
 
 
         // ===== 配置表从本地 JSON 加载（替代旧的 .db 二进制加载；不再从 Web 下载，避免依赖 5082 资源服务器） =====
-        private bool LoadDBFromJson()
+        private bool LoadExcelConfigFromJson()
         {
             try
             {
@@ -62,47 +50,11 @@ namespace Server.MirEnvir
                     return false;
                 }
 
-                MapInfoList = JsonTool.FromJson<List<MapInfoTable>>(
-                    NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfoTable>();
-                // SafeZoneInfo.Info 已 [JsonIgnore]，反序列化后手动挂回所属地图（SetBind 依赖 szi.Info.Index）。
-                foreach (MapInfoTable mi in MapInfoList)
-                    foreach (SafeZoneInfo sz in mi.SafeZones)
-                        sz.Info = mi;
-                ItemInfoList = LoadConfigList<ItemInfoTable>(baseDir, "ItemInfo.json");
-                MonsterInfoList = LoadConfigList<MonsterInfoTable>(baseDir, "MonsterInfo.json");
-                NPCInfoList = LoadConfigList<NPCInfoTable>(baseDir, "NPCInfo.json");
-                // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
-                foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
-                // 以下三张表是运行时数据，编辑器实例不需要加载（也不打日志）。
-                // 注意：MapInfoList（MapInfo_Fix.json）不在此列——那是编辑器要编辑的配置本身，MapInfoForm 等表单依赖它。
-                if (!ReferenceEquals(this, Edit))
-                {
-                    // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
-                    LoadMapNpcPlacements(baseDir);
-                    // 原始传奇商店：读 4config 分片的 npcstore 表（NPCInfo.OriginSettings.StoreId → 商品）。
-                    LoadOriginStores(baseDir);
-                    // 原始传奇显示条件表（0config.conditions），供 npcstore.showCondition 过滤高级/限时商品
-                    LoadOriginConditions(baseDir);
-                    // 原始传奇配置表全部加载备用（静态数据，将来用）：
-                    // 4config._task / 5config.goals / 0config.global[9201] / 5config.textstyle
-                    LoadOriginQuestTables(baseDir);
-                }
-                QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
-                // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
-                // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
-                foreach (var quest in QuestInfoList) quest.LoadInfo();
-                DragonInfoTable = LoadConfig<DragonInfoTable>(baseDir, "DragonInfo.json");
-                MagicInfoList = LoadConfigList<MagicInfoTable>(baseDir, "MagicInfo.json");
-                // 原始传奇技能书映射：物品 id → 技能/目标等级（构建期从 1config.item 导出）。
-                SkillBookInfoTable.BuildIndex(LoadConfigList<SkillBookInfoTable>(baseDir, "SkillBookInfo.json"));
-                if (LoadVersion >= 63)
-                    GameShopList = LoadConfigList<GameShopItemTable>(baseDir, "GameShopItem.json");
-                if (LoadVersion >= 66)
-                    ConquestInfoList = LoadConfigList<ConquestInfoTable>(baseDir, "ConquestInfo.json");
-                if (LoadVersion > 67)
-                    RespawnTick = LoadConfig<RespawnTimerTable>(baseDir, "RespawnTimer.json");
+                // 两类配置分开加载：先我们自己的 ExcelConfig 表，再原始传奇 0~5config 分片。
+                LoadMyExcelConfig(baseDir);
+                LoadOriginMir2Configs(baseDir);
 
-                PostLoadDB();
+                PostLoadExcelConfig();
                 return true;
             }
             catch (Exception ex)
@@ -112,7 +64,161 @@ namespace Server.MirEnvir
             }
         }
 
-        private void PostLoadDB()
+        /// <summary>加载我们自己的 ExcelConfig/*.json 表（Item/Monster/NPC/Quest/Magic/Shop 等）。</summary>
+        private void LoadMyExcelConfig(string baseDir)
+        {
+            MapInfoList = JsonTool.FromJson<List<MapInfoTable>>(
+                NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfoTable>();
+            // SafeZoneInfo.Info 已 [JsonIgnore]，反序列化后手动挂回所属地图（SetBind 依赖 szi.Info.Index）。
+            foreach (MapInfoTable mi in MapInfoList)
+                foreach (SafeZoneInfo sz in mi.SafeZones)
+                    sz.Info = mi;
+
+            ItemInfoList = LoadConfigList<ItemInfoTable>(baseDir, "ItemInfo.json");
+            MonsterInfoList = LoadConfigList<MonsterInfoTable>(baseDir, "MonsterInfo.json");
+            NPCInfoList = LoadConfigList<NPCInfoTable>(baseDir, "NPCInfo.json");
+            // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
+            foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
+
+            QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
+            // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
+            // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
+            foreach (var quest in QuestInfoList) quest.LoadInfo();
+
+            DragonInfoTable = LoadConfig<DragonInfoTable>(baseDir, "DragonInfo.json");
+            MagicInfoList = LoadConfigList<MagicInfoTable>(baseDir, "MagicInfo.json");
+            // 原始传奇技能书映射：物品 id → 技能/目标等级（构建期从 1config.item 导出）。
+            SkillBookInfoTable.BuildIndex(LoadConfigList<SkillBookInfoTable>(baseDir, "SkillBookInfo.json"));
+
+            if (LoadVersion >= 63)
+                GameShopList = LoadConfigList<GameShopItemTable>(baseDir, "GameShopItem.json");
+            if (LoadVersion >= 66)
+                ConquestInfoList = LoadConfigList<ConquestInfoTable>(baseDir, "ConquestInfo.json");
+            if (LoadVersion > 67)
+                RespawnTick = LoadConfig<RespawnTimerTable>(baseDir, "RespawnTimer.json");
+        }
+
+        /// <summary>
+        /// 统一加载原始传奇全部静态配置（0config~5config）：
+        /// 第一阶段把 6 个分片 DTO 全部加载进 OriginConfigs（已声明表强类型，其余表 ExtraTables 兜底）；
+        /// 第二阶段等全部表都加载完，再从根类统一派生运行时索引（商店/条件/任务/目标/文字样式/奖励包/NPC 摆放）。
+        /// </summary>
+        private void LoadOriginMir2Configs(string baseDir)
+        {
+            OriginConfigs.Clear();
+            OriginStores.Clear();
+            OriginConditions.Clear();
+            OriginBoxes.Clear();
+            OriginTasks.Clear();
+            OriginGoals.Clear();
+            OriginTaskTypeNames.Clear();
+            OriginTextStyles.Clear();
+            MapNpcPlacements.Clear();
+
+            try
+            {
+                // ===== 阶段一：6 个分片 DTO 全部加载（先加载完，再处理逻辑） =====
+                LoadOriginConfig<OriginMir2Config0>(baseDir, 0, AppJsonContext.Default.OriginMir2Config0);
+                LoadOriginConfig<OriginMir2Config1>(baseDir, 1, AppJsonContext.Default.OriginMir2Config1);
+                LoadOriginConfig<OriginMir2Config2>(baseDir, 2, AppJsonContext.Default.OriginMir2Config2);
+                LoadOriginConfig<OriginMir2Config3>(baseDir, 3, AppJsonContext.Default.OriginMir2Config3);
+                LoadOriginConfig<OriginMir2Config4>(baseDir, 4, AppJsonContext.Default.OriginMir2Config4);
+                LoadOriginConfig<OriginMir2Config5>(baseDir, 5, AppJsonContext.Default.OriginMir2Config5);
+
+                // ===== 阶段二：所有表加载完后，统一派生运行时索引（全是内存操作，不再读文件） =====
+                OriginConfigs.TryGetValue(0, out var root0);
+                OriginConfigs.TryGetValue(2, out var root2);
+                OriginConfigs.TryGetValue(4, out var root4);
+                OriginConfigs.TryGetValue(5, out var root5);
+                var cfg0 = root0 as OriginMir2Config0;
+                var cfg2 = root2 as OriginMir2Config2;
+                var cfg4 = root4 as OriginMir2Config4;
+                var cfg5 = root5 as OriginMir2Config5;
+
+                if (cfg0 != null)
+                {
+                    // 0config.conditions → OriginConditions（条件过滤），key "undefined" 等非数字 id 跳过。
+                    if (cfg0.conditions != null)
+                        foreach (var kv in cfg0.conditions)
+                            if (int.TryParse(kv.Key, out int condId) && kv.Value != null)
+                                OriginConditions[condId] = kv.Value;
+
+                    // 0config.global[9201] → 任务类型前缀（type#[前缀]&...）。
+                    if (cfg0.global != null && cfg0.global.TryGetValue("9201", out var g) && g != null)
+                        foreach (var item in g.value.Split('&', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            var parts = item.Split('#');
+                            if (parts.Length >= 2 && int.TryParse(parts[0], out int type))
+                                OriginTaskTypeNames[type] = parts[1];
+                        }
+                }
+
+                if (cfg2 != null && cfg2.box != null)
+                {
+                    foreach (var kv in cfg2.box)
+                    {
+                        if (!int.TryParse(kv.Key, out int id) || kv.Value == null) continue;
+                        kv.Value.ParseRewards();
+                        OriginBoxes[id] = kv.Value;
+                    }
+                }
+
+                if (cfg4 != null)
+                {
+                    // 4config.npcstore → OriginStores（商店 id → 商品列表，按 id 排序）。
+                    if (cfg4.npcstore != null)
+                        foreach (var store in cfg4.npcstore)
+                            OriginStores[store.Key] = store.Value?.Values.OrderBy(x => x.id).ToList() ?? new List<OriginStoreItemTable>();
+
+                    // 4config._task → OriginTasks（任务权威表）。
+                    if (cfg4._task != null)
+                        foreach (var kv in cfg4._task)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginTasks[id] = kv.Value;
+                }
+
+                if (cfg5 != null)
+                {
+                    if (cfg5.goals != null)
+                        foreach (var kv in cfg5.goals)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginGoals[id] = kv.Value;
+                    if (cfg5.textstyle != null)
+                        foreach (var kv in cfg5.textstyle)
+                            if (int.TryParse(kv.Key, out int id) && kv.Value != null)
+                                OriginTextStyles[id] = kv.Value;
+                }
+
+                // 地图 NPC 摆放：构建期已内嵌到 NPCInfo.OriginSettings.Placements，运行时不再读 5config.mapnpc。
+                foreach (var npc in NPCInfoList)
+                    if (npc.OriginSettings?.Placements != null && npc.OriginSettings.Placements.Count > 0)
+                        MapNpcPlacements[npc.Index] = npc.OriginSettings.Placements;
+
+                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇配置表: {OriginConfigs.Count}/6 分片 / 未声明表 {OriginConfigs.Sum(kv => kv.Value.ExtraTables.Count)} 张 / " +
+                    $"奖励包 {OriginBoxes.Count} / 任务 {OriginTasks.Count} / 目标 {OriginGoals.Count} / 商店 {OriginStores.Count} / " +
+                    $"条件 {OriginConditions.Count} / 文字样式 {OriginTextStyles.Count} / 类型前缀 {OriginTaskTypeNames.Count} / 摆放点 {MapNpcPlacements.Sum(kv => kv.Value.Count)}");
+            }
+            catch (Exception ex)
+            {
+                MessageQueue.Enqueue("加载原始传奇配置表失败: " + ex.Message);
+            }
+        }
+
+        /// <summary>加载单个分片根类并存进 OriginConfigs；文件不存在或解析失败只记日志，不影响其它分片。</summary>
+        private T LoadOriginConfig<T>(string baseDir, int index, JsonTypeInfo<T> typeInfo) where T : OriginConfigRoot
+        {
+            string file = Directory.GetFiles(baseDir, index + "config*.json").FirstOrDefault();
+            if (file == null)
+            {
+                MessageQueue.Enqueue($"原始传奇配置表未找到 {index}config*.json（ExcelConfig 目录）");
+                return null;
+            }
+            var cfg = JsonTool.FromJson<T>(File.ReadAllText(file), typeInfo);
+            if (cfg != null) OriginConfigs[index] = cfg;
+            return cfg;
+        }
+
+        private void PostLoadExcelConfig()
         {
             for (int i = 0; i < ItemInfoList.Count; i++)
             {
@@ -125,85 +231,6 @@ namespace Server.MirEnvir
                     Main.BindGameShop(GameShopList[i]);
             }
             Settings.LinkGuildCreationItems(ItemInfoList);
-        }
-
-        /// <summary>
-        /// 地图 NPC 摆放来自 NPCInfoTable.OriginSettings.Placements：构建期 Mir2NPCConverter 已把
-        /// 5config.mapnpc 的摆放点内嵌到每条 NPC 定义，运行时不再读分片。
-        /// MapInfoTable.CreateMap 会按 MapId 把每个摆放点挂到对应地图，一个 NPC 定义可生成多个实例。
-        /// </summary>
-        private void LoadMapNpcPlacements(string baseDir)
-        {
-            if (ReferenceEquals(this, Edit)) return; // 编辑器不加载运行时摆放数据
-            MapNpcPlacements.Clear();
-            foreach (var npc in NPCInfoList)
-                if (npc.OriginSettings?.Placements != null && npc.OriginSettings.Placements.Count > 0)
-                    MapNpcPlacements[npc.Index] = npc.OriginSettings.Placements;
-
-            MessageQueue.Enqueue($"[{InstanceTag}] mapnpc 摆放点: {MapNpcPlacements.Sum(kv => kv.Value.Count)} 处 / {MapNpcPlacements.Count} 个 NPC（NPCInfo 内嵌）");
-        }
-
-        /// <summary>
-        /// 原始传奇商店表：整文件反序列化 4config 分片的 npcstore，按 StoreId 建索引。
-        /// 仿客户端 OriginMir2Config 写法：DTO 只声明用到的表，其余顶层表自动忽略。
-        /// </summary>
-        private void LoadOriginStores(string baseDir)
-        {
-            OriginStores.Clear();
-            try
-            {
-                string file = Directory.GetFiles(baseDir, "4config*.json").FirstOrDefault();
-                if (file == null)
-                {
-                    MessageQueue.Enqueue("原始传奇商店表未找到 4config*.json（ExcelConfig 目录）");
-                    return;
-                }
-
-                var cfg = JsonTool.FromJson<OriginMir2Config4>(File.ReadAllText(file), AppJsonContext.Default.OriginMir2Config4);
-                if (cfg?.npcstore == null) return;
-
-                foreach (var store in cfg.npcstore)
-                {
-                    var list = store.Value?.Values.OrderBy(x => x.id).ToList() ?? new List<OriginStoreItemTable>();
-                    OriginStores[store.Key] = list;
-                }
-
-                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇商店表: {OriginStores.Count} 个商店 / {OriginStores.Sum(kv => kv.Value.Count)} 条商品（4config.npcstore）");
-            }
-            catch (Exception ex)
-            {
-                MessageQueue.Enqueue("加载原始传奇商店表失败: " + ex.Message);
-            }
-        }
-
-        /// <summary>加载 0config.conditions 条件表（原始传奇 Logic.checkCondition 用）。</summary>
-        private void LoadOriginConditions(string baseDir)
-        {
-            OriginConditions.Clear();
-            try
-            {
-                string file = Directory.GetFiles(baseDir, "0config*.json").FirstOrDefault();
-                if (file == null)
-                {
-                    MessageQueue.Enqueue("原始传奇条件表未找到 0config*.json（ExcelConfig 目录）");
-                    return;
-                }
-                var cfg = JsonTool.FromJson<OriginMir2Config0>(File.ReadAllText(file), AppJsonContext.Default.OriginMir2Config0);
-                if (cfg?.conditions != null)
-                {
-                    foreach (var kv in cfg.conditions)
-                    {
-                        // 原始配置里有 "undefined" 等非数字 key，跳过；只收数字 id 的条件
-                        if (int.TryParse(kv.Key, out int condId) && kv.Value != null)
-                            OriginConditions[condId] = kv.Value;
-                    }
-                }
-                MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇条件表: {OriginConditions.Count} 条（0config.conditions）");
-            }
-            catch (Exception ex)
-            {
-                MessageQueue.Enqueue("加载原始传奇条件表失败: " + ex.Message);
-            }
         }
 
         /// <summary>

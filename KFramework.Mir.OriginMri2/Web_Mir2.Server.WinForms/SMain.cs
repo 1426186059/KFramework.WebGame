@@ -261,12 +261,9 @@ namespace Server
 
         private void SMain_Load(object sender, EventArgs e)
         {
-            var loaded = EditEnvir.LoadDB();
-
-            if (loaded)
-            {
-                Envir.Start();
-            }
+            // 配置表只由运行时实例加载：Envir.Start() → WorkLoop → StartEnvir() → LoadExcelConfig()。
+            // 编辑器实例(EditEnvir)不再单独加载，避免同一份配置被加载两次。
+            Envir.Start();
 
             AutoResize();
         }
