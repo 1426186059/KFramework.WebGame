@@ -656,12 +656,16 @@ namespace Client.MirObjects
                 _bloodLabel = new MirLabel
                 {
                     Font = new Font(Settings.FontName, 9F),
+                    AutoSize = true,
+                    BackColour = CommonColor.Transparent,
                     ForeColour = CommonColor.White,
+                    OutLine = true,
                     OutLineColour = CommonColor.Black
                 };
                 _bloodLabel.Disposing += (o, e) => _bloodLabel = null;
                 LabelList.Add(_bloodLabel);
             }
+            // 先给 Text，AutoSize 才会重算 Size，之后才能按真实宽高居中定位。
             _bloodLabel.Text = text;
             _bloodLabel.Location = new Point(centerX - _bloodLabel.Size.Width / 2, centerY - _bloodLabel.Size.Height / 2);
             _bloodLabel.Draw();

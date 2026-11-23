@@ -24,6 +24,7 @@ namespace Client.MirScenes.Dialogs
 
         private readonly MirLabel _nameLabel;
         private readonly MirLabel _hpLabel;
+        private MapObject _current; // 当前显示的目标（点击选中即有，不必等攻击回包）
 
         public TargetHealthDialog()
         {
@@ -63,10 +64,16 @@ namespace Client.MirScenes.Dialogs
             };
         }
 
-        /// <summary>根据当前选中目标刷新显示。无目标/不可显示时整体隐藏。</summary>
+        /// <summary>根据当前选中目标刷新显示。点击选中(SelectionTarget)即刻显示，不必等攻击回包设 TargetObject。</summary>
         public void RefreshTarget()
         {
-            MapObject target = MapObject.TargetObject;
+            // SelectionTarget = 点击选中的对象（脚底环），SelectTarget() 在鼠标左键点击时立即设置；
+            // TargetObject 是攻击目标，只有真正攻击/回包后才有——所以不能只用它，否则要"打一下"才显示。
+            MapObject target = MapObject.SelectionTarget ?? MapObject.TargetObject;
+
+            // 悬停(MouseObject)也可临时显示，覆盖"只是把鼠标移到怪身上"的操作习惯。
+            if (target == null) target = MapObject.MouseObject;
+
             bool show = target != null && !target.Dead &&
                         (target.Race == ObjectType.Monster || target.Race == ObjectType.Player || target.Race == ObjectType.Hero) &&
                         target != MapObject.User;
@@ -74,6 +81,7 @@ namespace Client.MirScenes.Dialogs
             Visible = show;
             _nameLabel.Visible = show;
             _hpLabel.Visible = show;
+            _current = show ? target : null;
             if (!show) return;
 
             _nameLabel.Text = target.Name ?? string.Empty;
@@ -91,7 +99,7 @@ namespace Client.MirScenes.Dialogs
                            CommonColor.FromArgb(140, 0, 0, 0));
 
             // 红条（rolebg2）：按 PercentHealth 从左缩放，原始 icon.width = 220 * pct
-            float pct = System.Math.Max(0f, System.Math.Min(1f, MapObject.TargetObject.PercentHealth / 100F));
+            float pct = _current == null ? 0f : System.Math.Max(0f, System.Math.Min(1f, _current.PercentHealth / 100F));
             int fillW = (int)(BarW * pct);
             if (fillW > 0)
             {
