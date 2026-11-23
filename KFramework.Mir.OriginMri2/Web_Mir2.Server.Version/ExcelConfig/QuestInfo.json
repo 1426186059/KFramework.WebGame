@@ -81,7 +81,8 @@
         "StartNpcId": 10011,
         "FinishNpcId": 10011
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -176,7 +177,8 @@
         "StartNpcId": 3000,
         "FinishNpcId": 3000
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1405002,
@@ -276,7 +278,8 @@
         "StartNpcId": 3000,
         "FinishNpcId": 3001
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -371,7 +374,8 @@
         "StartNpcId": 3001,
         "FinishNpcId": 3002
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000610,
@@ -478,7 +482,8 @@
         "StartNpcId": 3002,
         "FinishNpcId": 3003
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000612,
@@ -585,7 +590,8 @@
         "StartNpcId": 3003,
         "FinishNpcId": 3004
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8015
@@ -686,7 +692,8 @@
         "StartNpcId": 3004,
         "FinishNpcId": 3005
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000612,
@@ -793,7 +800,8 @@
         "StartNpcId": 3005,
         "FinishNpcId": 3006
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000629
@@ -894,7 +902,8 @@
         "StartNpcId": 3006,
         "FinishNpcId": 3007
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000619,
@@ -1001,7 +1010,8 @@
         "StartNpcId": 3007,
         "FinishNpcId": 10201
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000619,
@@ -1094,7 +1104,8 @@
         "StartNpcId": 10201,
         "FinishNpcId": 10201
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -1182,7 +1193,8 @@
         "StartNpcId": 10201,
         "FinishNpcId": 10201
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000606,
@@ -1282,7 +1294,8 @@
         "StartNpcId": 10201,
         "FinishNpcId": 10121
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -1370,7 +1383,8 @@
         "StartNpcId": 10121,
         "FinishNpcId": 10121
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000647,
@@ -1467,7 +1481,8 @@
         "StartNpcId": 10121,
         "FinishNpcId": 10031
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -1555,7 +1570,8 @@
         "StartNpcId": 10071,
         "FinishNpcId": 13791
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -1643,7 +1659,8 @@
         "StartNpcId": 10031,
         "FinishNpcId": 13791
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       404,
@@ -1756,7 +1773,8 @@
         "StartNpcId": 13791,
         "FinishNpcId": 13791
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       9205
@@ -1857,7 +1875,8 @@
         "StartNpcId": 13791,
         "FinishNpcId": 10781
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       11021,
@@ -1973,7 +1992,8 @@
         "StartNpcId": 13811,
         "FinishNpcId": 13821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000651,
@@ -2080,7 +2100,8 @@
         "StartNpcId": 13821,
         "FinishNpcId": 14091
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -2175,7 +2196,8 @@
         "StartNpcId": 14091,
         "FinishNpcId": 13831
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8015
@@ -2269,7 +2291,8 @@
         "StartNpcId": 10781,
         "FinishNpcId": 21009
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       4645,
@@ -2369,7 +2392,8 @@
         "StartNpcId": 21009,
         "FinishNpcId": 21009
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000655,
@@ -2469,7 +2493,8 @@
         "StartNpcId": 10091,
         "FinishNpcId": 13031
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000668,
@@ -2569,7 +2594,8 @@
         "StartNpcId": 21009,
         "FinishNpcId": 10771
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000668,
@@ -2669,7 +2695,8 @@
         "StartNpcId": 10771,
         "FinishNpcId": 10761
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8443
@@ -2770,7 +2797,8 @@
         "StartNpcId": 10761,
         "FinishNpcId": 13851
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -2865,7 +2893,8 @@
         "StartNpcId": 13851,
         "FinishNpcId": 13861
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8015
@@ -2966,7 +2995,8 @@
         "StartNpcId": 13861,
         "FinishNpcId": 13871
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000680,
@@ -3082,7 +3112,8 @@
         "StartNpcId": 13871,
         "FinishNpcId": 12981
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       4645
@@ -3183,7 +3214,8 @@
         "StartNpcId": 12981,
         "FinishNpcId": 12971
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8015
@@ -3277,7 +3309,8 @@
         "StartNpcId": 12971,
         "FinishNpcId": 10201
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000663,
@@ -3377,7 +3410,8 @@
         "StartNpcId": 10761,
         "FinishNpcId": 10761
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       4645,
@@ -3484,7 +3518,8 @@
         "StartNpcId": 10761,
         "FinishNpcId": 13051
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       11031,
@@ -3591,7 +3626,8 @@
         "StartNpcId": 13881,
         "FinishNpcId": 13891
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000704,
@@ -3698,7 +3734,8 @@
         "StartNpcId": 13901,
         "FinishNpcId": 13901
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000704,
@@ -3805,7 +3842,8 @@
         "StartNpcId": 13901,
         "FinishNpcId": 13911
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000685,
@@ -3909,7 +3947,8 @@
         "StartNpcId": 13911,
         "FinishNpcId": 14101
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000703,
@@ -4009,7 +4048,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8439
@@ -4103,7 +4143,8 @@
         "StartNpcId": 12441,
         "FinishNpcId": 12441
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000663,
@@ -4203,7 +4244,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10811
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       4645,
@@ -4310,7 +4352,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 13921
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       11041,
@@ -4420,7 +4463,8 @@
         "StartNpcId": 13921,
         "FinishNpcId": 13931
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -4515,7 +4559,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 13941
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1000696,
@@ -4622,7 +4667,8 @@
         "StartNpcId": 13941,
         "FinishNpcId": 14111
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8015
@@ -4723,7 +4769,8 @@
         "StartNpcId": 14111,
         "FinishNpcId": 14121
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8292
@@ -4817,7 +4864,8 @@
         "StartNpcId": 14121,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8291
@@ -4911,7 +4959,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10771
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -4999,7 +5048,8 @@
         "StartNpcId": 13051,
         "FinishNpcId": 14131
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       4645
@@ -5100,7 +5150,8 @@
         "StartNpcId": 14131,
         "FinishNpcId": 14141
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5188,7 +5239,8 @@
         "StartNpcId": 14141,
         "FinishNpcId": 14151
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5283,7 +5335,8 @@
         "StartNpcId": 14151,
         "FinishNpcId": 14161
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5371,7 +5424,8 @@
         "StartNpcId": 14161,
         "FinishNpcId": 14171
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5466,7 +5520,8 @@
         "StartNpcId": 14171,
         "FinishNpcId": 14181
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       41
@@ -5560,7 +5615,8 @@
         "StartNpcId": 14181,
         "FinishNpcId": 10771
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5641,7 +5697,8 @@
         "StartNpcId": 12431,
         "FinishNpcId": 12431
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5722,7 +5779,8 @@
         "StartNpcId": 14631,
         "FinishNpcId": 14581
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5810,7 +5868,8 @@
         "StartNpcId": 12921,
         "FinishNpcId": 12921
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5905,7 +5964,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -5993,7 +6053,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 11371
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6081,7 +6142,8 @@
         "StartNpcId": 11371,
         "FinishNpcId": 11371
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6176,7 +6238,8 @@
         "StartNpcId": 11371,
         "FinishNpcId": 14511
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6271,7 +6334,8 @@
         "StartNpcId": 14511,
         "FinishNpcId": 14521
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6359,7 +6423,8 @@
         "StartNpcId": 12921,
         "FinishNpcId": 12921
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6447,7 +6512,8 @@
         "StartNpcId": 12331,
         "FinishNpcId": 12331
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6542,7 +6608,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6637,7 +6704,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6725,7 +6793,8 @@
         "StartNpcId": 10821,
         "FinishNpcId": 10821
       },
-      "State": 2
+      "State": 2,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6802,7 +6871,8 @@
         "StartNpcId": 56,
         "FinishNpcId": 56
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6879,7 +6949,8 @@
         "StartNpcId": 56,
         "FinishNpcId": 56
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -6956,7 +7027,8 @@
         "StartNpcId": 56,
         "FinishNpcId": 56
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -7033,7 +7105,8 @@
         "StartNpcId": 56,
         "FinishNpcId": 56
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -7124,7 +7197,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7221,7 +7295,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7318,7 +7393,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7415,7 +7491,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7512,7 +7589,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7609,7 +7687,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7706,7 +7785,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7803,7 +7883,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7900,7 +7981,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -7997,7 +8079,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8094,7 +8177,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8191,7 +8275,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8288,7 +8373,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8385,7 +8471,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8482,7 +8569,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8579,7 +8667,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8676,7 +8765,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8773,7 +8863,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8870,7 +8961,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -8967,7 +9059,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9064,7 +9157,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9161,7 +9255,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9258,7 +9353,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9355,7 +9451,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9452,7 +9549,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9549,7 +9647,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9646,7 +9745,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9743,7 +9843,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9840,7 +9941,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -9937,7 +10039,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10034,7 +10137,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10131,7 +10235,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10228,7 +10333,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10325,7 +10431,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10422,7 +10529,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10519,7 +10627,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10616,7 +10725,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10713,7 +10823,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10810,7 +10921,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -10907,7 +11019,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11004,7 +11117,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11101,7 +11215,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11198,7 +11313,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11295,7 +11411,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11392,7 +11509,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11489,7 +11607,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11586,7 +11705,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11683,7 +11803,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11780,7 +11901,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11877,7 +11999,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -11974,7 +12097,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12071,7 +12195,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12168,7 +12293,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12265,7 +12391,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12362,7 +12489,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12459,7 +12587,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12556,7 +12685,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12653,7 +12783,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12750,7 +12881,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12847,7 +12979,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -12944,7 +13077,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13041,7 +13175,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13138,7 +13273,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13235,7 +13371,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13332,7 +13469,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13429,7 +13567,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13526,7 +13665,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13623,7 +13763,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13720,7 +13861,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13817,7 +13959,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -13914,7 +14057,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14011,7 +14155,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14108,7 +14253,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14205,7 +14351,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14302,7 +14449,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14399,7 +14547,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14496,7 +14645,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14593,7 +14743,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14690,7 +14841,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14787,7 +14939,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14884,7 +15037,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -14981,7 +15135,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15078,7 +15233,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15175,7 +15331,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15272,7 +15429,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15369,7 +15527,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15466,7 +15625,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15563,7 +15723,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15660,7 +15821,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15757,7 +15919,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15854,7 +16017,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -15951,7 +16115,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -16048,7 +16213,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -16145,7 +16311,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -16242,7 +16409,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -16339,7 +16507,8 @@
         "StartNpcId": 10811,
         "FinishNpcId": 10811
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8237
@@ -16442,7 +16611,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -16548,7 +16718,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -16654,7 +16825,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -16760,7 +16932,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -16866,7 +17039,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -16972,7 +17146,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -17078,7 +17253,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17184,7 +17360,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17290,7 +17467,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17396,7 +17574,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17502,7 +17681,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17608,7 +17788,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17714,7 +17895,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17820,7 +18002,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -17926,7 +18109,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18032,7 +18216,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18138,7 +18323,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18244,7 +18430,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18350,7 +18537,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18456,7 +18644,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18562,7 +18751,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18668,7 +18858,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18774,7 +18965,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18880,7 +19072,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -18986,7 +19179,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19092,7 +19286,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19198,7 +19393,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19304,7 +19500,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19410,7 +19607,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19516,7 +19714,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -19622,7 +19821,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -19728,7 +19928,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -19834,7 +20035,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -19940,7 +20142,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20046,7 +20249,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20152,7 +20356,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20258,7 +20463,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20364,7 +20570,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20470,7 +20677,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20576,7 +20784,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20682,7 +20891,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20788,7 +20998,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -20894,7 +21105,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21000,7 +21212,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21106,7 +21319,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21212,7 +21426,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21318,7 +21533,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21424,7 +21640,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -21530,7 +21747,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -21636,7 +21854,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -21742,7 +21961,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -21848,7 +22068,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -21954,7 +22175,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -22060,7 +22282,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -22166,7 +22389,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22272,7 +22496,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22378,7 +22603,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22484,7 +22710,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22590,7 +22817,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22696,7 +22924,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22802,7 +23031,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -22908,7 +23138,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23014,7 +23245,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23120,7 +23352,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23226,7 +23459,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23332,7 +23566,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23438,7 +23673,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23544,7 +23780,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23650,7 +23887,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23756,7 +23994,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23862,7 +24101,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -23968,7 +24208,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -24074,7 +24315,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24180,7 +24422,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24286,7 +24529,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24392,7 +24636,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24498,7 +24743,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24604,7 +24850,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -24710,7 +24957,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -24816,7 +25064,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -24922,7 +25171,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25028,7 +25278,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25134,7 +25385,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25240,7 +25492,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25346,7 +25599,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25452,7 +25706,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25558,7 +25813,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25664,7 +25920,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25770,7 +26027,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25876,7 +26134,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -25982,7 +26241,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26088,7 +26348,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26194,7 +26455,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26300,7 +26562,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26406,7 +26669,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26512,7 +26776,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -26618,7 +26883,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -26724,7 +26990,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -26830,7 +27097,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -26936,7 +27204,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -27042,7 +27311,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -27148,7 +27418,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -27254,7 +27525,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27360,7 +27632,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27466,7 +27739,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27572,7 +27846,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27678,7 +27953,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27784,7 +28060,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27890,7 +28167,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -27996,7 +28274,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28102,7 +28381,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28208,7 +28488,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28314,7 +28595,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28420,7 +28702,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28526,7 +28809,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28632,7 +28916,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28738,7 +29023,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28844,7 +29130,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -28950,7 +29237,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -29056,7 +29344,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -29162,7 +29451,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29268,7 +29558,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29374,7 +29665,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29480,7 +29772,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29586,7 +29879,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29692,7 +29986,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -29798,7 +30093,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -29904,7 +30200,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30010,7 +30307,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30116,7 +30414,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30222,7 +30521,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30328,7 +30628,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30434,7 +30735,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30540,7 +30842,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30646,7 +30949,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30752,7 +31056,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30858,7 +31163,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -30964,7 +31270,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31070,7 +31377,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31176,7 +31484,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31282,7 +31591,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31388,7 +31698,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31494,7 +31805,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31600,7 +31912,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -31706,7 +32019,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -31812,7 +32126,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -31918,7 +32233,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -32024,7 +32340,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -32130,7 +32447,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -32236,7 +32554,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32342,7 +32661,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32448,7 +32768,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32554,7 +32875,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32660,7 +32982,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32766,7 +33089,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32872,7 +33196,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -32978,7 +33303,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33084,7 +33410,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33190,7 +33517,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33296,7 +33624,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33402,7 +33731,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33508,7 +33838,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33614,7 +33945,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33720,7 +34052,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33826,7 +34159,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -33932,7 +34266,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -34038,7 +34373,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -34144,7 +34480,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -34250,7 +34587,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -34356,7 +34694,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -34462,7 +34801,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -34568,7 +34908,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -34674,7 +35015,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -34780,7 +35122,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -34886,7 +35229,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -34992,7 +35336,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35098,7 +35443,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35204,7 +35550,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35310,7 +35657,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35416,7 +35764,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35522,7 +35871,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35628,7 +35978,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35734,7 +36085,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35840,7 +36192,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -35946,7 +36299,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -36052,7 +36406,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -36158,7 +36513,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -36264,7 +36620,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -36370,7 +36727,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -36476,7 +36834,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -36582,7 +36941,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8245,
@@ -36688,7 +37048,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -36794,7 +37155,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -36900,7 +37262,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37006,7 +37369,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37112,7 +37476,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37218,7 +37583,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37324,7 +37690,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37430,7 +37797,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37536,7 +37904,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37642,7 +38011,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37748,7 +38118,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37854,7 +38225,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -37960,7 +38332,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -38066,7 +38439,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -38172,7 +38546,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -38278,7 +38653,8 @@
         "StartNpcId": 13951,
         "FinishNpcId": 13951
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8495,
@@ -38377,7 +38753,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38473,7 +38850,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38569,7 +38947,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38665,7 +39044,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38761,7 +39141,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38857,7 +39238,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -38953,7 +39335,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -39049,7 +39432,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -39145,7 +39529,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -39241,7 +39626,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -39337,7 +39723,8 @@
         "StartNpcId": 55,
         "FinishNpcId": 55
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       1131
@@ -39427,7 +39814,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39511,7 +39899,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39595,7 +39984,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39679,7 +40069,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39763,7 +40154,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39847,7 +40239,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -39938,7 +40331,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40029,7 +40423,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40120,7 +40515,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40211,7 +40607,8 @@
         "StartNpcId": 20,
         "FinishNpcId": 20
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40282,7 +40679,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     }
   },
   {
@@ -40356,7 +40754,8 @@
         "StartNpcId": 1003,
         "FinishNpcId": 1003
       },
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40431,7 +40830,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40448,7 +40848,7 @@
     "FlagMessage": "",
     "Description": [],
     "TaskDescription": [
-      "完成 领取奖励"
+      "学习 基本剑术"
     ],
     "ReturnDescription": [
       "完成 领取奖励"
@@ -40486,14 +40886,14 @@
       "RewardText": "",
       "Tip3": "",
       "CompleteInfo": "完成 领取奖励",
-      "GoalId": 0,
-      "GoalType": 0,
-      "GoalCount": 0,
+      "GoalId": 516100001,
+      "GoalType": 516,
+      "GoalCount": 1,
       "GoalMapId": 0,
       "GoalX": 0,
       "GoalY": 0,
-      "GoalInfo": "",
-      "GoalParams": "",
+      "GoalInfo": "学习 基本剑术",
+      "GoalParams": "11011",
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
@@ -40506,7 +40906,27 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": [
+        {
+          "Career": 1,
+          "BookId": 11011,
+          "SkillName": "基本剑术",
+          "GoalId": 516100001
+        },
+        {
+          "Career": 2,
+          "BookId": 12011,
+          "SkillName": "火球术",
+          "GoalId": 516200001
+        },
+        {
+          "Career": 3,
+          "BookId": 13011,
+          "SkillName": "治愈术",
+          "GoalId": 516300001
+        }
+      ]
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40523,7 +40943,7 @@
     "FlagMessage": "",
     "Description": [],
     "TaskDescription": [
-      "完成 领取奖励"
+      "升到19级学习 攻杀剑术"
     ],
     "ReturnDescription": [
       "完成 领取奖励"
@@ -40561,14 +40981,14 @@
       "RewardText": "",
       "Tip3": "",
       "CompleteInfo": "完成 领取奖励",
-      "GoalId": 0,
-      "GoalType": 0,
-      "GoalCount": 0,
+      "GoalId": 516100002,
+      "GoalType": 516,
+      "GoalCount": 1,
       "GoalMapId": 0,
       "GoalX": 0,
       "GoalY": 0,
-      "GoalInfo": "",
-      "GoalParams": "",
+      "GoalInfo": "升到19级学习 攻杀剑术",
+      "GoalParams": "11021",
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
@@ -40581,7 +41001,27 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": [
+        {
+          "Career": 1,
+          "BookId": 11021,
+          "SkillName": "升到19级 攻杀剑术",
+          "GoalId": 516100002
+        },
+        {
+          "Career": 2,
+          "BookId": 12051,
+          "SkillName": "雷电术",
+          "GoalId": 516200004
+        },
+        {
+          "Career": 3,
+          "BookId": 13041,
+          "SkillName": "灵魂火符",
+          "GoalId": 516300004
+        }
+      ]
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40598,7 +41038,7 @@
     "FlagMessage": "",
     "Description": [],
     "TaskDescription": [
-      "完成 领取奖励"
+      "升到25级学习 刺杀剑术"
     ],
     "ReturnDescription": [
       "完成 领取奖励"
@@ -40636,14 +41076,14 @@
       "RewardText": "",
       "Tip3": "",
       "CompleteInfo": "完成 领取奖励",
-      "GoalId": 0,
-      "GoalType": 0,
-      "GoalCount": 0,
+      "GoalId": 516100003,
+      "GoalType": 516,
+      "GoalCount": 1,
       "GoalMapId": 0,
       "GoalX": 0,
       "GoalY": 0,
-      "GoalInfo": "",
-      "GoalParams": "",
+      "GoalInfo": "升到25级学习 刺杀剑术",
+      "GoalParams": "11031",
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
@@ -40656,7 +41096,27 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": [
+        {
+          "Career": 1,
+          "BookId": 11031,
+          "SkillName": "升到25级 刺杀剑术",
+          "GoalId": 516100003
+        },
+        {
+          "Career": 2,
+          "BookId": 12081,
+          "SkillName": "爆裂火焰",
+          "GoalId": 516200006
+        },
+        {
+          "Career": 3,
+          "BookId": 13051,
+          "SkillName": "召唤骷髅",
+          "GoalId": 516300005
+        }
+      ]
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40673,7 +41133,7 @@
     "FlagMessage": "",
     "Description": [],
     "TaskDescription": [
-      "完成 领取奖励"
+      "升到28级学习 半月弯刀"
     ],
     "ReturnDescription": [
       "完成 领取奖励"
@@ -40711,14 +41171,14 @@
       "RewardText": "",
       "Tip3": "",
       "CompleteInfo": "完成 领取奖励",
-      "GoalId": 0,
-      "GoalType": 0,
-      "GoalCount": 0,
+      "GoalId": 516100004,
+      "GoalType": 516,
+      "GoalCount": 1,
       "GoalMapId": 0,
       "GoalX": 0,
       "GoalY": 0,
-      "GoalInfo": "",
-      "GoalParams": "",
+      "GoalInfo": "升到28级学习 半月弯刀",
+      "GoalParams": "11041",
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
@@ -40731,7 +41191,27 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": [
+        {
+          "Career": 1,
+          "BookId": 11041,
+          "SkillName": "升到28级 半月弯刀",
+          "GoalId": 516100004
+        },
+        {
+          "Career": 2,
+          "BookId": 12091,
+          "SkillName": "火墙",
+          "GoalId": 516200007
+        },
+        {
+          "Career": 3,
+          "BookId": 13031,
+          "SkillName": "施毒术",
+          "GoalId": 516300003
+        }
+      ]
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40806,7 +41286,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40881,7 +41362,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -40956,7 +41438,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41031,7 +41514,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41106,7 +41590,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41181,7 +41666,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41270,7 +41756,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8404
@@ -41365,7 +41852,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8404
@@ -41460,7 +41948,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8404
@@ -41555,7 +42044,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8404
@@ -41636,7 +42126,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41725,7 +42216,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -41820,7 +42312,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -41901,7 +42394,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -41976,7 +42470,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42051,7 +42546,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42126,7 +42622,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42201,7 +42698,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42276,7 +42774,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42351,7 +42850,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42433,7 +42933,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [],
     "RewardItemCounts": [],
@@ -42506,7 +43007,8 @@
           "MonsterResolved": true
         }
       ],
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -42573,7 +43075,8 @@
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     }
   },
   {
@@ -42660,7 +43163,8 @@
           "MonsterResolved": true
         }
       ],
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8929,
@@ -42739,7 +43243,8 @@
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     }
   },
   {
@@ -42806,7 +43311,8 @@
       "GoalMultiTarget": false,
       "FixedRewards": [],
       "KillTasks": [],
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     }
   },
   {
@@ -42887,7 +43393,8 @@
           "MonsterResolved": true
         }
       ],
-      "State": 1
+      "State": 1,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8915
@@ -42970,7 +43477,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -43058,7 +43566,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43148,7 +43657,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       8491
@@ -43231,7 +43741,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -43319,7 +43830,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43409,7 +43921,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43492,7 +44005,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -43580,7 +44094,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43670,7 +44185,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43753,7 +44269,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -43841,7 +44358,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -43931,7 +44449,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44014,7 +44533,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -44102,7 +44622,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44192,7 +44713,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44275,7 +44797,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -44363,7 +44886,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44453,7 +44977,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44536,7 +45061,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -44624,7 +45150,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44714,7 +45241,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44797,7 +45325,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -44885,7 +45414,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -44975,7 +45505,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45058,7 +45589,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -45146,7 +45678,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45236,7 +45769,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45319,7 +45853,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -45407,7 +45942,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45497,7 +46033,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45580,7 +46117,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     }
   },
   {
@@ -45668,7 +46206,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20
@@ -45758,7 +46297,8 @@
         "StartNpcId": 0,
         "FinishNpcId": 0
       },
-      "State": 0
+      "State": 0,
+      "SkillGoals": []
     },
     "RewardItemIndices": [
       20

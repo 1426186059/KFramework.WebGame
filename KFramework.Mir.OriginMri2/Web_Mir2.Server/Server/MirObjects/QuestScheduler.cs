@@ -81,6 +81,9 @@ namespace Server.MirObjects
         /// </summary>
         private void AdvanceTo(QuestInfoTable quest)
         {
+            // 原始传奇无 NPC 的技能学习任务不走"寻找NPC"（会显示 ???），交由 CheckSkillGoalQuests 按学会技能自动完成。
+            if (quest.OriginSettings != null && quest.OriginSettings.SkillGoals.Count > 0) return;
+
             bool auto = quest.OriginSettings != null && quest.OriginSettings.State == 2;
             if (auto) _player.AutoAcceptQuest(quest.Index);
             else _player.OfferQuest(quest.Index);
@@ -99,6 +102,8 @@ namespace Server.MirObjects
                 if (q.RequiredMaxLevel > 0 && q.RequiredMaxLevel < newLevel) continue;
                 if (_player.CompletedQuests.Contains(q.Index)) continue;
                 if (_player.CurrentQuests.Exists(e => e.Index == q.Index)) continue;
+                // 无 NPC 的技能学习目标任务不派发"寻找NPC"（否则追踪栏显示 ???），交给 CheckSkillGoalQuests。
+                if (q.OriginSettings != null && q.OriginSettings.SkillGoals.Count > 0) continue;
                 if (q.CanOffer(_player)) _player.OfferQuest(q.Index);
             }
         }

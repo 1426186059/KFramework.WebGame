@@ -46,6 +46,9 @@ namespace Server.MirDatabase
         public List<QuestOriginReward> FixedRewards { get; set; } = new List<QuestOriginReward>();
         public List<QuestOriginKill> KillTasks { get; set; } = new List<QuestOriginKill>();
 
+        // 原始传奇 type=516 学习技能目标：原版三职业各一个（# 分隔），玩家只需学会自己职业那个。
+        public List<QuestOriginSkillGoal> SkillGoals { get; set; } = new List<QuestOriginSkillGoal>();
+
         // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本。
         public QuestOriginAlternate Alternate { get; set; }
     }
@@ -64,6 +67,14 @@ namespace Server.MirDatabase
         public int Count { get; set; }
         public string MonsterName { get; set; } = "";
         public bool MonsterResolved { get; set; }
+    }
+
+    public class QuestOriginSkillGoal
+    {
+        public int Career { get; set; }        // 1=战士 2=法师 3=道士
+        public int BookId { get; set; }        // 技能书物品 Index
+        public string SkillName { get; set; } = "";
+        public int GoalId { get; set; }
     }
 
     public class QuestOriginAlternate

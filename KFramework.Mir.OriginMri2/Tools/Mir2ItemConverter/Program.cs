@@ -254,7 +254,14 @@ public static class Program
                 outItem.Type = ResolveType(cat);
                 int newSlotType = ResolveNewSlotType(name);
                 if (newSlotType > 0) outItem.Type = newSlotType;
-                else if (outItem.Type == 0) unknownType++;
+
+                // col23=405 是原始传奇的「疗伤石」装备部位（EquipmentSlot.LiaoShang / ItemType.LiaoShang=47）。
+                // 魔血石(小/中/大)名字里没有"疗伤"二字、col5 也为空，只靠名字猜会落成 Type=0 穿戴不上；
+                // 此列精确覆盖 12 个魔血石 + 30 个疗伤石，不会误伤其它物品。
+                if (TryGetInt(item, "23", out int equipPart) && equipPart == 405)
+                    outItem.Type = 47;
+
+                if (outItem.Type == 0) unknownType++;
 
                 // RequiredClass <- 职业：col59(装备归属) > col52(技能书) > col50 首段(兜底)。
                 // 三处都是 1=战 / 2=法 / 3=道 的枚举，必须映射到 RequiredClass 位掩码
@@ -277,7 +284,22 @@ public static class Program
                 // (木剑1 / 重盔甲22 / 裁决30 / 骨玉35 / 天魔神甲40)；StackSize <- col16 堆叠上限。
                 if (TryGetInt(item, "4", out int grade)) outItem.Grade = grade;
                 if (TryGetInt(item, "24", out int needLevel)) outItem.RequiredAmount = needLevel;
-                if (TryGetInt(item, "16", out int stack) && stack > 1) outItem.StackSize = stack;
+
+                // 堆叠上限规则：
+                // ① 表里 col16 > 1：照填权威值。
+                // ② col16 <= 1（表里标"不可堆叠"）但原版该物品「不占背包格子」时，兜底 9999：
+                //    原版 JS getCount 走 gd.bag.itemCount 按数量计数的物品不占格子——
+                //      col1==1：货币/计数类（金币、经验、小飞鞋…），72 个；
+                //      col21 in {60,61}：随机传送/回城类（回城卷 8135、随机传送卷 8151；随机石/回城石 col16 已是 999）。
+                //    咱们没有 itemCount 体系，用 9999 堆叠等价替代原版的无限计数。
+                //    绝不能放宽到 col1==3 的全部物品——那会把 6216 件装备/时装/疗伤石也误叠（已实测误伤 1281 件）。
+                int itemClass = GetIntN(item, "1") ?? 0;
+                int subType = GetIntN(item, "21") ?? 0;
+                bool noCell = itemClass == 1 || subType == 60 || subType == 61;
+                if (TryGetInt(item, "16", out int stack) && stack > 1)
+                    outItem.StackSize = stack;
+                else if (noCell)
+                    outItem.StackSize = 9999;
 
                 // RequiredGender <- Sex(col56)
                 if (TryGetInt(item, "56", out int sex))

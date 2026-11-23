@@ -299,6 +299,7 @@ namespace Server.MirObjects
 
             // 原始传奇技能：登录时补齐占位/自动学会（需书技能保持 0 级待书）。
             LearnOriginSkills(false);
+            CheckSkillGoalQuests(); // 已学会对应技能的"学习技能"支线在登录时补发奖励
         }
 
         /// <summary>
@@ -1017,6 +1018,8 @@ namespace Server.MirObjects
 
             // 升级时由任务调度器接取因等级达成而新开放的任务（等级任务）。
             QuestScheduler.CheckLevelUp(Level);
+
+            CheckSkillGoalQuests(); // 等级到了 + 已学会对应技能 → 自动完成"学习技能"支线
 
             Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
 
@@ -6254,6 +6257,8 @@ namespace Server.MirObjects
                 SendMagicInfo(existing);
                 Enqueue(new S.MagicDelay { ObjectID = ObjectID, Spell = existing.Spell, Delay = existing.GetDelay() });
                 RefreshStats();
+
+                CheckSkillGoalQuests(); // 原始传奇"学习技能"支线：学会对应技能即自动完成领奖
 
                 if (item.Count > 1) item.Count--;
                 else Info.Inventory[index] = null;
@@ -12102,58 +12107,7 @@ namespace Server.MirObjects
             }
             if (npc == null || !npc.VisibleLog[Info.Index] || !npc.Visible) return;
 
-            List<UserItem> rewardItems = new List<UserItem>();
-
-            foreach (var reward in quest.Info.FixedRewards)
-            {
-                // 原始传奇 box 里同一奖励按职业分三支（1战/2法/3道），只发玩家职业那一支。
-                if (reward.Career > 0 && reward.Career != (int)Class + 1) continue;
-
-                ushort count = reward.Count;
-
-                UserItem rewardItem;
-
-                while (count > 0)
-                {
-                    rewardItem = Envir.CreateFreshItem(reward.Item);
-                    if (reward.Item.StackSize >= count)
-                    {
-                        rewardItem.Count = count;
-                        count = 0;
-                    }
-                    else
-                    {
-                        rewardItem.Count = (ushort)reward.Item.StackSize;
-                        count -= (ushort)reward.Item.StackSize;
-                    }
-
-                    rewardItems.Add(rewardItem);
-                }
-            }
-
-            // 可选奖励全部发放（不再要求玩家选择）
-            foreach (var selectReward in quest.Info.SelectRewards)
-            {
-                ushort count = selectReward.Count;
-                UserItem rewardItem;
-
-                while (count > 0)
-                {
-                    rewardItem = Envir.CreateFreshItem(selectReward.Item);
-                    if (selectReward.Item.StackSize >= count)
-                    {
-                        rewardItem.Count = count;
-                        count = 0;
-                    }
-                    else
-                    {
-                        rewardItem.Count = (ushort)selectReward.Item.StackSize;
-                        count -= (ushort)selectReward.Item.StackSize;
-                    }
-
-                    rewardItems.Add(rewardItem);
-                }
-            }
+            List<UserItem> rewardItems = BuildQuestRewardItems(quest.Info);
 
             if (!CanGainItems(rewardItems.ToArray()))
             {
@@ -12205,6 +12159,143 @@ namespace Server.MirObjects
             // 若下一环接取NPC(StartNpcId)==当前任务交付NPC(FinishNpcId)（同一个NPC），直接接取；
             // 否则走"开放(寻找NPC)"流程，由玩家自行前往。
             QuestScheduler.AdvanceAfterComplete(quest.Info);
+        }
+
+        /// <summary>
+        /// 原始传奇"学习技能"支线（type=516，原版无 fnpc/tnpc）：学会本职业对应技能即自动领奖。
+        /// 学会技能（技能书 / 升级自动学）、登录、升级时调用。
+        /// </summary>
+        public void CheckSkillGoalQuests()
+        {
+            var skillQuests = Envir.QuestInfoList.Where(q =>
+                q.OriginSettings != null && q.OriginSettings.SkillGoals.Count > 0).ToList();
+            if (skillQuests.Count == 0) return;
+
+            foreach (QuestInfoTable q in skillQuests)
+            {
+                if (Info.CompletedQuests.Contains(q.Index)) continue;
+                if (q.RequiredMinLevel > Level) continue;
+                if (!Envir.CheckOriginShowCondition(this, q.OriginSettings?.Condition)) continue;
+
+                // 三职业各一个目标，玩家只需学会自己职业那个（MirClass 0/1/2 → 1战/2法/3道）。
+                var goal = q.OriginSettings.SkillGoals.FirstOrDefault(g => g.Career == (int)Class + 1);
+                if (goal == null) continue;
+                if (!HasLearnedSkillBook(goal.BookId)) continue;
+
+                CompleteSkillGoalQuest(q);
+            }
+        }
+
+        /// <summary>是否已学会技能书对应的技能（Level > 0 才算学会，0 是 LearnOriginSkills 的占位）。</summary>
+        private bool HasLearnedSkillBook(int bookId)
+        {
+            SkillBookInfoTable book = SkillBookInfoTable.Find(bookId);
+            if (book == null) return false;
+
+            MagicInfoTable magic = null;
+            for (int i = 0; i < Envir.MagicInfoList.Count; i++)
+            {
+                var info = Envir.MagicInfoList[i];
+                if (info != null && info.OriginId == book.SkillId) { magic = info; break; }
+            }
+            if (magic == null) return false;
+
+            UserMagic um = GetMagic(magic.Spell);
+            return um != null && um.Level > 0;
+        }
+
+        /// <summary>无 NPC 的技能目标达成：直接接取→完成→发奖→推进下一环，跳过 NPC 交付校验。</summary>
+        private void CompleteSkillGoalQuest(QuestInfoTable info)
+        {
+            if (!CanGainItems(BuildQuestRewardItems(info).ToArray())) return; // 背包不足则保持未完成，下次学会技能/登录再试
+
+            var quest = new QuestProgressInfo(info.Index);
+            quest.Init(this);
+            quest.CheckCompleted(); // 无 Kill/Item/Flag 目标，立即置 Completed
+
+            OfferedQuests.Remove(info.Index);
+            Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = info.Index }, QuestState = QuestState.Remove });
+
+            GrantQuestCompletion(info);
+
+            if (!Info.CompletedQuests.Contains(info.Index))
+            {
+                Info.CompletedQuests.Add(info.Index);
+                GetCompletedQuests();
+            }
+            TrackQuest(info.Index, false);
+            CallDefaultNPC(DefaultNPCType.OnFinishQuest, info.Index);
+            QuestScheduler.AdvanceAfterComplete(info);
+        }
+
+        /// <summary>
+        /// 任务发奖核心（物品/金币/经验/功勋），由 NPC 交付 FinishQuest 与无 NPC 技能目标自动完成共用。
+        /// 不含背包物品扣除、NPC 校验与下一环推进，那些留在各自调用方。
+        /// </summary>
+        private void GrantQuestCompletion(QuestInfoTable info)
+        {
+            List<UserItem> rewardItems = BuildQuestRewardItems(info);
+
+            if (!CanGainItems(rewardItems.ToArray())) return;
+
+            foreach (UserItem item in rewardItems) GainItem(item);
+            RecalculateQuestBag();
+
+            GainGold((uint)(info.GoldReward * Settings.DropRate));
+            GainExp((uint)(info.ExpReward * Settings.ExpRate));
+            GainCredit(info.CreditReward);
+        }
+
+        /// <summary>构建任务固定+可选奖励的物品列表（按职业过滤 box 分支奖励）。</summary>
+        private List<UserItem> BuildQuestRewardItems(QuestInfoTable info)
+        {
+            List<UserItem> rewardItems = new List<UserItem>();
+
+            foreach (var reward in info.FixedRewards)
+            {
+                // 原始传奇 box 里同一奖励按职业分三支（1战/2法/3道），只发玩家职业那一支。
+                if (reward.Career > 0 && reward.Career != (int)Class + 1) continue;
+
+                ushort count = reward.Count;
+                while (count > 0)
+                {
+                    UserItem rewardItem = Envir.CreateFreshItem(reward.Item);
+                    if (reward.Item.StackSize >= count)
+                    {
+                        rewardItem.Count = count;
+                        count = 0;
+                    }
+                    else
+                    {
+                        rewardItem.Count = (ushort)reward.Item.StackSize;
+                        count -= (ushort)reward.Item.StackSize;
+                    }
+                    rewardItems.Add(rewardItem);
+                }
+            }
+
+            // 可选奖励全部发放（不再要求玩家选择）
+            foreach (var selectReward in info.SelectRewards)
+            {
+                ushort count = selectReward.Count;
+                while (count > 0)
+                {
+                    UserItem rewardItem = Envir.CreateFreshItem(selectReward.Item);
+                    if (selectReward.Item.StackSize >= count)
+                    {
+                        rewardItem.Count = count;
+                        count = 0;
+                    }
+                    else
+                    {
+                        rewardItem.Count = (ushort)selectReward.Item.StackSize;
+                        count -= (ushort)selectReward.Item.StackSize;
+                    }
+                    rewardItems.Add(rewardItem);
+                }
+            }
+
+            return rewardItems;
         }
 
         /// <summary>

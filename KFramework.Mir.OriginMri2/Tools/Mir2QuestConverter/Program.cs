@@ -56,6 +56,10 @@ public sealed class QuestOriginSettingsOut
     public List<QuestOriginRewardOut> FixedRewards = new();
     public List<QuestOriginKillOut> KillTasks = new();
 
+    // 原始传奇 _task.goals 支持多个目标 id（# 分隔），且每个目标可对应三职业之一。
+    // type=516=学习技能：Param 是技能书物品 id，按职业分支，玩家学会其中任一（自己职业）即可完成。
+    public List<QuestOriginSkillGoalOut> SkillGoals = new();
+
     // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本，不另占 Index。
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public QuestOriginAlternateOut? Alternate;
 
@@ -76,6 +80,14 @@ public sealed class QuestOriginKillOut
     public int Count;
     public string MonsterName = "";
     public bool MonsterResolved;
+}
+
+public sealed class QuestOriginSkillGoalOut
+{
+    public int Career;      // 1=战士 2=法师 3=道士（与 MirClass + 1 对齐）
+    public int BookId;      // 技能书物品 Index（如 11011=基本剑术）
+    public string SkillName = "";
+    public int GoalId;      // 原始 goals 表 id，便于回查
 }
 
 public sealed class QuestOriginAlternateOut
@@ -197,7 +209,7 @@ public static class Program
 
         Directory.CreateDirectory(outputDir);
         var list = new List<QuestInfoOut>();
-        int noName = 0, withAlternate = 0, withGoal = 0, withSingleKill = 0, withMultiKill = 0;
+        int noName = 0, withAlternate = 0, withGoal = 0, withSingleKill = 0, withMultiKill = 0, withSkillGoal = 0;
         int withTip3 = 0, withRewardText = 0, withCompleteInfo = 0, withNpcRefs = 0;
         int rewardItemRefs = 0, rewardItemHit = 0, killRefs = 0, killHit = 0;
         int npcRefs = 0, npcRefsHit = 0, condRefs = 0, condRefsHit = 0, highLevelGate = 0;
@@ -253,10 +265,34 @@ public static class Program
             int nextId = TryInt(o, "next", out int nx) ? nx : 0;
             int requiredQuest = prevByNext.TryGetValue(id, out int prev) ? prev : 0;
 
-            // goals 是 5config.goals 的 id：type 335 为击杀怪物，param 为怪物 Index（可多候选）。
-            int goalId = TryInt(o, "goals", out int gid) ? gid : 0;
+            // goals 是 5config.goals 的 id，原版支持 "#" 分隔的多个目标（三职业各一个）。
+            // 旧代码对整串 TryInt 失败 → goalId=0 → 这类任务目标全丢（学习技能等无 NPC 支线）。
+            string goalsRaw = GetStr(o, "goals");
+            string[] goalIdsRaw = goalsRaw.Split('#', StringSplitOptions.RemoveEmptyEntries);
+            int goalId = goalIdsRaw.Length > 0 && int.TryParse(goalIdsRaw[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int gid) ? gid : 0;
             GoalRow? goal = goalId > 0 && goals.TryGetValue(goalId, out var gr) ? gr : null;
             if (goal != null) withGoal++;
+
+            // 展开多目标：type=516=学习技能，Param 是技能书物品 id；id 第 4 位（516Xxxxxx）是职业 1战/2法/3道。
+            // 原版三职业各一个目标，玩家学会自己职业那一个即可完成，不能当成"三个都要"。
+            var skillGoals = new List<QuestOriginSkillGoalOut>();
+            foreach (string gidStr in goalIdsRaw)
+            {
+                if (!int.TryParse(gidStr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int oneGoalId)) continue;
+                if (!goals.TryGetValue(oneGoalId, out var oneGoal) || oneGoal.Type != 516) continue;
+                if (!int.TryParse(oneGoal.Param, NumberStyles.Integer, CultureInfo.InvariantCulture, out int bookId)) continue;
+                int career = oneGoalId / 100000 % 10; // 516100001→1 战士，516200001→2 法师，516300001→3 道士
+                if (career < 1 || career > 3) continue;
+                skillGoals.Add(new QuestOriginSkillGoalOut
+                {
+                    Career = career,
+                    BookId = bookId,
+                    SkillName = Clean(oneGoal.Info).Replace("学习", "").Replace("|", "").Trim(),
+                    GoalId = oneGoalId
+                });
+            }
+            if (skillGoals.Count > 0) withSkillGoal++;
+
             string goalInfo = goal != null
                 ? goal.Info.Replace("{0}", Math.Max(1, goal.Count).ToString(CultureInfo.InvariantCulture))
                 : "";
@@ -294,7 +330,8 @@ public static class Program
                 GoalX = goal?.X ?? 0,
                 GoalY = goal?.Y ?? 0,
                 GoalInfo = goalInfo,
-                GoalParams = goal?.Param ?? ""
+                GoalParams = goal?.Param ?? "",
+                SkillGoals = skillGoals
             };
 
             // rewards: "itemId#数量&itemId#数量..."；4=经验、499=金币是伪道具，直接落到数值字段。
@@ -450,7 +487,7 @@ public static class Program
             w.WriteLine("【三、引用对齐】");
             w.WriteLine($"  _task_tx 按 id 合并为 Alternate: {withAlternate}/{tasks.Count}（仅 _task 独有的任务 {tasks.Count - withAlternate} 个）");
             w.WriteLine($"  condition 引用命中: {condRefsHit}/{condRefs}");
-            w.WriteLine($"  goals 命中: {withGoal}/{tasks.Count}；单怪物目标 {withSingleKill}，多怪物候选 {withMultiKill}");
+            w.WriteLine($"  goals 命中: {withGoal}/{tasks.Count}；单怪物目标 {withSingleKill}，多怪物候选 {withMultiKill}；技能目标(516) {withSkillGoal}");
             w.WriteLine($"  奖励物品引用命中: {rewardItemHit}/{rewardItemRefs}（伪道具金币/经验已单独计入数值）");
             w.WriteLine($"  击杀怪物引用命中: {killHit}/{killRefs}");
             w.WriteLine($"  fnpc/tnpc 命中 NPC 预览表: {npcRefsHit}/{npcRefs}（有 NPC 引用的任务 {withNpcRefs}）");
