@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 namespace Mir2QuestConverter;
 
 // 与服务器 QuestInfo 公共字段同形态的输出 DTO。
-// 任务正文不再放 Envir/Quests/*.txt，而是内嵌到 OriginSettings。
+// 任务正文不再放 Envir/Quests/*.txt，而是拍平到 QuestInfo 顶层（原版键名 fnpc/tnpc/...，source='_task' 标识）。
 public sealed class QuestInfoOut
 {
     public int Index;
@@ -38,45 +38,27 @@ public sealed class QuestInfoOut
     public List<int> RewardItemIndices = new();
     public List<int> RewardItemCounts = new();
     public List<int> RewardCareers = new();
-    public QuestOriginSettingsOut OriginSettings = new();
-}
 
-public sealed class QuestOriginSettingsOut
-{
-    public int OriginTaskId;
-    public string Source = "";
-
-    public int StartNpcId, FinishNpcId;
-    public string StartNpcName = "", FinishNpcName = "";
-    public int NextQuestId, RequiredQuestId;
-
-    public int TaskGroupId;
-    public string Condition = "", ConditionText = "";
-
-    public string Rewards = "", RewardText = "", Tip3 = "", CompleteInfo = "";
-
-    public int GoalId, GoalType, GoalCount, GoalMapId, GoalX, GoalY;
-    public string GoalInfo = "", GoalParams = "";
-    public bool GoalMultiTarget;
-
-    // 任务追踪面板文字（构建期按原版 dataChanged + 5config.textstyle 拼好，服务器只读不转换）：
-    // 进行中目标的富文本（两段：info0=textstyle[31] 白 + info1=textstyle[32] 绿+下划线，{0} 已替换为总数）。
-    public string TrackingGoalRich = "";
-    // 完成待交的富文本（completeinfo 两段）。
-    public string TrackingCompleteRich = "";
-
-    // 按 Index 精确引用，避免按名字查找重名物品/怪物。
-    public List<QuestOriginRewardOut> FixedRewards = new();
-    public List<QuestOriginKillOut> KillTasks = new();
-
-    // 原始传奇 _task.goals 支持多个目标 id（# 分隔），且每个目标可对应三职业之一。
-    // type=516=学习技能：Param 是技能书物品 id，按职业分支，玩家学会其中任一（自己职业）即可完成。
-    public List<QuestOriginSkillGoalOut> SkillGoals = new();
-
-    // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本，不另占 Index。
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public QuestOriginAlternateOut? Alternate;
-
-
+    // ===== 原始传奇任务字段（拍平到顶层，用原版键名；与服务器 QuestInfoTable 同形）=====
+    public string source = "";          // "_task"=原始传奇配置；空=旧脚本任务
+    public int originTaskId;            // 原版 _task.id
+    public int fnpc, tnpc;              // 发放 / 交付 NPC id
+    public string fnpcName = "", tnpcName = "";
+    public int next, requiredQuestId;   // 下一环 / 前置任务 id
+    public int state;                   // 2=自动接取 1=手动
+    public int taskgroupid;
+    public string condition = "", conditionText = "";
+    public string rewards = "", reward = "", tip3 = "", completeinfo = "";
+    public int goalid, goaltype, goalcount, goalmapid, goalx, goaly;
+    public string goalinfo = "", goalparams = "";
+    public bool goalmultitarget;
+    // 任务追踪富文本（构建期按 5config.textstyle 拼好，服务器只读）
+    public string trackingGoalRich = "";
+    public string trackingCompleteRich = "";
+    // 按 Index 精确引用的击杀目标 / 学技能目标 / 备选文本线
+    public List<QuestOriginKillOut> originKillRefs = new();
+    public List<QuestOriginSkillGoalOut> skillGoals = new();
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public QuestOriginAlternateOut? alternate;
 }
 
 // 与服务器 OriginBoxRewardTable 同形：对应原版 2config.box.items 单条奖励按 '-' 拆分的位置。
@@ -113,14 +95,6 @@ public sealed class QuestOriginBoxRewardOut
             Raw = seg
         };
     }
-}
-
-public sealed class QuestOriginRewardOut
-{
-    public int ItemIndex;
-    public uint Count;
-    public string ItemName = "";
-    public bool ItemResolved;
 }
 
 public sealed class QuestOriginKillOut
@@ -329,6 +303,7 @@ public static class Program
             int groupId = TryInt(o, "taskgroupid", out int tg) ? tg : 0;
             int taskType = TryInt(o, "type", out int ot) ? ot : 0;
             int nextId = TryInt(o, "next", out int nx) ? nx : 0;
+            int taskState = TryInt(o, "state", out int st) ? st : 0; // 2=上一环领完奖自动接取，1=手动接
             int requiredQuest = prevByNext.TryGetValue(id, out int prev) ? prev : 0;
 
             // goals 是 5config.goals 的 id，原版支持 "#" 分隔的多个目标（三职业各一个）。
@@ -376,34 +351,35 @@ public static class Program
             string trackingGoalRich = goal != null ? BuildTrackingRich(goal.RawInfo, textStyles) : "";
             string trackingCompleteRich = BuildTrackingRich(rawCompleteInfo, textStyles);
 
-            var settings = new QuestOriginSettingsOut
+            var outInfo = new QuestInfoOut
             {
-                OriginTaskId = id,
-                Source = "_task",
-                StartNpcId = startNpc,
-                FinishNpcId = finishNpc,
-                StartNpcName = startNpc > 0 ? npcNames.GetValueOrDefault(startNpc) ?? "" : "",
-                FinishNpcName = finishNpc > 0 ? npcNames.GetValueOrDefault(finishNpc) ?? "" : "",
-                NextQuestId = nextId,
-                RequiredQuestId = requiredQuest,
-                TaskGroupId = groupId,
-                Condition = condRaw,
-                ConditionText = string.Join("；", condTexts),
-                Rewards = rewards,
-                RewardText = rewardText,
-                Tip3 = tip3,
-                CompleteInfo = completeInfo,
-                GoalId = goalId,
-                GoalType = goal?.Type ?? 0,
-                GoalCount = goal?.Count ?? 0,
-                GoalMapId = goalMapId,
-                GoalX = goal?.X ?? 0,
-                GoalY = goal?.Y ?? 0,
-                GoalInfo = goalInfo,
-                GoalParams = goal?.Param ?? "",
-                TrackingGoalRich = trackingGoalRich,
-                TrackingCompleteRich = trackingCompleteRich,
-                SkillGoals = skillGoals
+                originTaskId = id,
+                source = "_task",
+                fnpc = startNpc,
+                tnpc = finishNpc,
+                fnpcName = startNpc > 0 ? npcNames.GetValueOrDefault(startNpc) ?? "" : "",
+                tnpcName = finishNpc > 0 ? npcNames.GetValueOrDefault(finishNpc) ?? "" : "",
+                next = nextId,
+                requiredQuestId = requiredQuest,
+                state = taskState,
+                taskgroupid = groupId,
+                condition = condRaw,
+                conditionText = string.Join("；", condTexts),
+                rewards = rewards,
+                reward = rewardText,
+                tip3 = tip3,
+                completeinfo = completeInfo,
+                goalid = goalId,
+                goaltype = goal?.Type ?? 0,
+                goalcount = goal?.Count ?? 0,
+                goalmapid = goalMapId,
+                goalx = goal?.X ?? 0,
+                goaly = goal?.Y ?? 0,
+                goalinfo = goalInfo,
+                goalparams = goal?.Param ?? "",
+                trackingGoalRich = trackingGoalRich,
+                trackingCompleteRich = trackingCompleteRich,
+                skillGoals = skillGoals
             };
 
             // 原始传奇 _task.rewards 有两种写法（对应原版 BoxUtil.getItemOrBox）：
@@ -431,13 +407,6 @@ public static class Program
                 rewardItemIndices.Add(reward.ItemId);
                 rewardItemCounts.Add(reward.Count);
                 rewardCareers.Add(reward.Career);
-                settings.FixedRewards.Add(new QuestOriginRewardOut
-                {
-                    ItemIndex = reward.ItemId,
-                    Count = (uint)Math.Max(0, reward.Count),
-                    ItemName = itemNames.GetValueOrDefault(reward.ItemId) ?? "",
-                    ItemResolved = hit
-                });
             }
 
             foreach (var seg in rewards.Split('&', StringSplitOptions.RemoveEmptyEntries))
@@ -479,7 +448,7 @@ public static class Program
                     killRefs++;
                     bool hit = monsterNames.ContainsKey(pickedMonster);
                     if (hit) killHit++;
-                    settings.KillTasks.Add(new QuestOriginKillOut
+                    outInfo.originKillRefs.Add(new QuestOriginKillOut
                     {
                         MonsterIndex = pickedMonster,
                         Count = Math.Max(1, goal.Count),
@@ -487,11 +456,11 @@ public static class Program
                         MonsterResolved = hit
                     });
                     if (ps.Length == 1) withSingleKill++;
-                    else { settings.GoalMultiTarget = true; withMultiKill++; }
+                    else { outInfo.goalmultitarget = true; withMultiKill++; }
                 }
                 else if (ps.Length > 1)
                 {
-                    settings.GoalMultiTarget = true;
+                    outInfo.goalmultitarget = true;
                     withMultiKill++;
                 }
             }
@@ -499,7 +468,7 @@ public static class Program
             if (alternates.TryGetValue(id, out var ao))
             {
                 withAlternate++;
-                settings.Alternate = new QuestOriginAlternateOut
+                outInfo.alternate = new QuestOriginAlternateOut
                 {
                     Name = Clean(GetStr(ao, "name")),
                     Tip3 = Clean(GetStr(ao, "tip3")),
@@ -511,31 +480,27 @@ public static class Program
                 };
             }
 
-            list.Add(new QuestInfoOut
-            {
-                Index = id,
-                Name = name,
-                Group = group,
-                FileName = "", // 内嵌配置，不生成 Envir/Quests/*.txt
-                GotoMessage = gotoMessage,
-                Description = Lines(tip3),
-                TaskDescription = taskDescription,
-                ReturnDescription = Lines(completeInfo),
-                CompletionDescription = Lines(rewardSummary),
-                PlayerTaskTalk = Lines(playerTalk),
-                RequiredMinLevel = minLevel,
-                RequiredMaxLevel = maxLevel,
-                RequiredQuest = requiredQuest,
-                // 原始传奇任务类型直接写到 QuestType 字段（TaskType / taskgroupid）。
-                Type = (byte)taskType,
-                GoldReward = gold,
-                ExpReward = exp,
-                OriginRewards = originRewards,
-                RewardItemIndices = rewardItemIndices,
-                RewardItemCounts = rewardItemCounts,
-                RewardCareers = rewardCareers,
-                OriginSettings = settings
-            });
+            outInfo.Index = id;
+            outInfo.Name = name;
+            outInfo.Group = group;
+            outInfo.FileName = ""; // 内嵌配置，不生成 Envir/Quests/*.txt
+            outInfo.GotoMessage = gotoMessage;
+            outInfo.Description = Lines(tip3);
+            outInfo.TaskDescription = taskDescription;
+            outInfo.ReturnDescription = Lines(completeInfo);
+            outInfo.CompletionDescription = Lines(rewardSummary);
+            outInfo.PlayerTaskTalk = Lines(playerTalk);
+            outInfo.RequiredMinLevel = minLevel;
+            outInfo.RequiredMaxLevel = maxLevel;
+            outInfo.RequiredQuest = requiredQuest;
+            outInfo.Type = (byte)taskType; // 原始传奇任务类型直接写到 QuestType 字段
+            outInfo.GoldReward = gold;
+            outInfo.ExpReward = exp;
+            outInfo.OriginRewards = originRewards;
+            outInfo.RewardItemIndices = rewardItemIndices;
+            outInfo.RewardItemCounts = rewardItemCounts;
+            outInfo.RewardCareers = rewardCareers;
+            list.Add(outInfo);
         }
 
         var opts = new JsonSerializerOptions
@@ -579,18 +544,16 @@ public static class Program
             w.WriteLine("  Type         <- taskgroupid 1..6 记 Story(3)，其余 General(0)；不用 Daily/Repeatable 避免每日重置");
             w.WriteLine("  GoldReward / ExpReward <- rewards 指向 2config.box，展开 items 后伪道具 499=金币 / 4=主角经验");
             w.WriteLine("  RewardItemIndices/Counts/Careers <- box.items 的其余物品（物品id/数量/职业），服务器按 Index 解析成 FixedRewards");
-            w.WriteLine("  OriginSettings <- 内嵌：条件/目标/奖励/NPC/任务链 + 另一条任务线 Alternate（不再复制原始 Raw）");
-            w.WriteLine("      FixedRewards / KillTasks 用 ItemIndex / MonsterIndex 精确引用，服务器启动按 Index 解析，");
-            w.WriteLine("      避开按名字查找（换表后旧名字大量失配）的问题。");
+            w.WriteLine("  原始传奇字段拍平到 QuestInfo 顶层（用原版键名 fnpc/tnpc/next/state/taskgroupid/condition/");
+            w.WriteLine("      rewards/reward/tip3/completeinfo/goalid/goaltype/goalcount/.../alternate），不再有 OriginSettings 嵌套。");
+            w.WriteLine("  source='_task' 表示内嵌配置任务；originKillRefs / OriginRewards 用 Index 精确引用，服务器按 Index 解析。");
             w.WriteLine();
             w.WriteLine("【二、配套服务器改动】");
-            w.WriteLine("  1. QuestInfo.cs 新增 QuestOriginSettings / QuestOriginReward / QuestOriginKill / QuestOriginAlternate");
-            w.WriteLine("     与 QuestInfo.OriginSettings 字段；旧表无此字段→null，继续读 Envir/Quests/*.txt，行为不变。");
-            w.WriteLine("  2. QuestInfo.LoadInfo()：OriginSettings 非 null 时改走 LoadFromOrigin()，不读 txt、不刷 File Not Found。");
+            w.WriteLine("  1. QuestInfoTable：原始字段已拍平进顶层，source 非空即内嵌任务；旧表不兼容，需整批重新生成。");
+            w.WriteLine("  2. QuestInfo.LoadInfo()：source 非空时改走 LoadFromOrigin()，不读 txt、不刷 File Not Found。");
             w.WriteLine("     LoadFromOrigin 按 Index 解析奖励物品与击杀怪物，填充 FixedRewards / KillTasks。");
-            w.WriteLine("  3. NPCObject.LoadScript()：内嵌配置 NPC 直接按 StartNpcId/FinishNpcId 把任务绑定到该 NPC 实例，");
-            w.WriteLine("     代替原来由 [Quests] 脚本段做的绑定（需 NPC 预览表一起上线才生效）。");
-            w.WriteLine("  4. QuestInfo.CreateClientQuestInfo()：NpcIndex 未绑定时按 OriginSettings 的 NPC id 兜底显示名字。");
+            w.WriteLine("  3. NPCObject.LoadScript()：内嵌配置 NPC 直接按 fnpc/tnpc 把任务绑定到该 NPC 实例。");
+            w.WriteLine("  4. QuestInfo.CreateClientQuestInfo()：NpcIndex 未绑定时按 fnpc/tnpc 兜底显示名字。");
             w.WriteLine();
             w.WriteLine("【三、引用对齐】");
             w.WriteLine($"  _task_tx 按 id 合并为 Alternate: {withAlternate}/{tasks.Count}（仅 _task 独有的任务 {tasks.Count - withAlternate} 个）");
@@ -611,7 +574,7 @@ public static class Program
             w.WriteLine("  - 换 Index 会波及玩家任务存档、NPC 脚本 [Quests]、客户端协议；上线前需整批核对（含 NPC/地图）。");
             w.WriteLine();
             w.WriteLine("【五、使用方式（确认后再动线上）】");
-            w.WriteLine("  1. 重新编译服务器（QuestOriginSettings + LoadInfo 分流 + NPC 任务绑定）。");
+            w.WriteLine("  1. 重新编译服务器（QuestInfoTable 拍平字段 + LoadInfo 分流 + NPC 任务绑定）。");
             w.WriteLine("  2. 把 migration-preview/QuestInfo.json 拷到 ExcelConfig/QuestInfo.json，旧表先备份到 migration-preview。");
             w.WriteLine("  3. 与 migration-preview/NPCInfo.json 一起上线，任务才会挂到 NPC 上；旧的 Envir/Quests/*.txt 不用动。");
             w.WriteLine();

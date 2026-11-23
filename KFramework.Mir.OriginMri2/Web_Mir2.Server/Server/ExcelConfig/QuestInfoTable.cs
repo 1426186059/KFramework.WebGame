@@ -6,57 +6,8 @@ using Server.MirEnvir;
 
 namespace Server.MirDatabase
 {
-    // 原始传奇任务内嵌配置：非 null 表示任务内容直接来自配置表，不走 Envir/Quests/*.txt。
-    public class QuestOriginSettings
-    {
-        public int OriginTaskId { get; set; }
-        public string Source { get; set; } = "";
-
-        public int StartNpcId { get; set; }
-        public int FinishNpcId { get; set; }
-        public string StartNpcName { get; set; } = "";
-        public string FinishNpcName { get; set; } = "";
-        public int NextQuestId { get; set; }
-        public int RequiredQuestId { get; set; }
-
-        // 原版 _task.state：2=TaskState.Accepted（上一环领完奖后直接自动接取），
-        // 1=NotAccepted（需要玩家去 fnpc 对话手动接取）。自动接取完全以此为准，不再按同 NPC 猜测。
-        public int State { get; set; }
-
-        public int TaskGroupId { get; set; }
-        public string Condition { get; set; } = "";
-        public string ConditionText { get; set; } = "";
-
-        public string Rewards { get; set; } = "";
-        public string RewardText { get; set; } = "";
-        public string Tip3 { get; set; } = "";
-        public string CompleteInfo { get; set; } = "";
-
-        public int GoalId { get; set; }
-        public int GoalType { get; set; }
-        public int GoalCount { get; set; }
-        public int GoalMapId { get; set; }
-        public int GoalX { get; set; }
-        public int GoalY { get; set; }
-        public string GoalInfo { get; set; } = "";
-        public string GoalParams { get; set; } = "";
-        public bool GoalMultiTarget { get; set; }
-
-        // 任务追踪面板文字：构建期由 Mir2QuestConverter 按原版 dataChanged + 5config.textstyle 拼好的两段富文本，
-        // 服务器只读不转换。进行中 {0} 由运行时替换为"当前/总数"。
-        public string TrackingGoalRich { get; set; } = "";
-        public string TrackingCompleteRich { get; set; } = "";
-
-        // 按 Index 精确引用，服务器启动时解析成 ItemInfoTable / MonsterInfoTable，避开按名字查找重名的问题。
-        public List<QuestOriginReward> FixedRewards { get; set; } = new List<QuestOriginReward>();
-        public List<QuestOriginKill> KillTasks { get; set; } = new List<QuestOriginKill>();
-
-        // 原始传奇 type=516 学习技能目标：原版三职业各一个（# 分隔），玩家只需学会自己职业那个。
-        public List<QuestOriginSkillGoal> SkillGoals { get; set; } = new List<QuestOriginSkillGoal>();
-
-        // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本。
-        public QuestOriginAlternate Alternate { get; set; }
-    }
+    // 原始传奇任务内嵌配置字段已拍平进 QuestInfoTable（用原版键名 fnpc/tnpc/next/state/...），
+    // source 非空即表示任务内容来自配置表（不走 Envir/Quests/*.txt）。辅助类型保留在下方。
 
     public class QuestOriginReward
     {
@@ -112,8 +63,43 @@ namespace Server.MirDatabase
 
         public int Index { get; set; }
 
-        // 旧表没有该字段（反序列化为 null），继续走 FileName 指向的 Envir/Quests/*.txt 脚本。
-        public QuestOriginSettings OriginSettings { get; set; }
+        // ===== 原始传奇任务字段（构建期 Mir2QuestConverter 从 4config._task / 5config.goals 拍平写入，用原版键名）=====
+        // source 非空 = 内嵌配置任务（内容在下面这些字段里，不走 Envir/Quests/*.txt）；空 = 旧脚本任务。
+        public string source { get; set; } = "";          // 来源（"_task"=原始传奇配置）
+        public int originTaskId { get; set; }            // 原版 _task.id
+        public int fnpc { get; set; }                    // 发放 NPC id（原 StartNpcId）
+        public int tnpc { get; set; }                    // 交付 NPC id（原 FinishNpcId）
+        public string fnpcName { get; set; } = "";       // 发放 NPC 名（仅预览/日志）
+        public string tnpcName { get; set; } = "";       // 交付 NPC 名（仅预览/日志）
+        public int next { get; set; }                    // 下一环任务 id
+        public int requiredQuestId { get; set; }         // 前置任务 id
+        // 原版 _task.state：2=Accepted（上一环领完奖后直接自动接取），1=NotAccepted（去 fnpc 手动接）。
+        public int state { get; set; }
+        public int taskgroupid { get; set; }             // 任务组 id
+        public string condition { get; set; } = "";      // 接取条件 id 串（& 分隔，指向 0config.conditions）
+        public string conditionText { get; set; } = "";  // 条件显示文本
+        public string rewards { get; set; } = "";        // 奖励包串（boxId#份数，& 分隔）
+        public string reward { get; set; } = "";         // 奖励描述文本（原 RewardText）
+        public string tip3 { get; set; } = "";           // 接任务时 NPC 对话文本
+        public string completeinfo { get; set; } = "";   // 完成待交文本（| 分两段）
+        public int goalid { get; set; }                  // 目标 id
+        public int goaltype { get; set; }                // 目标类型（335=击杀 532=买物品 516=学技能）
+        public int goalcount { get; set; }               // 目标数量
+        public int goalmapid { get; set; }               // 目标地图 id
+        public int goalx { get; set; }                   // 目标点 x
+        public int goaly { get; set; }                   // 目标点 y
+        public string goalinfo { get; set; } = "";       // 目标描述文本
+        public string goalparams { get; set; } = "";     // 目标参数
+        public bool goalmultitarget { get; set; }        // 多目标（同类型多个 id）
+        // 任务追踪面板两段富文本（构建期按 5config.textstyle 拼好，服务器只读；{0} 运行时替换为当前/总数）。
+        public string trackingGoalRich { get; set; } = "";
+        public string trackingCompleteRich { get; set; } = "";
+        // 构建期按 Index 引用的击杀目标（服务器启动时解析成运行时 KillTasks）。
+        public List<QuestOriginKill> originKillRefs { get; set; } = new List<QuestOriginKill>();
+        // 原始传奇 type=516 学技能目标：三职业各一个（# 分隔），玩家学会自己职业那个即完成。
+        public List<QuestOriginSkillGoal> skillGoals { get; set; } = new List<QuestOriginSkillGoal>();
+        // 2config._task_tx 同 id 备选文本线。
+        public QuestOriginAlternate alternate { get; set; }
 
         // 发放（起始）NPC 索引。
         // 注意：此字段由发放 NPC 在加载其脚本 [Quests] 段时自动回填
@@ -243,8 +229,8 @@ namespace Server.MirDatabase
         {
             if (clear) ClearInfo();
 
-            // 内嵌配置的任务没有脚本文件，直接从配置表按 Index 解析引用，避免刷 File Not Found。
-            if (OriginSettings != null)
+            // 内嵌配置的任务没有脚本文件，直接从拍平字段解析引用，避免刷 File Not Found。
+            if (!string.IsNullOrEmpty(source))
             {
                 LoadFromOrigin();
                 return;
@@ -278,11 +264,10 @@ namespace Server.MirDatabase
             CreditReward = 0;
         }
 
-        // 把内嵌配置展开成运行时对象：文本段落 + 按 Index 解析的物品奖励/击杀目标。
+        // 把拍平的原始传奇字段展开成运行时对象：文本段落 + 按 Index 解析的物品奖励/击杀目标。
         public void LoadFromOrigin()
         {
-            var o = OriginSettings;
-            if (o == null) return;
+            if (string.IsNullOrEmpty(source)) return;
 
             // Type 即原始传奇任务类型（TaskType / taskgroupid），由 JSON 顶层字段反序列化，无需在此二次设置。
             Description.Clear();
@@ -293,21 +278,21 @@ namespace Server.MirDatabase
             FixedRewards.Clear();
             KillTasks.Clear();
 
-            // 交任务 NPC：原始传奇内嵌任务用 FinishNpcId 指定交付 NPC（如任务24=夏家店老板10091），
-            // 与发放 NPC（StartNpcId，如比奇老兵10201）往往不同。不设置的话 FinishNpcIndex 会
-            // 回退到 NpcIndex（发放NPC），任务追踪栏点击传送就指向错误地图（比奇老兵的854而非夏家店老板的103）。
-            if (o.FinishNpcId > 0)
-                FinishNpcIndex = (uint)o.FinishNpcId;
+            // 交任务 NPC：原版 tnpc 指定交付 NPC（如任务24=夏家店老板10091），
+            // 与发放 NPC（fnpc，如比奇老兵10201）往往不同。不设置的话 FinishNpcIndex 会
+            // 回退到 NpcIndex（发放NPC），任务追踪栏点击传送就指向错误地图。
+            if (tnpc > 0)
+                FinishNpcIndex = (uint)tnpc;
 
-            AddLines(Description, o.Tip3);
-            AddLines(TaskDescription, o.GoalInfo.Length > 0 ? o.GoalInfo : o.CompleteInfo);
-            AddLines(ReturnDescription, o.CompleteInfo);
+            AddLines(Description, tip3);
+            AddLines(TaskDescription, goalinfo.Length > 0 ? goalinfo : completeinfo);
+            AddLines(ReturnDescription, completeinfo);
 
-            string[] rewardParts = o.RewardText.Split('#', 2);
+            string[] rewardParts = reward.Split('#', 2);
             AddLines(CompletionDescription, rewardParts[0]);
             if (rewardParts.Length > 1) AddLines(PlayerTaskTalk, rewardParts[1]);
 
-            GotoMessage = o.CompleteInfo.Length > 0 ? o.CompleteInfo : o.GoalInfo;
+            GotoMessage = completeinfo.Length > 0 ? completeinfo : goalinfo;
 
             // 真实奖励由构建期从原始传奇 2config.box 按原版 BoxUtil 结构展开成 OriginRewards
             // （经验/金币已写入顶层数值字段），这里按 ItemId 解析成运行时物品对象。
@@ -340,9 +325,9 @@ namespace Server.MirDatabase
                 }
             }
 
-            if (o.KillTasks != null)
+            if (originKillRefs != null)
             {
-                foreach (var k in o.KillTasks)
+                foreach (var k in originKillRefs)
                 {
                     MonsterInfoTable monster = Envir.GetMonsterInfo(k.MonsterIndex);
                     if (monster == null) continue;
@@ -610,10 +595,10 @@ namespace Server.MirDatabase
             var finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)FinishNpcIndex);
 
             // 内嵌配置任务还没被 NPC 脚本绑定时，按 OriginSettings 里的 NPC id 兜底显示名字。
-            if (startNpc == null && OriginSettings != null)
-                startNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == OriginSettings.StartNpcId);
-            if (finishNpc == null && OriginSettings != null)
-                finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == OriginSettings.FinishNpcId);
+            if (startNpc == null && !string.IsNullOrEmpty(source))
+                startNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == fnpc);
+            if (finishNpc == null && !string.IsNullOrEmpty(source))
+                finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == tnpc);
 
             // 客户端按“运行时世界唯一索引(ObjectID)”匹配 NPC（NPCObject.Quests / GetAvailableQuests 用 NPCIndex == ObjectID），
             // 故把配置索引解析成对应 NPC 实例的 ObjectID 下发；取不到运行时实例则回退配置索引（仍能显示名字）。

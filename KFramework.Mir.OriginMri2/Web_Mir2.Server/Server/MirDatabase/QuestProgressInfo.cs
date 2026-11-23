@@ -334,7 +334,7 @@ namespace Server.MirDatabase
             bool canComplete = true;
 
             // 原始传奇 goal type=532 买物品引导任务：必须先买到东西才完成，不能因零目标秒完成。
-            if (Info != null && Info.OriginSettings != null && Info.OriginSettings.GoalType == 532 && !BuyGoalDone)
+            if (Info != null && Info.goaltype == 532 && !BuyGoalDone)
                 canComplete = false;
 
             for (int j = 0; j < KillTaskCount.Count; j++)
@@ -439,9 +439,9 @@ namespace Server.MirDatabase
             Targets = new List<QuestTaskTarget>();
 
             // 原始传奇任务：追踪文字读构建期转换好的富文本字段（QuestInfo.json，不再运行时读原始表）。
-            if (Info != null && Info.OriginSettings != null &&
-                (!string.IsNullOrEmpty(Info.OriginSettings.TrackingGoalRich) ||
-                 !string.IsNullOrEmpty(Info.OriginSettings.TrackingCompleteRich)))
+            if (Info != null &&
+                (!string.IsNullOrEmpty(Info.trackingGoalRich) ||
+                 !string.IsNullOrEmpty(Info.trackingCompleteRich)))
             {
                 UpdateOriginQuestTasks();
                 return;
@@ -460,16 +460,15 @@ namespace Server.MirDatabase
         /// </summary>
         private void UpdateOriginQuestTasks()
         {
-            var os = Info.OriginSettings;
             int current = GetOriginGoalProgress();
-            int total = Math.Max(1, os.GoalCount > 0 ? os.GoalCount : 1);
+            int total = Math.Max(1, Info.goalcount > 0 ? Info.goalcount : 1);
             string progress = current + "/" + total;
 
             // 完成待交：显示 completeinfo 富文本（"找到 书店老板"）
             if (Completed)
             {
-                string completeRich = FillProgress(os.TrackingCompleteRich, progress);
-                if (string.IsNullOrEmpty(completeRich)) completeRich = StripOriginSeparator(os.CompleteInfo);
+                string completeRich = FillProgress(Info.trackingCompleteRich, progress);
+                if (string.IsNullOrEmpty(completeRich)) completeRich = StripOriginSeparator(Info.completeinfo);
                 if (!string.IsNullOrEmpty(completeRich))
                 {
                     TaskList.Add(completeRich);
@@ -479,8 +478,8 @@ namespace Server.MirDatabase
             }
 
             // 进行中：显示目标富文本（"买 一本技能书" / "击杀 鸡2/3只"）
-            string goalRich = FillProgress(os.TrackingGoalRich, progress);
-            if (string.IsNullOrEmpty(goalRich)) goalRich = StripOriginSeparator(os.GoalInfo);
+            string goalRich = FillProgress(Info.trackingGoalRich, progress);
+            if (string.IsNullOrEmpty(goalRich)) goalRich = StripOriginSeparator(Info.goalinfo);
 
             if (!string.IsNullOrEmpty(goalRich))
             {
@@ -505,8 +504,7 @@ namespace Server.MirDatabase
         {
             if (KillTaskCount.Count > 0) return KillTaskCount[0].Count;
             if (ItemTaskCount.Count > 0) return ItemTaskCount[0].Count;
-            var os = Info.OriginSettings;
-            if (os != null && os.GoalType == 532) return BuyGoalDone ? 1 : 0;
+            if (Info.goaltype == 532) return BuyGoalDone ? 1 : 0;
             return 0;
         }
 
@@ -686,10 +684,10 @@ namespace Server.MirDatabase
             // 兜底：只用 OriginSettings 里的配置索引（StartNpcId/FinishNpcId）查 NPCInfo。
             // NpcIndex/FinishNpcIndex 存的是运行时 ObjectID，绝不能当配置索引查——会误命中
             // NPCInfo(854) 这类 MapIndex=854@(63,71) 的占位坏 NPC，导致任务追踪传送到不存在的地图。
-            if (npc == null && Info.OriginSettings != null && Info.OriginSettings.StartNpcId > 0)
-                npc = Envir.GetNPCInfo(Info.OriginSettings.StartNpcId);
-            if (npc == null && Info.OriginSettings != null && Info.OriginSettings.FinishNpcId > 0)
-                npc = Envir.GetNPCInfo(Info.OriginSettings.FinishNpcId);
+            if (npc == null && Info.fnpc > 0)
+                npc = Envir.GetNPCInfo(Info.fnpc);
+            if (npc == null && Info.tnpc > 0)
+                npc = Envir.GetNPCInfo(Info.tnpc);
             if (npc == null)
             {
                 // 仍未找到：返回“不可导航”的占位目标，避免 Targets 出现 null 导致序列化崩溃
@@ -757,12 +755,12 @@ namespace Server.MirDatabase
         {
             // 交任务（返回）目标：优先按 NPC 配置索引找运行时实例（可能在任意地图、有多个分身），
             // 取真实 CurrentMap/CurrentLocation，而不是配置写死的 MapIndex/Location。
-            if (Info.OriginSettings != null)
+            if (!string.IsNullOrEmpty(Info.source))
             {
-                var t = MakeNPCTargetByConfigIndex(Info.OriginSettings.FinishNpcId);
+                var t = MakeNPCTargetByConfigIndex(Info.tnpc);
                 if (t != null) return t;
             }
-            // 兜底：旧数据没有 OriginSettings 时用 FinishNpcIndex 按 ObjectID 找运行时实例。
+            // 兜底：旧脚本任务（source 为空）用 FinishNpcIndex 按 ObjectID 找运行时实例。
             if (Info.FinishNpcIndex != 0)
             {
                 var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcIndex);

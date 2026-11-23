@@ -78,17 +78,16 @@ namespace Server.MirObjects
         {
             foreach (var quest in Envir.QuestInfoList)
             {
-                var o = quest.OriginSettings;
-                if (o == null) continue;
+                if (string.IsNullOrEmpty(quest.source)) continue;
 
-                if (o.StartNpcId == Info.Index)
+                if (quest.fnpc == Info.Index)
                 {
                     quest.NpcIndex = ObjectID;
                     quest.NpcInfo = Info;
                     if (!Quests.Contains(quest)) Quests.Add(quest);
                 }
 
-                if (o.FinishNpcId == Info.Index)
+                if (quest.tnpc == Info.Index)
                     quest.FinishNpcIndex = ObjectID;
             }
         }

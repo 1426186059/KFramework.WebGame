@@ -294,7 +294,7 @@ namespace Server.MirObjects
         /// </summary>
         public void CheckBuyGoalQuests()
         {
-            var buyQuests = CurrentQuests.Where(q => q.Info != null && q.Info.OriginSettings != null && q.Info.OriginSettings.GoalType == 532 && !q.BuyGoalDone).ToList();
+            var buyQuests = CurrentQuests.Where(q => q.Info != null && q.Info.goaltype == 532 && !q.BuyGoalDone).ToList();
             if (buyQuests.Count == 0) return;
 
             foreach (QuestProgressInfo q in buyQuests)
@@ -345,17 +345,17 @@ namespace Server.MirObjects
         public void CheckSkillGoalQuests()
         {
             var skillQuests = Envir.QuestInfoList.Where(q =>
-                q.OriginSettings != null && q.OriginSettings.SkillGoals.Count > 0).ToList();
+                q.skillGoals.Count > 0).ToList();
             if (skillQuests.Count == 0) return;
 
             foreach (QuestInfoTable q in skillQuests)
             {
                 if (Info.CompletedQuests.Contains(q.Index)) continue;
                 if (q.RequiredMinLevel > Level) continue;
-                if (!Envir.CheckOriginShowCondition(this, q.OriginSettings?.Condition)) continue;
+                if (!Envir.CheckOriginShowCondition(this, q.condition)) continue;
 
                 // 三职业各一个目标，玩家只需学会自己职业那个（MirClass 0/1/2 → 1战/2法/3道）。
-                var goal = q.OriginSettings.SkillGoals.FirstOrDefault(g => g.Career == (int)Class + 1);
+                var goal = q.skillGoals.FirstOrDefault(g => g.Career == (int)Class + 1);
                 if (goal == null) continue;
                 if (!HasLearnedSkillBook(goal.BookId)) continue;
 
@@ -522,7 +522,7 @@ namespace Server.MirObjects
             if (!info.CanOffer(this)) return;
             // 原始传奇 showCondition：等级/VIP/转生/开服天数等不满足就不在任务追踪栏显示。
             // GM 提到 100 级会开放大量高等级任务，但被 showCondition 拦掉的任务仍不能出现。
-            if (!Envir.CheckOriginShowCondition(this, info.OriginSettings?.Condition)) return;
+            if (!Envir.CheckOriginShowCondition(this, info.condition)) return;
 
             OfferedQuests.Add(index);
 

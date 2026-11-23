@@ -958,7 +958,7 @@ namespace Server.MirObjects
                 {
                     if (info == null || player.CompletedQuests.Contains(info.Index)) continue;
                     if (!info.CanOffer(player)) continue;
-                    if (!Envir.CheckOriginShowCondition(player, info.OriginSettings?.Condition)) continue;
+                    if (!Envir.CheckOriginShowCondition(player, info.condition)) continue;
                     // 发放 NPC = 该 NPC 即为可接（客户端 GetAvailableQuests 只判 CanAccept，不看交付 NPC）。
                     // 不要求同 NPC 自交：任务19"解救民兵之二"发放=被困的民兵、交付=奋战的民兵，
                     // 点被困的民兵仍要能弹面板接取。
