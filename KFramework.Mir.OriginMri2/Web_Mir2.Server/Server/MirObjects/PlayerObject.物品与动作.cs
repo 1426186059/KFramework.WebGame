@@ -1707,7 +1707,7 @@ namespace Server.MirObjects
                     existing.Experience = 0;
                     // 原始传奇 JS: openNewSkill → ncm.err("恭喜您已领悟：【"+技能名+"】")
                     // 走左上角提示区（OutputMessageType.Quest），不塞进聊天框。
-                    ReceiveOutputMessage($"恭喜您已领悟：【{learned.Name}】", OutputMessageType.Quest);
+                    ReceiveOutputMessage($"<color=lime>恭喜</color> <color=lime>学会</color>【{learned.Name}】", OutputMessageType.Normal);
                 }
                 else
                 {
@@ -1733,7 +1733,7 @@ namespace Server.MirObjects
                     }
                     existing.Level = targetLevel;
                     existing.Experience = 0;
-                    ReceiveOutputMessage($"恭喜您已领悟：【{learned.Name}】", OutputMessageType.Quest);
+                    ReceiveOutputMessage($"<color=lime>恭喜</color> <color=lime>学会</color>【{learned.Name}】", OutputMessageType.Normal);
                 }
 
                 SendMagicInfo(existing);

@@ -4021,10 +4021,10 @@ namespace Client.MirScenes
             User.Experience = p.Experience;
             User.MaxExperience = p.MaxExperience;
             User.RefreshStats();
-            OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LevelUp));
+            // 简短提示："恭喜 升级到N级"，开头动词加色，其余默认白色+描边。
+            OutputMessage($"<color=lime>恭喜</color> 升级到{p.Level}级");
             User.Effects.Add(new Effect(Libraries.Magic2, 1200, 20, 2000, User));
             SoundManager.PlaySound(SoundList.LevelUp);
-            ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LevelUp), ChatType.System);
         }
         private void HeroLevelChanged(S.HeroLevelChanged p)
         {

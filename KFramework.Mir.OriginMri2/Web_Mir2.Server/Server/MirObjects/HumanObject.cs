@@ -7206,7 +7206,8 @@ namespace Server.MirObjects
             // LevelMagic 定义在 HumanObject（玩家/怪物共用），只有 PlayerObject 有该提示通道。
             if (exp > 0 && this is PlayerObject thisPlayer)
             {
-                thisPlayer.ReceiveOutputMessage($"【{magic.Info.Name}】 熟练度+{exp}", OutputMessageType.Quest);
+                // 原始传奇 SkillControl update：白色字 "[技能名] 熟练度+N"；默认白色+描边。
+                thisPlayer.ReceiveOutputMessage($"[{magic.Info.Name}] 熟练度+{exp}", OutputMessageType.Normal);
             }
 
             if (oldLevel != magic.Level)
