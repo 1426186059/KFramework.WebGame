@@ -29,12 +29,12 @@ namespace Server.MirObjects
         ///    不再用"同 NPC"猜测（原版存在同 NPC 但不自动接、不同 NPC 却自动接的任务）。
         /// 没有 next 配置时，退化为从 Index+1 往后找第一个可接任务，同样按 state 判断。
         /// </summary>
-        public void AdvanceAfterComplete(QuestInfoTable completed)
+        public void AdvanceAfterComplete(QuestInfoRunItem completed)
         {
             var list = Envir.Main.QuestInfoList;
             if (list.Count == 0 || completed == null) return;
 
-            QuestInfoTable next = null;
+            QuestInfoRunItem next = null;
             if (completed.next > 0)
                 next = list.FirstOrDefault(d => d.Index == completed.next);
 
@@ -51,7 +51,7 @@ namespace Server.MirObjects
             int cand = completed.Index + 1;
             while (cand <= maxIndex)
             {
-                QuestInfoTable q = list.FirstOrDefault(d => d.Index == cand);
+                QuestInfoRunItem q = list.FirstOrDefault(d => d.Index == cand);
                 if (q == null || _player.CompletedQuests.Contains(cand))
                 {
                     classSkipRun = 0;
@@ -78,7 +78,7 @@ namespace Server.MirObjects
         /// 按原版 _task.state 推进：2=Accepted 自动接取，其余=NotAccepted 只开放。
         /// 非原版任务（OriginSettings==null）保持旧的 Index+1 接龙行为：不作自动接取，仅开放。
         /// </summary>
-        private void AdvanceTo(QuestInfoTable quest)
+        private void AdvanceTo(QuestInfoRunItem quest)
         {
             // 原始传奇无 NPC 的技能学习任务不走"寻找NPC"（会显示 ???），交由 CheckSkillGoalQuests 按学会技能自动完成。
             if (quest.skillGoals.Count > 0) return;
@@ -114,7 +114,7 @@ namespace Server.MirObjects
         /// 该任务对当前玩家是否“职业符合”。用位掩码判断，与 RequiredClass 的值（1/2/4/8/16/31）一致。
         /// RequiredClass == 0 视为无职业限制。
         /// </summary>
-        private bool IsClassEligible(QuestInfoTable q)
+        private bool IsClassEligible(QuestInfoRunItem q)
         {
             int rc = (int)q.RequiredClass;
             if (rc == 0) return true;

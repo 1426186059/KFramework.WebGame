@@ -145,7 +145,7 @@ namespace Server.MirEnvir
         public Dictionary<int, OriginConfigRoot> OriginConfigs = new Dictionary<int, OriginConfigRoot>();
 
         public DragonInfoTable DragonInfoTable = new DragonInfoTable();
-        public List<QuestInfoTable> QuestInfoList = new List<QuestInfoTable>();
+        public List<QuestInfoRunItem> QuestInfoList = new List<QuestInfoRunItem>();
         public List<GameShopItemTable> GameShopList = new List<GameShopItemTable>();
         public List<RecipeInfo> RecipeInfoList = new List<RecipeInfo>();
         public List<BuffInfo> BuffInfoList = new List<BuffInfo>();

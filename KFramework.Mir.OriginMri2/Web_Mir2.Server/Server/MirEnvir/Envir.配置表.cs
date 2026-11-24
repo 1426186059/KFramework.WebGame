@@ -80,9 +80,9 @@ namespace Server.MirEnvir
             // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
             foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
 
-            QuestInfoList = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
-            // JSON 反序列化走无参构造函数，不会触发 QuestInfoTable.LoadInfo()，
-            // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
+            var questConfigs = LoadConfigList<QuestInfoTable>(baseDir, "QuestInfo.json");
+            QuestInfoList = questConfigs.Select(config => new QuestInfoRunItem(config)).ToList();
+            // JSON 只提供静态配置，运行数据由 QuestInfoRunItem.LoadInfo() 重建。
             foreach (var quest in QuestInfoList) quest.LoadInfo();
 
             DragonInfoTable = LoadConfig<DragonInfoTable>(baseDir, "DragonInfo.json");

@@ -43,7 +43,7 @@ namespace Server.MirEnvir
             int level = info.Condition >= 10000 ? info.Condition - 10000 : info.Condition;
             return Math.Max(1, Math.Min(byte.MaxValue, level));
         }
-        public QuestInfoTable GetQuestInfo(int index)
+        public QuestInfoRunItem GetQuestInfo(int index)
         {
             return QuestInfoList.FirstOrDefault(info => info.Index == index);
         }

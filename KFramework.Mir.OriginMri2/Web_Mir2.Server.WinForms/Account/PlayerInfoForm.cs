@@ -170,7 +170,7 @@ namespace Server
 
             foreach (int completedQuestID in Character.CompletedQuests)
             {
-                QuestInfoTable completedQuest = SMain.Envir.GetQuestInfo(completedQuestID);
+                QuestInfoRunItem completedQuest = SMain.Envir.GetQuestInfo(completedQuestID);
 
                 ListViewItem item = new ListViewItem(completedQuestID.ToString());
                 item.SubItems.Add("Completed");

@@ -67,9 +67,9 @@ namespace Server.ExcelConfig
         public bool ConquestVisible { get; set; } = true;
 
         // 本 NPC 在脚本 [Quests] 段中声明的任务索引数组（由 NPCScript.ParseQuests 加载时填充）：
-        //   CollectQuestIndexes —— 可由本 NPC 接取（发放/起始）的任务；加载时会回填到对应 QuestInfoTable.NpcIndex。
-        //   FinishQuestIndexes  —— 需在本 NPC 处交付（完成）的任务；加载时会回填到对应 QuestInfoTable.FinishNpcIndex。
-        // 即：NPCInfoTable 是“谁发放/谁交付某任务”的权威来源，QuestInfoTable.NpcIndex 由这里自动推导，无需在 QuestInfoTable 中手动维护。
+        //   CollectQuestIndexes —— 可由本 NPC 接取（发放/起始）的任务；加载时回填 QuestInfoRunItem.NpcIndex。
+        //   FinishQuestIndexes  —— 需在本 NPC 处交付（完成）的任务；加载时回填 QuestInfoRunItem.FinishNpcIndex。
+        // 即：NPCInfoTable 是“谁发放/谁交付某任务”的权威来源，运行绑定写在 QuestInfoRunItem，不写静态表。
         public List<int> CollectQuestIndexes { get; set; } = new List<int>();
         public List<int> FinishQuestIndexes { get; set; } = new List<int>();
 

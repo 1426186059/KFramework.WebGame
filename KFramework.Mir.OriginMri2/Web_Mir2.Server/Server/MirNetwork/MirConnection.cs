@@ -66,7 +66,7 @@ namespace Server.MirNetwork
         public List<ItemInfoTable> SentItemInfo = new List<ItemInfoTable>();
         public List<MonsterInfoTable> SentMonsterInfo = new List<MonsterInfoTable>();
         public List<NPCInfoTable> SentNPCInfo = new List<NPCInfoTable>();
-        public List<QuestInfoTable> SentQuestInfo = new List<QuestInfoTable>();
+        public List<QuestInfoRunItem> SentQuestInfo = new List<QuestInfoRunItem>();
         public List<RecipeInfo> SentRecipeInfo = new List<RecipeInfo>();
         public List<UserItem> SentChatItem = new List<UserItem>(); //TODO - Add Expiry time
         public List<MapInfoTable> SentMapInfo = new List<MapInfoTable>();

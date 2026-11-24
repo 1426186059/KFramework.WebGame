@@ -195,9 +195,14 @@ namespace Server.MirObjects
                     // 只看 BuyGoalDone：它在 CheckBuyGoalQuests 里已确认 CheckCompleted 通过，
                     // 不再额外要求 Completed（避免状态同步时序差异导致不切面板）。
                     bool buyGoalPending = CurrentQuests.Any(q => q.Info != null && q.Info.goaltype == 532 && q.BuyGoalDone);
-                    MessageQueue.Enqueue($"[商店诊断] 购买后 532 目标达成={buyGoalPending}，切换任务面板={buyGoalPending}");
+                    MessageQueue.Enqueue($"[商店诊断] 购买后 532 目标达成={buyGoalPending}, NPC={ob.Info.Index} ObjectID={ob.ObjectID}, 当前对话NPC={NPCObjectID}");
                     if (buyGoalPending)
+                    {
                         CallNPC(ob.ObjectID, NPCScript.MainKey, openQuestPanel: true); // 商店面板 → NPC任务面板
+                        // 兜底：不依赖脚本页/本地任务绑定，直接补发明确标记，强制客户端把商店面板切成任务面板。
+                        Enqueue(new S.NPCUpdate { NPCID = ob.ObjectID });
+                        Enqueue(new S.NPCResponse { Page = new System.Collections.Generic.List<string>(), OpenQuestPanel = true });
+                    }
                 }
             }
         }

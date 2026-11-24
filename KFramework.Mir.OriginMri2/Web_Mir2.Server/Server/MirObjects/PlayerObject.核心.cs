@@ -875,7 +875,7 @@ namespace Server.MirObjects
                 return;
             }
         }
-        public void CheckQuestInfo(QuestInfoTable info)
+        public void CheckQuestInfo(QuestInfoRunItem info)
         {
             if (Connection.SentQuestInfo.Contains(info)) return;
             Enqueue(new S.NewQuestInfo { Info = info.CreateClientQuestInfo(this) });

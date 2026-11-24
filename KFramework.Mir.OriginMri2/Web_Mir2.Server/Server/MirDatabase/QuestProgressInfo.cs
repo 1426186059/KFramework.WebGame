@@ -15,7 +15,7 @@ namespace Server.MirDatabase
 
         public int Index;
 
-        public QuestInfoTable Info;
+        public QuestInfoRunItem Info;
 
         public DateTime StartDateTime = DateTime.MinValue;
         public DateTime EndDateTime = DateTime.MaxValue;
@@ -745,9 +745,8 @@ namespace Server.MirDatabase
         private QuestTaskTarget MakeNPCTarget()
         {
             NPCInfoTable npc = Info.NpcInfo;
-            // 兜底：只用 OriginSettings 里的配置索引（StartNpcId/FinishNpcId）查 NPCInfo。
-            // NpcIndex/FinishNpcIndex 存的是运行时 ObjectID，绝不能当配置索引查——会误命中
-            // NPCInfo(854) 这类 MapIndex=854@(63,71) 的占位坏 NPC，导致任务追踪传送到不存在的地图。
+            // 兜底：只用配置索引 fnpc/tnpc 查 NPCInfo；NpcIndex/FinishNpcIndex 现在也是策划表 Index，
+            // 但运行时 ObjectID 已分离到 NpcObjectID/FinishNpcObjectID，不再混用。
             if (npc == null && Info.fnpc > 0)
                 npc = Envir.GetNPCInfo(Info.fnpc);
             if (npc == null && Info.tnpc > 0)
@@ -838,10 +837,10 @@ namespace Server.MirDatabase
                 var t = MakeNPCTargetByConfigIndex(Info.tnpc);
                 if (t != null) return t;
             }
-            // 兜底：旧脚本任务（source 为空）用 FinishNpcIndex 按 ObjectID 找运行时实例。
-            if (Info.FinishNpcIndex != 0)
+            // 兜底：旧脚本任务（source 为空）用 FinishNpcObjectID 按 ObjectID 找运行时实例。
+            if (Info.FinishNpcObjectID != 0)
             {
-                var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcIndex);
+                var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcObjectID);
                 if (npc != null && npc.CurrentMap != null)
                     return new QuestTaskTarget
                     {

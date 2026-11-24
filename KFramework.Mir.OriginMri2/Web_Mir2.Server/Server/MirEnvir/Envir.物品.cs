@@ -46,7 +46,7 @@ namespace Server.MirEnvir
         }
         public void CreateQuestInfo()
         {
-            QuestInfoList.Add(new QuestInfoTable { Index = ++QuestIndex });
+            QuestInfoList.Add(new QuestInfoRunItem(new QuestInfoTable { Index = ++QuestIndex }));
         }
 
         public void AddToGameShop(ItemInfoTable Info)
@@ -83,7 +83,7 @@ namespace Server.MirEnvir
             NPCInfoList.Remove(info);
             //Desync all objects\
         }
-        public void Remove(QuestInfoTable info)
+        public void Remove(QuestInfoRunItem info)
         {
             QuestInfoList.Remove(info);
             //Desync all objects\

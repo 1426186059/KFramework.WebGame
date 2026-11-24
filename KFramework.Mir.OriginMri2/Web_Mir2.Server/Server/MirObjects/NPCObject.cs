@@ -36,7 +36,7 @@ namespace Server.MirObjects
         public Dictionary<int, bool> VisibleLog = new Dictionary<int, bool>();
 
         public ConquestObject Conq;
-        public List<QuestInfoTable> Quests = new List<QuestInfoTable>();
+        public List<QuestInfoRunItem> Quests = new List<QuestInfoRunItem>();
         public List<NPCSpeech> Speech = new List<NPCSpeech>();
 
         public List<UserItem> UsedGoods = new List<UserItem>();
@@ -82,13 +82,13 @@ namespace Server.MirObjects
 
                 if (quest.fnpc == Info.Index)
                 {
-                    quest.NpcIndex = ObjectID;
+                    quest.NpcObjectID = ObjectID;
                     quest.NpcInfo = Info;
                     if (!Quests.Contains(quest)) Quests.Add(quest);
                 }
 
                 if (quest.tnpc == Info.Index)
-                    quest.FinishNpcIndex = ObjectID;
+                    quest.FinishNpcObjectID = ObjectID;
             }
         }
 

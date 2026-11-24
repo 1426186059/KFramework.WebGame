@@ -3635,8 +3635,7 @@ namespace Server.MirObjects
 
         // 校验 (map,x,y) 是否匹配玩家当前任务目标；若匹配且目标是 NPC，则一并通过 out 返回
         // 该目标对应的 NPC 运行时 ObjectID（取自任务数据本身，无需客户端额外传字段）。
-        // 交付/返回类目标用 FinishNpcIndex，接取/寻找类目标用起始 NpcIndex；
-        // EnsureQuestNPC 已把这两者覆盖为运行时世界唯一索引(ObjectID)。
+        // 交付/返回类目标用 FinishNpcObjectID，接取/寻找类目标用起始 NpcObjectID。
         // questFinished 输出目标任务的待交状态(state=Finish)，用于 checknpcTaskDialog 面板判定。
         private bool HasQuestTarget(uint mapIndex, int x, int y, out uint npcObjectId, out bool questFinished)
         {
@@ -3670,36 +3669,29 @@ namespace Server.MirObjects
                         {
                             NPCObject targetNPC = null;
                             bool originQuest = quest.Info != null && !string.IsNullOrEmpty(quest.Info.source);
+                            Point targetPos = new Point(x, y);
 
-                            // 原始传奇任务进行中：Targets 里的 NPC 是 tnpc（要找的人），NpcIndex 是 fnpc（发任务的人）。
-                            // 之前直接取 NpcIndex，打开的是远处发任务 NPC 的面板，CallNPC 距离超限被拒，
-                            // 表现就是人已经传送到夏家店老板旁边，却没有 NPC 面板。
-                            if (originQuest && !quest.Completed && quest.Info.tnpc > 0)
+                            // 定位一律用 tnpc 策划索引 + 当前地图 + 坐标（ObjectID 走独立字段）。
+                            if (originQuest && quest.Info.tnpc > 0)
                                 targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.Info != null && n.Info.Index == quest.Info.tnpc
                                                                           && n.CurrentMap != null && n.CurrentMap.Info != null
                                                                           && n.CurrentMap.Info.Index == (int)mapIndex
-                                                                          && Functions.InRange(n.CurrentLocation, new Point(x, y), 2));
+                                                                          && Functions.InRange(n.CurrentLocation, targetPos, 2));
 
-                            // 完成待交：FinishNpcIndex 已按 tnpc 绑定运行时实例。
-                            if (quest.Completed)
-                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == quest.Info.FinishNpcIndex);
-
-                            // 兜底：在目标坐标附近按名字匹配，覆盖同 NPC 多实例 / 实例尚未生成的情况。
-                            if (targetNPC == null && originQuest)
+                            // 老脚本任务：FinishNpcIndex / NpcIndex 同样是策划表 Index，按 Info.Index 精确匹配。
+                            if (targetNPC == null && quest.Info != null)
                             {
-                                targetNPC = Envir.GetObjects((int)mapIndex, ObjectType.Merchant)
-                                    .OfType<NPCObject>()
-                                    .Where(n => n != null && !n.Dead && n.CurrentMap != null && Functions.InRange(n.CurrentLocation, new Point(x, y), 3))
-                                    .OrderBy(n => string.Equals(n.Name, t.Name, StringComparison.Ordinal) ? 0 : 1)
-                                    .ThenBy(n => Math.Abs(n.CurrentLocation.X - x) + Math.Abs(n.CurrentLocation.Y - y))
-                                    .FirstOrDefault();
+                                uint objectID = quest.Completed ? quest.Info.FinishNpcObjectID : quest.Info.NpcObjectID;
+                                targetNPC = objectID == 0 ? null : Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == objectID && n.CurrentMap != null && n.CurrentMap.Info != null && n.CurrentMap.Info.Index == (int)mapIndex);
+                                uint configIndex = quest.Completed ? quest.Info.FinishNpcIndex : quest.Info.NpcIndex;
+                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.Info != null && n.Info.Index == configIndex
+                                                                          && n.CurrentMap != null && n.CurrentMap.Info != null
+                                                                          && n.CurrentMap.Info.Index == (int)mapIndex
+                                                                          && Functions.InRange(n.CurrentLocation, targetPos, 2));
                             }
 
-                            // 老脚本任务继续用 NpcIndex。
-                            if (targetNPC == null && quest.Info != null)
-                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == quest.Info.NpcIndex);
-
                             if (targetNPC != null) npcObjectId = targetNPC.ObjectID;
+                            MessageQueue.Enqueue($"[传送诊断]     解析面板NPC: name={targetNPC?.Name ?? "null"} objectID={npcObjectId} 策划表Index={quest.Info?.tnpc}");
                             questFinished = quest.Completed;
                         }
                         return true;

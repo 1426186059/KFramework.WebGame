@@ -712,21 +712,20 @@ namespace Server.MirObjects
                     if (index == 0) continue;
 
                     // [Quests] 段每行一个任务索引，符号约定：
-                    //   正数 -> 由本 NPC 发放（起始）：写入 QuestInfoTable.NpcIndex（即 CollectQuestIndexes）。
-                    //   负数 -> 需在本 NPC 处交付（完成）：写入 QuestInfoTable.FinishNpcIndex（即 FinishQuestIndexes）。
-                    QuestInfoTable info = Envir.GetQuestInfo(Math.Abs(index));
+                    //   正数 -> 由本 NPC 发放（起始）：写入 QuestInfoRunItem.NpcObjectID（运行时）。
+                    //   负数 -> 需在本 NPC 处交付（完成）：写入 QuestInfoRunItem.FinishNpcObjectID（运行时）。
+                    QuestInfoRunItem info = Envir.GetQuestInfo(Math.Abs(index));
 
                     if (info == null) return;
 
                     if (index > 0)
                     {
-                        // NpcIndex / FinishNpcIndex 存“运行时世界唯一索引”(NPCObject.ObjectID)，
-                        // 与客户端/服务端按 ObjectID 查找保持一致；NPCInfoTable 引用另存，用于精确反查运行时实例。
-                        info.NpcIndex = LoadedObjectID;
+                        // 运行时 ObjectID 只写 NpcObjectID；NpcIndex 始终是策划表 Index。
+                        info.NpcObjectID = LoadedObjectID;
                         info.NpcInfo = loadedNPC.Info;
                     }
                     else
-                        info.FinishNpcIndex = LoadedObjectID;
+                        info.FinishNpcObjectID = LoadedObjectID;
 
                     if (loadedNPC.Quests.All(x => x != info))
                         loadedNPC.Quests.Add(info);
@@ -948,7 +947,7 @@ namespace Server.MirObjects
             {
                 if (progress == null || progress.Info == null) continue;
                 if (player.CompletedQuests.Contains(progress.Info.Index)) continue;
-                if (progress.Info.FinishNpcIndex == npc.ObjectID) return true;
+                if (progress.Info.FinishNpcObjectID == npc.ObjectID) return true;
             }
 
             // 可接：NPC 关联任务里可接的（等级/职业/前置任务/追踪条件都满足）
@@ -962,7 +961,7 @@ namespace Server.MirObjects
                     // 发放 NPC = 该 NPC 即为可接（客户端 GetAvailableQuests 只判 CanAccept，不看交付 NPC）。
                     // 不要求同 NPC 自交：任务19"解救民兵之二"发放=被困的民兵、交付=奋战的民兵，
                     // 点被困的民兵仍要能弹面板接取。
-                    if (info.NpcIndex == npc.ObjectID) return true;
+                    if (info.NpcObjectID == npc.ObjectID) return true;
                 }
             }
             return false;

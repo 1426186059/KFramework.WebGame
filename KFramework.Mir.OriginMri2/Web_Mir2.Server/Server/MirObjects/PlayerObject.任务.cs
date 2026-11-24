@@ -20,7 +20,7 @@ namespace Server.MirObjects
 
             if (CurrentQuests.Exists(e => e.Index == index)) return; //e.Info.NpcIndex == npcIndex && 
 
-            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoRunItem info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
 
             EnsureQuestNPC(info);
@@ -90,7 +90,7 @@ namespace Server.MirObjects
             }
 
             //check previous chained quests have been completed
-            QuestInfoTable tempInfo = info;
+            QuestInfoRunItem tempInfo = info;
             while (tempInfo != null && tempInfo.RequiredQuest != 0)
             {
                 if (!CompletedQuests.Contains(tempInfo.RequiredQuest))
@@ -159,7 +159,7 @@ namespace Server.MirObjects
         // 若任务写在某 NPC 脚本 [Quests] 段，ParseQuests 已写入；否则按配置索引(NpcIndex/FinishNpcIndex) 反查 NPCInfoTable，
         // 再从已生成的 NPC 实例中取运行时 ObjectID，供客户端按 ObjectID 匹配、以及服务端反查 NPC 实例使用。
         // 不依赖任务是否登记在脚本里，避免 NpcIndex=0 时"寻找NPC"整体失效（任务追踪栏只是回退显示任务名）。
-        private void EnsureQuestNPC(QuestInfoTable info)
+        private void EnsureQuestNPC(QuestInfoRunItem info)
         {
             if (info == null) return;
 
@@ -169,7 +169,7 @@ namespace Server.MirObjects
             if (info.NpcInfo != null)
             {
                 var npc = Envir.NPCs.FirstOrDefault(n => n.Info == info.NpcInfo);
-                if (npc != null) info.NpcIndex = npc.ObjectID; // 覆盖为运行时世界唯一索引，供客户端/服务端按 ObjectID 匹配
+                if (npc != null) info.NpcObjectID = npc.ObjectID; // 运行时 ObjectID 单独存，NpcIndex 保持策划表 Index
             }
 
             if (info.FinishNpcIndex != 0)
@@ -178,15 +178,13 @@ namespace Server.MirObjects
                 if (finishInfo != null)
                 {
                     var fnpc = Envir.NPCs.FirstOrDefault(n => n.Info == finishInfo);
-                    if (fnpc != null) info.FinishNpcIndex = fnpc.ObjectID;
+                    if (fnpc != null) info.FinishNpcObjectID = fnpc.ObjectID;
                 }
             }
         }
 
-        // 按已链接的发放 NPC 信息反查运行时 NPC 实例。
-        // NpcIndex/FinishNpcIndex 实际存的是"运行时世界唯一索引"(NPCObject.ObjectID)，故优先按 ObjectID 查找；
-        // 另用 info.NpcInfo 引用做精确兜底（ParseQuests 写入），再退而按配置表索引(NPCInfoTable.Index) 兜底。
-        private NPCObject GetQuestStartNPC(QuestInfoTable info)
+        // 按已链接的发放 NPC 信息反查运行时 NPC 实例：优先 NpcObjectID，再按 NpcIndex 策划表 Index 反查。
+        private NPCObject GetQuestStartNPC(QuestInfoRunItem info)
         {
             if (info == null) return null;
 
@@ -198,13 +196,14 @@ namespace Server.MirObjects
                         return npc;
             }
 
+            if (info.NpcObjectID != 0)
+            {
+                NPCObject byId = NPCObject.Get(info.NpcObjectID);
+                if (byId != null) return byId;
+            }
+
             if (info.NpcIndex != 0)
             {
-                // 2. 按运行时 ObjectID 查找（NpcIndex 即世界唯一索引）
-                NPCObject byId = NPCObject.Get(info.NpcIndex);
-                if (byId != null) return byId;
-
-                // 3. 兜底：按配置表索引匹配 NPCInfoTable.Index（若某处写入的是配置索引）
                 foreach (var ob in Envir.NPCs)
                     if (ob is NPCObject npc && npc.Info != null && npc.Info.Index == (int)info.NpcIndex)
                         return npc;
@@ -225,7 +224,7 @@ namespace Server.MirObjects
 
             for (int i = CurrentMap.NPCs.Count - 1; i >= 0; i--)
             {
-                if (CurrentMap.NPCs[i].ObjectID != quest.Info.FinishNpcIndex) continue;
+                if (CurrentMap.NPCs[i].ObjectID != quest.Info.FinishNpcObjectID) continue;
 
                 if (!Functions.InRange(CurrentMap.NPCs[i].CurrentLocation, CurrentLocation, Globals.DataRange)) break;
                 npc = CurrentMap.NPCs[i];
@@ -331,7 +330,7 @@ namespace Server.MirObjects
         ///  - param=255 药品（任务24 补给药品）：在夏家店老板商店买到任意药品即达成。
         /// 登录/接取调用时 boughtFromNPC=0，一律不补判完成。
         /// </summary>
-        private bool HasOriginBuyGoalItem(QuestInfoTable info, uint boughtFromNPC = 0)
+        private bool HasOriginBuyGoalItem(QuestInfoRunItem info, uint boughtFromNPC = 0)
         {
             if (info == null || boughtFromNPC == 0 || info.tnpc <= 0) return false;
 
@@ -369,7 +368,7 @@ namespace Server.MirObjects
                 q.skillGoals.Count > 0).ToList();
             if (skillQuests.Count == 0) return;
 
-            foreach (QuestInfoTable q in skillQuests)
+            foreach (QuestInfoRunItem q in skillQuests)
             {
                 if (Info.CompletedQuests.Contains(q.Index)) continue;
                 if (q.RequiredMinLevel > Level) continue;
@@ -403,7 +402,7 @@ namespace Server.MirObjects
         }
 
         /// <summary>无 NPC 的技能目标达成：直接接取→完成→发奖→推进下一环，跳过 NPC 交付校验。</summary>
-        private void CompleteSkillGoalQuest(QuestInfoTable info)
+        private void CompleteSkillGoalQuest(QuestInfoRunItem info)
         {
             if (!CanGainItems(BuildQuestRewardItems(info).ToArray())) return; // 背包不足则保持未完成，下次学会技能/登录再试
 
@@ -430,7 +429,7 @@ namespace Server.MirObjects
         /// 任务发奖核心（物品/金币/经验/功勋），由 NPC 交付 FinishQuest 与无 NPC 技能目标自动完成共用。
         /// 不含背包物品扣除、NPC 校验与下一环推进，那些留在各自调用方。
         /// </summary>
-        private void GrantQuestCompletion(QuestInfoTable info)
+        private void GrantQuestCompletion(QuestInfoRunItem info)
         {
             List<UserItem> rewardItems = BuildQuestRewardItems(info);
 
@@ -445,7 +444,7 @@ namespace Server.MirObjects
         }
 
         /// <summary>构建任务固定+可选奖励的物品列表（按职业过滤 box 分支奖励）。</summary>
-        private List<UserItem> BuildQuestRewardItems(QuestInfoTable info)
+        private List<UserItem> BuildQuestRewardItems(QuestInfoRunItem info)
         {
             List<UserItem> rewardItems = new List<UserItem>();
 
@@ -506,7 +505,7 @@ namespace Server.MirObjects
             if (index <= 0) return;
             if (CurrentQuests.Exists(e => e.Index == index)) return;
 
-            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoRunItem info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
             if (CompletedQuests.Contains(index)) return;
             if (!info.CanOffer(this)) return;
@@ -538,7 +537,7 @@ namespace Server.MirObjects
             if (OfferedQuests.Contains(index)) return;
             if (CompletedQuests.Contains(index)) return;
 
-            QuestInfoTable info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            QuestInfoRunItem info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
             if (!info.CanOffer(this)) return;
             // 原始传奇 showCondition：等级/VIP/转生/开服天数等不满足就不在任务追踪栏显示。

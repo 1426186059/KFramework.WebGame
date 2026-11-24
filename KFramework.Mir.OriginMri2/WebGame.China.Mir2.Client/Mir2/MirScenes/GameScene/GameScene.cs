@@ -4074,6 +4074,7 @@ namespace Client.MirScenes
             // 服务端已按 checknpcTaskDialog 判定该弹任务面板时直接弹；不再被本地 npcHasQuest 挡掉
             // （商店 NPC 打开购买面板后本地任务绑定可能尚未刷新，导致买了药任务推进却不切面板）。
             bool showQuestPanel = p.OpenQuestPanel || (npcHasQuest && !hasNpcContent);
+            KFramework.MonoGame.PrintTool.Log($"[任务面板诊断] NPCID={NPCID} Open={p.OpenQuestPanel} 本地有任务={npcHasQuest} 页面内容={hasNpcContent} 显示任务面板={showQuestPanel}");
             if (showQuestPanel)
             {
                 NPCDialog.Hide();
