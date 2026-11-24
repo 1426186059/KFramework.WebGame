@@ -101,6 +101,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 0);
                 Click += (s, e) =>
                 {
+                    owner.StopAutoRun();
                     if (_isOffered)
                     {
                         TryAcceptQuest();
@@ -318,7 +319,11 @@ namespace Client.MirScenes.Dialogs
             m_HideNode.LabelImage.Size = new Size(12, 46);
             m_HideNode.LabelImage.Location = m_HideNode.LabelImage.Center;
             m_HideNode.LabelImage.Visible = true;
-            m_HideNode.Click += (o, e) => ShowNode();
+            m_HideNode.Click += (o, e) =>
+            {
+                StopAutoRun();
+                ShowNode();
+            };
 
             m_ShowNode = new MirImageControl
             {
@@ -348,7 +353,11 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(245, 0),
                 Size = new Size(19, 188),
             };
-            mShowNode_HideBtn.Click += (o, e) => HideNode();
+            mShowNode_HideBtn.Click += (o, e) =>
+            {
+                StopAutoRun();
+                HideNode();
+            };
             mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
             mShowNode_HideBtn.LabelImage.AtlasFrame = "lefttop_leftbg1";
             mShowNode_HideBtn.LabelImage.Size = new Size(12, 46);
@@ -431,6 +440,13 @@ namespace Client.MirScenes.Dialogs
 
             DisplayEntry entry = _display[index];
             ((QuestTrackingItem)row).Bind(entry, entry.IsOffered || entry.Quest.Completed);
+        }
+
+        // 点击任务跟踪面板任意处都停止自动战斗与自动寻路，避免玩家在看任务时被自动拉走或继续打怪。
+        private void StopAutoRun()
+        {
+            GameScene.Scene.MapControl.AutoFight = false;
+            GameScene.Scene.MapControl.AutoPath = false;
         }
 
         public void HideNode()

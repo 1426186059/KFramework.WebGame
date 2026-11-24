@@ -29,6 +29,11 @@ namespace Server.MirDatabase
         // 任务被秒跳过而不显示。买书后由 PlayerObject.CheckBuyGoalQuests 置位，书留在玩家背包。
         public bool BuyGoalDone;
 
+        // 原始传奇「学习技能」分支（skillGoals）的完成标记。
+        // 该目标同样没有 Kill/Item/Flag 进度，不加闸会被 CheckCompleted 零目标秒判完成、
+        // 接取就显示"领取奖励"。只有真正学会技能后由 CheckSkillGoalQuests 置位。
+        public bool SkillGoalDone;
+
         public List<string> TaskList = new List<string>();
 
         // 任务追踪栏“点击传送”目标（与 TaskList 一一对应：怪物/NPC + 地图坐标）。
@@ -335,6 +340,10 @@ namespace Server.MirDatabase
 
             // 原始传奇 goal type=532 买物品引导任务：必须先买到东西才完成，不能因零目标秒完成。
             if (Info != null && Info.goaltype == 532 && !BuyGoalDone)
+                canComplete = false;
+
+            // 原始传奇「学习技能」分支：必须真正学会技能才完成，接取/得到书都不能秒判完成。
+            if (Info != null && Info.skillGoals.Count > 0 && !SkillGoalDone)
                 canComplete = false;
 
             for (int j = 0; j < KillTaskCount.Count; j++)

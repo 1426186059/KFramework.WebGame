@@ -160,6 +160,9 @@ namespace Server.MirObjects
                 return;
             }
 
+            // 学习技能支线：若玩家在接任务前已学会对应技能，接取后立刻判定完成。
+            CheckSkillGoalQuests();
+
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
 
@@ -409,22 +412,38 @@ namespace Server.MirObjects
         /// </summary>
         public void CheckSkillGoalQuests()
         {
-            var skillQuests = Envir.QuestInfoList.Where(q =>
-                q.skillGoals.Count > 0).ToList();
+            var skillQuests = CurrentQuests.Where(q =>
+                q.Info != null && q.Info.skillGoals.Count > 0 && !q.Completed).ToList();
             if (skillQuests.Count == 0) return;
 
-            foreach (QuestInfoRunItem q in skillQuests)
+            foreach (QuestProgressInfo quest in skillQuests)
             {
-                if (Info.CompletedQuests.Contains(q.Index)) continue;
-                if (q.RequiredMinLevel > Level) continue;
-                if (!Envir.CheckOriginShowCondition(this, q.condition)) continue;
+                QuestInfoRunItem q = quest.Info;
 
                 // 三职业各一个目标，玩家只需学会自己职业那个（MirClass 0/1/2 → 1战/2法/3道）。
                 var goal = q.skillGoals.FirstOrDefault(g => g.Career == (int)Class + 1);
                 if (goal == null) continue;
                 if (!HasLearnedSkillBook(goal.BookId)) continue;
 
-                CompleteSkillGoalQuest(q);
+                // 真正学会技能了才置闸口并发奖；接取时的 CheckCompleted 因闸口未置位不会秒完成。
+                // 技能目标型任务无 NPC 交付，面板点击只传送不发完成包，必须在这里直接结算。
+                quest.SkillGoalDone = true;
+                quest.EndDateTime = Envir.Now;
+
+                if (!CanGainItems(BuildQuestRewardItems(q).ToArray()))
+                {
+                    return;
+                }
+                GrantQuestCompletion(q);
+                SendUpdateQuest(quest, QuestState.Remove);
+                TrackQuest(q.Index, false);
+                if (!Info.CompletedQuests.Contains(q.Index))
+                {
+                    Info.CompletedQuests.Add(q.Index);
+                }
+                GetCompletedQuests();
+                ReceiveOutputMessage($"任务完成：{q.Name}", OutputMessageType.Quest);
+                QuestScheduler.AdvanceAfterComplete(q);
             }
         }
 
@@ -444,30 +463,6 @@ namespace Server.MirObjects
 
             MagicInfoRunItem um = GetMagic(magic.Spell);
             return um != null && um.IsLearned();
-        }
-
-        /// <summary>无 NPC 的技能目标达成：直接接取→完成→发奖→推进下一环，跳过 NPC 交付校验。</summary>
-        private void CompleteSkillGoalQuest(QuestInfoRunItem info)
-        {
-            if (!CanGainItems(BuildQuestRewardItems(info).ToArray())) return; // 背包不足则保持未完成，下次学会技能/登录再试
-
-            var quest = new QuestProgressInfo(info.Index);
-            quest.Init(this);
-            quest.CheckCompleted(); // 无 Kill/Item/Flag 目标，立即置 Completed
-
-            OfferedQuests.Remove(info.Index);
-            Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = info.Index }, QuestState = QuestState.Remove });
-
-            GrantQuestCompletion(info);
-
-            if (!Info.CompletedQuests.Contains(info.Index))
-            {
-                Info.CompletedQuests.Add(info.Index);
-                GetCompletedQuests();
-            }
-            TrackQuest(info.Index, false);
-            CallDefaultNPC(DefaultNPCType.OnFinishQuest, info.Index);
-            QuestScheduler.AdvanceAfterComplete(info);
         }
 
         /// <summary>
