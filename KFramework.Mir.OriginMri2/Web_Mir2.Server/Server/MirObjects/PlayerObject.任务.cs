@@ -407,6 +407,46 @@ namespace Server.MirObjects
         }
 
         /// <summary>
+        /// 原始传奇"学习技能"支线：玩家【获得对应职业的技能书】时任务才出现（追踪栏显示"学习：火球术"）。
+        /// 由 GainItem 在物品入包时调用，使用通用入包入口以覆盖拾取/GM/邮件/任务奖励等所有获得途径。
+        /// </summary>
+        public void CheckSkillBookGoalQuests(int bookIndex)
+        {
+            if (bookIndex <= 0)
+            {
+                return;
+            }
+
+            foreach (QuestInfoRunItem q in Envir.QuestInfoList)
+            {
+                if (q.skillGoals.Count == 0)
+                {
+                    continue;
+                }
+                if (CompletedQuests.Contains(q.Index) || CurrentQuests.Exists(e => e.Index == q.Index))
+                {
+                    continue;
+                }
+                var goal = q.skillGoals.FirstOrDefault(g => g.Career == (int)Class + 1 && g.BookId == bookIndex);
+                if (goal == null)
+                {
+                    continue;
+                }
+                if (!q.CanOffer(this))
+                {
+                    continue;
+                }
+                if (!Envir.CheckOriginShowCondition(this, q.condition))
+                {
+                    continue;
+                }
+
+                // 与 QuestScheduler 的等级任务一样自动接取进 CurrentQuests（无 NPC 不能 OfferQuest）。
+                AutoAcceptQuest(q.Index, showNPC: false);
+            }
+        }
+
+        /// <summary>
         /// 原始传奇"学习技能"支线（type=516，原版无 fnpc/tnpc）：学会本职业对应技能即自动领奖。
         /// 学会技能（技能书 / 升级自动学）、登录、升级时调用。
         /// </summary>

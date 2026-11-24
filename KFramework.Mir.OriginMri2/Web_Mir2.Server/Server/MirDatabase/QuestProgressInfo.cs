@@ -502,6 +502,18 @@ namespace Server.MirDatabase
             string goalRich = FillProgress(Info.trackingGoalRich, progress);
             if (string.IsNullOrEmpty(goalRich)) goalRich = StripOriginSeparator(Info.goalinfo);
 
+            // 原始传奇"学习技能"支线：配置里的 trackingGoalRich 写死战士文本（"学习 基本剑术"），
+            // 按职业替换成本职业目标技能名（法师=火球术、道士=治愈术）。
+            if (Info.skillGoals.Count > 0 && Owner != null)
+            {
+                var warriorGoal = Info.skillGoals.FirstOrDefault(g => g.Career == 1);
+                var myGoal = Info.skillGoals.FirstOrDefault(g => g.Career == (int)Owner.Class + 1);
+                if (warriorGoal != null && myGoal != null && warriorGoal.SkillName != myGoal.SkillName)
+                {
+                    goalRich = goalRich.Replace(warriorGoal.SkillName, myGoal.SkillName);
+                }
+            }
+
             if (!string.IsNullOrEmpty(goalRich))
             {
                 TaskList.Add(goalRich);

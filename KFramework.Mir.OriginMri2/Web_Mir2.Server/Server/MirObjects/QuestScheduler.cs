@@ -110,11 +110,11 @@ namespace Server.MirObjects
                 if (q.RequiredMaxLevel > 0 && q.RequiredMaxLevel < newLevel) continue;
                 if (_player.CompletedQuests.Contains(q.Index)) continue;
                 if (_player.CurrentQuests.Exists(e => e.Index == q.Index)) continue;
-                // 无 NPC 的技能学习目标任务（如"学习技能(一)"）：不能 OfferQuest（追踪栏会显示"寻找???"），
-                // 改为自动接取进 CurrentQuests，玩家能在任务追踪栏看到它，学会对应技能后由 CheckSkillGoalQuests 完成。
+                // 无 NPC 的技能学习目标任务（如"学习技能(一)"）不在升级时接取：
+                // 原始传奇是玩家【获得对应技能书】时才触发该支线出现（提示"学习：火球术"），
+                // 由 GainItem → PlayerObject.CheckSkillBookGoalQuests 接取，学会技能后 CheckSkillGoalQuests 完成。
                 if (q.skillGoals.Count > 0)
                 {
-                    _player.AutoAcceptQuest(q.Index, showNPC: false);
                     continue;
                 }
                 if (q.CanOffer(_player)) _player.OfferQuest(q.Index);

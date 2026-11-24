@@ -8101,6 +8101,12 @@ namespace Server.MirObjects
 
             AddItem(item);
             RefreshBagWeight();
+
+            // 原始传奇"学习技能"支线：获得对应职业技能书时任务才出现（学习：火球术）。
+            if (this is PlayerObject player && item.Info != null && item.Info.Type == ItemType.Book)
+            {
+                player.CheckSkillBookGoalQuests(item.Info.Index);
+            }
         }
 
         private void DamageDura()
