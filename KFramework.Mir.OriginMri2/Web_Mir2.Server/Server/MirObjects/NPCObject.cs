@@ -88,7 +88,13 @@ namespace Server.MirObjects
                 }
 
                 if (quest.tnpc == Info.Index)
+                {
                     quest.FinishNpcObjectID = ObjectID;
+                    // 交付 NPC 也要把任务纳入 Quests：客户端 S.ObjectNPC.QuestIDs 据此判定
+                    // "这个 NPC 有我的待交任务"并弹出任务面板。此前只按 fnpc 绑定，
+                    // 夏家店老板(tnpc=10091, fnpc=10201比奇老兵)的 532 买药任务交不了，面板空白。
+                    if (!Quests.Contains(quest)) Quests.Add(quest);
+                }
             }
         }
 
