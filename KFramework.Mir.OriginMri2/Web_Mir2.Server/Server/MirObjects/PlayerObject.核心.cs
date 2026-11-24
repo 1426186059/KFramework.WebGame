@@ -681,6 +681,9 @@ namespace Server.MirObjects
         // 本次由 10倍经验点带来的额外经验，ConsumeTenFoldExp 设置、GainExp 发包后清零。
         private uint _pendingTenFoldExtra;
 
+        // 组队经验倍率（下标=附近队友数-1），提到类级避免每次击杀新建数组产生 GC。
+        private static readonly float[] PartyExpRate = { 1.0F, 1.3F, 1.4F, 1.5F, 1.6F, 1.7F, 1.8F, 1.9F, 2F, 2.1F, 2.2F };
+
         /// <summary>有 SExp 就消耗 1 点把本次经验 ×10，额外部分记入 _pendingTenFoldExtra 供发包显示。</summary>
         public uint ConsumeTenFoldExp(uint amount)
         {
@@ -715,8 +718,6 @@ namespace Server.MirObjects
             expPoint = (int)ConsumeTenFoldExp((uint)expPoint);
 
             //party
-            float[] partyExpRate = { 1.0F, 1.3F, 1.4F, 1.5F, 1.6F, 1.7F, 1.8F, 1.9F, 2F, 2.1F, 2.2F };
-
             if (GroupMembers != null)
             {
                 int sumLevel = 0;
@@ -732,7 +733,7 @@ namespace Server.MirObjects
                     }
                 }
 
-                if (nearCount > partyExpRate.Length) nearCount = partyExpRate.Length;
+                if (nearCount > PartyExpRate.Length) nearCount = PartyExpRate.Length;
 
                 for (int i = 0; i < GroupMembers.Count; i++)
                 {
@@ -740,7 +741,7 @@ namespace Server.MirObjects
                     if (player.CurrentMap == CurrentMap &&
                         Functions.InRange(player.CurrentLocation, CurrentLocation, Globals.DataRange) && !player.Dead)
                     {
-                        player.GainExp((uint)((float)expPoint * partyExpRate[nearCount - 1] * (float)player.Level / (float)sumLevel));
+                        player.GainExp((uint)((float)expPoint * PartyExpRate[nearCount - 1] * (float)player.Level / (float)sumLevel));
                     }
                 }
             }
