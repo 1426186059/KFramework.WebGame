@@ -3176,6 +3176,10 @@ namespace Client.MirScenes
                     // 服务器已移除该任务，客户端不再回发跟踪取消包。
                     GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest);
 
+                    // 领奖/放弃后服务端只发 Remove，不会再发 Add/Offered 通知面板关闭；
+                    // 必须显式通知任务面板，否则面板会停在已领奖任务上不关闭。
+                    Scene.QuestListDialog.OnQuestStateChanged(p.Quest, p.QuestState);
+
                     break;
 
                 case QuestState.Offered:
