@@ -150,6 +150,16 @@ namespace Server.MirObjects
             bool tracked = TrackQuest(index, true, false);
             SendUpdateQuest(quest, QuestState.Add, tracked);
 
+            // 原始传奇「无 goals + fnpc==tnpc（同 NPC 自交）」的纯对话任务（如任务1"欢迎归来"），
+            // 玩家点一次 NPC 就走完 接取→完成→领奖。SendUpdateQuest 内已 CheckCompleted()，
+            // 零目标任务此刻 Completed=true，直接结单发奖，不等客户端再点第二次"领取奖励"。
+            // 有 goals 的常规任务这里是 Completed=false，照常停在面板等玩家完成目标。
+            if (quest.Completed)
+            {
+                FinishQuest(index);
+                return;
+            }
+
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
 

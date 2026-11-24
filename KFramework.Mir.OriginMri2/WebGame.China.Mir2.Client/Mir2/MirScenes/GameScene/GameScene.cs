@@ -3176,7 +3176,10 @@ namespace Client.MirScenes
                     // 服务器已移除该任务，客户端不再回发跟踪取消包。
                     GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest);
 
-                    // 领奖/放弃后服务端只发 Remove，不会再发 Add/Offered 通知面板关闭；
+                    // 领奖结单的特效不在这里播：完成信号走 QuestState.CompletedList（原 S.CompleteQuest），
+                    // 那里对比新旧完成列表，只对本次新增完成的任务播特效。Remove 只是任务移除通知。
+
+                    // 领奖后服务端只发 Remove，不会再发 Add/Offered 通知面板关闭；
                     // 必须显式通知任务面板，否则面板会停在已领奖任务上不关闭。
                     Scene.QuestListDialog.OnQuestStateChanged(p.Quest, p.QuestState);
 
@@ -3198,8 +3201,14 @@ namespace Client.MirScenes
                     break;
                 }
 
-                // 完成列表由原 S.CompleteQuest 合并而来。
+                // 完成列表由原 S.CompleteQuest 合并而来。这才是真正的"任务完成包"：
+                // 对比新旧完成列表，本次新增的每个任务都播一次完成特效（Play 内部排队，连续完成不丢）。
                 case QuestState.CompletedList:
+                    foreach (int finishedId in p.CompletedQuests)
+                    {
+                        if (User.CompletedQuests.Contains(finishedId)) continue;
+                        TaskCompleteEffect?.Play();
+                    }
                     User.CompletedQuests = p.CompletedQuests;
                     break;
             }

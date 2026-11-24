@@ -92,6 +92,8 @@ namespace Client.MirScenes.Dialogs
             _PlayerTaskTalk.Click += (o, e) =>
             {
                 if (SelectedQuest == null || SelectedQuest.QuestInfo == null) return;
+                KFramework.MonoGame.PrintTool.Log($"[任务面板诊断] 点击命令: id={SelectedQuest.QuestInfo.Index} " +
+                    $"taken={SelectedQuest.Taken} completed={SelectedQuest.Completed}");
 
                 if (!SelectedQuest.Taken)
                 {
@@ -102,8 +104,8 @@ namespace Client.MirScenes.Dialogs
                 else if (SelectedQuest.Completed)
                 {
                     Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Finish, QuestIndex = SelectedQuest.QuestInfo.Index });
-                    // 领取奖励时直接播放“任务完成”特效
-                    GameScene.Scene?.TaskCompleteEffect?.Play();
+                    // 特效统一由服务端领奖结单包 S.ChangeQuest(Remove, Completed=true) 触发（GameScene.ChangeQuest），
+                    // 这里不重复播放，否则纯对话任务服务端直接结单时会播两遍。
                     // 领奖后任务从 CurrentQuests 移除，服务器 S.ChangeQuest(Remove) 回来后
                     // DisplayInfo()->GetAvailableQuests() 若无其它可交任务会自行 Hide()。
                 }
@@ -146,8 +148,12 @@ namespace Client.MirScenes.Dialogs
         }
 
         /// <summary>
-        /// 服务端 S.NPCResponse.OpenQuestPanel=true 时的专用入口：服务端已经确认该 NPC 有待交/可接任务，
-        /// 不再走 GetAvailableQuests() 的本地匹配（匹配不到会立刻 Hide，表现为点击任务追踪没反应）。
+        /// 服务端 S.NPCResponse.OpenQuestPanel=true 时的专用入口：服务端已经确认该 NPC 有待交/可接任务。
+        /// 必须同时收集“已接取待交”和“NPC 上可接(Offered)”两类任务——
+        /// 删库重来的新角色，初始任务（如任务1“欢迎归来”）还处于待接状态、不在 CurrentQuests 里，
+        /// 只查 CurrentQuests 会让面板一片空白。
+        /// 这里直接取 NPCObject.GetAvailableQuests()（它两类都收），但不调用 DisplayInfo()，
+        /// 因此本地匹配不到时也不会 Hide，后续 S.ChangeQuest 包会再刷新。
         /// </summary>
         public void ShowForced(uint npcID)
         {
@@ -155,16 +161,11 @@ namespace Client.MirScenes.Dialogs
             CurrentNPCID = npcID;
             Reset();
 
-            var matched = GameScene.User.CurrentQuests
-                .Where(q => !GameScene.User.CompletedQuests.Contains(q.QuestInfo.Index) &&
-                            (q.QuestInfo.FinishNpcObjectID == npcID ||
-                             (q.QuestInfo.StartNpcObjectID == npcID && q.QuestInfo.SameFinishNPC)))
-                .ToList();
-
-            // 本地任务信息还没刷新时也不要关面板：交给后续 S.ChangeQuest 包刷新。
-            Quests = matched.Count > 0
-                ? matched
-                : GameScene.User.CurrentQuests.Where(q => !GameScene.User.CompletedQuests.Contains(q.QuestInfo.Index)).ToList();
+            NPCObject npc = (NPCObject)MapControl.GetObject(npcID);
+            if (npc != null)
+            {
+                Quests = npc.GetAvailableQuests();
+            }
 
             RefreshInterface();
             GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
@@ -201,15 +202,17 @@ namespace Client.MirScenes.Dialogs
         /// </summary>
         public void OnQuestStateChanged(ClientQuestProgress quest, QuestState state)
         {
+            KFramework.MonoGame.PrintTool.Log($"[任务面板诊断] OnQuestStateChanged: state={state} Visible={Visible} " +
+                $"id={quest?.Id} taken={quest?.Taken} completed={quest?.Completed}");
             if (!Visible) return;
 
             if (state == QuestState.Add && quest != null && quest.Taken)
             {
                 if (quest.Completed)
                 {
-                    // 纯对话任务：接取即完成，自动领奖并收尾（无需玩家再点一次“领取奖励”）
+                    // 纯对话任务兜底：若服务端没直接结单，这里补发 Finish 领奖；
+                    // 特效统一由结单包 S.ChangeQuest(Remove) 触发，不在这里重复播放。
                     Network.Enqueue(new C.QuestCmd { Action = (byte)QuestCmdType.Finish, QuestIndex = quest.Id });
-                    GameScene.Scene?.TaskCompleteEffect?.Play();
                     Hide();
                 }
                 else

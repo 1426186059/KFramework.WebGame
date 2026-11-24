@@ -75,7 +75,13 @@ namespace Client.MirObjects
             MapLocation = info.Location;
             GameScene.Scene.MapControl.AddObject(this);
 
-            Quests = GameScene.QuestInfoList.Where(c => c.StartNpcObjectID == ObjectID).ToList();
+            // 不能用运行时 ObjectID 匹配任务：同一策划表 NPC（如老兵 10011）有多张地图的摆放实例，
+            // 服务端下发的 StartNpcObjectID 会选错实例，导致当前地图的 NPC 匹配不到任何任务。
+            // 服务端已在 S.ObjectNPC.QuestIDs 下发该 NPC 绑定的任务 Index 列表，按 Index 查才可靠。
+            Quests = info.QuestIDs
+                .Select(qid => GameScene.QuestInfoList.FirstOrDefault(c => c.Index == qid))
+                .Where(c => c != null)
+                .ToList();
 
             Image = info.Image;
             Scale = info.Scale > 0 ? info.Scale : 1f; // 数据未配置缩放（ScalePercent=0）时回落默认 1；否则按 0 缩放会渲染成 1px 不可见
