@@ -617,7 +617,7 @@ public static class Mir2OriginObjectLibrary
                                     int screenX, int screenY, KFramework.MonoGame.Color? colour = null,
                                     SpriteEffects effects = SpriteEffects.None, float scale = 1f,
                                     int? standX = null, int? standY = null,
-                                    MirBlend? blend = null)
+                                    MirBlend? blend = null, float rotation = 0f)
     {
         // 与 24 小时前一致：8 方向精灵，逻辑方向 5/6/7 用镜像方向(8-direction)的真帧回落（经典做法），
         // 若该 8 向真帧就绪则直接用、不翻面；否则保持翻面。
@@ -689,8 +689,20 @@ public static class Mir2OriginObjectLibrary
         if (flip)
             dx = 2 * screenX - dx - dw;
         float dy = screenY + (oy - cy) * scale;
-        DXManager.Draw(sprite.Texture, src, new RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
-                       colour ?? CommonColor.White, (blend ?? MirBlend.Normal).ToBlendState(), drawEffects);
+        var blendState = (blend ?? MirBlend.Normal).ToBlendState();
+        if (rotation != 0f)
+        {
+            // 带旋转时让 dst 落在锚点(screenX,screenY)，origin 为帧内枢轴相对裁剪帧左上角的位置，
+            // 这样旋转绕 model 枢轴(cx,cy)进行，锚定结果与无旋转的 DrawAnchored 完全一致。
+            var dst = new RectangleF(screenX, screenY, Math.Max(1f, dw), Math.Max(1f, dh));
+            var origin = new KFramework.MonoGame.Vector2((cx - ox) * scale, (cy - oy) * scale);
+            DXManager.Draw(sprite.Texture, src, dst, colour ?? CommonColor.White, blendState, rotation, origin);
+        }
+        else
+        {
+            DXManager.Draw(sprite.Texture, src, new RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
+                           colour ?? CommonColor.White, blendState, drawEffects);
+        }
         return true;
     }
 

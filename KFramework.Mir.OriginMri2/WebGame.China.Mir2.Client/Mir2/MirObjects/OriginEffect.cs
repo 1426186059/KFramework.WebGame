@@ -208,12 +208,6 @@ namespace Client.MirObjects
             // 位置由 tween 平滑驱动。这里完全照搬：固定用 dir=_direction 的帧，按 source→目标算旋转角。
             // 注意原始子弹动画是多帧（同一火球自转），这里按飞行进度推进帧，不是固定帧 0。
             int frame = CurrentFrame % _totalFrames;
-            if (!Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, _model, _action, _direction, frame, out var sprite) || sprite == null)
-                return;
-
-            Rectangle src = sprite.SourceRectangle;
-            // 必须用裁剪帧中心锚定；standx/standy(~537)是大画布枢轴，用了会把子弹偏移几百像素到远处。
-            int cx = src.Width / 2, cy = src.Height / 2;
 
             // 原始: rotation = DirectionUtil.orientation(x1,y1,x2,y2) - 90 (度)，egret rotation 是度，
             // MonoGame 是弧度：atan2(dy,dx) - π/2 即为等价弧度。
@@ -225,13 +219,12 @@ namespace Client.MirObjects
                 rotation = (float)Math.Atan2(dy, dx) - (float)(Math.PI / 2);
             }
 
-            // 引擎 Draw(RectangleF,...) 的 X/Y 即锚点落点，origin 是源帧内像素锚点；
-            // 二者合起来 = 把帧内(cx,cy)点对齐到屏幕(screenX,screenY)，不能再手动减 cx。
-            RectangleF dst = new RectangleF(screenX, screenY, src.Width, src.Height);
-            var origin = new KFramework.MonoGame.Vector2(cx, cy);
-            DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
-                           (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(),
-                           rotation, origin);
+            // 与命中特效(OriginEffect)统一用 DrawAnchored：model 枢轴 + 帧 OffX/OffY 锚定，
+            // 保证飞行终点与命中特效落点完全一致，不再有"子弹停下后命中特效突然位移"的错位。
+            Mir2OriginObjectLibrary.DrawAnchored(
+                Mir2ObjectKind.Monster, _model, _action, _direction, frame,
+                screenX, screenY, CommonColor.White, scale: 1f,
+                blend: _addBlend ? MirBlend.Additive : MirBlend.Normal, rotation: rotation);
         }
     }
 }
