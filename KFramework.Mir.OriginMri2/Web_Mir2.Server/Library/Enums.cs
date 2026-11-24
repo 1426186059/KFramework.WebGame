@@ -200,6 +200,9 @@ public enum QuestState : byte
 {
     Add,
     Update,
+    // 原先是"放弃任务"专用通知。本工程的放弃任务功能已移除（无发送方、无处理方），
+    // 现仅作为通用的"任务从列表移除"通知：领奖结单、接取前清 Offered 任务等都用它。
+    // 注意它不代表"任务完成"——完成信号走 CompletedList（原 S.CompleteQuest）。
     Remove,
     Offered,
     // 合并后的 S.ChangeQuest 用它承载完成列表。
