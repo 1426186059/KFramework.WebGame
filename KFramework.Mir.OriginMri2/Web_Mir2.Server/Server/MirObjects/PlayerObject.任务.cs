@@ -12,8 +12,6 @@ namespace Server.MirObjects
 {
     public partial class PlayerObject
     {
-        #region Quests
-
         public void AcceptQuest(int index, bool navigate = false)
         {
             bool canAccept = true;
@@ -218,19 +216,56 @@ namespace Server.MirObjects
         {
             QuestProgressInfo quest = CurrentQuests.FirstOrDefault(e => e.Info.Index == questIndex);
 
-            if (quest == null || !quest.Completed) return;
+            if (quest == null || !quest.Completed)
+            {
+                return;
+            }
 
             NPCObject npc = null;
 
+            // 【关键】不能用全局 FinishNpcObjectID 找当前地图的交付 NPC：
+            // 同一个策划表 NPC（如“夏家店老板”10091）在比奇省/毒蛇山谷等多张地图都有摆放实例，
+            // NPCObject.BindOriginQuests 会把 FinishNpcObjectID 覆盖成最后一个实例；
+            // 玩家在当前地图这个实例点“领取奖励”时按 ObjectID 根本找不到 NPC ——
+            // 表现为领奖无反应、任务不推进、NPC 任务面板不关闭（根本没发 Remove 包）。
+            // 正确做法：只按策划表 tnpc（交付 NPC 的 Info.Index）匹配当前地图实例。
+            // 找不到 / 不可见一律抛异常，不做静默兜底（见根目录 README 开发准则第 7 条）。
             for (int i = CurrentMap.NPCs.Count - 1; i >= 0; i--)
             {
-                if (CurrentMap.NPCs[i].ObjectID != quest.Info.FinishNpcObjectID) continue;
+                NPCObject candidate = CurrentMap.NPCs[i];
+                if (candidate == null)
+                {
+                    continue;
+                }
+                if (candidate.Info == null || candidate.Info.Index != quest.Info.tnpc)
+                {
+                    continue;
+                }
+                // 同一 NPC 多实例时，当前实例不在范围内要继续找下一个，不能 break 放弃。
+                if (!Functions.InRange(candidate.CurrentLocation, CurrentLocation, Globals.DataRange))
+                {
+                    continue;
+                }
 
-                if (!Functions.InRange(CurrentMap.NPCs[i].CurrentLocation, CurrentLocation, Globals.DataRange)) break;
-                npc = CurrentMap.NPCs[i];
+                npc = candidate;
                 break;
             }
-            if (npc == null || !npc.VisibleLog[Info.Index] || !npc.Visible) return;
+
+            if (npc == null)
+            {
+                throw new System.InvalidOperationException(
+                    $"[FinishQuest] 找不到交付NPC: quest={questIndex} tnpc={quest.Info.tnpc} map={CurrentMap.Info.Index}");
+            }
+            if (!npc.Visible)
+            {
+                throw new System.InvalidOperationException(
+                    $"[FinishQuest] 交付NPC不可见: npc={npc.Name} objID={npc.ObjectID} player={Info.Index}");
+            }
+            if (!npc.VisibleLog.TryGetValue(Info.Index, out bool canSeeNPC) || !canSeeNPC)
+            {
+                throw new System.InvalidOperationException(
+                    $"[FinishQuest] 交付NPC对玩家不可见: npc={npc.Name} objID={npc.ObjectID} player={Info.Index}");
+            }
 
             List<UserItem> rewardItems = BuildQuestRewardItems(quest.Info);
 
@@ -733,7 +768,5 @@ namespace Server.MirObjects
                 CompletedQuests = CompletedQuests
             });
         }
-
-        #endregion
     }
 }

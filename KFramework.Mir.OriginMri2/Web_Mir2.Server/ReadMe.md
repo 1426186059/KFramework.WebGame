@@ -1,5 +1,15 @@
 # Web_Mir2.Server
 
+> ## ⚠️ 第一准则：能抛异常就抛异常，千万别兜底
+>
+> 服务端遇到任何数据 / 配置异常（找不到 NPC、任务、物品、地图等），
+> **一律直接抛异常**（`throw new System.InvalidOperationException(...)`），让问题在日志里立刻暴露出来。
+>
+> **禁止**写 `if (xxx == null) return;` 这类静默跳过，**禁止**用“旧字段 / 备用键兜底”掩盖问题——
+> 静默兜底会让 bug 表现为“功能没反应、数据不推进”却没有任何报错，极难排查。
+>
+> 完整说明与代码书写规范见文末「代码书写规范与异常处理准则」。
+
 ## 历史脉络
 
 本工程的服务端代码最初从 `D:\OpenSource\Crystal\Server`（经典 Mir2 桌面版服务端 + WinForms/SlimDX 客户端）移植而来，沿用其引擎骨架（MirEnvir/MirObjects/MirDatabase、地图/NPC/怪物/物品/任务等对象模型）。
@@ -70,3 +80,23 @@
 | `Mir2NPCConverter` / `Mir2NPCScriptGen` | `3config.npc` → `NPCInfo.json` / NPC 脚本对话 |
 
 原始传奇权威资源与 JS 参考存档：`Tools/原始传奇-资源提取/原始传奇-资源参考/`（`main*.min.js`、`0`~`5config` 分片等）。改任何映射前先在此取证。
+
+## 代码书写规范与异常处理准则
+
+### 服务端禁止静默兜底
+
+服务端遇到数据 / 配置异常（找不到 NPC、任务、物品、地图等），**直接抛异常**
+（`throw new System.InvalidOperationException(...)`），让问题在日志里暴露出来。
+
+不要写 `if (xxx == null) return;` 这类静默降级，也不要用“旧字段 / 备用键兜底”掩盖问题——
+静默兜底会让 bug 表现为“功能没反应、数据不推进”却没有任何报错，极难排查。
+
+典型例子：`Server/MirObjects/PlayerObject.任务.cs` 的 `FinishQuest()` 只按策划表 `tnpc`
+（交付 NPC 的 `Info.Index`）匹配当前地图实例，找不到 / 不可见就抛异常；绝不用全局
+`FinishNpcObjectID` 兜底——该字段被同一 NPC 的多个摆放实例反复覆盖，会导致领奖无反应、
+任务不推进、客户端 NPC 任务面板不关闭，而且没有任何日志。
+
+### 代码块必须加大括号，禁用 #region
+
+- 所有 `if` / `for` / `foreach` / `while` 等代码块**必须使用大括号**，即使只有一行语句；
+- **禁止使用 `#region` / `#endregion`** 等折叠宏，不方便审查者阅读代码。

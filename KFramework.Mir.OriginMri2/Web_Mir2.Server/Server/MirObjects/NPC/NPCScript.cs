@@ -950,10 +950,13 @@ namespace Server.MirObjects
 
                 var info = progress.Info;
 
-                // 原始传奇任务用策划表 NPC Index 判定，不能用 FinishNpcObjectID：
-                // 同一个 NPC（如夏家店老板 10091）有比奇省/毒蛇山谷等多个摆放实例，
-                // BindOriginQuests 会把全局 FinishNpcObjectID 覆盖成最后一个实例，
-                // 玩家点当前地图这个实例时就会误判为“没有任务”。
+                // 【关键】原始传奇任务必须优先按策划表 NPC Index（tnpc=起始NPC / fnpc=交付NPC）
+                // 与 npc.Info.Index 比对，不能用 FinishNpcObjectID / NpcObjectID：
+                //  - 这两个 ObjectID 是 ClientQuestInfo 上的全局单值，由 NPCObject.BindOriginQuests
+                //    在每个摆放实例初始化时反复覆盖；
+                //  - 同一个策划表 NPC（如"夏家店老板"10091）在比奇省/毒蛇山谷等多张地图各有实例，
+                //    玩家点当前地图这个实例时，全局 ObjectID 已被最后一个实例改写，判定必然失败；
+                //  - 因此先按策划表 Index 精确匹配，ObjectID 仅作为旧脚本/无 source 任务的兜底。
                 if (npc.Info != null && !string.IsNullOrEmpty(info.source))
                 {
                     if (info.tnpc > 0 && info.tnpc == npc.Info.Index) return true;

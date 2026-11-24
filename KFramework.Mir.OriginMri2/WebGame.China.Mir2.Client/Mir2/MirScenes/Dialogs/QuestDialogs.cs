@@ -194,7 +194,10 @@ namespace Client.MirScenes.Dialogs
         ///   - 接取后任务立刻完成（纯对话任务，Completed=true）：自动领奖 + 关闭面板，
         ///     玩家点一次“对话”即完成接取/完成/领奖/关闭全流程（原版一次点击全做完）；
         ///   - 接取后仍进行中（Accepted）：关闭面板，回到 NPC 普通对话；
-        ///   - 其它状态（Update/Remove/完成列表）：正常刷新。
+        ///   - 领奖/放弃（Remove）：直接关闭面板。任务已从 CurrentQuests 移除，若继续走
+        ///     DisplayInfo() 会把同一 NPC 的下一环任务当成“可接”留在面板上，表现为
+        ///     “任务完成了面板却不关”；
+        ///   - 其它状态（Update/完成列表）：正常刷新。
         /// </summary>
         public void OnQuestStateChanged(ClientQuestProgress quest, QuestState state)
         {
@@ -214,6 +217,15 @@ namespace Client.MirScenes.Dialogs
                     // 进行中任务：关闭面板回到 NPC 普通对话
                     Hide();
                 }
+                return;
+            }
+
+            // 领奖（FinishQuest）或放弃后服务端只发 Remove，没有后续的面板关闭信号。
+            // 这里必须主动 Hide()；否则下面的 DisplayInfo() 会把下一环任务当成可接继续显示，
+            // 面板就停在已完成的任务上不关闭。
+            if (state == QuestState.Remove)
+            {
+                Hide();
                 return;
             }
 

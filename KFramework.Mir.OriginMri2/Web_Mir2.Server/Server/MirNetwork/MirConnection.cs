@@ -1593,11 +1593,16 @@ namespace Server.MirNetwork
                 return;
             }
 
-            // 恢复早期逻辑：玩家直接点 NPC（[@Main]）时，服务端判断该 NPC 是否正是当前任务的目标/交付 NPC；
-            // 是则要求客户端弹 NPC 任务面板，否则保持普通 NPC 面板。
+            // 玩家直接点击 NPC（[@Main] 对话）时，服务端自动判定该 NPC 是否正是当前任务的发放/交付 NPC：
+            //  - 是：S.NPCResponse.OpenQuestPanel = true，客户端直接弹 NPC 任务面板（可在面板内接取/领奖）；
+            //  - 否：保持普通 NPC 对话面板。
+            // 这是早期（原版）行为的恢复，也保证与"任务追踪面板传送到 NPC"入口一致——
+            // 那一路由 PlayerObject.TeleportToQuestTarget 显式传 openQuestPanel=true，这里靠服务端判定。
+            // 只判 [@Main]：商店/仓库/传送等其它功能页不需要也不应该弹任务面板。
             bool openQuestPanel = false;
             if (string.Equals(p.Key, NPCScript.MainKey, StringComparison.OrdinalIgnoreCase))
             {
+                // 用 ObjectID 找到当前地图上的具体 NPC 摆放实例，再由 PlayerHasQuestAt 判定任务关联。
                 NPCObject questNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == p.ObjectID);
                 openQuestPanel = questNPC != null && NPCScript.PlayerHasQuestAt(Player, questNPC);
                 MessageQueue.Enqueue($"[NPC诊断] 任务面板自动判定: ObjectID={p.ObjectID} hasQuest={openQuestPanel}");
