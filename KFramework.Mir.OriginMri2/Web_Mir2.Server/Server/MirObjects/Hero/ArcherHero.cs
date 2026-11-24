@@ -56,7 +56,7 @@ namespace Server.MirObjects
             {
                 if (!HasBuff(BuffType.Concentration))
                 {
-                    UserMagic magic = GetMagic(Spell.Concentration);
+                    MagicInfoRunItem magic = GetMagic(Spell.Concentration);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -72,7 +72,7 @@ namespace Server.MirObjects
             if (!HasRangedSpell) return;
             TargetDistance = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation);
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
-            UserMagic magic;
+            MagicInfoRunItem magic;
 
             if (InAttackRange())
             {

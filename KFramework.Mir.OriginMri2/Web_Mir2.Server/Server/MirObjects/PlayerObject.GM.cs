@@ -1124,7 +1124,7 @@ namespace Server.MirObjects
                             }
                         }
 
-                        var magic = new UserMagic(skill) { Level = spellLevel };
+                        var magic = new MagicInfoRunItem(skill) { Level = spellLevel };
 
                         if (magic.Info == null)  // 技能表里不存在该 Spell（非法 id）
                         {
@@ -2058,7 +2058,7 @@ namespace Server.MirObjects
 
                         if (player == null) return;
 
-                        var magics = new UserMagic(skill1);
+                        var magics = new MagicInfoRunItem(skill1);
                         bool removed = false;
 
                         for (var i = player.Info.Magics.Count - 1; i >= 0; i--)

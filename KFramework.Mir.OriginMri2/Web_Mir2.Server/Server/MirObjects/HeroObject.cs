@@ -294,11 +294,11 @@ namespace Server.MirObjects
             if (MPItemIndex > 0)
                 Owner.CheckItemInfo(Envir.GetItemInfo(MPItemIndex));
         }
-        public override void SendMagicInfo(UserMagic magic)
+        public override void SendMagicInfo(MagicInfoRunItem magic)
         {
             Owner.Enqueue(magic.GetInfo(true));
         }
-        protected bool CanUseMagic(UserMagic magic)
+        protected bool CanUseMagic(MagicInfoRunItem magic)
         {
             if (magic == null) return false;
             if (MagicCost(magic) > MP) return false;
@@ -494,7 +494,7 @@ namespace Server.MirObjects
                     }
                     break;
                 case ItemType.Book:
-                    UserMagic magic = new UserMagic((Spell)item.Info.Shape);
+                    MagicInfoRunItem magic = new MagicInfoRunItem((Spell)item.Info.Shape);
 
                     if (magic.Info == null)
                     {

@@ -63,7 +63,7 @@ namespace Server.MirEnvir
         public static object LoadLock = new object();
 
         public const int MinVersion = 60;
-        public const int Version = 121; // 121: CharacterInfo 货币改为角色级（Gold/Credit/LegendCoin）
+        public const int Version = 122; // 122: MagicInfoRunItem 新增 MaxLevel（技能书上限）；121: CharacterInfo 货币改为角色级
         public const int CustomVersion = 0;
         public static readonly string AccountPath = Path.Combine(Settings.VersionRoot, "Server.MirADB");
         public static readonly string BackUpPath = Path.Combine(".", "Back Up");

@@ -365,7 +365,7 @@ namespace Server.MirObjects
 
             return false;
         }
-        public override bool MagicTeleport(UserMagic magic)
+        public override bool MagicTeleport(MagicInfoRunItem magic)
         {
             Map temp = Envir.GetMap(BindMapIndex);
             int mapSizeX = temp.Width / (magic.Level + 1);
@@ -1683,10 +1683,10 @@ namespace Server.MirObjects
                     return;
                 }
 
-                UserMagic existing = GetMagic(learned.Spell);
+                MagicInfoRunItem existing = GetMagic(learned.Spell);
                 if (existing == null)
                 {
-                    existing = new UserMagic(learned.Spell);
+                    existing = new MagicInfoRunItem(learned.Spell);
                     if (existing.Info == null) { Enqueue(p); return; }
                     Info.Magics.Add(existing);
                 }
@@ -2004,7 +2004,7 @@ namespace Server.MirObjects
                     }
                     break;
                 case ItemType.Book:
-                    UserMagic magic = new UserMagic((Spell)item.Info.Shape);
+                    MagicInfoRunItem magic = new MagicInfoRunItem((Spell)item.Info.Shape);
 
                     if (magic.Info == null)
                     {

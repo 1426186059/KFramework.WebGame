@@ -28,7 +28,7 @@ namespace Server.MirObjects
 
             if (Target != null)
             {
-                UserMagic magic = GetMagic(Spell.Rage);
+                MagicInfoRunItem magic = GetMagic(Spell.Rage);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.Rage))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);

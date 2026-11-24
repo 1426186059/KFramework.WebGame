@@ -2269,12 +2269,12 @@ namespace Server.MirObjects
 
                 if (hasSkill) continue;
 
-                var magic = new UserMagic(spelltype) { IsTempSpell = true };
+                var magic = new MagicInfoRunItem(spelltype) { IsTempSpell = true };
                 Info.Magics.Add(magic);
                 SendMagicInfo(magic);                
             }
         }
-        public virtual void SendMagicInfo(UserMagic magic)
+        public virtual void SendMagicInfo(MagicInfoRunItem magic)
         {
             Enqueue(magic.GetInfo(false));
         }
@@ -2299,7 +2299,7 @@ namespace Server.MirObjects
             int[] slayingLvPlus = { 5, 6, 7, 8 };
             for (int i = 0; i < Info.Magics.Count; i++)
             {
-                UserMagic magic = Info.Magics[i];
+                MagicInfoRunItem magic = Info.Magics[i];
                 switch (EffectSpellOf(magic))
                 {
                     case Spell.Fencing: // 基本剑术
@@ -2781,7 +2781,7 @@ namespace Server.MirObjects
 
             Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
 
-            UserMagic magic;
+            MagicInfoRunItem magic;
             Spell spell = Spell.None;
             bool focus = false;
 
@@ -2879,7 +2879,7 @@ namespace Server.MirObjects
             }
 
             byte level = 0;
-            UserMagic magic;
+            MagicInfoRunItem magic;
 
             if (RidingMount)
             {
@@ -3365,7 +3365,7 @@ namespace Server.MirObjects
             Magic(spell, dir, targetID, location, spellTargetLock);
         }
 
-        public int MagicCost(UserMagic magic)
+        public int MagicCost(MagicInfoRunItem magic)
         {
             int cost = magic.Info.BaseCost + magic.Info.LevelCost * magic.Level;
             Spell spell = magic.Spell;
@@ -3392,7 +3392,7 @@ namespace Server.MirObjects
         public virtual MapObject DefaultMagicTarget => this;
 
         /// <summary>需要敌方目标的技能：未选中目标时客户端会传 TargetID=0，服务端直接拒绝施法。</summary>
-        private static bool RequiresMagicTarget(UserMagic magic)
+        private static bool RequiresMagicTarget(MagicInfoRunItem magic)
         {
             if (magic == null) return false;
             // 原始传奇技能：releaseType==1 才是指向敌方目标释放。
@@ -3428,7 +3428,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            UserMagic magic = GetMagic(spell);
+            MagicInfoRunItem magic = GetMagic(spell);
 
             if (magic == null)
             {
@@ -3826,7 +3826,7 @@ namespace Server.MirObjects
         }
 
         #region Elemental System
-        private void Concentration(UserMagic magic)
+        private void Concentration(MagicInfoRunItem magic)
         {
             int duration = 45 + (15 * magic.Level);
 
@@ -3845,7 +3845,7 @@ namespace Server.MirObjects
             Enqueue(new S.SetConcentration { ObjectID = ObjectID, Enabled = concentrating, Interrupted = interrupted });
             Broadcast(new S.SetConcentration { ObjectID = ObjectID, Enabled = concentrating, Interrupted = interrupted });
         }
-        private bool ElementalShot(MapObject target, UserMagic magic)
+        private bool ElementalShot(MapObject target, MagicInfoRunItem magic)
         {
             if (HasElemental)
             {
@@ -3870,7 +3870,7 @@ namespace Server.MirObjects
         }
         public void GatherElement()
         {
-            UserMagic magic = GetMagic(Spell.Meditation);
+            MagicInfoRunItem magic = GetMagic(Spell.Meditation);
 
             if (magic == null) return;
 
@@ -3902,7 +3902,7 @@ namespace Server.MirObjects
             int orbType = 0;
             int meditateLevel = 0;
 
-            UserMagic spell = GetMagic(Spell.Meditation);
+            MagicInfoRunItem spell = GetMagic(Spell.Meditation);
 
             if (spell == null)
             {
@@ -4038,7 +4038,7 @@ namespace Server.MirObjects
         };
 
         /// <summary>有专门效果实现的原始技能 id 原样返回，其余返回 Spell.None(0) 走通用施法。</summary>
-        private static Spell EffectSpellOf(UserMagic magic)
+        private static Spell EffectSpellOf(MagicInfoRunItem magic)
             => magic != null && magic.Info != null && OriginEffectSpellBySkillId.TryGetValue(magic.Info.OriginId, out Spell s) ? s : Spell.None;
 
         /// <summary>
@@ -4046,7 +4046,7 @@ namespace Server.MirObjects
         /// 战士用 DC、法师用 MC、道士用 SC；Aoe=1 走 3x3 群体，否则单体。伤害走 DelayedType.Damage 通用结算。
         /// 治疗/增益类(TargetType=3，如无极真气)不造成伤害，作用于自身并标记施法成功。
         /// </summary>
-        private bool OriginMagicCast(UserMagic magic, MapObject target, Point location)
+        private bool OriginMagicCast(MagicInfoRunItem magic, MapObject target, Point location)
         {
             if (magic == null || magic.Info == null) return false;
 
@@ -4138,7 +4138,7 @@ namespace Server.MirObjects
             return true;
         }
 
-        private bool Fireball(MapObject target, UserMagic magic)
+        private bool Fireball(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
@@ -4156,7 +4156,7 @@ namespace Server.MirObjects
 
             return true;
         }
-        private void Repulsion(UserMagic magic)
+        private void Repulsion(MagicInfoRunItem magic)
         {
             bool result = false;
             for (int d = 0; d <= 1; d++)
@@ -4212,7 +4212,7 @@ namespace Server.MirObjects
 
             if (result) LevelMagic(magic);
         }
-        private void ElectricShock(MonsterObject target, UserMagic magic)
+        private void ElectricShock(MonsterObject target, MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -4306,7 +4306,7 @@ namespace Server.MirObjects
 
             target.Broadcast(new S.ObjectName { ObjectID = target.ObjectID, Name = target.Name });
         }
-        private void HellFire(UserMagic magic)
+        private void HellFire(MagicInfoRunItem magic)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
@@ -4323,7 +4323,7 @@ namespace Server.MirObjects
             action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, CurrentLocation, dir, 4);
             CurrentMap.ActionList.Add(action);
         }
-        private void ThunderBolt(MapObject target, UserMagic magic)
+        private void ThunderBolt(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return;
 
@@ -4335,7 +4335,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void Vampirism(MapObject target, UserMagic magic)
+        private void Vampirism(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return;
 
@@ -4345,14 +4345,14 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void FireBang(UserMagic magic, Point location)
+        private void FireBang(MagicInfoRunItem magic, Point location)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, location);
             CurrentMap.ActionList.Add(action);
         }
-        private void FireWall(UserMagic magic, Point location)
+        private void FireWall(MagicInfoRunItem magic, Point location)
         {
             List<SpellObject> activeFireWalls = null;
             if (CurrentMap.Info.FireWallLimit && CurrentMap.Info.FireWallCount > 0)
@@ -4412,14 +4412,14 @@ namespace Server.MirObjects
 
             return true;
         }
-        private void Lightning(UserMagic magic)
+        private void Lightning(MagicInfoRunItem magic)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, CurrentLocation, Direction);
             CurrentMap.ActionList.Add(action);
         }
-        private void TurnUndead(MapObject target, UserMagic magic)
+        private void TurnUndead(MapObject target, MagicInfoRunItem magic)
         {
             if(target != null &&
                target.Race == ObjectType.Monster &&
@@ -4455,7 +4455,7 @@ namespace Server.MirObjects
                 ActionList.Add(action);
             }
         }
-        private void FlameDisruptor(MapObject target, UserMagic magic)
+        private void FlameDisruptor(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || (target.Race != ObjectType.Player && target.Race != ObjectType.Monster) || !target.IsAttackTarget(this)) return;
 
@@ -4467,14 +4467,14 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void ThunderStorm(UserMagic magic)
+        private void ThunderStorm(MagicInfoRunItem magic)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, CurrentLocation);
             CurrentMap.ActionList.Add(action);
         }
-        private void Mirroring(UserMagic magic)
+        private void Mirroring(MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -4509,7 +4509,7 @@ namespace Server.MirObjects
             action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, monster, Front, false);
             CurrentMap.ActionList.Add(action);
         }
-        private void Blizzard(UserMagic magic, Point location, out bool cast)
+        private void Blizzard(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
 
@@ -4521,7 +4521,7 @@ namespace Server.MirObjects
             CurrentMap.ActionList.Add(action);
             cast = true;
         }
-        private void MeteorStrike(UserMagic magic, Point location, out bool cast)
+        private void MeteorStrike(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
 
@@ -4534,7 +4534,7 @@ namespace Server.MirObjects
             cast = true;
         }
 
-        private void IceThrust(UserMagic magic)
+        private void IceThrust(MagicInfoRunItem magic)
         {
             int damageBase = GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]);
             if (Envir.Random.Next(100) < (1 + Stats[Stat.Luck]))
@@ -4548,7 +4548,7 @@ namespace Server.MirObjects
             CurrentMap.ActionList.Add(action);
         }
 
-        private void MagicBooster(UserMagic magic)
+        private void MagicBooster(MagicInfoRunItem magic)
         {
             int bonus = 6 + magic.Level * 6;
 
@@ -4558,7 +4558,7 @@ namespace Server.MirObjects
         #endregion
 
         #region Taoist Skills
-        private void Healing(MapObject target, UserMagic magic)
+        private void Healing(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsFriendlyTarget(this)) return;
 
@@ -4568,7 +4568,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private bool Poisoning(MapObject target, UserMagic magic)
+        private bool Poisoning(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return false;
 
@@ -4590,7 +4590,7 @@ namespace Server.MirObjects
             LevelMagic(magic);
             return true;
         }
-        private bool SoulFireball(MapObject target, UserMagic magic, out bool cast)
+        private bool SoulFireball(MapObject target, MagicInfoRunItem magic, out bool cast)
         {
             cast = false;
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
@@ -4615,7 +4615,7 @@ namespace Server.MirObjects
 
             return true;
         }
-        private void SummonSkeleton(UserMagic magic)
+        private void SummonSkeleton(MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -4655,7 +4655,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, monster, Front);
             CurrentMap.ActionList.Add(action);
         }
-        private void Purification(MapObject target, UserMagic magic)
+        private void Purification(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsFriendlyTarget(this)) return;
 
@@ -4663,7 +4663,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void SummonShinsu(UserMagic magic)
+        private void SummonShinsu(MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -4703,7 +4703,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, monster, Front);
             CurrentMap.ActionList.Add(action);
         }
-        private void Hiding(UserMagic magic)
+        private void Hiding(MagicInfoRunItem magic)
         {
             UserItem item = GetAmulet(1);
             if (item == null) return;
@@ -4714,7 +4714,7 @@ namespace Server.MirObjects
             ActionList.Add(action);
 
         }
-        private void MassHiding(UserMagic magic, Point location, out bool cast)
+        private void MassHiding(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
             UserItem item = GetAmulet(1);
@@ -4726,7 +4726,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, this, magic, GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]) / 2 + (magic.Level + 1) * 2, location);
             CurrentMap.ActionList.Add(action);
         }
-        private void SoulShield(UserMagic magic, Point location, out bool cast)
+        private void SoulShield(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
             UserItem item = GetAmulet(1);
@@ -4740,14 +4740,14 @@ namespace Server.MirObjects
 
             ConsumeItem(item, 1);
         }
-        private void MassHealing(UserMagic magic, Point location)
+        private void MassHealing(MagicInfoRunItem magic, Point location)
         {
             int value = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, value, location);
             CurrentMap.ActionList.Add(action);
         }
-        private void Revelation(MapObject target, UserMagic magic)
+        private void Revelation(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null) return;
 
@@ -4757,7 +4757,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void PoisonCloud(UserMagic magic, Point location, out bool cast)
+        private void PoisonCloud(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
 
@@ -4779,7 +4779,7 @@ namespace Server.MirObjects
             cast = true;
         }
 
-        private void MoonMist(UserMagic magic)
+        private void MoonMist(MagicInfoRunItem magic)
         {
             for (int i = 0; i < Buffs.Count; i++)
                 if (Buffs[i].Type == BuffType.MoonLight) return;
@@ -4795,7 +4795,7 @@ namespace Server.MirObjects
             LevelMagic(magic);
 
         }
-        private bool CatTongue(MapObject target, UserMagic magic)
+        private bool CatTongue(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
@@ -4810,7 +4810,7 @@ namespace Server.MirObjects
             return true;
         }
 
-        private void TrapHexagon(UserMagic magic, Point location, out bool cast)
+        private void TrapHexagon(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
             bool anyTargetsFound = false;
@@ -4856,7 +4856,7 @@ namespace Server.MirObjects
             ConsumeItem(item, 1);
             cast = true;
         }
-        private void Reincarnation(UserMagic magic, PlayerObject target, out bool cast)
+        private void Reincarnation(MagicInfoRunItem magic, PlayerObject target, out bool cast)
         {
             cast = true;
 
@@ -4913,7 +4913,7 @@ namespace Server.MirObjects
             }
             return;
         }
-        private void SummonHolyDeva(UserMagic magic)
+        private void SummonHolyDeva(MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -4954,7 +4954,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 1500, this, magic, monster, Front);
             CurrentMap.ActionList.Add(action);
         }
-        private void Hallucination(MapObject target, UserMagic magic)
+        private void Hallucination(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || target.Race != ObjectType.Monster || !target.IsAttackTarget(this)) return;
 
@@ -4965,7 +4965,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void EnergyShield(MapObject target, UserMagic magic, out bool cast)
+        private void EnergyShield(MapObject target, MagicInfoRunItem magic, out bool cast)
         {
             cast = false;
 
@@ -4998,7 +4998,7 @@ namespace Server.MirObjects
                     break;
             }
         }
-        private void UltimateEnhancer(MapObject target, UserMagic magic, out bool cast)
+        private void UltimateEnhancer(MapObject target, MagicInfoRunItem magic, out bool cast)
         {
             cast = false;
 
@@ -5041,7 +5041,7 @@ namespace Server.MirObjects
                     break;
             }
         }
-        private void Plague(UserMagic magic, Point location, out bool cast)
+        private void Plague(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
             UserItem item = GetAmulet(1);
@@ -5071,7 +5071,7 @@ namespace Server.MirObjects
             ConsumeItem(item, 1);
             if (itemp != null) ConsumeItem(itemp, 1);
         }
-        private void Curse(UserMagic magic, Point location, out bool cast)
+        private void Curse(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
             UserItem item = GetAmulet(1);
@@ -5090,7 +5090,7 @@ namespace Server.MirObjects
         }
 
 
-        private void PetEnhancer(MapObject target, UserMagic magic, out bool cast)
+        private void PetEnhancer(MapObject target, MagicInfoRunItem magic, out bool cast)
         {
             cast = false;
 
@@ -5107,7 +5107,7 @@ namespace Server.MirObjects
         #endregion
 
         #region Warrior Skills
-        private void Entrapment(MapObject target, UserMagic magic)
+        private void Entrapment(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return;
 
@@ -5117,7 +5117,7 @@ namespace Server.MirObjects
 
             ActionList.Add(action);
         }
-        private void BladeAvalanche(UserMagic magic)
+        private void BladeAvalanche(MagicInfoRunItem magic)
         {
             int damageBase = GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]);
             if (Envir.Random.Next(0, 100) <= (1 + Stats[Stat.Luck]))
@@ -5169,7 +5169,7 @@ namespace Server.MirObjects
             if (train)
                 LevelMagic(magic);
         }
-        private void ProtectionField(UserMagic magic)
+        private void ProtectionField(MagicInfoRunItem magic)
         {
             int duration = 45 + (15 * magic.Level);
             int addValue = (int)Math.Round(Stats[Stat.MaxAC] * (0.2 + (0.03 * magic.Level)));
@@ -5178,7 +5178,7 @@ namespace Server.MirObjects
             OperateTime = 0;
             LevelMagic(magic);
         }
-        private void Rage(UserMagic magic)
+        private void Rage(MagicInfoRunItem magic)
         {
 
             int duration = 18 + (6 * magic.Level);
@@ -5189,7 +5189,7 @@ namespace Server.MirObjects
             LevelMagic(magic);
         }
 
-        private void ShoulderDash(UserMagic magic)
+        private void ShoulderDash(MagicInfoRunItem magic)
         {
             if (InTrapRock || !CanWalk)
             {
@@ -5373,7 +5373,7 @@ namespace Server.MirObjects
             _stepCounter = 0;
         }
 
-        private void SlashingBurst(UserMagic magic)
+        private void SlashingBurst(MagicInfoRunItem magic)
         {
             int damageBase = GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]);
             int damageFinal = magic.GetDamage(damageBase);
@@ -5413,20 +5413,20 @@ namespace Server.MirObjects
             AddObjects(Direction, 2);
             Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
         }
-        private void FurySpell(UserMagic magic, out bool cast)
+        private void FurySpell(MagicInfoRunItem magic, out bool cast)
         {
             cast = true;
 
             ActionList.Add(new DelayedAction(DelayedType.Magic, Envir.Time + 500, magic));
         }
-        private void ImmortalSkin(UserMagic magic, out bool cast)
+        private void ImmortalSkin(MagicInfoRunItem magic, out bool cast)
         {
             cast = true;
 
             ActionList.Add(new DelayedAction(DelayedType.Magic, Envir.Time + 500, magic));
 
         }
-        private void CounterAttackCast(UserMagic magic, MapObject target)
+        private void CounterAttackCast(MagicInfoRunItem magic, MapObject target)
         {
             if (target == null || magic == null) return;
 
@@ -5453,14 +5453,14 @@ namespace Server.MirObjects
 
         #region Assassin Skills
 
-        private void HeavenlySword(UserMagic magic)
+        private void HeavenlySword(MagicInfoRunItem magic)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, CurrentLocation, Direction);
             CurrentMap.ActionList.Add(action);
         }
-        private void SwiftFeet(UserMagic magic, out bool cast)
+        private void SwiftFeet(MagicInfoRunItem magic, out bool cast)
         {
             cast = true;
 
@@ -5470,7 +5470,7 @@ namespace Server.MirObjects
 
             LevelMagic(magic);
         }
-        private void MoonLight(UserMagic magic)
+        private void MoonLight(MagicInfoRunItem magic)
         {
             var time = GetAttackPower(Stats[Stat.MinAC], Stats[Stat.MaxAC]);
 
@@ -5478,7 +5478,7 @@ namespace Server.MirObjects
 
             LevelMagic(magic);
         }
-        private void Trap(UserMagic magic, MapObject target, out bool cast)
+        private void Trap(MagicInfoRunItem magic, MapObject target, out bool cast)
         {
             cast = false;
 
@@ -5493,7 +5493,7 @@ namespace Server.MirObjects
             CurrentMap.ActionList.Add(action);
             cast = true;
         }
-        private bool PoisonSword(UserMagic magic)
+        private bool PoisonSword(MagicInfoRunItem magic)
         {
             UserItem item = GetPoison(1);
             if (item == null) return false;
@@ -5537,7 +5537,7 @@ namespace Server.MirObjects
             ConsumeItem(item, 1);
             return true;
         }
-        private void DarkBody(MapObject target, UserMagic magic)
+        private void DarkBody(MapObject target, MagicInfoRunItem magic)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -5579,7 +5579,7 @@ namespace Server.MirObjects
 
             AddBuff(BuffType.DarkBody, this, duration, new Stats());
         }
-        private void CrescentSlash(UserMagic magic)
+        private void CrescentSlash(MagicInfoRunItem magic)
         {
             int damageBase = GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]);
             if (Envir.Random.Next(0, 100) <= Stats[Stat.Accuracy])
@@ -5626,7 +5626,7 @@ namespace Server.MirObjects
             }
         }
 
-        private void FlashDash(UserMagic magic)
+        private void FlashDash(MagicInfoRunItem magic)
         {
             bool success = false;
             ActionTime = Envir.Time;
@@ -5720,7 +5720,7 @@ namespace Server.MirObjects
         #region Archer Skills
         private int ApplyArcherState(int damage)
         {
-            UserMagic magic = GetMagic(Spell.MentalState);
+            MagicInfoRunItem magic = GetMagic(Spell.MentalState);
 
             if (magic != null)
             {
@@ -5740,7 +5740,7 @@ namespace Server.MirObjects
             return (damage * dmgpenalty) / 100;
         }
 
-        private bool StraightShot(MapObject target, UserMagic magic)
+        private bool StraightShot(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return false;
             if ((Info.MentalState != 1) && !CanFly(target.CurrentLocation)) return false;
@@ -5757,7 +5757,7 @@ namespace Server.MirObjects
 
             return true;
         }
-        private bool DoubleShot(MapObject target, UserMagic magic)
+        private bool DoubleShot(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return false;
             if ((Info.MentalState != 1) && !CanFly(target.CurrentLocation)) return false;
@@ -5778,7 +5778,7 @@ namespace Server.MirObjects
 
             return true;
         }
-        private void BackStep(UserMagic magic)
+        private void BackStep(MagicInfoRunItem magic)
         {
             ActionTime = Envir.Time;
             if (!CanWalk) return;
@@ -5833,7 +5833,7 @@ namespace Server.MirObjects
 
             CellTime = Envir.Time + 500;
         }
-        private bool DelayedExplosion(MapObject target, UserMagic magic)
+        private bool DelayedExplosion(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
@@ -5844,7 +5844,7 @@ namespace Server.MirObjects
             ActionList.Add(action);
             return true;
         }
-        private void ExplosiveTrap(UserMagic magic, Point location)
+        private void ExplosiveTrap(MagicInfoRunItem magic, Point location)
         {
             int freeTrapSpot = -1;
 
@@ -5870,7 +5870,7 @@ namespace Server.MirObjects
             CurrentMap.ActionList.Add(action);
         }
 
-        public void DoKnockback(MapObject target, UserMagic magic)//ElementalShot - knockback
+        public void DoKnockback(MapObject target, MagicInfoRunItem magic)//ElementalShot - knockback
         {
             Cell cell = CurrentMap.GetCell(target.CurrentLocation);
             if (!cell.Valid || cell.Objects == null) return;
@@ -5886,7 +5886,7 @@ namespace Server.MirObjects
 
             target.Pushed(this, dir, distance);
         }
-        public void BindingShot(UserMagic magic, MapObject target, out bool cast)
+        public void BindingShot(MagicInfoRunItem magic, MapObject target, out bool cast)
         {
             cast = false;
 
@@ -5905,7 +5905,7 @@ namespace Server.MirObjects
 
             cast = true;
         }
-        public void SpecialArrowShot(MapObject target, UserMagic magic)
+        public void SpecialArrowShot(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return;
             if ((Info.MentalState != 1) && !CanFly(target.CurrentLocation)) return;
@@ -5919,7 +5919,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, magic, damage, target, target.CurrentLocation);
             ActionList.Add(action);
         }
-        public void NapalmShot(MapObject target, UserMagic magic)
+        public void NapalmShot(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this)) return;
             if ((Info.MentalState != 1) && !CanFly(target.CurrentLocation)) return;
@@ -5933,7 +5933,7 @@ namespace Server.MirObjects
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + delay, this, magic, damage, target.CurrentLocation);
             CurrentMap.ActionList.Add(action);
         }
-        public void ArcherSummon(UserMagic magic, MapObject target, Point location)
+        public void ArcherSummon(MagicInfoRunItem magic, MapObject target, Point location)
         {
             if (CurrentMap.Info.NoPets)
             {
@@ -5953,7 +5953,7 @@ namespace Server.MirObjects
             ActionList.Add(action);
         }
 
-        public void ArcherSummonStone(UserMagic magic, Point location, out bool cast)
+        public void ArcherSummonStone(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
 
@@ -5988,14 +5988,14 @@ namespace Server.MirObjects
             cast = true;
         }
 
-        public void OneWithNature(MapObject target, UserMagic magic)
+        public void OneWithNature(MapObject target, MagicInfoRunItem magic)
         {
             int damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinMC], Stats[Stat.MaxMC]));
 
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500, this, magic, damage, CurrentLocation);
             CurrentMap.ActionList.Add(action);
         }
-        public void HealingCircle(UserMagic magic, Point location)
+        public void HealingCircle(MagicInfoRunItem magic, Point location)
         {
             var damage = magic.GetDamage(GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]));
             DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time + 500 + 1200, this, magic, damage, location);
@@ -6004,7 +6004,7 @@ namespace Server.MirObjects
         #endregion
 
         #region Custom
-        private void Portal(UserMagic magic, Point location, out bool cast)
+        private void Portal(MagicInfoRunItem magic, Point location, out bool cast)
         {
             cast = false;
 
@@ -6025,7 +6025,7 @@ namespace Server.MirObjects
             cast = true;
         }
 
-        private bool FireBounce(MapObject target, UserMagic magic, MapObject source, int bounce = -1)
+        private bool FireBounce(MapObject target, MagicInfoRunItem magic, MapObject source, int bounce = -1)
         {
             if (target == null || !target.IsAttackTarget(this) || !source.CanFly(target.CurrentLocation) || bounce == 0) return false;
 
@@ -6049,7 +6049,7 @@ namespace Server.MirObjects
             return true;
         }
 
-        private bool MeteorShower(MapObject target, UserMagic magic)
+        private bool MeteorShower(MapObject target, MagicInfoRunItem magic)
         {
             if (target == null || !target.IsAttackTarget(this) || !CanFly(target.CurrentLocation)) return false;
 
@@ -6119,7 +6119,7 @@ namespace Server.MirObjects
         }
         protected void CompleteMagic(IList<object> data)
         {
-            UserMagic magic = (UserMagic)data[0];
+            MagicInfoRunItem magic = (MagicInfoRunItem)data[0];
             int value;
             MapObject target;
             Point targetLocation;
@@ -6999,10 +6999,10 @@ namespace Server.MirObjects
             int damage = (int)data[1];
             DefenceType defence = (DefenceType)data[2];
             bool damageWeapon = (bool)data[3];
-            UserMagic userMagic = null;
+            MagicInfoRunItem runMagic = null;
             bool finalHit = false;
             if (data.Count >= 5)
-                userMagic = (UserMagic)data[4];
+                runMagic = (MagicInfoRunItem)data[4];
             if (data.Count >= 6)
                 finalHit = (bool)data[5];
             if (target == null || !target.IsAttackTarget(this) || target.CurrentMap != CurrentMap || target.Node == null) return;
@@ -7019,22 +7019,22 @@ namespace Server.MirObjects
                 var magic = GetMagic(Spell.FatalSword);
                 if (magic != null) LevelMagic(magic);
             }
-            if (userMagic != null && finalHit)
+            if (runMagic != null && finalHit)
             {
-                if (userMagic.Spell == Spell.TwinDrakeBlade)
+                if (runMagic.Spell == Spell.TwinDrakeBlade)
                 {
                     if ((((target.Race != ObjectType.Player) || Settings.PvpCanResistPoison) &&
                         (Envir.Random.Next(Settings.PoisonAttackWeight) >= target.Stats[Stat.PoisonResist])) &&
-                        (target.Level < Level + 10 && Envir.Random.Next(target.Race == ObjectType.Player ? 40 : 20) <= userMagic.Level + 1))
+                        (target.Level < Level + 10 && Envir.Random.Next(target.Race == ObjectType.Player ? 40 : 20) <= runMagic.Level + 1))
                     {
-                        target.ApplyPoison(new Poison { PType = PoisonType.Stun, Duration = target.Race == ObjectType.Player ? 2 : 2 + userMagic.Level, TickSpeed = 1000 }, this);
+                        target.ApplyPoison(new Poison { PType = PoisonType.Stun, Duration = target.Race == ObjectType.Player ? 2 : 2 + runMagic.Level, TickSpeed = 1000 }, this);
                         target.Broadcast(new S.ObjectEffect { ObjectID = target.ObjectID, Effect = SpellEffect.TwinDrakeBlade });
                     }
                 }
             }
 
             //Level Fencing / SpiritSword
-            foreach (UserMagic magic in Info.Magics)
+            foreach (MagicInfoRunItem magic in Info.Magics)
             {
                 switch (EffectSpellOf(magic))
                 {
@@ -7110,11 +7110,11 @@ namespace Server.MirObjects
 
             return null;
         }
-        public UserMagic GetMagic(Spell spell)
+        public MagicInfoRunItem GetMagic(Spell spell)
         {
             for (int i = 0; i < Info.Magics.Count; i++)
             {
-                UserMagic magic = Info.Magics[i];
+                MagicInfoRunItem magic = Info.Magics[i];
                 if (magic.Spell != spell) continue;
                 return magic;
             }
@@ -7125,14 +7125,14 @@ namespace Server.MirObjects
             {
                 for (int i = 0; i < Info.Magics.Count; i++)
                 {
-                    UserMagic magic = Info.Magics[i];
+                    MagicInfoRunItem magic = Info.Magics[i];
                     if (EffectSpellOf(magic) == spell) return magic;
                 }
             }
 
             return null;
         }
-        public void LevelMagic(UserMagic magic)
+        public void LevelMagic(MagicInfoRunItem magic)
         {
             byte exp = (byte)(Envir.Random.Next(3) + 1);
 
@@ -7204,7 +7204,8 @@ namespace Server.MirObjects
             // 原始传奇 JS: SkillControl.update case 9008 → ncm.show("【"+技能名+"】 熟练度+"+addSkillPoint)
             // 每次施法涨熟练度都在左上角提示区显示（OutputMessageType.Quest，金色，不进聊天框）。
             // LevelMagic 定义在 HumanObject（玩家/怪物共用），只有 PlayerObject 有该提示通道。
-            if (exp > 0 && this is PlayerObject thisPlayer)
+            // Level=0 是 LearnOriginSkills 的未学占位，玩家没学技能时不弹熟练度提示。
+            if (exp > 0 && magic.Level > 0 && this is PlayerObject thisPlayer)
             {
                 // 原始传奇 SkillControl update：白色字 "[技能名] 熟练度+N"；默认白色+描边。
                 thisPlayer.ReceiveOutputMessage($"[{magic.Info.Name}] 熟练度+{exp}", OutputMessageType.Normal);
@@ -7219,7 +7220,7 @@ namespace Server.MirObjects
             Enqueue(new S.MagicLeveled { ObjectID = ObjectID, Spell = magic.Spell, Level = magic.Level, Experience = magic.Experience });
 
         }
-        public virtual bool MagicTeleport(UserMagic magic)
+        public virtual bool MagicTeleport(MagicInfoRunItem magic)
         {
             return false;
         }
@@ -8763,7 +8764,7 @@ namespace Server.MirObjects
         {
             if (Dead) return;
 
-            UserMagic magic;
+            MagicInfoRunItem magic;
             bool use = Convert.ToBoolean(state);
 
             magic = GetMagic(spell);

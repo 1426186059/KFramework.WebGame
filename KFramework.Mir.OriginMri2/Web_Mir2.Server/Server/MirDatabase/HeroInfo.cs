@@ -73,7 +73,7 @@ namespace Server.MirDatabase
             count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                UserMagic magic = new UserMagic(reader, version, customVersion);
+                MagicInfoRunItem magic = new MagicInfoRunItem(reader, version, customVersion);
                 if (magic.Info == null) continue;
 
                 magic.CastTime = int.MinValue;

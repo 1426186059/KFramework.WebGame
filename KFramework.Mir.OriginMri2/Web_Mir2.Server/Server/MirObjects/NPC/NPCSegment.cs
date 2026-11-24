@@ -3664,7 +3664,7 @@ namespace Server.MirObjects
                             if (param.Count > 1)
                                 spellLevel = byte.TryParse(param[1], out spellLevel) ? Math.Min((byte)3, spellLevel) : (byte)0;
 
-                            var magic = new UserMagic(skill) { Level = spellLevel };
+                            var magic = new MagicInfoRunItem(skill) { Level = spellLevel };
 
                             if (magic.Info == null) return;
 
@@ -4657,7 +4657,7 @@ namespace Server.MirObjects
                             if (param.Count > 1)
                                 spellLevel = byte.TryParse(param[1], out spellLevel) ? Math.Min((byte)3, spellLevel) : (byte)0;
 
-                            var magic = new UserMagic(skill) { Level = spellLevel };
+                            var magic = new MagicInfoRunItem(skill) { Level = spellLevel };
 
                             if (magic.Info == null) return;
 

@@ -17,7 +17,7 @@ namespace Server.MirObjects
         protected override void ProcessFriend()
         {
             if (!CanCast) return;
-            UserMagic magic;
+            MagicInfoRunItem magic;
             List<MapObject> TargetList = new List<MapObject>()
             {
                 this,
@@ -98,7 +98,7 @@ namespace Server.MirObjects
             if (!CanCast) return;
 
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
-            UserMagic magic;
+            MagicInfoRunItem magic;
             UserItem amuletItem = GetAmulet(1);
             UserItem poisonItem = GetPoison(1);
 

@@ -1661,7 +1661,7 @@ namespace Server.MirNetwork
 
             for (int i = 0; i < actor.Info.Magics.Count; i++)
             {
-                UserMagic magic = actor.Info.Magics[i];
+                MagicInfoRunItem magic = actor.Info.Magics[i];
                 if (magic.Spell != p.Spell)
                 {
                     if (magic.Key == p.Key)

@@ -6,7 +6,7 @@ namespace Server.MirObjects
     {
         Magic,
         /// <summary>
-        /// Param0 MapObject (Target) | Param1 Damage | Param2 Defence | Param3 damageWeapon | Param4 UserMagic | Param5 FinalHit
+        /// Param0 MapObject (Target) | Param1 Damage | Param2 Defence | Param3 damageWeapon | Param4 MagicInfoRunItem | Param5 FinalHit
         /// </summary>
         Damage,
         RangeDamage,        

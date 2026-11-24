@@ -123,7 +123,7 @@ namespace Server.MirObjects
 
             foreach (MagicInfoTable info in learnable)
             {
-                UserMagic magic = null;
+                MagicInfoRunItem magic = null;
                 for (int i = 0; i < Info.Magics.Count; i++)
                 {
                     if (Info.Magics[i] != null && Info.Magics[i].Spell == info.Spell)
@@ -138,7 +138,7 @@ namespace Server.MirObjects
 
                 if (magic == null)
                 {
-                    magic = new UserMagic(info.Spell);
+                    magic = new MagicInfoRunItem(info.Spell);
                     if (magic.Info == null) continue;
                     magic.Level = autoLearn ? (byte)1 : (byte)0;
                     Info.Magics.Add(magic);

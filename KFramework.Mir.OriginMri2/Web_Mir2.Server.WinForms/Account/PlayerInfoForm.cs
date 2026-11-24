@@ -120,7 +120,7 @@ namespace Server
 
             for (int i = 0; i < Character.Magics.Count; i++)
             {
-                UserMagic magic = Character.Magics[i];
+                MagicInfoRunItem magic = Character.Magics[i];
                 if (magic == null) continue;
 
                 ListViewItem ListItem = new ListViewItem(magic.Info.Name.ToString()) { Tag = this };
@@ -659,7 +659,7 @@ namespace Server
             {
                 if (hero == null) continue;
 
-                foreach (UserMagic magic in hero.Magics)
+                foreach (MagicInfoRunItem magic in hero.Magics)
                 {
                     if (magic == null) continue;
 

@@ -491,7 +491,7 @@ namespace Server.MirEnvir
         {
             bool train = false;
             HumanObject player = (HumanObject)data[0];
-            UserMagic magic = (UserMagic)data[1];
+            MagicInfoRunItem magic = (MagicInfoRunItem)data[1];
 
             if (player == null || player.Info == null || player.Node == null) return;
 

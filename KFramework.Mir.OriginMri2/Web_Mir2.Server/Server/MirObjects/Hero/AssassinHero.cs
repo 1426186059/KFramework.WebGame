@@ -36,7 +36,7 @@ namespace Server.MirObjects
 
             if (Target != null)
             {
-                UserMagic magic = GetMagic(Spell.Haste);
+                MagicInfoRunItem magic = GetMagic(Spell.Haste);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.Haste))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -57,7 +57,7 @@ namespace Server.MirObjects
             TargetDistance = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation);
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
 
-            UserMagic magic = GetMagic(Spell.HeavenlySword);
+            MagicInfoRunItem magic = GetMagic(Spell.HeavenlySword);
             HasHeavenlySword = CanCast && CanUseMagic(magic);
             if (HasHeavenlySword && TargetDistance == 2)
             {

@@ -8,7 +8,7 @@ public class ClientMagic
     public byte Level1, Level2, Level3;
     public ushort Need1, Need2, Need3;
 
-    public byte Level, Key, Range;
+    public byte Level, MaxLevel, Key, Range;
     public ushort Experience;
 
     public bool IsTempSpell;
@@ -56,6 +56,8 @@ public class ClientMagic
         int effectCount = reader.ReadInt32();
         EffectIds = new int[effectCount];
         for (int i = 0; i < effectCount; i++) EffectIds[i] = reader.ReadInt32();
+
+        MaxLevel = reader.ReadByte();
     }
 
     public void Save(BinaryWriter writer)
@@ -88,6 +90,8 @@ public class ClientMagic
         writer.Write(NeedTarget);
         writer.Write(EffectIds.Length);
         for (int i = 0; i < EffectIds.Length; i++) writer.Write(EffectIds[i]);
+
+        writer.Write(MaxLevel);
     }
 
 }

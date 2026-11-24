@@ -22,7 +22,7 @@ namespace Server.MirObjects
 
             if (Target != null)
             {
-                UserMagic magic = GetMagic(Spell.MagicShield);
+                MagicInfoRunItem magic = GetMagic(Spell.MagicShield);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.MagicShield))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -47,7 +47,7 @@ namespace Server.MirObjects
             if (!HasRangedSpell) return;
 
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
-            UserMagic magic;
+            MagicInfoRunItem magic;
 
             if (InAttackRange())
             {

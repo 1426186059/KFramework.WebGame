@@ -442,7 +442,7 @@ namespace Server.MirObjects
             }
             if (magic == null) return false;
 
-            UserMagic um = GetMagic(magic.Spell);
+            MagicInfoRunItem um = GetMagic(magic.Spell);
             return um != null && um.Level > 0;
         }
 

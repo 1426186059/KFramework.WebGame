@@ -87,7 +87,7 @@ namespace Server.MirDatabase
         public bool HasRentedItem;
         public UserItem CurrentRefine = null;
         public long CollectTime = 0, RefineTimeRemaining = 0;
-        public List<UserMagic> Magics = new List<UserMagic>();
+        public List<MagicInfoRunItem> Magics = new List<MagicInfoRunItem>();
         public List<PetInfo> Pets = new List<PetInfo>();
         public List<Buff> Buffs = new List<Buff>();
         public List<Poison> Poisons = new List<Poison>();
@@ -268,7 +268,7 @@ namespace Server.MirDatabase
             count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                UserMagic magic = new UserMagic(reader, version, customVersion);
+                MagicInfoRunItem magic = new MagicInfoRunItem(reader, version, customVersion);
                 if (magic.Info == null) continue;
 
                 magic.CastTime = int.MinValue;
