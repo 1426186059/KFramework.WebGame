@@ -1692,18 +1692,19 @@ namespace Server.MirObjects
                 }
 
                 // 原版 TargetLevel=1 是 1 级书（激活）；4/5/6/7 是升级书。
-                // 服务端技能等级 0=未学、1~3=1~3 级，升级书统一映射到当前引擎上限 3。
+                // MaxLevel=书决定的等级上限（1~3），Level=当前实际等级（0 起，靠熟练度提升）。
                 byte targetLevel = book.TargetLevel <= 1 ? (byte)1 : (byte)Math.Min(book.TargetLevel - 2, 3);
 
                 if (book.TargetLevel <= 1)
                 {
-                    if (existing.Level > 0)
+                    if (existing.IsLearned())
                     {
                         ReceiveChat("已经学会该技能", ChatType.System);
                         Enqueue(p);
                         return;
                     }
-                    existing.Level = 1;
+                    existing.MaxLevel = targetLevel;
+                    existing.Level = 0;
                     existing.Experience = 0;
                     // 原始传奇 JS: openNewSkill → ncm.err("恭喜您已领悟：【"+技能名+"】")
                     // 走左上角提示区（OutputMessageType.Quest），不塞进聊天框。
@@ -1711,27 +1712,27 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    if (existing.Level <= 0)
+                    if (!existing.IsLearned())
                     {
                         ReceiveChat("请先用低级技能书激活技能", ChatType.System);
                         Enqueue(p);
                         return;
                     }
-                    if (existing.Level >= targetLevel)
+                    if (existing.MaxLevel >= targetLevel)
                     {
                         ReceiveChat("技能等级已达标", ChatType.System);
                         Enqueue(p);
                         return;
                     }
-                    // 升级书要求熟练度攒满当前等级（Need1/2），对齐原版 skilled + cost 双条件。
-                    ushort need = existing.Level == 1 ? learned.Need1 : learned.Need2;
+                    // 升级书要求熟练度攒满当前实际等级（Need1/2），对齐原版 skilled + cost 双条件。
+                    ushort need = existing.Level == 0 ? learned.Need1 : learned.Need2;
                     if (existing.Experience < need)
                     {
                         ReceiveChat("技能熟练度不足", ChatType.System);
                         Enqueue(p);
                         return;
                     }
-                    existing.Level = targetLevel;
+                    existing.MaxLevel = targetLevel;
                     existing.Experience = 0;
                     ReceiveOutputMessage($"<color=lime>恭喜</color> <color=lime>学会</color>【{learned.Name}】", OutputMessageType.Normal);
                 }

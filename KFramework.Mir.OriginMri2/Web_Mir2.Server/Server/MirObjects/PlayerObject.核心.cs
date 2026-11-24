@@ -133,20 +133,21 @@ namespace Server.MirObjects
                     }
                 }
 
-                // 达学习等级 + 无需技能书 → 自动学会 1 级。
+                // 达学习等级 + 无需技能书 → 自动学会，MaxLevel 按配置可升级级数，Level 从 0 起靠熟练度升。
                 bool autoLearn = info.NeedBook == 0 && Envir.GetLearnLevel(info) <= Level;
+                byte learnMaxLevel = info.Need3 > 0 ? (byte)3 : (info.Need2 > 0 ? (byte)2 : (byte)1);
 
                 if (magic == null)
                 {
                     magic = new MagicInfoRunItem(info.Spell);
                     if (magic.Info == null) continue;
-                    magic.Level = autoLearn ? (byte)1 : (byte)0;
+                    magic.MaxLevel = autoLearn ? learnMaxLevel : (byte)0;
                     Info.Magics.Add(magic);
                     if (autoLearn && notify) SendMagicInfo(magic);
                 }
-                else if (autoLearn && magic.Level == 0)
+                else if (autoLearn && !magic.IsLearned())
                 {
-                    magic.Level = 1;
+                    magic.MaxLevel = learnMaxLevel;
                     if (notify) SendMagicInfo(magic);
                 }
             }

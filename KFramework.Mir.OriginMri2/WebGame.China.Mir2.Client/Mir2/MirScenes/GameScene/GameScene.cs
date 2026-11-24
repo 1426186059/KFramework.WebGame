@@ -4816,13 +4816,18 @@ namespace Client.MirScenes
             if (p.Hero)
                 actor = Hero;
 
-            // 原始传奇技能：登录包已下发本职业全部技能（未学的 Level=0 占位）。
+            // 原始传奇技能：登录包已下发本职业全部技能（未学的 MaxLevel=0 占位）。
             // 升级解锁时服务端再次下发同 Spell，这里更新已有条目而非重复添加。
             ClientMagic existing = actor.Magics.Find(m => m.Spell == magic.Spell);
             if (existing != null)
+            {
                 existing.Level = magic.Level;
+                existing.MaxLevel = magic.MaxLevel;
+            }
             else
+            {
                 actor.Magics.Add(magic);
+            }
 
             actor.RefreshStats();
             SkillBarDialogs.UpdateUI();

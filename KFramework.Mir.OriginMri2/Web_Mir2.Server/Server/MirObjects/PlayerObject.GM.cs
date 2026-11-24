@@ -1124,7 +1124,7 @@ namespace Server.MirObjects
                             }
                         }
 
-                        var magic = new MagicInfoRunItem(skill) { Level = spellLevel };
+                        var magic = new MagicInfoRunItem(skill) { MaxLevel = spellLevel };
 
                         if (magic.Info == null)  // 技能表里不存在该 Spell（非法 id）
                         {
@@ -1134,9 +1134,12 @@ namespace Server.MirObjects
 
                         if (player.Info.Magics.Any(e => e.Spell == skill))
                         {
-                            player.Info.Magics.FirstOrDefault(e => e.Spell == skill).Level = spellLevel;
+                            var existing = player.Info.Magics.FirstOrDefault(e => e.Spell == skill);
+                            existing.MaxLevel = spellLevel;
+                            existing.Level = 0;
+                            existing.Experience = 0;
 
-                            Enqueue(new S.MagicLeveled { ObjectID = ObjectID, Spell = magic.Spell, Level = magic.Level, Experience = 0 });
+                            player.SendMagicInfo(existing);
 
                             string skillChangeMsg = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SpellChangedByGM), player.Name, skill.ToString(), spellLevel, Name);
 

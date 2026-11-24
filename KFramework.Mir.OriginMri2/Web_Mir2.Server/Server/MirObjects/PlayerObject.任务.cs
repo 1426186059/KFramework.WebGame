@@ -443,7 +443,7 @@ namespace Server.MirObjects
             if (magic == null) return false;
 
             MagicInfoRunItem um = GetMagic(magic.Spell);
-            return um != null && um.Level > 0;
+            return um != null && um.IsLearned();
         }
 
         /// <summary>无 NPC 的技能目标达成：直接接取→完成→发奖→推进下一环，跳过 NPC 交付校验。</summary>

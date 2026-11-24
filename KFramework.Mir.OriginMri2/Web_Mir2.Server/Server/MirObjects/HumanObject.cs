@@ -3436,8 +3436,8 @@ namespace Server.MirObjects
                 return;
             }
 
-            // 未学技能（Level=0，仅用于面板展示）不允许释放。
-            if (magic.Level == 0)
+            // 未学技能（仅用于面板展示）不允许释放；Level 是 0 起的当前实际等级。
+            if (!magic.IsLearned())
             {
                 Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
                 return;
@@ -7159,6 +7159,13 @@ namespace Server.MirObjects
 
             int oldLevel = magic.Level;
 
+            // MaxLevel 是技能书决定的上限，Level 从 0 起表示第 Level+1 级。
+            // 未学（MaxLevel=0）和已满级都不再涨熟练度。
+            if (magic.Level + 1 >= magic.MaxLevel)
+            {
+                return;
+            }
+
             switch (magic.Level)
             {
                 case 0:
@@ -7204,8 +7211,8 @@ namespace Server.MirObjects
             // 原始传奇 JS: SkillControl.update case 9008 → ncm.show("【"+技能名+"】 熟练度+"+addSkillPoint)
             // 每次施法涨熟练度都在左上角提示区显示（OutputMessageType.Quest，金色，不进聊天框）。
             // LevelMagic 定义在 HumanObject（玩家/怪物共用），只有 PlayerObject 有该提示通道。
-            // Level=0 是 LearnOriginSkills 的未学占位，玩家没学技能时不弹熟练度提示。
-            if (exp > 0 && magic.Level > 0 && this is PlayerObject thisPlayer)
+            // 没学技能时不弹熟练度提示。
+            if (exp > 0 && magic.IsLearned() && this is PlayerObject thisPlayer)
             {
                 // 原始传奇 SkillControl update：白色字 "[技能名] 熟练度+N"；默认白色+描边。
                 thisPlayer.ReceiveOutputMessage($"[{magic.Info.Name}] 熟练度+{exp}", OutputMessageType.Normal);

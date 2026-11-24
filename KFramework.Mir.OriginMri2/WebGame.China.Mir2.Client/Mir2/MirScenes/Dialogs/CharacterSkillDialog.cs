@@ -150,7 +150,7 @@ namespace Client.MirScenes.Dialogs
                 // 点"设置"文字 → 弹数字键面板（与 JS RolePop_jnRender.onTouch→uim.show(773) 一致）
                 row.OnAssignKey += magic =>
                 {
-                    if (magic == null || magic.Level == 0) return;
+                    if (magic == null || !magic.IsLearned()) return;
                     new AssignKeyPanel(magic, MainKeyOffset, null) { Actor = GameScene.User };
                 };
                 _rows.Add(row);
@@ -259,7 +259,7 @@ namespace Client.MirScenes.Dialogs
                 _icon.ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
                 _icon.ForeColour = CommonColor.White;
 
-                bool learned = magic.Level > 0;
+                bool learned = magic.IsLearned();
                 _name.Text = magic.Name;
                 _name.ForeColour = learned ? LearnColour : UnlearnColour;
                 _level.Text = learned ? magic.Level.ToString() : "";

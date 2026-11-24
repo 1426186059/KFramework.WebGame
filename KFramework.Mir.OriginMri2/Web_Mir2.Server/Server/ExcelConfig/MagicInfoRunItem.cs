@@ -22,6 +22,12 @@ namespace Server.ExcelConfig
         public bool IsTempSpell;
         public long CastTime;
 
+        // 是否已学会：MaxLevel>0 表示技能书/自动学会已解锁；Level 是 0 起的当前等级，不能用来判断。
+        public bool IsLearned()
+        {
+            return MaxLevel > 0;
+        }
+
         private MagicInfoTable GetMagicInfo(Spell spell)
         {
             for (int i = 0; i < Envir.MagicInfoList.Count; i++)

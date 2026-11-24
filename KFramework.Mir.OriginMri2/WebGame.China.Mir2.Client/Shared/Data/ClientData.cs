@@ -94,6 +94,12 @@ public class ClientMagic
         writer.Write(MaxLevel);
     }
 
+    // 是否已学会：MaxLevel>0 表示技能书/自动学会已解锁。
+    public bool IsLearned()
+    {
+        return MaxLevel > 0;
+    }
+
 }
 
 public class ClientRecipeInfo
