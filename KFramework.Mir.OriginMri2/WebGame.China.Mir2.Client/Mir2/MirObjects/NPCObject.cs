@@ -46,6 +46,15 @@ namespace Client.MirObjects
 
         public QuestIcon QuestIcon = QuestIcon.None;
 
+        // ===== NPC 头顶任务标记（原始传奇 effect 499 / model 10102 循环特效）=====
+        // 原始传奇 JS：TaskData.mainTaskUpate 里，仅当"当前任务 Finish(完成待交) 且该 NPC 是 tnpc(交付NPC)"
+        // 时调 npc.setTask(true) → addEntityEffect(npc, 499, 270, 120, -1, 0) 循环特效；其它状态一律不显示。
+        private const int TaskEffectId = 499;
+        private bool _taskEffectActive;
+        private int _taskEffectModel, _taskEffectAction, _taskEffectDir, _taskEffectIntval;
+        private int _taskEffectFrame;
+        private long _taskEffectNextFrame;
+
         private bool _canChangeDir = true;
 
         public bool CanChangeDir
@@ -121,6 +130,7 @@ namespace Client.MirObjects
             bool update = CMain.Time >= NextMotion || GameScene.CanMove;
 
             ProcessFrames();
+            ProcessTaskEffect();
 
             if (update)
             {
@@ -390,6 +400,24 @@ namespace Client.MirObjects
                 drawnByCdn = true;
             }
 
+            // 原始传奇头顶任务特效（effect 499 / model 10102）：完成待交时循环播放，
+            // 锚点对齐 NPC 脚底并向上抬到名字上方；DrawAnchored 用 model 自身 stand(315,266) 定位。
+            // 激活时不再画经典 .Lib 图标，两套标记互斥。
+            if (_taskEffectActive && _taskEffectModel > 0)
+            {
+                // JS: addEntityEffect(npc, 499, 270, 120, -1, 0) → p.x=270, p.y=120，
+                // NormalEffect.initDisplay 把帧的 stand(315,266) 对齐到 animation 原点，
+                // animation 挂在 entity.display（原点=NPC 脚点）。所以特效 stand 点 = 脚点 + (270,120)，
+                // 特效图案主体（在 stand 上方）因此落在 NPC 头顶。之前误用 (0,-96) 导致严重偏离。
+                const int TaskEffectOffsetX = 270;
+                const int TaskEffectOffsetY = 120;
+                Mir2OriginObjectLibrary.DrawAnchored(
+                    Mir2ObjectKind.Monster, _taskEffectModel, _taskEffectAction, _taskEffectDir, _taskEffectFrame,
+                    DrawLocation.X + TaskEffectOffsetX, DrawLocation.Y + TaskEffectOffsetY, CommonColor.White);
+                return;
+            }
+
+            // 经典 .Lib 任务图标（旧 NPC 用；原始传奇 model NPC 走上面的 effect 499）
             if (QuestIcon == QuestIcon.None) return;
             if (BodyLibrary == null) return;
 
@@ -500,6 +528,63 @@ namespace Client.MirObjects
             }
 
             QuestIcon = bestIcon;
+
+            // 原始传奇头顶标记：只有"当前任务已完成待交(Taken && Completed) 且本 NPC 就是交付 NPC(tnpc)"
+            // 才显示循环特效 499（JS: TaskData.mainTaskUpate → npc.setTask(true) → addEntityEffect(499)）。
+            // 可接(NotAccepted)、进行中(Accepted) 都不显示。
+            bool hasFinishQuest = User.CurrentQuests.Any(q =>
+                q != null && q.Taken && q.Completed &&
+                !User.CompletedQuests.Contains(q.Id) &&
+                q.QuestInfo != null && q.QuestInfo.FinishNpcObjectID == ObjectID);
+            SetTaskEffect(hasFinishQuest);
+        }
+
+        /// <summary>开关 NPC 头顶任务循环特效（对齐原始传奇 setTask/inittask）。</summary>
+        private void SetTaskEffect(bool active)
+        {
+            if (active == _taskEffectActive) return;
+            _taskEffectActive = active;
+
+            if (!active)
+            {
+                _taskEffectFrame = 0;
+                return;
+            }
+
+            if (!ExcelTableMgr.TryGetEffect(TaskEffectId, out var effect))
+            {
+                _taskEffectActive = false;
+                return;
+            }
+            _taskEffectModel = effect.model;
+            _taskEffectAction = effect.action > 0 ? effect.action : 1;
+            _taskEffectDir = effect.dir;
+            _taskEffectIntval = effect.intval > 0 ? effect.intval : 100;
+            _taskEffectFrame = 0;
+            _taskEffectNextFrame = CMain.Time;
+
+            if (_taskEffectModel > 0)
+            {
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _taskEffectModel, _taskEffectAction, _taskEffectDir,
+                                                Mir2OriginObjectLibrary.PriorityVisible);
+            }
+        }
+
+        /// <summary>推进头顶任务特效帧（循环播放，JS 里 addEntityEffect loop=-1）。</summary>
+        private void ProcessTaskEffect()
+        {
+            if (!_taskEffectActive || _taskEffectModel <= 0) return;
+            if (CMain.Time < _taskEffectNextFrame) return;
+
+            if (!Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _taskEffectModel, _taskEffectAction, _taskEffectDir, out int count) || count <= 0)
+            {
+                _taskEffectNextFrame = CMain.Time + 100; // 资源未就绪，稍后重试
+                return;
+            }
+
+            _taskEffectFrame = (_taskEffectFrame + 1) % count;
+            _taskEffectNextFrame = CMain.Time + _taskEffectIntval;
+            GameScene.Scene.MapControl.TextureValid = false;
         }
 
         public List<ClientQuestProgress> GetAvailableQuests(bool returnFirst = false)
