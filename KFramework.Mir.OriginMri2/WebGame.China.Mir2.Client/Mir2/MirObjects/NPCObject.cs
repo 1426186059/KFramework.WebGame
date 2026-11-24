@@ -75,7 +75,7 @@ namespace Client.MirObjects
             MapLocation = info.Location;
             GameScene.Scene.MapControl.AddObject(this);
 
-            Quests = GameScene.QuestInfoList.Where(c => c.NPCIndex == ObjectID).ToList();
+            Quests = GameScene.QuestInfoList.Where(c => c.StartNpcObjectID == ObjectID).ToList();
 
             Image = info.Image;
             Scale = info.Scale > 0 ? info.Scale : 1f; // 数据未配置缩放（ScalePercent=0）时回落默认 1；否则按 0 缩放会渲染成 1px 不可见
@@ -502,11 +502,11 @@ namespace Client.MirObjects
 
             foreach (ClientQuestProgress q in User.CurrentQuests.Where(q => !User.CompletedQuests.Contains(q.QuestInfo.Index)))
             {
-                if (q.QuestInfo.FinishNPCIndex == ObjectID)
+                if (q.QuestInfo.FinishNpcObjectID == ObjectID)
                 {
                     quests.Add(q);
                 }
-                else if (q.QuestInfo.NPCIndex == ObjectID && q.QuestInfo.SameFinishNPC)
+                else if (q.QuestInfo.StartNpcObjectID == ObjectID && q.QuestInfo.SameFinishNPC)
                 {
                     quests.Add(q);
 

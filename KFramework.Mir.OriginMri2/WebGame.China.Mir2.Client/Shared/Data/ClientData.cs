@@ -385,7 +385,7 @@ public class ClientQuestInfo
 {
     public int Index;
 
-    public uint NPCIndex;
+    public uint StartNpcObjectID;
 
     public string Name, Group;
     public List<string> Description = new List<string>();
@@ -410,11 +410,11 @@ public class ClientQuestInfo
     public List<QuestItemReward> RewardsFixedItem = new List<QuestItemReward>();
     public List<QuestItemReward> RewardsSelectItem = new List<QuestItemReward>();
 
-    public uint FinishNPCIndex;
+    public uint FinishNpcObjectID;
 
     public bool SameFinishNPC
     {
-        get { return NPCIndex == FinishNPCIndex; }
+        get { return StartNpcObjectID == FinishNpcObjectID; }
     }
 
     public ClientQuestInfo() { }
@@ -422,7 +422,7 @@ public class ClientQuestInfo
     public ClientQuestInfo(BinaryReader reader)
     {
         Index = reader.ReadInt32();
-        NPCIndex = reader.ReadUInt32();
+        StartNpcObjectID = reader.ReadUInt32();
         Name = reader.ReadString();
         Group = reader.ReadString();
 
@@ -469,12 +469,12 @@ public class ClientQuestInfo
         for (int i = 0; i < count; i++)
             RewardsSelectItem.Add(new QuestItemReward(reader));
 
-        FinishNPCIndex = reader.ReadUInt32();
+        FinishNpcObjectID = reader.ReadUInt32();
     }
     public void Save(BinaryWriter writer)
     {
         writer.Write(Index);
-        writer.Write(NPCIndex);
+        writer.Write(StartNpcObjectID);
         writer.Write(Name);
         writer.Write(Group);
 
@@ -520,7 +520,7 @@ public class ClientQuestInfo
         for (int i = 0; i < RewardsSelectItem.Count; i++)
             RewardsSelectItem[i].Save(writer);
 
-        writer.Write(FinishNPCIndex);
+        writer.Write(FinishNpcObjectID);
     }
 
     public QuestIcon GetQuestIcon(bool taken = false, bool completed = false)

@@ -703,8 +703,8 @@ namespace Server.MirDatabase
             return new ClientQuestInfo
             {
                 Index = Index,
-                NPCIndex = startNpcObjectID,
-                FinishNPCIndex = finishNpcObjectID,
+                StartNpcObjectID = startNpcObjectID,
+                FinishNpcObjectID = finishNpcObjectID,
                 Name = Name,
                 Group = Group,
                 Description = description,

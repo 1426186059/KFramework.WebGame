@@ -3137,7 +3137,7 @@ namespace Client.MirScenes
 
                     if (p.AutoGuide)
                     {
-                        AutoGuideToQuestNPC(p.Quest.QuestInfo.NPCIndex);
+                        AutoGuideToQuestNPC(p.Quest.QuestInfo.StartNpcObjectID);
                     }
 
                     // 任务面板刷新：对齐原始传奇 TaskState —— 接取后若任务立刻完成(Finish)则保持面板
@@ -3215,7 +3215,7 @@ namespace Client.MirScenes
 
         /// <summary>
         /// 自动接龙引导：寻路走到任务关联的发放 NPC。
-        /// ClientQuestInfo.NPCIndex 即 NPC 运行时世界唯一索引(ObjectID)，可直接在 MapControl.Objects 中按 ObjectID 取到该 NPC 再走过去。
+        /// ClientQuestInfo.StartNpcObjectID 即 NPC 运行时 ObjectID，可直接在 MapControl.Objects 中按 ObjectID 取到该 NPC 再走过去。
         /// 该 NPC 必须在当前地图才有效；跨图时客户端没有这个 NPC 对象，自动寻路自然 no-op，
         /// 由任务追踪栏继续给出指引（跨图自动移动需另行接传送逻辑）。
         /// </summary>
