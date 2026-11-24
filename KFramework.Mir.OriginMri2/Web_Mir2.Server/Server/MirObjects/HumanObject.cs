@@ -7134,6 +7134,11 @@ namespace Server.MirObjects
         }
         public void LevelMagic(MagicInfoRunItem magic)
         {
+            if (magic == null || magic.Info == null || !magic.IsLearned())
+            {
+                return;
+            }
+
             byte exp = (byte)(Envir.Random.Next(3) + 1);
 
             if (Settings.MentorSkillBoost && Info.Mentor != 0 && Info.IsMentor)
@@ -7147,7 +7152,9 @@ namespace Server.MirObjects
                         if (Stats[Stat.SkillGainMultiplier] == 1)
                         {
                             if (GroupMembers != null && GroupMembers.Contains(player))
+                            {
                                 exp *= 2;
+                            }
                         }
                     }
                 }
@@ -7155,67 +7162,65 @@ namespace Server.MirObjects
 
             exp *= (byte)Math.Min(byte.MaxValue, Stats[Stat.SkillGainMultiplier]);
 
-            if (Level == ushort.MaxValue) exp = byte.MaxValue;
-
-            int oldLevel = magic.Level;
-
-            // MaxLevel 是技能书决定的上限，Level 从 0 起表示第 Level+1 级。
-            // 未学（MaxLevel=0）和已满级都不再涨熟练度。
-            if (magic.Level + 1 >= magic.MaxLevel)
+            if (Level == ushort.MaxValue)
+            {
+                exp = byte.MaxValue;
+            }
+            if (exp == 0)
             {
                 return;
             }
 
+            int oldLevel = magic.Level;
+
+            // 原始传奇 9008 包：level（技能书等级）、skillPoint（熟练度）是两个独立值。
+            // 熟练度只要施法就涨，攒满当前阶段后即使还没学下一级技能书也保持上限，不能在满级时直接 return。
+            ushort need = 0;
+            byte needLevel = 0;
             switch (magic.Level)
             {
                 case 0:
-                    if (Level < magic.Info.Level1)
-                        return;
-
-                    magic.Experience += exp;
-                    if (magic.Experience >= magic.Info.Need1)
-                    {
-                        magic.Level++;
-                        magic.Experience = (ushort)(magic.Experience - magic.Info.Need1);
-                        RefreshStats();
-                    }
+                    need = magic.Info.Need1;
+                    needLevel = magic.Info.Level1;
                     break;
                 case 1:
-                    if (Level < magic.Info.Level2)
-                        return;
-
-                    magic.Experience += exp;
-                    if (magic.Experience >= magic.Info.Need2)
-                    {
-                        magic.Level++;
-                        magic.Experience = (ushort)(magic.Experience - magic.Info.Need2);
-                        RefreshStats();
-                    }
+                    need = magic.Info.Need2;
+                    needLevel = magic.Info.Level2;
                     break;
                 case 2:
-                    if (Level < magic.Info.Level3)
-                        return;
-
-                    magic.Experience += exp;
-                    if (magic.Experience >= magic.Info.Need3)
-                    {
-                        magic.Level++;
-                        magic.Experience = 0;
-                        RefreshStats();
-                    }
+                    need = magic.Info.Need3;
+                    needLevel = magic.Info.Level3;
                     break;
                 default:
-                    return;
+                    break;
+            }
+
+            bool hasProficiencyRoom = need > 0 && magic.Experience < need;
+
+            int total = magic.Experience;
+            if (need > 0)
+            {
+                total = Math.Min(need, total + exp);
+            }
+
+            // 只有 magic.Level >= magic.MaxLevel 才停止升级；MaxLevel=1 时 Level=0 仍可攒满熟练度升到 1。
+            bool canLevel = need > 0 && magic.Level < magic.MaxLevel && Level >= needLevel;
+            if (canLevel && total >= need)
+            {
+                magic.Level++;
+                magic.Experience = magic.Level >= 3 ? (ushort)0 : (ushort)(total - need);
+                RefreshStats();
+            }
+            else
+            {
+                magic.Experience = (ushort)total;
             }
 
             // 原始传奇 JS: SkillControl.update case 9008 → ncm.show("【"+技能名+"】 熟练度+"+addSkillPoint)
-            // 每次施法涨熟练度都在左上角提示区显示（OutputMessageType.Quest，金色，不进聊天框）。
-            // LevelMagic 定义在 HumanObject（玩家/怪物共用），只有 PlayerObject 有该提示通道。
-            // 没学技能时不弹熟练度提示。
-            if (exp > 0 && magic.IsLearned() && this is PlayerObject thisPlayer)
+            // 每次施法涨熟练度都在左上角提示区显示，不塞进聊天框。
+            if (hasProficiencyRoom && this is PlayerObject thisPlayer)
             {
-                // 原始传奇 SkillControl update：白色字 "[技能名] 熟练度+N"；默认白色+描边。
-                thisPlayer.ReceiveOutputMessage($"[{magic.Info.Name}] 熟练度+{exp}", OutputMessageType.Normal);
+                thisPlayer.ReceiveOutputMessage($"【{magic.Info.Name}】 熟练度+{exp}", OutputMessageType.Normal);
             }
 
             if (oldLevel != magic.Level)
@@ -7225,7 +7230,6 @@ namespace Server.MirObjects
             }
 
             Enqueue(new S.MagicLeveled { ObjectID = ObjectID, Spell = magic.Spell, Level = magic.Level, Experience = magic.Experience });
-
         }
         public virtual bool MagicTeleport(MagicInfoRunItem magic)
         {
