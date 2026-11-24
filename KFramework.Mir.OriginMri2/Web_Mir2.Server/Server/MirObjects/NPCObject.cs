@@ -63,37 +63,46 @@ namespace Server.MirObjects
             // NPC 脚本文件名必须与配置表里的 Name 一致，否则直接打印错误
             string scriptName = System.IO.Path.GetFileNameWithoutExtension(Info.FileName);
             if (Info.OriginSettings == null && !string.Equals(scriptName, Info.Name, StringComparison.Ordinal))
+            {
                 MessageQueue.Enqueue($"[NPC脚本] 文件名与配置名字不匹配: NPC='{Info.Name}' 脚本='{Info.FileName}'");
+            }
 
             // 内嵌配置的 NPC 没有 [Quests] 脚本段，按 OriginSettings 的 fnpc/tnpc 直接绑定任务实例。
             if (Info.OriginSettings != null)
+            {
                 BindOriginQuests();
+            }
 
             var script = NPCScript.GetOrAdd(ObjectID, Info.FileName, NPCScriptType.Normal);
-
             ScriptID = script.ScriptID;
         }
 
         private void BindOriginQuests()
         {
-            foreach (var quest in Envir.QuestInfoList)
+            foreach (QuestInfoRunItem quest in Envir.QuestInfoList)
             {
-                if (string.IsNullOrEmpty(quest.source)) continue;
+                if (string.IsNullOrEmpty(quest.source))
+                {
+                    continue;
+                }
 
                 if (quest.fnpc == Info.Index)
                 {
                     quest.NpcObjectID = ObjectID;
                     quest.NpcInfo = Info;
-                    if (!Quests.Contains(quest)) Quests.Add(quest);
+                    if (!Quests.Contains(quest))
+                    {
+                        Quests.Add(quest);
+                    }
                 }
 
                 if (quest.tnpc == Info.Index)
                 {
                     quest.FinishNpcObjectID = ObjectID;
-                    // 交付 NPC 也要把任务纳入 Quests：客户端 S.ObjectNPC.QuestIDs 据此判定
-                    // "这个 NPC 有我的待交任务"并弹出任务面板。此前只按 fnpc 绑定，
-                    // 夏家店老板(tnpc=10091, fnpc=10201比奇老兵)的 532 买药任务交不了，面板空白。
-                    if (!Quests.Contains(quest)) Quests.Add(quest);
+                    if (!Quests.Contains(quest))
+                    {
+                        Quests.Add(quest);
+                    }
                 }
             }
         }
