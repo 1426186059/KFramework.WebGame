@@ -30,13 +30,24 @@ public class InIReader
     #endregion
 
     #region Functions
+    // 行尾注释：值后面的 ";..." 不算配置内容，读取时剥掉。
+    private static string StripComment(string value)
+    {
+        int index = value.IndexOf(';');
+        if (index >= 0)
+        {
+            value = value.Substring(0, index);
+        }
+        return value.Trim();
+    }
+
     private string FindValue(string section, string key)
     {
         for (int a = 0; a < _contents.Count; a++)
             if (String.CompareOrdinal(_contents[a], "[" + section + "]") == 0)
                 for (int b = a + 1; b < _contents.Count; b++)
                     if (String.CompareOrdinal(_contents[b].Split('=')[0], key) == 0)
-                        return _contents[b].Split('=')[1];
+                        return StripComment(_contents[b].Split('=')[1]);
                     else if (_contents[b].StartsWith("[") && _contents[b].EndsWith("]"))
                         return null;
         return null;
@@ -333,105 +344,121 @@ public class InIReader
     #endregion
 
     #region Write
+    // 写回时保留原行尾 ";..." 注释：把新值拼在注释前面。
+    private void SetLine(string section, string key, string value)
+    {
+        int index = FindIndex(section, key);
+        string oldLine = _contents[index];
+        int comment = oldLine.IndexOf(';');
+        if (comment >= 0)
+        {
+            _contents[index] = key + "=" + value + " " + oldLine.Substring(comment);
+        }
+        else
+        {
+            _contents[index] = key + "=" + value;
+        }
+    }
+
     public void Write(string section, string key, bool value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, byte value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, sbyte value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, ushort value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, short value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, uint value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, int value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, ulong value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, long value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, float value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, double value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, decimal value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, string value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, char value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
 
     public void Write(string section, string key, Point value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value.X + "," + value.Y;
+        SetLine(section, key, value.X + "," + value.Y);
         Save();
     }
 
     public void Write(string section, string key, Size value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value.Width + "," + value.Height;
+        SetLine(section, key, value.Width + "," + value.Height);
         Save();
     }
 
     public void Write(string section, string key, TimeSpan value)
     {
-        _contents[FindIndex(section, key)] = key + "=" + value;
+        SetLine(section, key, value.ToString());
         Save();
     }
     #endregion
