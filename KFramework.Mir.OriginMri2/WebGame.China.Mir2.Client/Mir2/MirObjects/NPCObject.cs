@@ -20,9 +20,8 @@ namespace Client.MirObjects
         public FrameSet Frames;
         public Frame Frame;
 
-        public long QuestTime;
         public int BaseIndex, FrameIndex, FrameInterval,
-            EffectFrameIndex, EffectFrameInterval, QuestIndex;
+            EffectFrameIndex, EffectFrameInterval;
 
         public ushort Image;
         public Color Colour = CommonColor.White;
@@ -205,12 +204,6 @@ namespace Client.MirObjects
 
             if (colour != DrawColour) GameScene.Scene.MapControl.TextureValid = false;
 
-
-            if (CMain.Time > QuestTime)
-            {
-                QuestTime = CMain.Time + 500;
-                if (++QuestIndex > 1) QuestIndex = 0;
-            }
         }
         public virtual void ProcessFrames()
         {
@@ -416,17 +409,6 @@ namespace Client.MirObjects
                     DrawLocation.X + TaskEffectOffsetX, DrawLocation.Y + TaskEffectOffsetY, CommonColor.White);
                 return;
             }
-
-            // 经典 .Lib 任务图标（旧 NPC 用；原始传奇 model NPC 走上面的 effect 499）
-            if (QuestIcon == QuestIcon.None) return;
-            if (BodyLibrary == null) return;
-
-            var offSet = BodyLibrary.GetOffSet(BaseIndex);
-            var size = BodyLibrary.GetSize(BaseIndex);
-
-            int imageIndex = 981 + ((int)QuestIcon * 2) + QuestIndex;
-
-            Libraries.Prguse.Draw(imageIndex, DrawLocation.Add(offSet).Add(size.Width / 2 - 28, -40), CommonColor.White, false);
         }
 
         public override bool MouseOver(Point p)
