@@ -1593,8 +1593,18 @@ namespace Server.MirNetwork
                 return;
             }
 
-            MessageQueue.Enqueue($"[NPC诊断] 转发到 Player.CallNPC: ObjectID={p.ObjectID} Key={p.Key}");
-            Player.CallNPC(p.ObjectID, p.Key);
+            // 恢复早期逻辑：玩家直接点 NPC（[@Main]）时，服务端判断该 NPC 是否正是当前任务的目标/交付 NPC；
+            // 是则要求客户端弹 NPC 任务面板，否则保持普通 NPC 面板。
+            bool openQuestPanel = false;
+            if (string.Equals(p.Key, NPCScript.MainKey, StringComparison.OrdinalIgnoreCase))
+            {
+                NPCObject questNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == p.ObjectID);
+                openQuestPanel = questNPC != null && NPCScript.PlayerHasQuestAt(Player, questNPC);
+                MessageQueue.Enqueue($"[NPC诊断] 任务面板自动判定: ObjectID={p.ObjectID} hasQuest={openQuestPanel}");
+            }
+
+            MessageQueue.Enqueue($"[NPC诊断] 转发到 Player.CallNPC: ObjectID={p.ObjectID} Key={p.Key} openQuestPanel={openQuestPanel}");
+            Player.CallNPC(p.ObjectID, p.Key, openQuestPanel);
         }
 
         private void BuyItem(C.BuyItem p)

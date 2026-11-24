@@ -145,6 +145,31 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
         }
 
+        /// <summary>
+        /// 服务端 S.NPCResponse.OpenQuestPanel=true 时的专用入口：服务端已经确认该 NPC 有待交/可接任务，
+        /// 不再走 GetAvailableQuests() 的本地匹配（匹配不到会立刻 Hide，表现为点击任务追踪没反应）。
+        /// </summary>
+        public void ShowForced(uint npcID)
+        {
+            Visible = true;
+            CurrentNPCID = npcID;
+            Reset();
+
+            var matched = GameScene.User.CurrentQuests
+                .Where(q => !GameScene.User.CompletedQuests.Contains(q.QuestInfo.Index) &&
+                            (q.QuestInfo.FinishNpcObjectID == npcID ||
+                             (q.QuestInfo.StartNpcObjectID == npcID && q.QuestInfo.SameFinishNPC)))
+                .ToList();
+
+            // 本地任务信息还没刷新时也不要关面板：交给后续 S.ChangeQuest 包刷新。
+            Quests = matched.Count > 0
+                ? matched
+                : GameScene.User.CurrentQuests.Where(q => !GameScene.User.CompletedQuests.Contains(q.QuestInfo.Index)).ToList();
+
+            RefreshInterface();
+            GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
+        }
+
         public void Toggle()
         {
             if (!Visible)

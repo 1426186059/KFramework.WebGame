@@ -938,7 +938,7 @@ namespace Server.MirObjects
         ///  - 可交：玩家进行中任务的交付 NPC 是这个 NPC（包括目标已达成待交的任务）；
         ///  - 可接：这个 NPC 关联的任务里有玩家可接（CanOffer）且未完成的。
         /// </summary>
-        private static bool PlayerHasQuestAt(PlayerObject player, NPCObject npc)
+        public static bool PlayerHasQuestAt(PlayerObject player, NPCObject npc)
         {
             // 可交：进行中任务的交付 NPC = 该 NPC。
             // 注意不能排除 progress.Completed —— 目标达成待交的任务正是要弹面板让玩家领奖的，
@@ -947,7 +947,21 @@ namespace Server.MirObjects
             {
                 if (progress == null || progress.Info == null) continue;
                 if (player.CompletedQuests.Contains(progress.Info.Index)) continue;
-                if (progress.Info.FinishNpcObjectID == npc.ObjectID) return true;
+
+                var info = progress.Info;
+
+                // 原始传奇任务用策划表 NPC Index 判定，不能用 FinishNpcObjectID：
+                // 同一个 NPC（如夏家店老板 10091）有比奇省/毒蛇山谷等多个摆放实例，
+                // BindOriginQuests 会把全局 FinishNpcObjectID 覆盖成最后一个实例，
+                // 玩家点当前地图这个实例时就会误判为“没有任务”。
+                if (npc.Info != null && !string.IsNullOrEmpty(info.source))
+                {
+                    if (info.tnpc > 0 && info.tnpc == npc.Info.Index) return true;
+                    if (info.fnpc > 0 && info.fnpc == npc.Info.Index) return true;
+                }
+
+                if (info.FinishNpcObjectID == npc.ObjectID) return true;
+                if (info.NpcObjectID == npc.ObjectID) return true;
             }
 
             // 可接：NPC 关联任务里可接的（等级/职业/前置任务/追踪条件都满足）
@@ -961,6 +975,7 @@ namespace Server.MirObjects
                     // 发放 NPC = 该 NPC 即为可接（客户端 GetAvailableQuests 只判 CanAccept，不看交付 NPC）。
                     // 不要求同 NPC 自交：任务19"解救民兵之二"发放=被困的民兵、交付=奋战的民兵，
                     // 点被困的民兵仍要能弹面板接取。
+                    if (npc.Info != null && !string.IsNullOrEmpty(info.source) && info.fnpc > 0 && info.fnpc == npc.Info.Index) return true;
                     if (info.NpcObjectID == npc.ObjectID) return true;
                 }
             }

@@ -4078,7 +4078,10 @@ namespace Client.MirScenes
             if (showQuestPanel)
             {
                 NPCDialog.Hide();
-                QuestListDialog.Show();
+                if (p.OpenQuestPanel)
+                    QuestListDialog.ShowForced(NPCID);
+                else
+                    QuestListDialog.Show();
             }
             else if (hasNpcContent)
             {
