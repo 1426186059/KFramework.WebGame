@@ -33,14 +33,13 @@ namespace Server.MirObjects
         public long TurnTime, UsedGoodsTime, VisTime, SpeechTime;
         public bool Visible = true;
 
-        public Dictionary<int, bool> VisibleLog = new Dictionary<int, bool>();
-
+        public readonly Dictionary<int, bool> VisibleLog = new Dictionary<int, bool>();
         public ConquestObject Conq;
-        public List<QuestInfoRunItem> Quests = new List<QuestInfoRunItem>();
-        public List<NPCSpeech> Speech = new List<NPCSpeech>();
+        public readonly List<QuestInfoRunItem> Quests = new List<QuestInfoRunItem>();
+        public readonly List<NPCSpeech> Speech = new List<NPCSpeech>();
 
-        public List<UserItem> UsedGoods = new List<UserItem>();
-        public Dictionary<string, List<UserItem>> BuyBack = new Dictionary<string, List<UserItem>>();
+        public readonly List<UserItem> UsedGoods = new List<UserItem>();
+        public readonly Dictionary<string, List<UserItem>> BuyBack = new Dictionary<string, List<UserItem>>();
 
         public bool NeedSave;
 

@@ -501,15 +501,28 @@ namespace Client.MirObjects
 
         public void UpdateBestQuestIcon()
         {
-            ClientQuestProgress quests = GetAvailableQuests(true).FirstOrDefault();
-            QuestIcon bestIcon = QuestIcon.None;
-
-            if (quests != null)
+            // 头顶图标只认 CurrentQuests 里真实存在的任务：领奖后任务从 CurrentQuests 移除，图标必定消失。
+            // 不能用 GetAvailableQuests（它掺入 Quests+CanAccept 重建的"可接"条目，
+            // 而 Quests 含 tnpc 绑定的已领奖任务，会导致领奖后问号残留）。
+            ClientQuestProgress activeQuest = null;
+            foreach (ClientQuestProgress q in User.CurrentQuests)
             {
-                bestIcon = quests.Icon;
+                if (q == null || q.QuestInfo == null || User.CompletedQuests.Contains(q.QuestInfo.Index)) continue;
+                if (!Quests.Exists(link => link.Index == q.QuestInfo.Index) && q.QuestInfo.FinishNpcObjectID != ObjectID) continue;
+                activeQuest = q;
+                break;
             }
 
-            QuestIcon = bestIcon;
+            if (activeQuest != null)
+            {
+                QuestIcon = activeQuest.Icon;
+            }
+            else
+            {
+                // 无进行中任务时，显示本 NPC 上尚未领取的可接任务图标（感叹号）。
+                ClientQuestInfo offer = Quests.FirstOrDefault(q => CanAccept(q) && !User.CompletedQuests.Contains(q.Index));
+                QuestIcon = offer == null ? QuestIcon.None : offer.GetQuestIcon(false, false);
+            }
 
             // 原始传奇头顶标记：只有"当前任务已完成待交(Taken && Completed) 且本 NPC 就是交付 NPC(tnpc)"
             // 才显示循环特效 499（JS: TaskData.mainTaskUpate → npc.setTask(true) → addEntityEffect(499)）。
