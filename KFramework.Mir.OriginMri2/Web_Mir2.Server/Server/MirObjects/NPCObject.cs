@@ -175,7 +175,6 @@ namespace Server.MirObjects
             }
         }
 
-        #region Overrides
         public override void Process(DelayedAction action)
         {
             throw new NotSupportedException();
@@ -525,7 +524,6 @@ namespace Server.MirObjects
         {
             get { throw new NotSupportedException(); }
         }
-        #endregion
 
     }
 
