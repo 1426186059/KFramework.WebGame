@@ -85,7 +85,7 @@ namespace Server.MirObjects
                     continue;
                 }
 
-                if (quest.fnpc == Info.Index)
+                if (quest.fnpc == Info.Index) //这是 任务开始 NPC
                 {
                     quest.NpcObjectID = ObjectID;
                     quest.NpcInfo = Info;
@@ -95,13 +95,9 @@ namespace Server.MirObjects
                     }
                 }
 
-                if (quest.tnpc == Info.Index)
+                if (quest.tnpc == Info.Index) //这是 任务完成 NPC
                 {
                     quest.FinishNpcObjectID = ObjectID;
-                    if (!Quests.Contains(quest))
-                    {
-                        Quests.Add(quest);
-                    }
                 }
             }
         }

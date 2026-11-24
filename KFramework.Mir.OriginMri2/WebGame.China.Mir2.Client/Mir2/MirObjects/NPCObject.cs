@@ -501,28 +501,15 @@ namespace Client.MirObjects
 
         public void UpdateBestQuestIcon()
         {
-            // 头顶图标只认 CurrentQuests 里真实存在的任务：领奖后任务从 CurrentQuests 移除，图标必定消失。
-            // 不能用 GetAvailableQuests（它掺入 Quests+CanAccept 重建的"可接"条目，
-            // 而 Quests 含 tnpc 绑定的已领奖任务，会导致领奖后问号残留）。
-            ClientQuestProgress activeQuest = null;
-            foreach (ClientQuestProgress q in User.CurrentQuests)
+            ClientQuestProgress quests = GetAvailableQuests(true).FirstOrDefault();
+            QuestIcon bestIcon = QuestIcon.None;
+
+            if (quests != null)
             {
-                if (q == null || q.QuestInfo == null || User.CompletedQuests.Contains(q.QuestInfo.Index)) continue;
-                if (!Quests.Exists(link => link.Index == q.QuestInfo.Index) && q.QuestInfo.FinishNpcObjectID != ObjectID) continue;
-                activeQuest = q;
-                break;
+                bestIcon = quests.Icon;
             }
 
-            if (activeQuest != null)
-            {
-                QuestIcon = activeQuest.Icon;
-            }
-            else
-            {
-                // 无进行中任务时，显示本 NPC 上尚未领取的可接任务图标（感叹号）。
-                ClientQuestInfo offer = Quests.FirstOrDefault(q => CanAccept(q) && !User.CompletedQuests.Contains(q.Index));
-                QuestIcon = offer == null ? QuestIcon.None : offer.GetQuestIcon(false, false);
-            }
+            QuestIcon = bestIcon;
 
             // 原始传奇头顶标记：只有"当前任务已完成待交(Taken && Completed) 且本 NPC 就是交付 NPC(tnpc)"
             // 才显示循环特效 499（JS: TaskData.mainTaskUpate → npc.setTask(true) → addEntityEffect(499)）。
@@ -530,8 +517,7 @@ namespace Client.MirObjects
             bool hasFinishQuest = User.CurrentQuests.Any(q =>
                 q != null && q.Taken && q.Completed &&
                 !User.CompletedQuests.Contains(q.Id) &&
-                q.QuestInfo != null &&
-                (Quests.Exists(link => link.Index == q.QuestInfo.Index) || q.QuestInfo.FinishNpcObjectID == ObjectID));
+                q.QuestInfo != null && q.QuestInfo.FinishNpcObjectID == ObjectID);
             SetTaskEffect(hasFinishQuest);
         }
 
@@ -587,18 +573,8 @@ namespace Client.MirObjects
         {
             List<ClientQuestProgress> quests = new List<ClientQuestProgress>();
 
-            // 用服务端下发的 QuestIDs（本 NPC 绑定的任务 Index）判定归属，不用 ObjectID：
-            // 同一策划表 NPC 多地图摆放实例时，StartNpcObjectID/FinishNpcObjectID 会被覆盖成最后一个实例，
-            // 当前地图实例按 ObjectID 匹配必然失败 → 任务面板空白、点击没反应。
             foreach (ClientQuestProgress q in User.CurrentQuests.Where(q => !User.CompletedQuests.Contains(q.QuestInfo.Index)))
             {
-                if (Quests.Exists(link => link.Index == q.QuestInfo.Index))
-                {
-                    quests.Add(q);
-
-                    if (returnFirst) return quests;
-                    continue;
-                }
                 if (q.QuestInfo.FinishNpcObjectID == ObjectID)
                 {
                     quests.Add(q);

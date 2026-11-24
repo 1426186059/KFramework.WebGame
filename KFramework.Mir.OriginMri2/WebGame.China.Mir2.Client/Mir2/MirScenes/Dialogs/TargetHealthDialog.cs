@@ -92,6 +92,15 @@ namespace Client.MirScenes.Dialogs
         {
             if (!Visible || !_nameLabel.Visible) return;
 
+            // 血条宽度每帧按 PercentHealth 画，文字也必须每帧同步：
+            // 选中怪物的瞬间服务端 ObjectHealth（精确 HP/MaxHP）可能还没到，
+            // 此时 GetHealthText 走估算会得到 0；只刷一次的话就一直显示 0，
+            // 直到打一下触发新的血量包才更新。这里每帧重取，包一到立刻显示正确血量。
+            if (_current != null)
+            {
+                _hpLabel.Text = MapObject.GetHealthText(_current);
+            }
+
             // 底框（blood_bg0）：深色半透明底，居中
             Rectangle src1x1 = new Rectangle(0, 0, 1, 1);
             DXManager.Draw(DXManager.WhitePixel, src1x1,

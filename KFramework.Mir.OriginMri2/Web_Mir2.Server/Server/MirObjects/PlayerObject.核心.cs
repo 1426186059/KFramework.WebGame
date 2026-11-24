@@ -678,28 +678,30 @@ namespace Server.MirObjects
 
             RefreshStats();
         }
-        // 本次由 10倍经验点带来的额外经验，ConsumeTenFoldExp 设置、GainExp 发包后清零。
-        private uint _pendingTenFoldExtra;
+        // 本次是否用了 10 倍经验点（消耗 1 点 SExp）。ConsumeTenFoldExp 设置，GainExp 发包后清零。
+        // 用标记而非固定增量：后续组队/情侣/师徒/装备加成还会叠加到经验上，
+        // 必须在 GainExp 里按最终总额拆出"额外经验"（10 倍那 9/10），其余都算基础经验。
+        private bool _tenFoldActive;
 
         // 组队经验倍率（下标=附近队友数-1），提到类级避免每次击杀新建数组产生 GC。
         private static readonly float[] PartyExpRate = { 1.0F, 1.3F, 1.4F, 1.5F, 1.6F, 1.7F, 1.8F, 1.9F, 2F, 2.1F, 2.2F };
 
-        /// <summary>有 SExp 就消耗 1 点把本次经验 ×10，额外部分记入 _pendingTenFoldExtra 供发包显示。</summary>
+        /// <summary>有 SExp 就消耗 1 点把本次经验 ×10，并标记本次为 10 倍经验（供 GainExp 拆出额外经验）。</summary>
         public uint ConsumeTenFoldExp(uint amount)
         {
-            _pendingTenFoldExtra = 0;
+            _tenFoldActive = false;
             if (Info.SExp == 0)
             {
                 return amount;
             }
 
             Info.SExp--;
+            _tenFoldActive = true;
             ulong scaled = (ulong)amount * 10UL;
             if (scaled > uint.MaxValue)
             {
                 scaled = uint.MaxValue;
             }
-            _pendingTenFoldExtra = (uint)scaled - amount;
             return (uint)scaled;
         }
 
@@ -804,11 +806,12 @@ namespace Server.MirObjects
 
             Experience += amount;
 
-            // 基础经验 = 总额 - 10倍额外；ExtraExp 让客户端像原始传奇那样显示"获得 额外经验"。
-            // 读后清零，避免非击杀来源（任务/脚本）的下一次 GainExp 误带。
-            uint baseExp = amount > _pendingTenFoldExtra ? amount - _pendingTenFoldExtra : amount;
-            Enqueue(new S.GainExperience { Amount = baseExp, ExtraExp = _pendingTenFoldExtra });
-            _pendingTenFoldExtra = 0;
+            // 10 倍经验点：总额里 9/10 是 10 倍带来的额外经验，其余 1/10（含 ExpRate/组队/情侣等加成）算基础经验。
+            // 按最终 amount 拆，避免后续加成被错误算进额外经验。读后清零，避免下次非 10 倍来源误带。
+            uint baseExp = _tenFoldActive ? amount / 10 : amount;
+            uint extraExp = _tenFoldActive ? amount - baseExp : 0;
+            Enqueue(new S.GainExperience { Amount = baseExp, ExtraExp = extraExp });
+            _tenFoldActive = false;
 
             for (int i = 0; i < Pets.Count; i++)
             {

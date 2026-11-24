@@ -1678,7 +1678,7 @@ namespace Server.MirObjects
 
                 if (Level < book.NeedLevel)
                 {
-                    ReceiveChat("使用等级不足", ChatType.System);
+                    ReceiveOutputMessage($"使用技能书 <color=red>等级不足</color>", OutputMessageType.Normal);
                     Enqueue(p);
                     return;
                 }
