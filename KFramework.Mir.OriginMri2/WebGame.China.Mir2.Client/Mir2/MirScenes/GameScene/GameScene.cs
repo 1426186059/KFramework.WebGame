@@ -3201,13 +3201,20 @@ namespace Client.MirScenes
                     break;
                 }
 
-                // 完成列表由原 S.CompleteQuest 合并而来。这才是真正的"任务完成包"：
-                // 对比新旧完成列表，本次新增的每个任务都播一次完成特效（Play 内部排队，连续完成不丢）。
+                // 完成列表由原 S.CompleteQuest 合并而来。对比新旧列表，只对本次新增完成的任务播特效。
                 case QuestState.CompletedList:
-                    foreach (int finishedId in p.CompletedQuests)
+                    if (!User.CompletedListInitialized)
                     {
-                        if (User.CompletedQuests.Contains(finishedId)) continue;
-                        TaskCompleteEffect?.Play();
+                        // 登录首包是全量历史完成列表，不是"刚完成的任务"，只初始化不播特效。
+                        User.CompletedListInitialized = true;
+                    }
+                    else
+                    {
+                        foreach (int finishedId in p.CompletedQuests)
+                        {
+                            if (User.CompletedQuests.Contains(finishedId)) continue;
+                            TaskCompleteEffect?.Play();
+                        }
                     }
                     User.CompletedQuests = p.CompletedQuests;
                     break;

@@ -57,7 +57,6 @@ namespace Server.Database
             MonsterMoveSpeed.ValueType = typeof(ushort);
             MonsterViewRange.ValueType = typeof(byte);
             MonsterCoolEye.ValueType = typeof(byte);
-            MonsterExperience.ValueType = typeof(uint);
             MonsterCanPush.ValueType = typeof(bool);
             MonsterAutoRev.ValueType = typeof(bool);
             MonsterUndead.ValueType = typeof(bool);
@@ -154,7 +153,6 @@ namespace Server.Database
                 row["MonsterMoveSpeed"] = item.MoveSpeed;
                 row["MonsterViewRange"] = item.ViewRange;
                 row["MonsterCoolEye"] = item.CoolEye;
-                row["MonsterExperience"] = item.Experience;
                 row["MonsterCanPush"] = item.CanPush;
                 row["MonsterCanTame"] = item.CanTame;
                 row["MonsterIsBoss"] = item.IsBoss;
@@ -235,7 +233,6 @@ namespace Server.Database
                 monster.MoveSpeed = (ushort)row.Cells["MonsterMoveSpeed"].Value;
                 monster.ViewRange = (byte)row.Cells["MonsterViewRange"].Value;
                 monster.CoolEye = (byte)row.Cells["MonsterCoolEye"].Value;
-                monster.Experience = (uint)row.Cells["MonsterExperience"].Value;
                 monster.CanPush = (bool)row.Cells["MonsterCanPush"].Value;
                 monster.CanTame = (bool)row.Cells["MonsterCanTame"].Value;
                 monster.IsBoss = row.Cells["MonsterIsBoss"].Value != null && (bool)row.Cells["MonsterIsBoss"].Value;
@@ -619,7 +616,6 @@ namespace Server.Database
             row.Cells["MonsterMoveSpeed"].Value = (ushort)1800;
             row.Cells["MonsterViewRange"].Value = (byte)7;
             row.Cells["MonsterCoolEye"].Value = (byte)0;
-            row.Cells["MonsterExperience"].Value = (uint)0;
             row.Cells["MonsterCanPush"].Value = (bool)true;
             row.Cells["MonsterCanTame"].Value = (bool)true;
             row.Cells["MonsterIsBoss"].Value = (bool)false;

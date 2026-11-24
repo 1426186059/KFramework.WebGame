@@ -7201,6 +7201,14 @@ namespace Server.MirObjects
                     return;
             }
 
+            // 原始传奇 JS: SkillControl.update case 9008 → ncm.show("【"+技能名+"】 熟练度+"+addSkillPoint)
+            // 每次施法涨熟练度都在左上角提示区显示（OutputMessageType.Quest，金色，不进聊天框）。
+            // LevelMagic 定义在 HumanObject（玩家/怪物共用），只有 PlayerObject 有该提示通道。
+            if (exp > 0 && this is PlayerObject thisPlayer)
+            {
+                thisPlayer.ReceiveOutputMessage($"【{magic.Info.Name}】 熟练度+{exp}", OutputMessageType.Quest);
+            }
+
             if (oldLevel != magic.Level)
             {
                 long delay = magic.GetDelay();

@@ -44,7 +44,6 @@ namespace Server.Database
             MonsterMoveSpeed = new DataGridViewTextBoxColumn();
             MonsterViewRange = new DataGridViewTextBoxColumn();
             MonsterCoolEye = new DataGridViewTextBoxColumn();
-            MonsterExperience = new DataGridViewTextBoxColumn();
             MonsterCanPush = new DataGridViewCheckBoxColumn();
             MonsterAutoRev = new DataGridViewCheckBoxColumn();
             MonsterUndead = new DataGridViewCheckBoxColumn();
@@ -73,7 +72,7 @@ namespace Server.Database
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             monsterInfoGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             monsterInfoGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            monsterInfoGridView.Columns.AddRange(new DataGridViewColumn[] { Modified, MonsterIndex, MonsterName, MonsterImage, MonsterAI, MonsterEffect, MonsterLevel, MonsterLight, MonsterAttackSpeed, MonsterMoveSpeed, MonsterViewRange, MonsterCoolEye, MonsterExperience, MonsterCanPush, MonsterAutoRev, MonsterUndead, MonsterCanTame, MonsterIsBoss, MonsterRecall, MonsterDropPath });
+            monsterInfoGridView.Columns.AddRange(new DataGridViewColumn[] { Modified, MonsterIndex, MonsterName, MonsterImage, MonsterAI, MonsterEffect, MonsterLevel, MonsterLight, MonsterAttackSpeed, MonsterMoveSpeed, MonsterViewRange, MonsterCoolEye, MonsterCanPush, MonsterAutoRev, MonsterUndead, MonsterCanTame, MonsterIsBoss, MonsterRecall, MonsterDropPath });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -177,12 +176,6 @@ namespace Server.Database
             MonsterCoolEye.DataPropertyName = "MonsterCoolEye";
             MonsterCoolEye.HeaderText = "Cool Eye";
             MonsterCoolEye.Name = "MonsterCoolEye";
-            // 
-            // MonsterExperience
-            // 
-            MonsterExperience.DataPropertyName = "MonsterExperience";
-            MonsterExperience.HeaderText = "Experience";
-            MonsterExperience.Name = "MonsterExperience";
             // 
             // MonsterCanPush
             // 
@@ -390,7 +383,6 @@ namespace Server.Database
         private System.Windows.Forms.DataGridViewTextBoxColumn MonsterMoveSpeed;
         private System.Windows.Forms.DataGridViewTextBoxColumn MonsterViewRange;
         private System.Windows.Forms.DataGridViewTextBoxColumn MonsterCoolEye;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MonsterExperience;
         private System.Windows.Forms.DataGridViewCheckBoxColumn MonsterCanPush;
         private System.Windows.Forms.DataGridViewCheckBoxColumn MonsterAutoRev;
         private System.Windows.Forms.DataGridViewCheckBoxColumn MonsterUndead;

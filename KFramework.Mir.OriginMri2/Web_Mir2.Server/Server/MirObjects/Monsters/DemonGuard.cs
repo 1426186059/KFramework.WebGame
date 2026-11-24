@@ -15,7 +15,8 @@ namespace Server.MirObjects.Monsters
 
         public override uint Experience
         {
-            get { return Info.Experience * (100 - (25 * RevivalCount)) / 100; }
+            // 配置已无经验字段：基于等级公式算出的 base.Experience 按复活次数递减。
+            get { return base.Experience * (100 - (25 * RevivalCount)) / 100; }
         }
 
         protected internal DemonGuard(MonsterInfoTable info)

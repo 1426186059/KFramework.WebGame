@@ -81,8 +81,13 @@ namespace Server.MirObjects
         /// </summary>
         private void AdvanceTo(QuestInfoRunItem quest)
         {
-            // 原始传奇无 NPC 的技能学习任务不走"寻找NPC"（会显示 ???），交由 CheckSkillGoalQuests 按学会技能自动完成。
-            if (quest.skillGoals.Count > 0) return;
+            // 原始传奇无 NPC 的技能学习任务（学习技能一~四）不能走"寻找NPC"（会显示 ???），
+            // 自动接取进 CurrentQuests 让玩家能在追踪栏看到，学会对应技能后由 CheckSkillGoalQuests 完成。
+            if (quest.skillGoals.Count > 0)
+            {
+                _player.AutoAcceptQuest(quest.Index, showNPC: false);
+                return;
+            }
 
             bool auto = quest.state == 2;
             // 任务链自动推进下一环时不弹默认NPC面板：玩家可能正停在书店老板等对话界面操作，
@@ -105,8 +110,13 @@ namespace Server.MirObjects
                 if (q.RequiredMaxLevel > 0 && q.RequiredMaxLevel < newLevel) continue;
                 if (_player.CompletedQuests.Contains(q.Index)) continue;
                 if (_player.CurrentQuests.Exists(e => e.Index == q.Index)) continue;
-                // 无 NPC 的技能学习目标任务不派发"寻找NPC"（否则追踪栏显示 ???），交给 CheckSkillGoalQuests。
-                if (q.skillGoals.Count > 0) continue;
+                // 无 NPC 的技能学习目标任务（如"学习技能(一)"）：不能 OfferQuest（追踪栏会显示"寻找???"），
+                // 改为自动接取进 CurrentQuests，玩家能在任务追踪栏看到它，学会对应技能后由 CheckSkillGoalQuests 完成。
+                if (q.skillGoals.Count > 0)
+                {
+                    _player.AutoAcceptQuest(q.Index, showNPC: false);
+                    continue;
+                }
                 if (q.CanOffer(_player)) _player.OfferQuest(q.Index);
             }
         }

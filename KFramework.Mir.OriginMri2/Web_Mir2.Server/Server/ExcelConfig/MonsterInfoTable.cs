@@ -34,7 +34,7 @@ namespace Server.ExcelConfig
 
         public ushort AttackSpeed { get; set; } = 2500;
         public ushort MoveSpeed { get; set; } = 1800;
-        public uint Experience { get; set; }
+        // 怪物经验不存配置：由 MonsterObject.Experience 按等级公式统一计算（原始传奇配置无经验字段）。
 
         // 原始传奇怪物音效 id（4config.monster 的 walkaudio/attackaudio/dieaudio，对应 CDN audio/{id}.mp3）。
         // 为 0 表示该怪没有配置对应音效，客户端回退到通用音。
@@ -140,8 +140,6 @@ namespace Server.ExcelConfig
             AttackSpeed = reader.ReadUInt16();
             MoveSpeed = reader.ReadUInt16();
 
-            Experience = reader.ReadUInt32();
-
             CanPush = reader.ReadBoolean();
             CanTame = reader.ReadBoolean();
 
@@ -200,7 +198,6 @@ namespace Server.ExcelConfig
                     Light = Light,
                     AttackSpeed = AttackSpeed,
                     MoveSpeed = MoveSpeed,
-                    Experience = Experience,
                     CanTame = CanTame,
                     CanPush = CanPush,
                     AutoRev = AutoRev,
@@ -229,8 +226,6 @@ namespace Server.ExcelConfig
 
             writer.Write(AttackSpeed);
             writer.Write(MoveSpeed);
-
-            writer.Write(Experience);
 
             writer.Write(CanPush);
             writer.Write(CanTame);
@@ -282,8 +277,6 @@ namespace Server.ExcelConfig
             if (!ushort.TryParse(data[20], out ushort attackSpeed)) return;
             if (!ushort.TryParse(data[21], out ushort moveSpeed)) return;
 
-            if (!uint.TryParse(data[22], out uint experience)) return;
-            
             if (!bool.TryParse(data[23], out bool canTame)) return;
             if (!bool.TryParse(data[24], out bool canPush)) return;
 
@@ -293,7 +286,6 @@ namespace Server.ExcelConfig
 
             info.AttackSpeed = attackSpeed;
             info.MoveSpeed = moveSpeed;
-            info.Experience = experience;
             info.CanTame = canTame;
             info.CanPush = canPush;
             info.AutoRev = autoRev;

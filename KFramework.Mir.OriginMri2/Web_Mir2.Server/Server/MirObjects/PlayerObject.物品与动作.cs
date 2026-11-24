@@ -1705,6 +1705,9 @@ namespace Server.MirObjects
                     }
                     existing.Level = 1;
                     existing.Experience = 0;
+                    // 原始传奇 JS: openNewSkill → ncm.err("恭喜您已领悟：【"+技能名+"】")
+                    // 走左上角提示区（OutputMessageType.Quest），不塞进聊天框。
+                    ReceiveOutputMessage($"恭喜您已领悟：【{learned.Name}】", OutputMessageType.Quest);
                 }
                 else
                 {

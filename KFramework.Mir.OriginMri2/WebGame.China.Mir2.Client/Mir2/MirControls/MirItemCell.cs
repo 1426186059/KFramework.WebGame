@@ -656,6 +656,16 @@ namespace Client.MirControls
                 case ItemType.Socket:
                     UseSlotItem();
                     break;
+                default:
+                    // 原始传奇技能书等物品 Type=0（转换器产出，不走 ItemType.Book），
+                    // 上面所有 case 都不匹配 → 以前根本不发 C.UseItem 包，表现为"快捷使用没反应/没学会技能"。
+                    // 这里兜住所有未列出的背包物品：发给服务端，由服务端 SkillBookInfoTable 判定能否使用。
+                    if (CanUseItem() && GridType == MirGridType.Inventory)
+                    {
+                        Network.Enqueue(new C.UseItem { UniqueID = Item.UniqueID, Grid = GridType });
+                        Locked = true;
+                    }
+                    break;
             }
 
             GameScene.UseItemTime = CMain.Time + 300;

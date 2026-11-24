@@ -54,6 +54,9 @@ namespace Client.MirObjects
 
         public List<ClientQuestProgress> CurrentQuests = new List<ClientQuestProgress>();
         public List<int> CompletedQuests = new List<int>();
+        // 登录时服务端会发一次全量 CompletedList 初始化列表；那不是"新完成任务"，不能播完成特效，
+        // 否则历史所有已完成任务都会被当成新增、一次排队弹几十个特效。收到第一包后置 true。
+        public bool CompletedListInitialized;
         // 已开放（未接取）任务：左上角显示“寻找 NPC”，玩家前往后才正式接取。
         public List<ClientQuestProgress> OfferedQuests = new List<ClientQuestProgress>();
         public List<ClientMail> Mail = new List<ClientMail>();

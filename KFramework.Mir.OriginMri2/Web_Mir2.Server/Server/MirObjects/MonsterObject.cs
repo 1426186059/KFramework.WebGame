@@ -573,7 +573,12 @@ namespace Server.MirObjects
             get
             {
                 MonsterRarityProfile profile = GetRarityProfile();
-                double scaled = Info.Experience * profile.ExpMultiplier;
+
+                // 原始传奇客户端配置没有怪物经验字段，击杀经验由它服务端算、我们拿不到。
+                // 统一按等级公式计算（不读 MonsterInfo.Experience）：min(Level,200)*20+50，再乘稀有度倍率。
+                // 等级封顶 200 防 9999 级怪秒升级。
+                int cappedLevel = Math.Min((int)Level, 200);
+                double scaled = (cappedLevel * 20 + 50) * profile.ExpMultiplier;
 
                 if (scaled <= 0) return 0;
                 if (scaled > uint.MaxValue) return uint.MaxValue;
