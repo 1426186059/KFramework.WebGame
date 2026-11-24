@@ -17,13 +17,16 @@ namespace Client.MirObjects
         private readonly int _direction;
         private readonly int _intval;
         private readonly bool _addBlend;
-        private readonly int _yOffset;     // 屏幕Y偏移：命中特效上移到身体中部(SKILL_HitTestY=60)
+        private readonly int _xOffset;     // skillEffects.x：相对目标/施法者的屏幕 X 像素偏移
+        private readonly int _yOffset;     // 向上为正；skillEffects.y(向下为正)取反，或子弹终点补偿
         private readonly float _scale;     // 原始传奇 action show/100 缩放；<=0 表示不缩放
 
         public OriginEffect(int effectId, MapObject owner, long starttime = 0,
-                            int yOffset = 0, float scale = 1f)
+                            int xOffset = 0, int yOffset = 0, float scale = 1f)
             : base(null, 0, 1, 0, owner, starttime)
         {
+            _xOffset = xOffset;
+            _yOffset = yOffset;
             if (!ExcelTableMgr.TryGetEffect(effectId, out var effect))
             {
                 _model = 0;
@@ -35,7 +38,6 @@ namespace Client.MirObjects
             _direction = effect.dir;
             _intval = effect.intval > 0 ? effect.intval : 50;
             _addBlend = effect.blendmode == "add";
-            _yOffset = yOffset;
             _scale = scale > 0 ? scale : 1f;
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
@@ -76,25 +78,17 @@ namespace Client.MirObjects
                 DrawLocation.Offset(MapObject.User.OffSetMove);
             }
 
-            if (!Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, _model, _action, _direction, CurrentFrame, out var sprite) || sprite == null)
-                return;
-
-            Rectangle src = sprite.SourceRectangle;
-            // 特效精灵是裁剪后的单帧（如 136x98），必须用帧中心锚定；
-            // 绝不能用 modelInfo.standx/standy(~537，那是整张大画布的枢轴)，否则会偏移几百像素画到远处。
-            // 命中特效再上移 SKILL_HitTestY(60) 到身体中部。
-            int cx = src.Width / 2, cy = src.Height / 2;
-
-            int anchorX = DrawLocation.X;
-            int anchorY = DrawLocation.Y - _yOffset;
-            int w = Math.Max(1, (int)Math.Round(src.Width * _scale));
-            int h = Math.Max(1, (int)Math.Round(src.Height * _scale));
-            int x = anchorX - (int)Math.Round(cx * _scale);
-            int y = anchorY - (int)Math.Round(cy * _scale);
-            Rectangle dst = new Rectangle(x, y, w, h);
-
-            DXManager.Draw(sprite.Texture, src, dst, CommonColor.White,
-                           (_addBlend ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), SpriteEffects.None);
+            // 特效精灵是"虚拟大画布中的一帧"：必须用 model 的 standx/standy 枢轴 + 帧的 OffX/OffY
+            // 来定位，这正是 DrawAnchored 做的事。之前用裁剪帧中心锚定是错的——丢了画布偏移和枢轴，
+            // 导致雷电术起手/命中位置整体错乱，靠 yOffset 怎么补都不对。
+            // 把 model 枢轴点对齐到 (目标脚底 + skillEffects 的 x/y 偏移 + 子弹终点补偿)，
+            // 帧内容自然落在原始传奇 JS 中对应的位置（frame.y + h 恒定 = 脚底）。
+            int screenX = DrawLocation.X + _xOffset;
+            int screenY = DrawLocation.Y - _yOffset;
+            Mir2OriginObjectLibrary.DrawAnchored(
+                Mir2ObjectKind.Monster, _model, _action, _direction, CurrentFrame,
+                screenX, screenY, CommonColor.White, scale: _scale,
+                blend: _addBlend ? MirBlend.Additive : MirBlend.Normal);
         }
     }
 

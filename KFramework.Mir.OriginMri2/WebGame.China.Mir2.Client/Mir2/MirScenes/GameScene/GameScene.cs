@@ -4891,6 +4891,10 @@ namespace Client.MirScenes
 
             // 原始传奇技能（值即 skillId）：飞行物回包驱动 CDN 特效（经典 .Lib Missile 已移除）。
             // 与经典 FireBounce 分支互斥——原始技能走这里，经典技能走下面 switch。
+            // 自己施法的飞行物已由 PlayerObject.PlayOriginHitEffects 本地预测绘制（与原始传奇 JS 一致），
+            // 这里跳过施法者自己的回包，避免双份子弹/命中；他人施法仍靠此回包绘制。
+            if (source == User) return;
+
             int originId = (int)p.Spell;
             if (originId > 218 && ExcelTableMgr.TryGetSkillEffects(originId, 1, out var steps))
             {
@@ -4911,12 +4915,14 @@ namespace Client.MirScenes
                     if (target != null && hitStep != null)
                     {
                         int hitEffect = hitStep.effect, hitSound = hitStep.sound;
+                        int hitX = hitStep.x, hitY = hitStep.y;
                         MapObject hitTarget = target;
                         missile.Complete += (o, e) =>
                         {
                             if (hitTarget.CurrentAction == MirAction.Dead) return;
+                            // 原始传奇 JS：有子弹命中 playTargetEffects(60)，再叠加配置 x/y 偏移。
                             hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget,
-                                yOffset: OriginMissile.SkillHitTestY));
+                                xOffset: hitX, yOffset: OriginMissile.SkillHitTestY - hitY));
                             if (hitSound > 0) SoundManager.PlaySound(hitSound);
                         };
                     }

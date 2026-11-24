@@ -853,6 +853,94 @@ namespace Client.MirObjects
             }
         }
 
+        /// <summary>
+        /// 原始传奇数据驱动技能特效：按 5config.skillEffects 播放 CDN 特效，替代 .Lib(Libraries.Magic*) 硬编码帧。
+        /// 拆成起手(PlayOriginCastEffects)/命中飞行(PlayOriginHitEffects)两段，分别在施法动作起始/释放帧调用，
+        /// 保证时序与原始一致。查不到 skillEffects 时返回 false，让调用方回退旧 switch。
+        /// </summary>
+        private static bool TryGetOriginSteps(Spell spell, int level, out List<SkillEffectTable> steps)
+        {
+            steps = null;
+            return ExcelTableMgr.TryGetSkillEffects((int)spell, level, out steps) && steps != null && steps.Count > 0;
+        }
+
+        /// <summary>起手特效(type=0)：施法瞬间在施法者身上播放。原始传奇 type=0 是角色起手动作，
+        /// pos 字段对它无意义（雷电术 type=0 的 pos=1 不是让特效挂到怪物身上）。在施法动作起始帧调用。</summary>
+        private bool PlayOriginCastEffects(Spell spell, int level)
+        {
+            if (!TryGetOriginSteps(spell, level, out var steps)) return false;
+
+            bool any = false;
+            foreach (var s in steps)
+            {
+                if (s.type != 0 || s.effect <= 0) continue;
+                long start = CMain.Time + Math.Max(0, s.delaytime);
+                // 原始传奇 JS：addEffect(effect, null, t.x, t.y, ..., u.x, u.y) —— 起手特效画在施法者坐标，
+                // 只加 skillEffects 自身的 x/y 像素偏移（配置里通常是 0），不做额外抬升（yOffset=0）。
+                int xOffset = s.x, yOffset = -s.y;  // OriginEffect 的 yOffset 语义是“向上”，配置 y 是“向下”
+                Effects.Add(new OriginEffect(s.effect, this, starttime: start,
+                                             xOffset: xOffset, yOffset: yOffset));
+                if (s.sound > 0) SoundManager.PlaySound(s.sound);
+                any = true;
+            }
+            return any || steps.Any(x => x.type == 1 || x.type == 2);
+        }
+
+        /// <summary>
+        /// 命中/飞行特效(type=1/2)：在施法释放帧(Cast)调用，全部客户端本地播放——与原始传奇 JS 一致：
+        /// 所有技能都由本地 skillEffects 时序驱动特效，服务端施法包只带伤害数据。
+        /// 有 type=2 时本地建 OriginMissile 子弹（起点抬 SKILL_HitTestY），飞抵后挂 type=1 命中；
+        /// 无子弹技能（雷电术）则 type=1 命中按 delaytime 直接挂到目标。
+        /// 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，这里不重复。
+        /// </summary>
+        private bool PlayOriginHitEffects(Spell spell, int level, MapObject target, Point targetPoint)
+        {
+            if (!TryGetOriginSteps(spell, level, out var steps)) return false;
+
+            // 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，不在此重复。
+            if (spell == Spell.SoulFireBall) return false;
+
+            var fly = steps.FirstOrDefault(s => s.type == 2 && s.effect > 0);
+            var hits = steps.Where(s => s.type == 1 && s.effect > 0).ToList();
+
+            if (fly == null)
+            {
+                // 原始传奇 JS：无子弹技能 playTargetEffects(0) → addEffect(..., targetX, targetY-0, ..., u.x, u.y)。
+                // 命中特效画在目标坐标 + 配置 x/y 偏移，不额外抬升（雷电术落雷在目标脚底）。
+                bool any = false;
+                foreach (var s in hits)
+                {
+                    long start = CMain.Time + Math.Max(0, s.delaytime);
+                    MapObject owner = s.pos == 0 ? this : (target ?? this);
+                    owner.Effects.Add(new OriginEffect(s.effect, owner, starttime: start,
+                                                       xOffset: s.x, yOffset: -s.y));
+                    if (s.sound > 0) SoundManager.PlaySound(s.sound);
+                    any = true;
+                }
+                return any || steps.Any(x => x.type == 0);
+            }
+
+            // 有子弹技能：原始传奇 JS flyComplete() → playTargetEffects(60)，命中特效抬到子弹终点高度。
+            if (fly.sound > 0) SoundManager.PlaySound(fly.sound);
+            Point dest = target != null ? target.CurrentLocation : targetPoint;
+            OriginMissile missile = new OriginMissile(fly.effect, this, target, dest,
+                                                      flightDuration: Math.Max(1, fly.delaytime));
+            foreach (var s in hits)
+            {
+                int hitEffect = s.effect, hitSound = s.sound, hx = s.x, hy = s.y;
+                MapObject hitOwner = target ?? this;
+                missile.Complete += (o, e) =>
+                {
+                    if (hitOwner.CurrentAction == MirAction.Dead) return;
+                    hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner,
+                        xOffset: hx, yOffset: OriginMissile.SkillHitTestY - hy));
+                    if (hitSound > 0) SoundManager.PlaySound(hitSound);
+                };
+            }
+            Effects.Add(missile);
+            return true;
+        }
+
         public override void Process()
         {
             bool update = CMain.Time >= NextMotion || GameScene.CanMove;
@@ -1760,6 +1848,12 @@ namespace Client.MirObjects
                             SecondaryTargetIDs = (List<uint>)action.Params[5];
                         }
 
+                        // 原始传奇数据驱动起手特效优先：有 skillEffects 配置的技能走 CDN 特效，
+                        // 跳过下面全部 Libraries.Magic* 旧帧（旧 Lib 已移除，雷电术等旧帧看不到）。
+                        if (PlayOriginCastEffects(Spell, SpellLevel))
+                        {
+                        }
+                        else
                         switch (Spell)
                         {
 
@@ -2834,6 +2928,15 @@ namespace Client.MirObjects
 
                                 Missile missile;
                                 Effect effect;
+
+                                // 原始传奇数据驱动命中/飞行特效优先：有 skillEffects 配置的技能走 CDN 特效，
+                                // 不再用已移除/缺失的 Libraries.Magic* 旧帧（雷电术等旧 Lib 特效看不到即因此）。
+                                // 未配置的技能（纯经典技能/无特效数据）回退下面的旧 switch。
+                                if (PlayOriginHitEffects(Spell, SpellLevel, ob, TargetPoint))
+                                {
+                                    // 特效已按原始 skillEffects 播放
+                                }
+                                else
                                 switch (Spell)
                                 {
 

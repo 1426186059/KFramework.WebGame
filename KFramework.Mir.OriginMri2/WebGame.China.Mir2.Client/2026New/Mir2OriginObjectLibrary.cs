@@ -616,7 +616,8 @@ public static class Mir2OriginObjectLibrary
     public static bool DrawAnchored(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
                                     int screenX, int screenY, KFramework.MonoGame.Color? colour = null,
                                     SpriteEffects effects = SpriteEffects.None, float scale = 1f,
-                                    int? standX = null, int? standY = null)
+                                    int? standX = null, int? standY = null,
+                                    MirBlend? blend = null)
     {
         // 与 24 小时前一致：8 方向精灵，逻辑方向 5/6/7 用镜像方向(8-direction)的真帧回落（经典做法），
         // 若该 8 向真帧就绪则直接用、不翻面；否则保持翻面。
@@ -689,7 +690,7 @@ public static class Mir2OriginObjectLibrary
             dx = 2 * screenX - dx - dw;
         float dy = screenY + (oy - cy) * scale;
         DXManager.Draw(sprite.Texture, src, new RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
-                       colour ?? CommonColor.White, MirBlend.Normal.ToBlendState(), drawEffects);
+                       colour ?? CommonColor.White, (blend ?? MirBlend.Normal).ToBlendState(), drawEffects);
         return true;
     }
 

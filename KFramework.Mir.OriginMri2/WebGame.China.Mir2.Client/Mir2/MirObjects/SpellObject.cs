@@ -26,13 +26,43 @@ namespace Client.MirObjects
         // 安全区边沿光柱：原始传奇 initSafeZone 对 safeArea 每格 addEffect(261)=model 11081。
         // 服务端 SafeZoneBorder 已把这些边框格下发为 Spell.TrapHexagon 装饰，但经典 .Lib(1390) 已废弃；
         // 这里改走 CDN model 11081 的精灵帧，让现成的安全区边框逻辑重新可见。
-        private int _originModel;          // >0 表示用 CDN 精灵绘制（11081）
+        private int _originModel;          // >0 表示用 CDN 精灵绘制
+        private int _originAction = 1;
+        private int _originDir = 4;
+        private int _originStandX = -1, _originStandY = -1;  // <0 表示用模型自身枢轴/画布中心
         private const int OriginIntval = 86;   // 5config.effect[261].intval
         private const int OriginDir = 4;       // effect[261].dir（totaldir=1）
         
 
         public SpellObject(uint objectID) : base(objectID)
         {
+        }
+
+        /// <summary>
+        /// 地面持续技能原始数据驱动：取 skillEffects 的 type=0 effect→model 走 CDN 循环渲染。
+        /// 返回 false 表示无原始数据，调用方回退旧 .Lib switch。
+        /// </summary>
+        private bool TryLoadOriginGroundEffect()
+        {
+            if (!ExcelTableMgr.TryGetSkillEffects((int)Spell, 1, out var steps) || steps == null) return false;
+
+            var step = steps.FirstOrDefault(s => s.type == 0 && s.effect > 0);
+            if (step == null || !ExcelTableMgr.TryGetEffect(step.effect, out var effect) || effect.model <= 0)
+                return false;
+
+            _originModel = effect.model;
+            _originAction = effect.action > 0 ? effect.action : 1;
+            _originDir = effect.dir;
+            FrameInterval = effect.intval > 0 ? effect.intval : 100;
+            FrameCount = 1;  // Process 里按实际帧数刷新
+            Blend = effect.blendmode == "add";
+            Repeat = true;
+            BodyLibrary = null;
+            if (step.sound > 0) SoundManager.PlaySound(step.sound);
+
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, _originAction, _originDir,
+                                            Mir2OriginObjectLibrary.PriorityVisible);
+            return true;
         }
 
         public void Load(S.ObjectSpell info)
@@ -44,6 +74,14 @@ namespace Client.MirObjects
             Direction = info.Direction;
             Repeat = true;
             Ended = false;
+
+            // 原始传奇数据驱动：地面持续技能（火墙/毒云/暴风雪/流星火雨等）用 skillEffects type=0 的
+            // effect→model 走 CDN 精灵循环渲染，替代已移除的 Libraries.Magic* 旧帧。
+            // TrapHexagon 是安全区光柱(effect261)，已有专用的 model 11081 + 枢轴，跳过通用逻辑。
+            if (Spell != Spell.TrapHexagon && TryLoadOriginGroundEffect())
+            {
+                return;
+            }
 
             switch (Spell)
             {
@@ -303,7 +341,7 @@ namespace Client.MirObjects
         {
             // CDN 精灵的安全区光柱：资源就绪后按实际帧数循环（model 11081 单动作多帧）
             if (_originModel > 0 &&
-                Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, 1, OriginDir, out int originFrames) &&
+                Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, _originAction, _originDir, out int originFrames) &&
                 originFrames > 0)
                 FrameCount = originFrames;
 
@@ -350,9 +388,11 @@ namespace Client.MirObjects
             // 它每帧按各自宽高算偏移但基准点固定，不会像手算矩形那样因帧尺寸变化而脚底乱跳。
             if (_originModel > 0)
             {
-                Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
+                int? sx = _originStandX >= 0 ? _originStandX : null;
+                int? sy = _originStandY >= 0 ? _originStandY : null;
+                Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, _originAction, _originDir,
                                                      FrameIndex, DrawLocation.X, DrawLocation.Y, CommonColor.White,
-                                                     standX: 30, standY: 165);
+                                                     standX: sx, standY: sy);
                 return;
             }
 
