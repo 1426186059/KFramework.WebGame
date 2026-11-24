@@ -193,13 +193,13 @@ namespace Client.MirObjects
             long elapsed = CMain.Time - _readyAt;
             float t = Math.Min(1f, elapsed / (float)GetTravel());
 
-            int cellX = _source.X + (int)((Destination.X - _source.X) * t);
-            int cellY = _source.Y + (int)((Destination.Y - _source.Y) * t);
-
-            int screenX = (cellX - MapObject.User.Movement.X + MapControl.OffSetX) * MapControl.CellWidth;
-            int screenY = (cellY - MapObject.User.Movement.Y + MapControl.OffSetY) * MapControl.CellHeight;
-            screenX += MapObject.User.OffSetMove.X;
-            screenY += MapObject.User.OffSetMove.Y;
+            // 直接用施法者/目标的 DrawLocation（屏幕坐标，含 Movement 平滑插值、OffSetMove、ManualLocationOffset），
+            // 终点与命中特效(OriginEffect 用 Owner.DrawLocation)完全一致——之前用格子坐标 CurrentLocation 自己算，
+            // 与目标的 DrawLocation 存在偏差，子弹停下后命中特效跳到另一位置，看起来像突然位移。
+            Point startScreen = Owner != null ? Owner.DrawLocation : _source;
+            Point endScreen = Target != null ? Target.DrawLocation : Destination;
+            int screenX = startScreen.X + (int)((endScreen.X - startScreen.X) * t);
+            int screenY = startScreen.Y + (int)((endScreen.Y - startScreen.Y) * t);
             // 从脚底抬到手/胸高度发射（原始传奇 SKILL_HitTestY=60）：起点与终点同步上移，
             // 保证整条飞行轨迹都落在身体上半部，而不是贴着地面从身上穿过。
             screenY -= _startYOffset;
