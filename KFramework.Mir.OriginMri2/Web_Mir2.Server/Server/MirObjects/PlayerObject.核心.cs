@@ -687,6 +687,15 @@ namespace Server.MirObjects
             expPoint = ReduceExp(amount, targetLevel);
             expPoint = (int)(expPoint * Settings.ExpRate);
 
+            // 10倍经验点（原始传奇 expMedal.actPoints）：有就消耗 1 点，本次击杀经验 ×10。
+            // 消耗在击杀者身上，倍率作用于整份经验（组队时全队共享 10 倍收益）。
+            if (Info.SExp > 0)
+            {
+                Info.SExp--;
+                expPoint *= 10;
+                ReceiveOutputMessage("10倍经验点 -1", OutputMessageType.Normal);
+            }
+
             //party
             float[] partyExpRate = { 1.0F, 1.3F, 1.4F, 1.5F, 1.6F, 1.7F, 1.8F, 1.9F, 2F, 2.1F, 2.2F };
 

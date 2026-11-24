@@ -253,6 +253,8 @@ namespace Server
         public static int BirthStartPointIndex = 1; // 0=第一个(比奇城)，1=第二个(新手村)
         // 新建角色初始金币（角色级，可在 Setup.ini 的 [Birth] NewCharacterGold 配置）
         public static uint NewCharacterGold = 100000;
+        // 新建角色初始 10 倍经验点（打怪每消耗 1 点经验 ×10，可在 [Birth] NewCharacterSExp 配置）
+        public static uint NewCharacterSExp = 99;
 
         public static uint MaxDropGold = 2000;
         public static bool DropGold = true;
@@ -548,6 +550,7 @@ namespace Server
             HomeMapIndex = Reader.ReadInt32("Birth", "HomeMapIndex", HomeMapIndex);
             BirthStartPointIndex = Reader.ReadInt32("Birth", "StartPointIndex", BirthStartPointIndex);
             NewCharacterGold = Reader.ReadUInt32("Birth", "NewCharacterGold", NewCharacterGold);
+            NewCharacterSExp = Reader.ReadUInt32("Birth", "NewCharacterSExp", NewCharacterSExp);
 
             DropGold = Reader.ReadBoolean("DropGold", "DropGold", DropGold);
             MaxDropGold = Reader.ReadUInt32("DropGold", "MaxDropGold", MaxDropGold);
@@ -826,6 +829,7 @@ namespace Server
             Reader.Write("Birth", "HomeMapIndex", HomeMapIndex);
             Reader.Write("Birth", "StartPointIndex", BirthStartPointIndex);
             Reader.Write("Birth", "NewCharacterGold", NewCharacterGold);
+            Reader.Write("Birth", "NewCharacterSExp", NewCharacterSExp);
 
             Reader.Write("DropGold", "DropGold", DropGold);
             Reader.Write("DropGold", "MaxDropGold", MaxDropGold);

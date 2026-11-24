@@ -62,6 +62,9 @@ namespace Server.MirDatabase
         public uint Gold;       // 金币（原始传奇 cost 货币 id 1 / 499，绑定金币也并入此字段）
         public uint Credit;     // 元宝（原始传奇 cost 货币 id 6，绑定元宝也并入此字段）
         public uint LegendCoin; // 传奇币（原始传奇 cost 货币 id 41，绑定传奇币也并入此字段）
+        // 10倍经验点数量（原始传奇 expMedal.actPoints，中文"10倍经验点"）：打怪时每消耗 1 点，
+        // 本次经验 ×10。新角色初始赠送 Settings.NewCharacterSExp 点。
+        public uint SExp;
 
         public AttackMode AMode;
         public PetMode PMode;
@@ -149,6 +152,8 @@ namespace Server.MirDatabase
 
             // 新角色初始金币（角色级，每角色独立，可在 Setup.ini [Birth] NewCharacterGold 配置）
             Gold = Settings.NewCharacterGold;
+            // 新角色初始 10 倍经验点（可在 [Birth] NewCharacterSExp 配置）
+            SExp = Settings.NewCharacterSExp;
         }
 
         public CharacterInfo(BinaryReader reader, int version, int customVersion)
@@ -464,11 +469,12 @@ namespace Server.MirDatabase
                 ActiveLiaoShang = reader.ReadInt32();
             }
 
-            // 角色存档尾部：三种货币（金币 / 元宝 / 传奇币），顺序必须与 Save 一致。
+            // 角色存档尾部：三种货币（金币 / 元宝 / 传奇币）+ 10倍经验点，顺序必须与 Save 一致。
             // 直接清库运行，无旧档兼容：无条件读取。
             Gold = reader.ReadUInt32();
             Credit = reader.ReadUInt32();
             LegendCoin = reader.ReadUInt32();
+            SExp = reader.ReadUInt32();
         }
 
         public virtual void Save(BinaryWriter writer)
@@ -676,10 +682,11 @@ namespace Server.MirDatabase
             writer.Write(ActivePiFeng);
             writer.Write(ActiveLiaoShang);
 
-            // 角色存档尾部：三种货币（金币 Gold / 元宝 Credit / 传奇币 LegendCoin），顺序必须与 Load 一致。
+            // 角色存档尾部：三种货币（金币 Gold / 元宝 Credit / 传奇币 LegendCoin）+ 10倍经验点 SExp，顺序必须与 Load 一致。
             writer.Write(Gold);
             writer.Write(Credit);
             writer.Write(LegendCoin);
+            writer.Write(SExp);
         }
 
         public SelectInfo ToSelectInfo()
