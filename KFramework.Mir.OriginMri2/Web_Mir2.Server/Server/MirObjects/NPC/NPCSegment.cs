@@ -3422,7 +3422,7 @@ namespace Server.MirObjects
                         {
                             uint tempUint;
                             if (!uint.TryParse(param[0], out tempUint)) return;
-                            player.GainExp(tempUint);
+                            player.GainExp(player.ConsumeTenFoldExp(tempUint));
                         }
                         break;
 

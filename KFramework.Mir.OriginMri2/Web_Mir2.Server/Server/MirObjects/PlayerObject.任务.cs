@@ -320,7 +320,7 @@ namespace Server.MirObjects
             RecalculateQuestBag();
 
             GainGold((uint)(quest.Info.GoldReward * Settings.DropRate));
-            GainExp((uint)(quest.Info.ExpReward * Settings.ExpRate));
+            GainExp(ConsumeTenFoldExp((uint)(quest.Info.ExpReward * Settings.ExpRate)));
             GainCredit(quest.Info.CreditReward);
 
             CallDefaultNPC(DefaultNPCType.OnFinishQuest, questIndex);
@@ -484,7 +484,7 @@ namespace Server.MirObjects
             RecalculateQuestBag();
 
             GainGold((uint)(info.GoldReward * Settings.DropRate));
-            GainExp((uint)(info.ExpReward * Settings.ExpRate));
+            GainExp(ConsumeTenFoldExp((uint)(info.ExpReward * Settings.ExpRate)));
             GainCredit(info.CreditReward);
         }
 
