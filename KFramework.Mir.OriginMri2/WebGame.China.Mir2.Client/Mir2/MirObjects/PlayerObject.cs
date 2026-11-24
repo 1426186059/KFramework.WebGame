@@ -32,6 +32,11 @@ namespace Client.MirObjects
         // 原始传奇玩家角色模型号（按 职业+性别 映射，参考模型 9027）。0 = 不走 origin（回退 .Lib 分层绘制）。
         private int _originModel;
 
+        // 原始传奇 skillEffects.delaytime 以“施法起始时刻”为基准；命中特效在动画结束帧才创建，
+        // 用这两个字段把基准拉回施法瞬间，避免额外多等一个 delaytime（雷电术 400ms）。
+        private long _originCastTime;
+        private Spell _originCastSpell;
+
         // 各层【页游 id】（服务端在 ObjectPlayer 下发）。0 = 走裸身/不绘制回退。
         // 身体/武器来自 cm.item[col17]；装扮类(装扮/幻武/足迹/称号/徽记/法阵/旋光)来自 cm.title[id].model。
         private int _pgArmour, _pgWeapon, _pgWing, _pgMount;
@@ -870,6 +875,10 @@ namespace Client.MirObjects
         {
             if (!TryGetOriginSteps(spell, level, out var steps)) return false;
 
+            // JS: SkillBase.release() 里 initEffects() 在技能状态进入时立即执行，delaytime 从这一刻起算。
+            _originCastSpell = spell;
+            _originCastTime = CMain.Time;
+
             bool any = false;
             foreach (var s in steps)
             {
@@ -890,7 +899,7 @@ namespace Client.MirObjects
         /// 命中/飞行特效(type=1/2)：在施法释放帧(Cast)调用，全部客户端本地播放——与原始传奇 JS 一致：
         /// 所有技能都由本地 skillEffects 时序驱动特效，服务端施法包只带伤害数据。
         /// 有 type=2 时本地建 OriginMissile 子弹（起点抬 SKILL_HitTestY），飞抵后挂 type=1 命中；
-        /// 无子弹技能（雷电术）则 type=1 命中按 delaytime 直接挂到目标。
+        /// 无子弹技能（雷电术）则 type=1 命中按“相对施法起始”的 delaytime 挂到目标（已过时刻则立即播放）。
         /// 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，这里不重复。
         /// </summary>
         private bool PlayOriginHitEffects(Spell spell, int level, MapObject target, Point targetPoint)
@@ -905,12 +914,15 @@ namespace Client.MirObjects
 
             if (fly == null)
             {
-                // 原始传奇 JS：无子弹技能 playTargetEffects(0) → addEffect(..., targetX, targetY-0, ..., u.x, u.y)。
+                // 原始传奇 JS：无子弹技能 playTargetEffects(0) → addEffect(..., targetX, targetY-0, ..., a.delaytime)。
                 // 命中特效画在目标坐标 + 配置 x/y 偏移，不额外抬升（雷电术落雷在目标脚底）。
+                // delaytime 从 PlayOriginCastEffects 记录的施法起始时刻起算；这里已经晚于它就直接播放，
+                // 不再从动画结束帧重新加 400ms（之前因此施放到命中多等了一截）。
+                long baseTime = _originCastSpell == spell && _originCastTime > 0 ? _originCastTime : CMain.Time;
                 bool any = false;
                 foreach (var s in hits)
                 {
-                    long start = CMain.Time + Math.Max(0, s.delaytime);
+                    long start = Math.Max(CMain.Time, baseTime + Math.Max(0, s.delaytime));
                     MapObject owner = s.pos == 0 ? this : (target ?? this);
                     owner.Effects.Add(new OriginEffect(s.effect, owner, starttime: start,
                                                        xOffset: s.x, yOffset: -s.y));
@@ -2939,525 +2951,527 @@ namespace Client.MirObjects
                                     // 特效已按原始 skillEffects 播放
                                 }
                                 else
-                                switch (Spell)
                                 {
-
-                                    case Spell.FireBall: // 火球术
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        missile = CreateProjectile(10, Libraries.Magic, true, 6, 30, 4);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic, 170, 10, 600, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.GreatFireBall: // 大火球
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.Healing: // 治愈术
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, ob));
-                                        break;
-
-
-
-                                    case Spell.ElectricShock: // 电击
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, ob));
-                                        break;
-
-
-                                    case Spell.Poisoning: // 施毒术
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        if (ob != null)
-                                            ob.Effects.Add(new Effect(Libraries.Magic, 770, 10, 1000, ob));
-                                        break;
-
-
-                                    case Spell.HellFire: // 地狱火
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-
-                                        
-                                        Point dest = CurrentLocation;
-                                        for (int i = 0; i < 4; i++)
-                                        {
-                                            dest = Functions.PointMove(dest, Direction, 1);
-                                            if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
-                                            effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
-
-                                            effect.SetStart(CMain.Time + i * 50);
-                                            MapControl.Effects.Add(effect);
-                                        }
-
-                                        if (SpellLevel == 3)
-                                        {
-                                            MirDirection dir = (MirDirection)(((int)Direction + 1) % 8);
-                                            dest = CurrentLocation;
-                                            for (int r = 0; r < 4; r++)
-                                            {
-                                                dest = Functions.PointMove(dest, dir, 1);
-                                                if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
-                                                effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
-
-                                                effect.SetStart(CMain.Time + r * 50);
-                                                MapControl.Effects.Add(effect);
-                                            }
-
-                                            dir = (MirDirection)(((int)Direction - 1 + 8) % 8);
-                                            dest = CurrentLocation;
-                                            for (int r = 0; r < 4; r++)
-                                            {
-                                                dest = Functions.PointMove(dest, dir, 1);
-                                                if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
-                                                effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
-
-                                                effect.SetStart(CMain.Time + r * 50);
-                                                MapControl.Effects.Add(effect);
-                                            }
-                                        }
-                                        break;
-
-
-
-                                    case Spell.ThunderBolt: // 雷电术
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 10, 5, 400, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic2, 10, 5, 400, ob));
-                                        break;
-
-
-
-                                    case Spell.SoulFireBall: // 灵魂火符
-                                        // 符纸飞出瞬间播原始传奇音效：5config.skillEffects[1304101].sound=20025
-                                        SoundManager.PlayOriginSound(20025);
-                                        // 原始传奇 5config.effect 核对过 CDN 实际画面：
-                                        //   653/model13003 = 符纸（多张小符），752/model13024 = Lv5 符纸  → 飞行道具
-                                        //   654/model13023 = 火焰爆炸，754/model13026 = Lv5 火焰      → 抵达目标后的爆炸
-                                        // 之前把 654/754（火焰）当成飞行符从玩家身上发射，看起来就是“爆炸直接在玩家身上播放”；
-                                        // 正确顺序是符纸先飞、命中时才在目标身上炸出火焰。
-                                        //
-                                        // 权威时序来自 5config.skillEffects[1304101/1304105]（原始传奇 JS 同款）：
-                                        //   type=2 子弹 effect653/752 delaytime=400 → 飞行时长 400ms
-                                        //   type=1 命中 effect654/754 delaytime=200 → 命中后火焰
-                                        //   skill.hurtDelay=500 → 伤害在施法后 500ms 结算
-                                        // 起点由 OriginMissile 内部按 GameDefine.SKILL_HitTestY=60 抬到手部。
-                                        {
-                                            int flyEffect = SpellLevel >= 5 ? 752 : 653;
-                                            int hitEffect = SpellLevel >= 5 ? 754 : 654;
-                                            const int flyDelay = 400;  // skillEffects type=2 delaytime
-                                            Point flyDest = ob != null ? ob.CurrentLocation : TargetPoint;
-                                            OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest,
-                                                                                            flightDuration: flyDelay);
-                                            MapObject hitTarget = ob;
-                                            originMissile.Complete += (o, e) =>
-                                            {
-                                                if (hitTarget == null || hitTarget.CurrentAction == MirAction.Dead) return;
-                                                hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
-                                                // 原始传奇命中特效(effect654/754)配置无独立 sound，命中不再叠加经典音效。
-                                            };
-                                            Effects.Add(originMissile);
-                                        }
-                                        break;
-
-
-
-                                    case Spell.EnergyShield: // 能量护盾
-
-                                        //Effects.Add(new Effect(Libraries.Magic2, 1880, 9, Frame.Count * FrameInterval, this));
-                                        //SoundManager.PlaySound(20000 + (ushort)Spell * 9);
-                                        break;
-
-
-
-                                    case Spell.FireBang: // 爆裂火焰
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic, 1660, 10, 1000, TargetPoint));
-                                        break;
-
-
-
-                                    case Spell.MassHiding: // 集体隐身术
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                        {
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1540, 10, 800, TargetPoint));
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.MassHiding * 10 + 1);
-                                        };
-                                        break;
-
-
-
-                                    case Spell.SoulShield: // 幽灵盾
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                        {
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1320, 15, 1200, TargetPoint));
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10 + 1);
-                                        };
-                                        break;
-
-
-
-                                    case Spell.BlessedArmour: // 神圣战甲术
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                        {
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1340, 15, 1200, TargetPoint));
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.BlessedArmour * 10 + 1);
-                                        };
-                                        break;
-
-
-
-                                    case Spell.FireWall: // 火墙
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        break;
-
-
-
-
-                                    case Spell.HealingCircle: // 治愈术（范围）
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic3, 620, 10, 1200, TargetPoint));
-                                        break;
-
-
-
-                                    case Spell.MassHealing: // 群体治愈术
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic, 1800, 10, 1000, TargetPoint));
-                                        break;
-
-
-
-                                    case Spell.IceStorm: // 冰咆哮
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic, 3850, 20, 1300, TargetPoint));
-                                        break;
-
-
-
-                                    case Spell.TurnUndead: // 驱尸术（复活死尸）
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, ob));
-                                        break;
-
-
-                                    case Spell.IceThrust: // 冰刺
-
-                                        Point location = Functions.PointMove(CurrentLocation, Direction, 1);
-
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic2, 1790 + (int)Direction * 10, 10, 10 * FrameInterval, location));
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        break;
-
-
-
-                                    case Spell.Revelation: // 心灵启示
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, ob));
-                                        break;
-
-
-                                    case Spell.FlameDisruptor: // 灭天火
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 140, 10, 600, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic2, 140, 10, 600, ob));
-                                        break;
-
-
-                                    case Spell.CatTongue: // 猫舌
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        missile = CreateProjectile(260, Libraries.Magic3, true, 6, 30, 4);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic3, 420, 8, 800, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.CatTongue * 10 + 1);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.FrostCrunch: // 寒冰掌
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        missile = CreateProjectile(410, Libraries.Magic2, true, 4, 30, 6);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic2, 570, 8, 600, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.FrostCrunch * 10 + 2);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.Purification: // 净化术
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, TargetPoint));
-                                        else
-                                            ob.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, ob));
-                                        break;
-
-
-
-                                    case Spell.Curse: // 诅咒术
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                        {
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 950, 24, 2000, TargetPoint));
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.Curse * 10);
-                                        };
-                                        break;
-
-
-
-                                    case Spell.Hallucination: // 幻象术
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 48, 7);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic2, 1110, 10, 1000, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.Lightning: // 疾光电影
-                                        Effects.Add(new Effect(Libraries.Magic, 970 + (int)Direction * 20, 6, Frame.Count * FrameInterval, this));
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        break;
-
-
-
-                                    case Spell.Vampirism: // 噬血术
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-
-                                        if (ob == null)
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 1060, 20, 1000, TargetPoint));
-                                        else
-                                        {
-                                            ob.Effects.Add(effect = new Effect(Libraries.Magic2, 1060, 20, 1000, ob));
-                                            effect.Complete += (o, e) =>
-                                            {
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.Vampirism * 10 + 2);
-                                                Effects.Add(new Effect(Libraries.Magic2, 1090, 10, 500, this));
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.PoisonCloud: // 毒云术
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                            {
-                                                SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                            };
-
-                                        break;
-
-
-
-                                    case Spell.Blizzard: // 暴风雪
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        //BlizzardFreezeTime = CMain.Time + 3000;
-                                        break;
-
-
-
-                                    case Spell.MeteorStrike: // 流星火雨
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
-                                        //BlizzardFreezeTime = CMain.Time + 3000;
-                                        break;
-
-
-
-                                    case Spell.Reincarnation: // 重生术
-                                        ReincarnationStopTime = 0;
-                                        break;
-
-
-
-                                    case Spell.SummonHolyDeva: // 召唤骨龙
-                                        Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10);
-                                        break;
-
-
-
-                                    case Spell.UltimateEnhancer: // 强化术
-                                        if (ob != null && ob != User)
-                                            ob.Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, ob));
-                                        break;
-
-
-
-                                    case Spell.Plague: // 瘟疫术
-                                        //SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10);
-                                        missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
-                                        missile.Explode = true;
-
-                                        missile.Complete += (o, e) =>
-                                        {
-                                            MapControl.Effects.Add(new Effect(Libraries.Magic3, 110, 10, 1200, TargetPoint));
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.Plague * 10 + 3);
-                                        };
-                                        break;
-
-
-
-                                    case Spell.TrapHexagon: // 困魔咒
-                                        if (ob != null)
-                                        SoundManager.PlaySound(20000 + (ushort)Spell.TrapHexagon * 10 + 1);
-                                        break;
-
-
-
-                                    case Spell.Trap: // 陷阱
-                                        if (ob != null)
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.Trap * 10 + 1);
-                                        break;
-
-
-
-                                    case Spell.CrescentSlash: // 新月斩
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
-                                        break;
-
-
-
-                                    case Spell.NapalmShot: // 燃烧箭
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
-                                        MapControl.Effects.Add(new Effect(Libraries.Magic3, 1660, 10, 1000, TargetPoint));
-                                        break;
-
-
-
-
-                                    case Spell.FireBounce: // 火焰弹
-                                        SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
-
-                                        missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
-
-                                        if (missile.Target != null)
-                                        {
-                                            missile.Complete += (o, e) =>
-                                            {
-                                                if (missile.Target.CurrentAction == MirAction.Dead) return;
-                                                missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
-                                            };
-                                        }
-                                        break;
-
-
-
-                                    case Spell.MeteorShower: // 流星雨
-
-                                        SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
-
-                                        var targetIDs = new List<uint> { TargetID };
-
-                                        if (SecondaryTargetIDs != null)
-                                        {
-                                            targetIDs.AddRange(SecondaryTargetIDs);
-                                        }
-
-                                        foreach (var targetID in targetIDs)
-                                        {
-                                            missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4, targetID: targetID);
+                                    switch (Spell)
+                                    {
+
+                                        case Spell.FireBall: // 火球术
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            missile = CreateProjectile(10, Libraries.Magic, true, 6, 30, 4);
 
                                             if (missile.Target != null)
                                             {
                                                 missile.Complete += (o, e) =>
                                                 {
-                                                    var sender = (Missile)o;
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic, 170, 10, 600, missile.Target));
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
+                                                };
+                                            }
+                                            break;
 
-                                                    if (sender.Target.CurrentAction == MirAction.Dead) return;
-                                                    sender.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, sender.Target));
+
+
+                                        case Spell.GreatFireBall: // 大火球
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
+
+                                            if (missile.Target != null)
+                                            {
+                                                missile.Complete += (o, e) =>
+                                                {
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
                                                     SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
                                                 };
                                             }
-                                        }
-                                        
-                                        break;
+                                            break;
 
 
+
+                                        case Spell.Healing: // 治愈术
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, ob));
+                                            break;
+
+
+
+                                        case Spell.ElectricShock: // 电击
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, ob));
+                                            break;
+
+
+                                        case Spell.Poisoning: // 施毒术
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            if (ob != null)
+                                                ob.Effects.Add(new Effect(Libraries.Magic, 770, 10, 1000, ob));
+                                            break;
+
+
+                                        case Spell.HellFire: // 地狱火
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+
+
+                                            Point dest = CurrentLocation;
+                                            for (int i = 0; i < 4; i++)
+                                            {
+                                                dest = Functions.PointMove(dest, Direction, 1);
+                                                if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
+                                                effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
+
+                                                effect.SetStart(CMain.Time + i * 50);
+                                                MapControl.Effects.Add(effect);
+                                            }
+
+                                            if (SpellLevel == 3)
+                                            {
+                                                MirDirection dir = (MirDirection)(((int)Direction + 1) % 8);
+                                                dest = CurrentLocation;
+                                                for (int r = 0; r < 4; r++)
+                                                {
+                                                    dest = Functions.PointMove(dest, dir, 1);
+                                                    if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
+                                                    effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
+
+                                                    effect.SetStart(CMain.Time + r * 50);
+                                                    MapControl.Effects.Add(effect);
+                                                }
+
+                                                dir = (MirDirection)(((int)Direction - 1 + 8) % 8);
+                                                dest = CurrentLocation;
+                                                for (int r = 0; r < 4; r++)
+                                                {
+                                                    dest = Functions.PointMove(dest, dir, 1);
+                                                    if (!GameScene.Scene.MapControl.ValidPoint(dest)) break;
+                                                    effect = new Effect(Libraries.Magic, 930, 6, 500, dest) { Rate = 0.7F };
+
+                                                    effect.SetStart(CMain.Time + r * 50);
+                                                    MapControl.Effects.Add(effect);
+                                                }
+                                            }
+                                            break;
+
+
+
+                                        case Spell.ThunderBolt: // 雷电术
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic2, 10, 5, 400, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic2, 10, 5, 400, ob));
+                                            break;
+
+
+
+                                        case Spell.SoulFireBall: // 灵魂火符
+                                                                 // 符纸飞出瞬间播原始传奇音效：5config.skillEffects[1304101].sound=20025
+                                            SoundManager.PlayOriginSound(20025);
+                                            // 原始传奇 5config.effect 核对过 CDN 实际画面：
+                                            //   653/model13003 = 符纸（多张小符），752/model13024 = Lv5 符纸  → 飞行道具
+                                            //   654/model13023 = 火焰爆炸，754/model13026 = Lv5 火焰      → 抵达目标后的爆炸
+                                            // 之前把 654/754（火焰）当成飞行符从玩家身上发射，看起来就是“爆炸直接在玩家身上播放”；
+                                            // 正确顺序是符纸先飞、命中时才在目标身上炸出火焰。
+                                            //
+                                            // 权威时序来自 5config.skillEffects[1304101/1304105]（原始传奇 JS 同款）：
+                                            //   type=2 子弹 effect653/752 delaytime=400 → 飞行时长 400ms
+                                            //   type=1 命中 effect654/754 delaytime=200 → 命中后火焰
+                                            //   skill.hurtDelay=500 → 伤害在施法后 500ms 结算
+                                            // 起点由 OriginMissile 内部按 GameDefine.SKILL_HitTestY=60 抬到手部。
+                                            {
+                                                int flyEffect = SpellLevel >= 5 ? 752 : 653;
+                                                int hitEffect = SpellLevel >= 5 ? 754 : 654;
+                                                const int flyDelay = 400;  // skillEffects type=2 delaytime
+                                                Point flyDest = ob != null ? ob.CurrentLocation : TargetPoint;
+                                                OriginMissile originMissile = new OriginMissile(flyEffect, this, ob, flyDest,
+                                                                                                flightDuration: flyDelay);
+                                                MapObject hitTarget = ob;
+                                                originMissile.Complete += (o, e) =>
+                                                {
+                                                    if (hitTarget == null || hitTarget.CurrentAction == MirAction.Dead) return;
+                                                    hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget));
+                                                    // 原始传奇命中特效(effect654/754)配置无独立 sound，命中不再叠加经典音效。
+                                                };
+                                                Effects.Add(originMissile);
+                                            }
+                                            break;
+
+
+
+                                        case Spell.EnergyShield: // 能量护盾
+
+                                            //Effects.Add(new Effect(Libraries.Magic2, 1880, 9, Frame.Count * FrameInterval, this));
+                                            //SoundManager.PlaySound(20000 + (ushort)Spell * 9);
+                                            break;
+
+
+
+                                        case Spell.FireBang: // 爆裂火焰
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1660, 10, 1000, TargetPoint));
+                                            break;
+
+
+
+                                        case Spell.MassHiding: // 集体隐身术
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                            {
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 1540, 10, 800, TargetPoint));
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.MassHiding * 10 + 1);
+                                            };
+                                            break;
+
+
+
+                                        case Spell.SoulShield: // 幽灵盾
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                            {
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 1320, 15, 1200, TargetPoint));
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10 + 1);
+                                            };
+                                            break;
+
+
+
+                                        case Spell.BlessedArmour: // 神圣战甲术
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                            {
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 1340, 15, 1200, TargetPoint));
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.BlessedArmour * 10 + 1);
+                                            };
+                                            break;
+
+
+
+                                        case Spell.FireWall: // 火墙
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            break;
+
+
+
+
+                                        case Spell.HealingCircle: // 治愈术（范围）
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic3, 620, 10, 1200, TargetPoint));
+                                            break;
+
+
+
+                                        case Spell.MassHealing: // 群体治愈术
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 1800, 10, 1000, TargetPoint));
+                                            break;
+
+
+
+                                        case Spell.IceStorm: // 冰咆哮
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic, 3850, 20, 1300, TargetPoint));
+                                            break;
+
+
+
+                                        case Spell.TurnUndead: // 驱尸术（复活死尸）
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, ob));
+                                            break;
+
+
+                                        case Spell.IceThrust: // 冰刺
+
+                                            Point location = Functions.PointMove(CurrentLocation, Direction, 1);
+
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic2, 1790 + (int)Direction * 10, 10, 10 * FrameInterval, location));
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            break;
+
+
+
+                                        case Spell.Revelation: // 心灵启示
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, ob));
+                                            break;
+
+
+                                        case Spell.FlameDisruptor: // 灭天火
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic2, 140, 10, 600, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic2, 140, 10, 600, ob));
+                                            break;
+
+
+                                        case Spell.CatTongue: // 猫舌
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            missile = CreateProjectile(260, Libraries.Magic3, true, 6, 30, 4);
+
+                                            if (missile.Target != null)
+                                            {
+                                                missile.Complete += (o, e) =>
+                                                {
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic3, 420, 8, 800, missile.Target));
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.CatTongue * 10 + 1);
+                                                };
+                                            }
+                                            break;
+
+
+
+                                        case Spell.FrostCrunch: // 寒冰掌
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            missile = CreateProjectile(410, Libraries.Magic2, true, 4, 30, 6);
+
+                                            if (missile.Target != null)
+                                            {
+                                                missile.Complete += (o, e) =>
+                                                {
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic2, 570, 8, 600, missile.Target));
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.FrostCrunch * 10 + 2);
+                                                };
+                                            }
+                                            break;
+
+
+
+                                        case Spell.Purification: // 净化术
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, TargetPoint));
+                                            else
+                                                ob.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, ob));
+                                            break;
+
+
+
+                                        case Spell.Curse: // 诅咒术
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                            {
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic2, 950, 24, 2000, TargetPoint));
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.Curse * 10);
+                                            };
+                                            break;
+
+
+
+                                        case Spell.Hallucination: // 幻象术
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 48, 7);
+
+                                            if (missile.Target != null)
+                                            {
+                                                missile.Complete += (o, e) =>
+                                                {
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic2, 1110, 10, 1000, missile.Target));
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                                };
+                                            }
+                                            break;
+
+
+
+                                        case Spell.Lightning: // 疾光电影
+                                            Effects.Add(new Effect(Libraries.Magic, 970 + (int)Direction * 20, 6, Frame.Count * FrameInterval, this));
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            break;
+
+
+
+                                        case Spell.Vampirism: // 噬血术
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+
+                                            if (ob == null)
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic2, 1060, 20, 1000, TargetPoint));
+                                            else
+                                            {
+                                                ob.Effects.Add(effect = new Effect(Libraries.Magic2, 1060, 20, 1000, ob));
+                                                effect.Complete += (o, e) =>
+                                                {
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.Vampirism * 10 + 2);
+                                                    Effects.Add(new Effect(Libraries.Magic2, 1090, 10, 500, this));
+                                                };
+                                            }
+                                            break;
+
+
+
+                                        case Spell.PoisonCloud: // 毒云术
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                                {
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                                };
+
+                                            break;
+
+
+
+                                        case Spell.Blizzard: // 暴风雪
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            //BlizzardFreezeTime = CMain.Time + 3000;
+                                            break;
+
+
+
+                                        case Spell.MeteorStrike: // 流星火雨
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
+                                            //BlizzardFreezeTime = CMain.Time + 3000;
+                                            break;
+
+
+
+                                        case Spell.Reincarnation: // 重生术
+                                            ReincarnationStopTime = 0;
+                                            break;
+
+
+
+                                        case Spell.SummonHolyDeva: // 召唤骨龙
+                                            Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10);
+                                            break;
+
+
+
+                                        case Spell.UltimateEnhancer: // 强化术
+                                            if (ob != null && ob != User)
+                                                ob.Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, ob));
+                                            break;
+
+
+
+                                        case Spell.Plague: // 瘟疫术
+                                                           //SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10);
+                                            missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
+                                            missile.Explode = true;
+
+                                            missile.Complete += (o, e) =>
+                                            {
+                                                MapControl.Effects.Add(new Effect(Libraries.Magic3, 110, 10, 1200, TargetPoint));
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.Plague * 10 + 3);
+                                            };
+                                            break;
+
+
+
+                                        case Spell.TrapHexagon: // 困魔咒
+                                            if (ob != null)
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.TrapHexagon * 10 + 1);
+                                            break;
+
+
+
+                                        case Spell.Trap: // 陷阱
+                                            if (ob != null)
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.Trap * 10 + 1);
+                                            break;
+
+
+
+                                        case Spell.CrescentSlash: // 新月斩
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
+                                            break;
+
+
+
+                                        case Spell.NapalmShot: // 燃烧箭
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
+                                            MapControl.Effects.Add(new Effect(Libraries.Magic3, 1660, 10, 1000, TargetPoint));
+                                            break;
+
+
+
+
+                                        case Spell.FireBounce: // 火焰弹
+                                            SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
+
+                                            missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
+
+                                            if (missile.Target != null)
+                                            {
+                                                missile.Complete += (o, e) =>
+                                                {
+                                                    if (missile.Target.CurrentAction == MirAction.Dead) return;
+                                                    missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                                };
+                                            }
+                                            break;
+
+
+
+                                        case Spell.MeteorShower: // 流星雨
+
+                                            SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
+
+                                            var targetIDs = new List<uint> { TargetID };
+
+                                            if (SecondaryTargetIDs != null)
+                                            {
+                                                targetIDs.AddRange(SecondaryTargetIDs);
+                                            }
+
+                                            foreach (var targetID in targetIDs)
+                                            {
+                                                missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4, targetID: targetID);
+
+                                                if (missile.Target != null)
+                                                {
+                                                    missile.Complete += (o, e) =>
+                                                    {
+                                                        var sender = (Missile)o;
+
+                                                        if (sender.Target.CurrentAction == MirAction.Dead) return;
+                                                        sender.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, sender.Target));
+                                                        SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                                    };
+                                                }
+                                            }
+
+                                            break;
+
+
+                                    }
                                 }
 
 
