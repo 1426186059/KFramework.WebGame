@@ -156,7 +156,7 @@ namespace Server.MirObjects
                     GuildItemVolume Required = Settings.Guild_CreationCostList[i];
                     if (Required.Item == null)
                     {
-                        if (Info.AccountInfo.Gold < Required.Amount)
+                        if (Info.Gold < Required.Amount)
                         {
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.InsufficientGoldCreateGuild), Required.Amount), ChatType.System);
                             return false;
@@ -201,9 +201,9 @@ namespace Server.MirObjects
                     GuildItemVolume Required = Settings.Guild_CreationCostList[i];
                     if (Required.Item == null)
                     {
-                        if (Info.AccountInfo.Gold >= Required.Amount)
+                        if (Info.Gold >= Required.Amount)
                         {
-                            Info.AccountInfo.Gold -= Required.Amount;
+                            Info.Gold -= Required.Amount;
                             Enqueue(new S.LoseGold { Gold = Required.Amount });
                         }
                     }
@@ -500,7 +500,7 @@ namespace Server.MirObjects
 
             if (type == 0)//donate
             {
-                if (Account.Gold < amount)
+                if (Info.Gold < amount)
                 {
                     ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.InsufficientGold), ChatType.System);
                     return;
@@ -512,7 +512,7 @@ namespace Server.MirObjects
                     return;
                 }
 
-                Account.Gold -= amount;
+                Info.Gold -= amount;
                 MyGuild.Gold += amount;
                 Enqueue(new S.LoseGold { Gold = amount });
                 MyGuild.SendServerPacket(new S.GuildStorageGoldChange() { Type = 0, Name = Info.Name, Amount = amount });

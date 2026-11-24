@@ -105,7 +105,7 @@ namespace Server.MirObjects
                 if (PType == 0)
                 {
                     var cost = Product.CreditPrice * Quantity;
-                    if (Product.CanBuyCredit && cost <= Account.Credit)
+                    if (Product.CanBuyCredit && cost <= Info.Credit)
                     {
                         canAfford = true;
                         CreditCost = cost;
@@ -114,7 +114,7 @@ namespace Server.MirObjects
                 else if (PType == 1)
                 {
                     var goldcost = Product.GoldPrice * Quantity;
-                    if (Product.CanBuyGold && goldcost <= Account.Gold)
+                    if (Product.CanBuyGold && goldcost <= Info.Gold)
                     {
                         canAfford = true;
                         GoldCost = goldcost;
@@ -137,14 +137,14 @@ namespace Server.MirObjects
                 MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyItemEnoughCurrency), Info.Name, Product.Info.FriendlyName, Quantity, PType));
                 if (PType == 0)
                 {
-                    Account.Credit -= CreditCost;
+                    Info.Credit -= CreditCost;
                     Report.CreditChanged(CreditCost, true, Product.Info.FriendlyName);
                     if (CreditCost != 0) Enqueue(new S.LoseCredit { Credit = CreditCost });
 
                 }
                 if (PType == 1)
                 {
-                    Account.Gold -= GoldCost;
+                    Info.Gold -= GoldCost;
                     Report.GoldChanged(GoldCost, true, Product.Info.FriendlyName);
                     if (GoldCost != 0) Enqueue(new S.LoseGold { Gold = GoldCost });
                 }

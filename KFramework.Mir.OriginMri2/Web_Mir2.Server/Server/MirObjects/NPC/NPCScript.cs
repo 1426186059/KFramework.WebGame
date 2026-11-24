@@ -1327,25 +1327,25 @@ namespace Server.MirObjects
                 switch (goods.ShopCurrencyType)
                 {
                     case 1: // 元宝 Credit
-                        if (cost > player.Account.Credit)
+                        if (cost > player.Info.Credit)
                         {
-                            MessageQueue.Enqueue($"[商店诊断] 元宝不足 cost={cost} have={player.Account.Credit}");
+                            MessageQueue.Enqueue($"[商店诊断] 元宝不足 cost={cost} have={player.Info.Credit}");
                             player.ReceiveOutputMessage("购买失败，元宝不足", OutputMessageType.Error);
                             return;
                         }
                         break;
                     case 2: // 传奇币 LegendCoin
-                        if (cost > player.Account.LegendCoin)
+                        if (cost > player.Info.LegendCoin)
                         {
-                            MessageQueue.Enqueue($"[商店诊断] 传奇币不足 cost={cost} have={player.Account.LegendCoin}");
+                            MessageQueue.Enqueue($"[商店诊断] 传奇币不足 cost={cost} have={player.Info.LegendCoin}");
                             player.ReceiveOutputMessage("购买失败，传奇币不足", OutputMessageType.Error);
                             return;
                         }
                         break;
                     default: // 金币
-                        if (cost > player.Account.Gold)
+                        if (cost > player.Info.Gold)
                         {
-                            MessageQueue.Enqueue($"[商店诊断] 金币不足 cost={cost} have={player.Account.Gold}");
+                            MessageQueue.Enqueue($"[商店诊断] 金币不足 cost={cost} have={player.Info.Gold}");
                             player.ReceiveOutputMessage("购买失败，金币不足", OutputMessageType.Error);
                             return;
                         }
@@ -1371,15 +1371,15 @@ namespace Server.MirObjects
                 switch (goods.ShopCurrencyType)
                 {
                     case 1: // 元宝
-                        player.Account.Credit -= cost;
+                        player.Info.Credit -= cost;
                         player.Enqueue(new S.LoseCredit { Credit = cost });
                         break;
                     case 2: // 传奇币
-                        player.Account.LegendCoin -= cost;
+                        player.Info.LegendCoin -= cost;
                         player.Enqueue(new S.LoseLegendCoin { LegendCoin = cost });
                         break;
                     default: // 金币
-                        player.Account.Gold -= cost;
+                        player.Info.Gold -= cost;
                         player.Enqueue(new S.LoseGold { Gold = cost });
                         break;
                 }
@@ -1450,7 +1450,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (player.Account.Gold < (recipe.Gold * count))
+            if (player.Info.Gold < (recipe.Gold * count))
             {
                 player.Enqueue(p);
                 return;
@@ -1621,7 +1621,7 @@ namespace Server.MirObjects
             }
 
             //Take Gold
-            player.Account.Gold -= (recipe.Gold * count);
+            player.Info.Gold -= (recipe.Gold * count);
             player.Enqueue(new S.LoseGold { Gold = (recipe.Gold * count) });
 
             if (Envir.Random.Next(100) >= recipe.Chance + player.Stats[Stat.CraftRatePercent])

@@ -289,7 +289,7 @@ namespace Server.MirObjects
                     UserItem item = Envir.CreateFreshItem(temp.Info);
                     item.Count = count;
 
-                    if (item.Price() / 2 + Account.Gold > uint.MaxValue)
+                    if (item.Price() / 2 + Info.Gold > uint.MaxValue)
                     {
                         Enqueue(p);
                         return;
@@ -382,9 +382,9 @@ namespace Server.MirObjects
                     baseCost = (uint)(temp.RepairPrice() * 3 * script.PriceRate(this, true));
                 }
 
-                if (cost > Account.Gold) return;
+                if (cost > Info.Gold) return;
 
-                Account.Gold -= cost;
+                Info.Gold -= cost;
                 Enqueue(new S.LoseGold { Gold = cost });
                 if (ob.Conq != null) ob.Conq.GuildInfo.GoldStorage += (cost - baseCost);
 
@@ -474,7 +474,7 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        if (Account.Gold < Globals.ConsignmentCost)
+                        if (Info.Gold < Globals.ConsignmentCost)
                         {
                             Enqueue(p);
                             return;
@@ -489,7 +489,7 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        if (Account.Gold < Globals.AuctionCost)
+                        if (Info.Gold < Globals.AuctionCost)
                         {
                             Enqueue(p);
                             return;
@@ -545,7 +545,7 @@ namespace Server.MirObjects
 
                 Info.Inventory[index] = null;
 
-                Account.Gold -= cost;
+                Info.Gold -= cost;
 
                 Enqueue(new S.LoseGold { Gold = cost });
                 RefreshBagWeight();
@@ -701,7 +701,7 @@ namespace Server.MirObjects
                     if (auction.AuctionID != auctionID) continue;
                     if (auction.ItemType != MarketItemType.GameShop) continue;
 
-                    if (auction.Price > Account.Credit)
+                    if (auction.Price > Info.Credit)
                     {
                         Enqueue(new S.MarketFail { Reason = 4 });
                         return;
@@ -715,7 +715,7 @@ namespace Server.MirObjects
 
                     UserItem item = Envir.CreateFreshItem(auction.Item.Info);
 
-                    Account.Credit -= auction.Price;
+                    Info.Credit -= auction.Price;
                     GainItem(item);
                     Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.BoughtItemForCredit), auction.Item.FriendlyName, auction.Price) });
                     MarketSearch(MatchName, MatchType);
@@ -773,7 +773,7 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        if (auction.Price > Account.Gold || bidPrice > Account.Gold)
+                        if (auction.Price > Info.Gold || bidPrice > Info.Gold)
                         {
                             Enqueue(new S.MarketFail { Reason = 4 });
                             return;
@@ -783,7 +783,7 @@ namespace Server.MirObjects
                         {
                             auction.Sold = true;
 
-                            Account.Gold -= auction.Price;
+                            Info.Gold -= auction.Price;
 
                             Enqueue(new S.LoseGold { Gold = auction.Price });
                             GainItem(auction.Item);
@@ -811,7 +811,7 @@ namespace Server.MirObjects
                             auction.CurrentBuyerIndex = Info.Index;
                             auction.CurrentBuyerInfo = Info;
 
-                            Account.Gold -= bidPrice;
+                            Info.Gold -= bidPrice;
                             Enqueue(new S.LoseGold { Gold = bidPrice });
 
                             Envir.MessageAccount(auction.SellerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SomeoneBidGoldForItem), auction.Item.FriendlyName, auction.CurrentBid), ChatType.System);

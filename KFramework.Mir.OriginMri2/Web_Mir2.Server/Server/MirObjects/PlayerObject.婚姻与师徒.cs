@@ -144,13 +144,13 @@ namespace Server.MirObjects
 
             uint cost = (uint)((Info.Inventory[index].Info.RequiredAmount * 10) * Settings.ReplaceWedRingCost);
 
-            if (cost > Account.Gold)
+            if (cost > Info.Gold)
             {
                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotEnoughGoldForWeddingRing), ChatType.System);
                 return;
             }
 
-            Account.Gold -= cost;
+            Info.Gold -= cost;
             Enqueue(new S.LoseGold { Gold = cost });
 
 

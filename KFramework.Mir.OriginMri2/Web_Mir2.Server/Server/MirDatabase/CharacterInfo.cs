@@ -57,6 +57,12 @@ namespace Server.MirDatabase
         public int HP, MP;
         public long Experience;
 
+        // 三种货币改为角色级（原始传奇页游：每个角色各自持有、不通用）。
+        // 旧账号的 AccountInfo 上仍保留同样字段仅为存档兼容，运行时一律读写这里的角色货币。
+        public uint Gold;
+        public uint Credit;
+        public uint LegendCoin;
+
         public AttackMode AMode;
         public PetMode PMode;
         public bool AllowGroup;
@@ -140,6 +146,9 @@ namespace Server.MirDatabase
 
             CreationIP = c.IPAddress;
             CreationDate = Envir.Now;
+
+            // 新角色初始金币（角色级，每角色独立，可在 Setup.ini [Birth] NewCharacterGold 配置）
+            Gold = Settings.NewCharacterGold;
         }
 
         public CharacterInfo(BinaryReader reader, int version, int customVersion)
@@ -454,6 +463,11 @@ namespace Server.MirDatabase
                 ActivePiFeng = reader.ReadInt32();
                 ActiveLiaoShang = reader.ReadInt32();
             }
+
+            // 角色级货币（直接清库运行，无旧档兼容：无条件读写）
+            Gold = reader.ReadUInt32();
+            Credit = reader.ReadUInt32();
+            LegendCoin = reader.ReadUInt32();
         }
 
         public virtual void Save(BinaryWriter writer)
@@ -660,6 +674,11 @@ namespace Server.MirDatabase
             writer.Write(ActiveHuJian);
             writer.Write(ActivePiFeng);
             writer.Write(ActiveLiaoShang);
+
+            // 角色级货币（与 Load 的 version>120 段对应，追加在尾部）
+            writer.Write(Gold);
+            writer.Write(Credit);
+            writer.Write(LegendCoin);
         }
 
         public SelectInfo ToSelectInfo()

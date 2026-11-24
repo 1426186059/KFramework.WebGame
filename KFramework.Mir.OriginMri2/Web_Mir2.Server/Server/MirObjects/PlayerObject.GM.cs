@@ -1,4 +1,4 @@
-﻿// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
+// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
 using System.Drawing;
 using C = ClientPackets;
 using Server.MirDatabase;
@@ -1021,8 +1021,8 @@ namespace Server.MirObjects
 
                         else if (!uint.TryParse(parts[1], out count)) return;
 
-                        if (count + player.Account.Gold >= uint.MaxValue)
-                            count = uint.MaxValue - player.Account.Gold;
+                        if (count + player.Info.Gold >= uint.MaxValue)
+                            count = uint.MaxValue - player.Info.Gold;
 
                         player.GainGold(count);
 
@@ -1085,8 +1085,8 @@ namespace Server.MirObjects
 
                         else if (!uint.TryParse(parts[1], out count)) return;
 
-                        if (count + player.Account.Credit >= uint.MaxValue)
-                            count = uint.MaxValue - player.Account.Credit;
+                        if (count + player.Info.Credit >= uint.MaxValue)
+                            count = uint.MaxValue - player.Info.Credit;
 
                         player.GainCredit(count);
 
@@ -1591,9 +1591,9 @@ namespace Server.MirObjects
 
                             int openLevel = (Info.Inventory.Length - InventoryLayout.InitialSlots) / InventoryLayout.InventoryExpandStep;
                             uint openGold = (uint)(InventoryLayout.InventoryExpandBaseGold * (1 + openLevel));
-                            if (Account.Gold >= openGold)
+                            if (Info.Gold >= openGold)
                             {
-                                Account.Gold -= openGold;
+                                Info.Gold -= openGold;
                                 Enqueue(new S.LoseGold { Gold = openGold });
                                 Enqueue(new S.ResizeInventory { Size = Info.ResizeInventory() });
                                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.InventoryIncreased), ChatType.System);
@@ -1611,11 +1611,11 @@ namespace Server.MirObjects
                             TimeSpan addedTime = new TimeSpan(10, 0, 0, 0);
                             uint cost = 1000000;
 
-                            if (Account.Gold >= cost)
+                            if (Info.Gold >= cost)
                             {
                                 var sz = Account.ExpandStorage();
 
-                                Account.Gold -= cost;
+                                Info.Gold -= cost;
                                 Account.HasExpandedStorage = true;
 
                                 if (Account.ExpandedStorageExpiryDate > Envir.Now)

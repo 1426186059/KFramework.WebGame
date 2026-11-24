@@ -103,7 +103,7 @@ namespace Server.MirObjects
 
             totalGold = gold + parcelCost;
 
-            if (Account.Gold < totalGold || Account.Gold < gold || gold > totalGold)
+            if (Info.Gold < totalGold || Info.Gold < gold || gold > totalGold)
             {
                 Enqueue(new S.MailSent { Result = -1 });
                 return;
@@ -168,7 +168,7 @@ namespace Server.MirObjects
 
             if (totalGold > 0)
             {
-                Account.Gold -= totalGold;
+                Info.Gold -= totalGold;
                 Enqueue(new S.LoseGold { Gold = totalGold });
             }
 
@@ -228,8 +228,8 @@ namespace Server.MirObjects
             {
                 uint gold = mail.Gold;
 
-                if (gold + Account.Gold >= uint.MaxValue)
-                    gold = uint.MaxValue - Account.Gold;
+                if (gold + Info.Gold >= uint.MaxValue)
+                    gold = uint.MaxValue - Info.Gold;
 
                 GainGold(gold);
             }

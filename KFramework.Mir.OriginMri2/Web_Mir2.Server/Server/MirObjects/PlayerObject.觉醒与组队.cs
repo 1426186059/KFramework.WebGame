@@ -52,7 +52,7 @@ namespace Server.MirObjects
                     return;
                 }
 
-                if (Info.AccountInfo.Gold < item.AwakeningPrice())
+                if (Info.Gold < item.AwakeningPrice())
                 {
                     Enqueue(new S.Awakening { result = -3, removeID = -1 });
                     return;
@@ -60,7 +60,7 @@ namespace Server.MirObjects
 
                 if (HasAwakeningNeedMaterials(item, type))
                 {
-                    Info.AccountInfo.Gold -= item.AwakeningPrice();
+                    Info.Gold -= item.AwakeningPrice();
                     Enqueue(new S.LoseGold { Gold = item.AwakeningPrice() });
 
                     bool[] isHit;
@@ -105,9 +105,9 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        if (Info.AccountInfo.Gold >= item.DowngradePrice())
+                        if (Info.Gold >= item.DowngradePrice())
                         {
-                            Info.AccountInfo.Gold -= item.DowngradePrice();
+                            Info.Gold -= item.DowngradePrice();
                             Enqueue(new S.LoseGold { Gold = item.DowngradePrice() });
 
                             Awake awake = item.Awake;
@@ -159,7 +159,7 @@ namespace Server.MirObjects
                     return;
                 }
 
-                if (Info.AccountInfo.Gold >= item.DisassemblePrice())
+                if (Info.Gold >= item.DisassemblePrice())
                 {
                     List<ItemInfoTable> dropList = new List<ItemInfoTable>();
                     foreach (DropInfo drop in Envir.AwakeningDrops)
@@ -189,7 +189,7 @@ namespace Server.MirObjects
                     GainItem(gainItem);
 
                     Enqueue(new S.LoseGold { Gold = item.DisassemblePrice() });
-                    Info.AccountInfo.Gold -= item.DisassemblePrice();
+                    Info.Gold -= item.DisassemblePrice();
 
                     Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                     Info.Inventory[i] = null;
@@ -215,9 +215,9 @@ namespace Server.MirObjects
                             return;
                         }
 
-                        if (Info.AccountInfo.Gold >= item.ResetPrice())
+                        if (Info.Gold >= item.ResetPrice())
                         {
-                            Info.AccountInfo.Gold -= item.ResetPrice();
+                            Info.Gold -= item.ResetPrice();
                             Enqueue(new S.LoseGold { Gold = item.ResetPrice() });
 
                             UserItem newItem = new UserItem(item.Info);

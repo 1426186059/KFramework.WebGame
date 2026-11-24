@@ -234,13 +234,13 @@ namespace Server.MirObjects
 
             if (TradePartner == null) return;
 
-            if (amount < 1 || Account.Gold < amount)
+            if (amount < 1 || Info.Gold < amount)
             {
                 return;
             }
 
             TradeGoldAmount += amount;
-            Account.Gold -= amount;
+            Info.Gold -= amount;
 
             Enqueue(new S.LoseGold { Gold = amount });
             TradePartner.Enqueue(new S.TradeGold { Amount = TradeGoldAmount });

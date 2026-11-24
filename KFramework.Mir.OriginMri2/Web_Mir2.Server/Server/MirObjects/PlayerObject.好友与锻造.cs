@@ -280,13 +280,13 @@ namespace Server.MirObjects
             //CHECK GOLD HERE
             uint cost = (uint)((Info.Inventory[index].Info.RequiredAmount * 10) * Settings.RefineCost);
 
-            if (cost > Account.Gold)
+            if (cost > Info.Gold)
             {
                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotEnoughGoldToRefine), Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
-            Account.Gold -= cost;
+            Info.Gold -= cost;
             Enqueue(new S.LoseGold { Gold = cost });
 
             //START OF FORMULA

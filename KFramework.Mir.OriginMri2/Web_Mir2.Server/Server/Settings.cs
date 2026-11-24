@@ -251,6 +251,8 @@ namespace Server
         //新角色出生安全区（地图 ID + 该地图 StartPoint 列表中的序号）
         public static int HomeMapIndex = 103;
         public static int BirthStartPointIndex = 1; // 0=第一个(比奇城)，1=第二个(新手村)
+        // 新建角色初始金币（角色级，可在 Setup.ini 的 [Birth] NewCharacterGold 配置）
+        public static uint NewCharacterGold = 100000;
 
         public static uint MaxDropGold = 2000;
         public static bool DropGold = true;
@@ -545,6 +547,7 @@ namespace Server
             //Birth
             HomeMapIndex = Reader.ReadInt32("Birth", "HomeMapIndex", HomeMapIndex);
             BirthStartPointIndex = Reader.ReadInt32("Birth", "StartPointIndex", BirthStartPointIndex);
+            NewCharacterGold = Reader.ReadUInt32("Birth", "NewCharacterGold", NewCharacterGold);
 
             DropGold = Reader.ReadBoolean("DropGold", "DropGold", DropGold);
             MaxDropGold = Reader.ReadUInt32("DropGold", "MaxDropGold", MaxDropGold);
@@ -822,6 +825,7 @@ namespace Server
 
             Reader.Write("Birth", "HomeMapIndex", HomeMapIndex);
             Reader.Write("Birth", "StartPointIndex", BirthStartPointIndex);
+            Reader.Write("Birth", "NewCharacterGold", NewCharacterGold);
 
             Reader.Write("DropGold", "DropGold", DropGold);
             Reader.Write("DropGold", "MaxDropGold", MaxDropGold);

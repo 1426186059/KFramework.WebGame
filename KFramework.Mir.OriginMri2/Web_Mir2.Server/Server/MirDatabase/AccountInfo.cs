@@ -174,6 +174,8 @@ namespace Server.MirDatabase
                 ExpandedStorageExpiryDate = DateTime.FromBinary(reader.ReadInt64());
             }
             
+            // 账号级货币字段仅为存档格式兼容保留（运行时已改用角色级 Info.Gold/Credit/LegendCoin）。
+            // 直接清库运行，无需迁移旧档货币。
             Gold = reader.ReadUInt32();
             if (Envir.LoadVersion >= 63) Credit = reader.ReadUInt32();
             LegendCoin = reader.ReadUInt32();

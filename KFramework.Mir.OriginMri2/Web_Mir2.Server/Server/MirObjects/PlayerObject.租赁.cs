@@ -114,14 +114,14 @@ namespace Server.MirObjects
             if ((ulong)amount + ItemRentalFeeAmount >= uint.MaxValue)
                 return;
 
-            if (Account.Gold < amount)
+            if (Info.Gold < amount)
                 return;
 
             if (ItemRentalPartner == null)
                 return;
 
             ItemRentalFeeAmount += amount;
-            Account.Gold -= amount;
+            Info.Gold -= amount;
 
             Enqueue(new S.LoseGold { Gold = amount });
             ItemRentalPartner.Enqueue(new S.ItemRentalFee { Amount = amount });

@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using System.Globalization;
@@ -1490,10 +1490,10 @@ namespace Server.MirObjects
                     newValue = player.Stats[Stat.MP].ToString(CultureInfo.InvariantCulture);
                     break;
                 case "GAMEGOLD":
-                    newValue = player.Account.Gold.ToString(CultureInfo.InvariantCulture);
+                    newValue = player.Info.Gold.ToString(CultureInfo.InvariantCulture);
                     break;
                 case "CREDIT":
-                    newValue = player.Account.Credit.ToString(CultureInfo.InvariantCulture);
+                    newValue = player.Info.Credit.ToString(CultureInfo.InvariantCulture);
                     break;
                 case "ARMOUR":
                     newValue = player.Info.Equipment[(int)EquipmentSlot.Armour] != null ?
@@ -2130,7 +2130,7 @@ namespace Server.MirObjects
 
                         try
                         {
-                            failed = !Compare(param[0], player.Account.Gold, tempUint);
+                            failed = !Compare(param[0], player.Info.Gold, tempUint);
                         }
                         catch (ArgumentException)
                         {
@@ -2164,7 +2164,7 @@ namespace Server.MirObjects
 
                         try
                         {
-                            failed = !Compare(param[0], player.Account.Credit, tempUint);
+                            failed = !Compare(param[0], player.Info.Credit, tempUint);
                         }
                         catch (ArgumentException)
                         {
@@ -3253,8 +3253,8 @@ namespace Server.MirObjects
                         {
                             if (!uint.TryParse(param[0], out uint gold)) return;
 
-                            if (gold + player.Account.Gold >= uint.MaxValue)
-                                gold = uint.MaxValue - player.Account.Gold;
+                            if (gold + player.Info.Gold >= uint.MaxValue)
+                                gold = uint.MaxValue - player.Info.Gold;
 
                             player.GainGold(gold);
                         }
@@ -3264,9 +3264,9 @@ namespace Server.MirObjects
                         {
                             if (!uint.TryParse(param[0], out uint gold)) return;
 
-                            if (gold >= player.Account.Gold) gold = player.Account.Gold;
+                            if (gold >= player.Info.Gold) gold = player.Info.Gold;
 
-                            player.Account.Gold -= gold;
+                            player.Info.Gold -= gold;
                             player.Enqueue(new S.LoseGold { Gold = gold });
                         }
                         break;
@@ -3295,8 +3295,8 @@ namespace Server.MirObjects
                         {
                             if (!uint.TryParse(param[0], out uint credit)) return;
 
-                            if (credit + player.Account.Credit >= uint.MaxValue)
-                                credit = uint.MaxValue - player.Account.Credit;
+                            if (credit + player.Info.Credit >= uint.MaxValue)
+                                credit = uint.MaxValue - player.Info.Credit;
 
                             player.GainCredit(credit);
                         }
@@ -3306,9 +3306,9 @@ namespace Server.MirObjects
                         {
                             if (!uint.TryParse(param[0], out uint credit)) return;
 
-                            if (credit >= player.Account.Credit) credit = player.Account.Credit;
+                            if (credit >= player.Info.Credit) credit = player.Info.Credit;
 
-                            player.Account.Credit -= credit;
+                            player.Info.Credit -= credit;
                             player.Enqueue(new S.LoseCredit { Credit = credit });
                         }
                         break;

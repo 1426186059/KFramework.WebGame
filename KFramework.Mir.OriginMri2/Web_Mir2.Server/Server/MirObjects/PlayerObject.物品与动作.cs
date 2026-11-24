@@ -1,4 +1,4 @@
-﻿// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
+// partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
 using System.Drawing;
 using C = ClientPackets;
 using Server.MirDatabase;
@@ -3397,12 +3397,12 @@ namespace Server.MirObjects
         }
         public void DropGold(uint gold)
         {
-            if (Account.Gold < gold) return;
+            if (Info.Gold < gold) return;
 
             ItemObject ob = new ItemObject(this, gold);
 
             if (!ob.Drop(5)) return;
-            Account.Gold -= gold;
+            Info.Gold -= gold;
             Enqueue(new S.LoseGold { Gold = gold });
         }
         public void PickUp()
@@ -3514,7 +3514,7 @@ namespace Server.MirObjects
                 if (!ob.Info.CanTeleportTo) return;
 
                 uint cost = (uint)Settings.TeleportToNPCCost;
-                if (Account.Gold < cost) return;
+                if (Info.Gold < cost) return;
 
                 Point p = ob.Front;
                 if (!CurrentMap.ValidPoint(p))
@@ -3528,7 +3528,7 @@ namespace Server.MirObjects
 
                 if (CurrentMap.ValidPoint(p))
                 {
-                    Account.Gold -= cost;
+                    Info.Gold -= cost;
                     Enqueue(new S.LoseGold { Gold = cost });
                     Teleport(CurrentMap, p);
                 }
@@ -3756,7 +3756,7 @@ namespace Server.MirObjects
         }
         public override bool CanGainGold(uint gold)
         {
-            return (ulong)gold + Account.Gold <= uint.MaxValue;
+            return (ulong)gold + Info.Gold <= uint.MaxValue;
         }
         public override void WinGold(uint gold)
         {
@@ -3793,10 +3793,10 @@ namespace Server.MirObjects
         {
             if (gold == 0) return;
 
-            if (((UInt64)Account.Gold + gold) > uint.MaxValue)
-                gold = uint.MaxValue - Account.Gold;
+            if (((UInt64)Info.Gold + gold) > uint.MaxValue)
+                gold = uint.MaxValue - Info.Gold;
 
-            Account.Gold += gold;
+            Info.Gold += gold;
 
             Enqueue(new S.GainedGold { Gold = gold });
         }
@@ -3804,10 +3804,10 @@ namespace Server.MirObjects
         {
             if (credit == 0) return;
 
-            if (((UInt64)Account.Credit + credit) > uint.MaxValue)
-                credit = uint.MaxValue - Account.Credit;
+            if (((UInt64)Info.Credit + credit) > uint.MaxValue)
+                credit = uint.MaxValue - Info.Credit;
 
-            Account.Credit += credit;
+            Info.Credit += credit;
 
             Enqueue(new S.GainedCredit { Credit = credit });
         }
@@ -3815,10 +3815,10 @@ namespace Server.MirObjects
         {
             if (coin == 0) return;
 
-            if (((UInt64)Account.LegendCoin + coin) > uint.MaxValue)
-                coin = uint.MaxValue - Account.LegendCoin;
+            if (((UInt64)Info.LegendCoin + coin) > uint.MaxValue)
+                coin = uint.MaxValue - Info.LegendCoin;
 
-            Account.LegendCoin += coin;
+            Info.LegendCoin += coin;
 
             Enqueue(new S.GainedLegendCoin { LegendCoin = coin });
         }
