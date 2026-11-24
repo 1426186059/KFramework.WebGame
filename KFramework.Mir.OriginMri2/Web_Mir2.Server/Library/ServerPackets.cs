@@ -4033,18 +4033,23 @@ namespace ServerPackets
         public override short Index { get { return (short)ServerPacketIds.ObjectHealth; } }
         public uint ObjectID;
         public byte Percent, Expire;
+        public int HP, MaxHP; // 精确血量（客户端血条显示 "当前/总"，原始传奇 txt_value=truehp/maxHp）
 
         protected override void ReadPacket(BinaryReader reader)
         {
             ObjectID = reader.ReadUInt32();
             Percent = reader.ReadByte();
             Expire = reader.ReadByte();
+            HP = reader.ReadInt32();
+            MaxHP = reader.ReadInt32();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(ObjectID);
             writer.Write(Percent);
             writer.Write(Expire);
+            writer.Write(HP);
+            writer.Write(MaxHP);
         }
     }
 

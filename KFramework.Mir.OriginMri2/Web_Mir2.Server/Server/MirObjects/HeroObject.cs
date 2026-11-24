@@ -701,7 +701,7 @@ namespace Server.MirObjects
         public override void BroadcastHealthChange()
         {
             byte time = Math.Min(byte.MaxValue, (byte)Math.Max(5, (RevTime - Envir.Time) / 1000));
-            Packet p = new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time };
+            Packet p = new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time, HP = Health, MaxHP = MaxHealth };
 
             if (Envir.Time < RevTime)
             {
@@ -1237,7 +1237,7 @@ namespace Server.MirObjects
         {
             byte time = Math.Min(byte.MaxValue, (byte)Math.Max(5, (RevTime - Envir.Time) / 1000));
 
-            Packet p = new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time };
+            Packet p = new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time, HP = Health, MaxHP = MaxHealth };
 
             if (Envir.Time < RevTime)
             {

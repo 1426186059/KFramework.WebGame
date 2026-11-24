@@ -293,6 +293,9 @@ namespace Client.MirObjects
             string name = string.Empty;
             if (Name.Contains("(")) name = Name.Substring(Name.IndexOf("(") + 1, Name.Length - Name.IndexOf("(") - 2);
 
+            // 选中/悬停的怪物也常驻显示血条（原始传奇选中即显示），不必先打一下掉血才显示。
+            if (SelectionTarget == this || MouseObject == this || MagicObject == this) return true;
+
             return Name.EndsWith(string.Format("({0})", User.Name)) || MirScenes.Dialogs.GroupDialog.GroupList.Contains(name);
         }
 

@@ -376,9 +376,21 @@ namespace Server.MirDatabase
             return ItemTaskCount.Where((task, i) => task.Info.Item == iInfo && !task.Complete).Any();
         }
 
+        // 原始传奇 goal.type=335 多候选怪：params 里任一 id 命中即算，共享同一进度。
+        // 空 AltMonsterIds 时退化为经典 Mir2 按怪物名前缀匹配。
+        private static bool KillMatches(QuestKillTaskProgress task, MonsterInfoTable mInfo)
+        {
+            List<int> alts = task.Info?.AltMonsterIds;
+            if (alts != null && alts.Count > 0)
+                return alts.Contains(mInfo.Index);
+
+            return task.Info != null && task.Info.Monster != null &&
+                   mInfo.Name.StartsWith(task.Info.Monster.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
         public bool NeedKill(MonsterInfoTable mInfo)
         {
-            return KillTaskCount.Where((task, i) => mInfo.Name.StartsWith(task.Info.Monster.Name, StringComparison.OrdinalIgnoreCase) && !task.Complete).Any();
+            return KillTaskCount.Where(task => !task.Complete && KillMatches(task, mInfo)).Any();
         }
 
         public bool NeedFlag(int flagNumber)
@@ -396,7 +408,7 @@ namespace Server.MirDatabase
 
             for (int i = 0; i < KillTaskCount.Count; i++)
             {
-                if (!mInfo.Name.StartsWith(KillTaskCount[i].Info.Monster.Name, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!KillMatches(KillTaskCount[i], mInfo)) continue;
                 KillTaskCount[i].Count++;
 
                 return;
@@ -629,9 +641,61 @@ namespace Server.MirDatabase
 
         #region Quest Target Helpers
 
+        /// <summary>在目标地图上找离 goal 原始坐标最近、且属于本任务候选怪列表的怪物。</summary>
+        private MonsterInfoTable FindNearestCandidateMonster(MonsterInfoTable fallback, int mapId, int x, int y)
+        {
+            if (Info == null || Info.KillTasks.Count == 0) return fallback;
+
+            List<int> ids = Info.KillTasks[0].AltMonsterIds;
+            if (ids == null || ids.Count == 0) return fallback;
+
+            MonsterInfoTable best = null;
+            int bestDist = int.MaxValue;
+
+            for (int m = 0; m < Envir.MapList.Count; m++)
+            {
+                Map map = Envir.MapList[m];
+                if (map == null || map.Info == null || map.Info.Index != mapId) continue;
+
+                for (int i = 0; i < map.Respawns.Count; i++)
+                {
+                    MapRespawn spawn = map.Respawns[i];
+                    if (spawn?.Info == null) continue;
+
+                    int dist = Math.Abs(spawn.Info.Location.X - x) + Math.Abs(spawn.Info.Location.Y - y);
+                    if (dist >= bestDist) continue;
+
+                    MonsterInfoTable candidate = Envir.GetMonsterInfo(spawn.Info.MonsterIndex);
+                    if (candidate == null || !ids.Contains(candidate.Index)) continue;
+
+                    bestDist = dist;
+                    best = candidate;
+                }
+            }
+
+            return best ?? fallback;
+        }
+
         private QuestTaskTarget MakeMonsterTarget(MonsterInfoTable monster)
         {
             if (monster == null) return null;
+
+            // 原始传奇 goal 自带权威目标坐标（goalmapid/goalx/goaly），按任务文本指向对应怪区。
+            // 多个候选怪共用一个任务时（如解救民兵之四 9 种怪），不能只取代表怪（洞蛆）的刷点，
+            // 否则几个任务的传送目标全落在洞蛆身上。优先用原始坐标，找不到对应怪时再回退代表怪。
+            if (Info != null && Info.goalmapid > 0 && Info.goalx > 0 && Info.goaly > 0)
+            {
+                MonsterInfoTable goalMonster = FindNearestCandidateMonster(monster, Info.goalmapid, Info.goalx, Info.goaly);
+                return new QuestTaskTarget
+                {
+                    Type = QuestTargetType.Monster,
+                    Name = goalMonster != null ? goalMonster.GameName : monster.GameName,
+                    MapIndex = (uint)Info.goalmapid,
+                    X = Info.goalx,
+                    Y = Info.goaly,
+                    MonsterIndex = (uint)(goalMonster != null ? goalMonster.Index : monster.Index)
+                };
+            }
 
             // 1) 已持久化的刷点（开启 SaveRespawnTime 的怪物）
             for (int i = 0; i < Envir.SavedSpawns.Count; i++)

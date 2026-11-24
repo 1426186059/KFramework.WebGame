@@ -8719,9 +8719,9 @@ namespace Server.MirObjects
         }
         public override void SendHealth(HumanObject player)
         {
-            if (!player.IsMember(this) && Envir.Time > RevTime) return;
+            // 与怪物一致：进视野的满血玩家也要下发一次血量，客户端 HP/MaxHP 才能初始化（血条文字不显示 0/0）。
             byte time = Math.Min(byte.MaxValue, (byte)Math.Max(5, (RevTime - Envir.Time) / 1000));
-            player.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time });
+            player.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time, HP = Health, MaxHP = MaxHealth });
         }
         protected virtual void CleanUp()
         {

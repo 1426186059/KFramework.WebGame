@@ -156,6 +156,9 @@ namespace Client.MirObjects
         public long BlindTime;
         public byte BlindCount;
 
+        // 服务端 S.ObjectHealth 下发的精确血量（血条 "当前/总" 文本用）。
+        public int HP, MaxHP;
+
         private byte percentHealth;
         public virtual byte PercentHealth
         {
@@ -642,14 +645,37 @@ namespace Client.MirObjects
                                new Rectangle(barX, barY, fillW, barH), CommonColor.White, MirBlend.Normal.ToBlendState());
             }
 
-            DrawBloodLabel(barX + barW / 2, barY + barH / 2);
+            // 数值 Label 在血条上方再抬高 10px
+            DrawBloodLabel(barX + barW / 2, barY + barH / 2 - 10);
         }
 
-        /// <summary>血条中央数值 Label：原始 BloodFont 位图字体（如 100%）；怪物只有百分比，玩家显示 HP/MaxHP。</summary>
+        /// <summary>血条数值文本 "当前血/总血"（原始 txt_value = truehp/maxHp）。玩家用真实 HP，怪按配置 MaxHP×百分比还原。</summary>
+        public static string GetHealthText(MapObject ob)
+        {
+            if (ob == null) return string.Empty;
+            if (ob is UserObject player && player.Stats != null)
+            {
+                int max = player.Stats[Stat.HP];
+                return max > 0 ? $"{player.HP}/{max}" : $"{ob.PercentHealth}%";
+            }
+            if (ob is MonsterObject monster)
+            {
+                // 服务端 S.ObjectHealth 已带精确 HP/MaxHP；未收到（0）时回退用 MonsterInfo 配置估算。
+                if (ob.MaxHP > 0) return $"{ob.HP}/{ob.MaxHP}";
+                int max = 0;
+                if (ExcelTableMgr.MonstersReady && ExcelTableMgr.TryGetMonster(monster.OriginModel, out var info) && info.Stats != null)
+                    max = info.Stats[Stat.HP];
+                int cur = max > 0 ? (int)Math.Round(max * ob.PercentHealth / 100F) : 0;
+                return max > 0 ? $"{cur}/{max}" : $"{ob.PercentHealth}%";
+            }
+            // Hero 等其它对象：服务端也下发了精确 HP/MaxHP
+            if (ob.MaxHP > 0) return $"{ob.HP}/{ob.MaxHP}";
+            return $"{ob.PercentHealth}%";
+        }
+
         private void DrawBloodLabel(int centerX, int centerY)
         {
-            // 怪物/英雄服务端只下发 PercentHealth；玩家也统一显示百分比（原始 BloodFont 口径）。
-            string text = $"{PercentHealth}%";
+            string text = GetHealthText(this);
 
             if (_bloodLabel == null)
             {

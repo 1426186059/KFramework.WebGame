@@ -976,7 +976,7 @@ namespace Server.MirObjects
             // 原本血量包只在 ChangeHP/SetHP 末尾（即 Die() 之后）按 EXPOwner 定向发送，客户端会先收到
             // ObjectDied 播死亡、血条却还停在上一击的残血；脚本/自爆等非 HP 归零路径更是一点都不发。
             if (CurrentMap != null)
-                CurrentMap.Broadcast(new S.ObjectHealth { ObjectID = ObjectID, Percent = 0, Expire = 5 }, CurrentLocation);
+                CurrentMap.Broadcast(new S.ObjectHealth { ObjectID = ObjectID, Percent = 0, Expire = 5, HP = 0, MaxHP = MaxHealth }, CurrentLocation);
 
             Broadcast(new S.ObjectDied { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
 
@@ -3500,9 +3500,11 @@ namespace Server.MirObjects
 
         public override void SendHealth(HumanObject player)
         {
-            if (!player.IsMember(Master) && !(player.IsMember(EXPOwner) && AutoRev) && Envir.Time > RevTime) return;
+            // 满血怪也必须发一次：客户端靠这个包初始化 HP/MaxHP，否则没打之前血条文字显示 0/0。
+            // 只在怪物彻底死亡（无 RevTime 且 Dead）时跳过。
+            if (Dead && Envir.Time > RevTime) return;
             byte time = Math.Min(byte.MaxValue, (byte)Math.Max(5, (RevTime - Envir.Time) / 1000));
-            player.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time });
+            player.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time, HP = Health, MaxHP = MaxHealth });
         }
 
         public void PetExp(uint amount)

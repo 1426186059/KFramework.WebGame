@@ -85,7 +85,7 @@ namespace Client.MirScenes.Dialogs
             if (!show) return;
 
             _nameLabel.Text = target.Name ?? string.Empty;
-            _hpLabel.Text = target.PercentHealth + "%";
+            _hpLabel.Text = MapObject.GetHealthText(target);
         }
 
         protected internal override void DrawControl()

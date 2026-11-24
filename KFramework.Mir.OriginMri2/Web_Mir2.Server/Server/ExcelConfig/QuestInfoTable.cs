@@ -308,7 +308,19 @@ namespace Server.ExcelConfig
                     MonsterInfoTable monster = Envir.GetMonsterInfo(k.MonsterIndex);
                     if (monster == null) continue;
 
-                    KillTasks.Add(new QuestKillTask { Monster = monster, Count = k.Count, Message = "" });
+                    var task = new QuestKillTask { Monster = monster, Count = k.Count, Message = "" };
+
+                    // 原始传奇多候选怪：goal.params 里的所有 id 都是合法目标，任一击杀都计入同一进度。
+                    // originKillRefs 只是构建期挑的代表怪（通常第一个），不能只按它判定。
+                    if (goalmultitarget && !string.IsNullOrEmpty(goalparams))
+                    {
+                        foreach (string part in goalparams.Split('#', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (int.TryParse(part, out int id) && id > 0) task.AltMonsterIds.Add(id);
+                        }
+                    }
+
+                    KillTasks.Add(task);
                 }
             }
         }
@@ -702,6 +714,11 @@ namespace Server.ExcelConfig
         public MonsterInfoTable Monster { get; set; }
         public int Count { get; set; }
         public string Message { get; set; }
+
+        // 原始传奇 goal.type=335 的 goal.params 是 # 分隔的多个怪物 id，语义是
+        // 「击杀其中任意一只，共享同一个进度」（客户端只显示一个 curCount/count）。
+        // 这里保留全部候选；为空时退化为经典 Mir2 的单怪名字前缀判定。
+        public List<int> AltMonsterIds { get; set; } = new List<int>();
     }
 
     public class QuestItemTask

@@ -5338,12 +5338,16 @@ namespace Client.MirScenes
         private void ObjectHealth(S.ObjectHealth p)
         {
             if (p.ObjectID == Hero?.ObjectID)
+            {
                 Hero.PercentHealth = p.Percent;
+                Hero.HP = p.HP; Hero.MaxHP = p.MaxHP;
+            }
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
             {
                 ob.PercentHealth = p.Percent;
                 ob.HealthTime = CMain.Time + p.Expire * 1000;
+                ob.HP = p.HP; ob.MaxHP = p.MaxHP;
             }
         }
 

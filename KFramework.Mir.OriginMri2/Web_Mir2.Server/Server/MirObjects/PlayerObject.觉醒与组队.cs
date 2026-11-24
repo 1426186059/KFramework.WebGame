@@ -659,19 +659,19 @@ namespace Server.MirObjects
                 {
                     byte time = Math.Min(byte.MaxValue, (byte)Math.Max(5, (RevTime - Envir.Time) / 1000));
 
-                    member.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time });
-                    Enqueue(new S.ObjectHealth { ObjectID = member.ObjectID, Percent = member.PercentHealth, Expire = time });
+                    member.Enqueue(new S.ObjectHealth { ObjectID = ObjectID, Percent = PercentHealth, Expire = time, HP = Health, MaxHP = MaxHealth });
+                    Enqueue(new S.ObjectHealth { ObjectID = member.ObjectID, Percent = member.PercentHealth, Expire = time, HP = member.Health, MaxHP = member.MaxHealth });
 
                     if (Hero != null)
-                        member.Enqueue(new S.ObjectHealth { ObjectID = Hero.ObjectID, Percent = Hero.PercentHealth, Expire = time });
+                        member.Enqueue(new S.ObjectHealth { ObjectID = Hero.ObjectID, Percent = Hero.PercentHealth, Expire = time, HP = Hero.Health, MaxHP = Hero.MaxHealth });
 
                     if (member.Hero != null)
-                        Enqueue(new S.ObjectHealth { ObjectID = member.Hero.ObjectID, Percent = member.Hero.PercentHealth, Expire = time });
+                        Enqueue(new S.ObjectHealth { ObjectID = member.Hero.ObjectID, Percent = member.Hero.PercentHealth, Expire = time, HP = member.Hero.Health, MaxHP = member.Hero.MaxHealth });
 
                     for (int j = 0; j < member.Pets.Count; j++)
                     {
                         MonsterObject pet = member.Pets[j];
-                        Enqueue(new S.ObjectHealth { ObjectID = pet.ObjectID, Percent = pet.PercentHealth, Expire = time });
+                        Enqueue(new S.ObjectHealth { ObjectID = pet.ObjectID, Percent = pet.PercentHealth, Expire = time, HP = pet.Health, MaxHP = pet.MaxHealth });
                     }
                 }
             }
