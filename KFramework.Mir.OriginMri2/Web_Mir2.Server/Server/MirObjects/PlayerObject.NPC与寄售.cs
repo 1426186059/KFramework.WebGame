@@ -191,8 +191,11 @@ namespace Server.MirObjects
 
                     // 原始传奇532买物品引导任务：买到本职业技能书 → 书入包、任务置"完成待交"，
                     // 弹 NPC 任务面板；由玩家点面板"领取奖励"才真正完成并发奖、推进任务15。
-                    CheckBuyGoalQuests(fromPurchase: true);
-                    bool buyGoalPending = CurrentQuests.Any(q => q.Info != null && q.Info.goaltype == 532 && q.BuyGoalDone && q.Completed);
+                    CheckBuyGoalQuests(fromPurchase: true, boughtFromNPC: ob.ObjectID);
+                    // 只看 BuyGoalDone：它在 CheckBuyGoalQuests 里已确认 CheckCompleted 通过，
+                    // 不再额外要求 Completed（避免状态同步时序差异导致不切面板）。
+                    bool buyGoalPending = CurrentQuests.Any(q => q.Info != null && q.Info.goaltype == 532 && q.BuyGoalDone);
+                    MessageQueue.Enqueue($"[商店诊断] 购买后 532 目标达成={buyGoalPending}，切换任务面板={buyGoalPending}");
                     if (buyGoalPending)
                         CallNPC(ob.ObjectID, NPCScript.MainKey, openQuestPanel: true); // 商店面板 → NPC任务面板
                 }

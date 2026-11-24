@@ -500,7 +500,7 @@ namespace Server.MirDatabase
                 QuestTaskTarget monsterTarget = null;
                 if (KillTaskCount.Count > 0 && KillTaskCount[0].Info != null && KillTaskCount[0].Info.Monster != null)
                     monsterTarget = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
-                Targets.Add(monsterTarget ?? MakeNPCTarget());
+                Targets.Add(monsterTarget ?? MakeOriginGoalNPCTarget());
             }
         }
 
@@ -773,6 +773,20 @@ namespace Server.MirDatabase
                 X = npc.Location.X,
                 Y = npc.Location.Y
             };
+        }
+
+        /// <summary>
+        /// 原始传奇任务进行中的目标 NPC：必须取 tnpc（任务要去找的人），不能取 fnpc / Info.NpcInfo（发任务的人）。
+        /// Info.NpcInfo 在 BindOriginQuests 里是按 fnpc 绑定的，之前用它导致"找夏家店老板买药"传送到比奇老兵。
+        /// </summary>
+        private QuestTaskTarget MakeOriginGoalNPCTarget()
+        {
+            if (Info != null && Info.tnpc > 0)
+            {
+                var t = MakeNPCTargetByConfigIndex(Info.tnpc);
+                if (t != null) return t;
+            }
+            return MakeNPCTarget();
         }
 
         /// <summary>

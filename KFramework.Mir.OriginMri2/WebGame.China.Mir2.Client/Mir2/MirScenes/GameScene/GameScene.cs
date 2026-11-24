@@ -4071,7 +4071,9 @@ namespace Client.MirScenes
             // 直接弹 NPC 任务面板，不再看 NPC 有没有对话/商店内容。
             // 有对话/商店脚本（书店老板等）则优先普通 NPC 面板，让玩家能直接购买。
             bool hasNpcContent = p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0;
-            bool showQuestPanel = (p.OpenQuestPanel && npcHasQuest) || (npcHasQuest && !hasNpcContent);
+            // 服务端已按 checknpcTaskDialog 判定该弹任务面板时直接弹；不再被本地 npcHasQuest 挡掉
+            // （商店 NPC 打开购买面板后本地任务绑定可能尚未刷新，导致买了药任务推进却不切面板）。
+            bool showQuestPanel = p.OpenQuestPanel || (npcHasQuest && !hasNpcContent);
             if (showQuestPanel)
             {
                 NPCDialog.Hide();

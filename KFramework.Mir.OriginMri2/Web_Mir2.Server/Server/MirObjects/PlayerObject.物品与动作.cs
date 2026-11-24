@@ -3658,14 +3658,48 @@ namespace Server.MirObjects
                 {
                     QuestTaskTarget t = quest.Targets[j];
                     if (t == null) continue;
-                    bool match = t.MapIndex == mapIndex && Math.Abs(t.X - x) <= 3 && Math.Abs(t.Y - y) <= 3;
+                    // NPC 目标必须严格对齐坐标（±1）：任务链里常有紧邻 NPC（比奇老兵 332,269 / 传送员 334,267），
+                    // ±3 会串台打开旁边那个 NPC 的面板。怪物刷点仍用 ±3（活体位置可能偏移）。
+                    int tol = t.Type == QuestTargetType.NPC ? 1 : 3;
+                    bool match = t.MapIndex == mapIndex && Math.Abs(t.X - x) <= tol && Math.Abs(t.Y - y) <= tol;
                     MessageQueue.Enqueue($"[传送诊断]     目标[{j}] map={t.MapIndex} x={t.X} y={t.Y} type={t.Type} match={match}");
                     if (match)
                     {
                         // 仅 NPC 类目标需要打开面板；怪物类目标（打怪/收集）不打扰附近 NPC。
                         if (t.Type == QuestTargetType.NPC)
                         {
-                            npcObjectId = quest.Completed ? (uint)quest.Info.FinishNpcIndex : (uint)quest.Info.NpcIndex;
+                            NPCObject targetNPC = null;
+                            bool originQuest = quest.Info != null && !string.IsNullOrEmpty(quest.Info.source);
+
+                            // 原始传奇任务进行中：Targets 里的 NPC 是 tnpc（要找的人），NpcIndex 是 fnpc（发任务的人）。
+                            // 之前直接取 NpcIndex，打开的是远处发任务 NPC 的面板，CallNPC 距离超限被拒，
+                            // 表现就是人已经传送到夏家店老板旁边，却没有 NPC 面板。
+                            if (originQuest && !quest.Completed && quest.Info.tnpc > 0)
+                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.Info != null && n.Info.Index == quest.Info.tnpc
+                                                                          && n.CurrentMap != null && n.CurrentMap.Info != null
+                                                                          && n.CurrentMap.Info.Index == (int)mapIndex
+                                                                          && Functions.InRange(n.CurrentLocation, new Point(x, y), 2));
+
+                            // 完成待交：FinishNpcIndex 已按 tnpc 绑定运行时实例。
+                            if (quest.Completed)
+                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == quest.Info.FinishNpcIndex);
+
+                            // 兜底：在目标坐标附近按名字匹配，覆盖同 NPC 多实例 / 实例尚未生成的情况。
+                            if (targetNPC == null && originQuest)
+                            {
+                                targetNPC = Envir.GetObjects((int)mapIndex, ObjectType.Merchant)
+                                    .OfType<NPCObject>()
+                                    .Where(n => n != null && !n.Dead && n.CurrentMap != null && Functions.InRange(n.CurrentLocation, new Point(x, y), 3))
+                                    .OrderBy(n => string.Equals(n.Name, t.Name, StringComparison.Ordinal) ? 0 : 1)
+                                    .ThenBy(n => Math.Abs(n.CurrentLocation.X - x) + Math.Abs(n.CurrentLocation.Y - y))
+                                    .FirstOrDefault();
+                            }
+
+                            // 老脚本任务继续用 NpcIndex。
+                            if (targetNPC == null && quest.Info != null)
+                                targetNPC = Envir.NPCs.FirstOrDefault(n => n != null && n.ObjectID == quest.Info.NpcIndex);
+
+                            if (targetNPC != null) npcObjectId = targetNPC.ObjectID;
                             questFinished = quest.Completed;
                         }
                         return true;

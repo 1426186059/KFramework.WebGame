@@ -288,20 +288,20 @@ namespace Server.MirObjects
         }
 
         /// <summary>
-        /// 原始传奇 goal type=532「买物品」引导任务（任务14 买一本技能书等）：
-        /// 玩家在 NPC 商店买到物品后，背包里持有即视为完成，物品留在背包可直接使用/学习。
-        /// 购买成功后、接取任务、登录时调用。
+        /// 原始传奇 goal type=532「买物品」引导任务（任务14 买技能书 / 任务24 买药品）：
+        /// 只有"本次在目标 NPC 商店实际购买"才判定完成（页游同样是买的一瞬间完成），
+        /// 登录/接取不再凭背包已有物品补判。
         /// </summary>
-        /// <param name="fromPurchase">true=刚买完书：置为"完成待交"并弹 NPC 任务面板，由玩家点完成才发奖推进；
-        /// false=登录/接取补判：直接完成并发奖推进（兼容老行为）。</param>
-        public void CheckBuyGoalQuests(bool fromPurchase = false)
+        /// <param name="fromPurchase">true=刚在 NPC 商店买完：置为"完成待交"并弹 NPC 任务面板，由玩家点完成才发奖推进；
+        /// false=登录/接取调用，此时 boughtFromNPC=0，不会完成 532 目标。</param>
+        public void CheckBuyGoalQuests(bool fromPurchase = false, uint boughtFromNPC = 0)
         {
             var buyQuests = CurrentQuests.Where(q => q.Info != null && q.Info.goaltype == 532 && !q.BuyGoalDone).ToList();
             if (buyQuests.Count == 0) return;
 
             foreach (QuestProgressInfo q in buyQuests)
             {
-                if (!HasOriginBuyGoalItem(q.Info)) continue;
+                if (!HasOriginBuyGoalItem(q.Info, boughtFromNPC)) continue;
 
                 q.BuyGoalDone = true;
                 if (!q.CheckCompleted()) continue;
@@ -325,10 +325,23 @@ namespace Server.MirObjects
             }
         }
 
-        /// <summary>原始传奇 532 目标是否达成：背包里持有本职业 1 级技能书（战士11011/法师12011/道士13011）。</summary>
-        private bool HasOriginBuyGoalItem(QuestInfoTable info)
+        /// <summary>
+        /// 原始传奇 532「买物品」目标判定：与药品统一，只认本次在目标 NPC（tnpc）商店的实际购买。
+        ///  - param=257 技能书：还要求买到的就是本职业 1 级技能书（书店也卖别的书）。
+        ///  - param=255 药品（任务24 补给药品）：在夏家店老板商店买到任意药品即达成。
+        /// 登录/接取调用时 boughtFromNPC=0，一律不补判完成。
+        /// </summary>
+        private bool HasOriginBuyGoalItem(QuestInfoTable info, uint boughtFromNPC = 0)
         {
-            // param=257=技能书，255=药品。当前实现 532 目标均按"买到本职业1级技能书"判定。
+            if (info == null || boughtFromNPC == 0 || info.tnpc <= 0) return false;
+
+            // 必须是任务目标 NPC 本次交易（夏家店老板 / 书店老板），别处买的不算。
+            if (!Envir.NPCs.Any(n => n != null && n.Info != null && n.Info.Index == info.tnpc
+                                      && n.ObjectID == boughtFromNPC)) return false;
+
+            string param = info.goalparams ?? string.Empty;
+            if (!param.Split('&').Contains("257")) return true; // 255 药品：已确认在目标店购买
+
             int bookIndex = Class switch
             {
                 MirClass.Warrior => 11011,
