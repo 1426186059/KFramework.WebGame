@@ -475,6 +475,8 @@ namespace Server.MirDatabase
                 Index = Index,
                 StartNpcObjectID = startNpcObjectID,
                 FinishNpcObjectID = finishNpcObjectID,
+                StartNpcIndex = startNpc != null ? startNpc.Index : (int)NpcIndex,
+                FinishNpcIndex = finishNpc != null ? finishNpc.Index : (int)FinishNpcIndex,
                 Name = Name,
                 Group = Group,
                 Description = description,

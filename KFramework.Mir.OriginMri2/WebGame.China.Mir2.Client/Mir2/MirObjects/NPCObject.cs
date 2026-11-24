@@ -23,6 +23,9 @@ namespace Client.MirObjects
         public int BaseIndex, FrameIndex, FrameInterval,
             EffectFrameIndex, EffectFrameInterval;
 
+        // 策划表 NPC 索引（跨地图/多摆放实例稳定），任务面板按它匹配发放/交付 NPC。
+        public int ConfigIndex;
+
         public ushort Image;
         public Color Colour = CommonColor.White;
         /// <summary>原始页游 NPC 显示缩放（来自 ObjectNPC.Scale，即 NPCInfo.OriginSettings.ScalePercent/100）。</summary>
@@ -79,6 +82,7 @@ namespace Client.MirObjects
             NameColour = info.NameColour;
             CurrentLocation = info.Location;
             Direction = info.Direction;
+            ConfigIndex = info.ConfigIndex;
             Movement = info.Location;
             MapLocation = info.Location;
             GameScene.Scene.MapControl.AddObject(this);
@@ -573,13 +577,22 @@ namespace Client.MirObjects
         {
             List<ClientQuestProgress> quests = new List<ClientQuestProgress>();
 
-            foreach (ClientQuestProgress q in User.CurrentQuests.Where(q => !User.CompletedQuests.Contains(q.QuestInfo.Index)))
+            foreach (ClientQuestProgress q in User.CurrentQuests.Where(q => q.QuestInfo != null && !User.CompletedQuests.Contains(q.QuestInfo.Index)))
             {
-                if (q.QuestInfo.FinishNpcObjectID == ObjectID)
+                // 原始传奇 NPC 同一个策划表会在多张地图摆放多个实例，ObjectID 随登录地图变化。
+                // 必须优先按策划表 Index 绑定，否则已完成待交任务会在这里漏掉，面板显示“继续”，点不出奖励。
+                bool isFinishNpc = q.QuestInfo.FinishNpcIndex > 0 && ConfigIndex > 0
+                    ? q.QuestInfo.FinishNpcIndex == ConfigIndex
+                    : q.QuestInfo.FinishNpcObjectID == ObjectID;
+                bool isStartNpc = q.QuestInfo.StartNpcIndex > 0 && ConfigIndex > 0
+                    ? q.QuestInfo.StartNpcIndex == ConfigIndex
+                    : q.QuestInfo.StartNpcObjectID == ObjectID;
+
+                if (isFinishNpc)
                 {
                     quests.Add(q);
                 }
-                else if (q.QuestInfo.StartNpcObjectID == ObjectID && q.QuestInfo.SameFinishNPC)
+                else if (isStartNpc && q.QuestInfo.SameFinishNPC)
                 {
                     quests.Add(q);
 

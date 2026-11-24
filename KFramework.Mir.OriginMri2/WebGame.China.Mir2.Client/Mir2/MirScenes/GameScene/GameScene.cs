@@ -3148,13 +3148,22 @@ namespace Client.MirScenes
                 case QuestState.Update:
                     for (int i = 0; i < User.CurrentQuests.Count; i++)
                     {
-                        if (User.CurrentQuests[i].Id != p.Quest.Id) continue;
+                        if (User.CurrentQuests[i].Id != p.Quest.Id)
+                        {
+                            continue;
+                        }
 
                         User.CurrentQuests[i] = p.Quest;
                     }
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)
+                    {
                         BindQuest(quest);
+                    }
+
+                    // 532 买物品任务完成后服务端只发 Update（不Remove），
+                    // 必须通知任务面板原地刷新成“领取奖励”，否则面板停在“继续”无法领奖。
+                    Scene.QuestListDialog.OnQuestStateChanged(p.Quest, p.QuestState);
 
                     break;
                 case QuestState.Remove:

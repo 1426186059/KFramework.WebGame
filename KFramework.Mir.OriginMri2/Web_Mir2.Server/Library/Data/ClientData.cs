@@ -422,9 +422,20 @@ public class ClientQuestInfo
 
     public uint FinishNpcObjectID;
 
+    // 原始传奇任务按策划表 NPC 索引绑定；ObjectID 是单地图摆放实例，换图/多实例时会过期。
+    public int StartNpcIndex;
+    public int FinishNpcIndex;
+
     public bool SameFinishNPC
     {
-        get { return StartNpcObjectID == FinishNpcObjectID; }
+        get
+        {
+            if (StartNpcIndex > 0 && FinishNpcIndex > 0)
+            {
+                return StartNpcIndex == FinishNpcIndex;
+            }
+            return StartNpcObjectID == FinishNpcObjectID;
+        }
     }
 
     public ClientQuestInfo() { }
@@ -433,6 +444,8 @@ public class ClientQuestInfo
     {
         Index = reader.ReadInt32();
         StartNpcObjectID = reader.ReadUInt32();
+        StartNpcIndex = reader.ReadInt32();
+        FinishNpcIndex = reader.ReadInt32();
         Name = reader.ReadString();
         Group = reader.ReadString();
 
@@ -485,6 +498,8 @@ public class ClientQuestInfo
     {
         writer.Write(Index);
         writer.Write(StartNpcObjectID);
+        writer.Write(StartNpcIndex);
+        writer.Write(FinishNpcIndex);
         writer.Write(Name);
         writer.Write(Group);
 

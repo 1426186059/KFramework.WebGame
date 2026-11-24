@@ -313,6 +313,15 @@ namespace Client.MirControls
 
         private void NewQuestInfo(S.NewQuestInfo info)
         {
+            for (int i = 0; i < GameScene.QuestInfoList.Count; i++)
+            {
+                if (GameScene.QuestInfoList[i].Index != info.Info.Index)
+                {
+                    continue;
+                }
+                GameScene.QuestInfoList[i] = info.Info;
+                return;
+            }
             GameScene.QuestInfoList.Add(info.Info);
         }
 

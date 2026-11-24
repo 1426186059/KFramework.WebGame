@@ -426,6 +426,7 @@ namespace Server.MirObjects
                 Colour = Info.Colour,
                 Location = CurrentLocation,
                 Direction = Direction,
+                ConfigIndex = Info.Index,
                 QuestIDs = (from q in Quests
                             select q.Index).ToList(),
                 // 原始页游 NPC 显示缩放：OriginSettings.ScalePercent 是百分比（如 40/90）。

@@ -3000,6 +3000,7 @@ namespace ServerPackets
         public Color Colour;
         public Point Location;
         public MirDirection Direction;
+        public int ConfigIndex;
         public List<int> QuestIDs = new List<int>();
 
         /// <summary>原始页游 NPC 显示缩放（NPCInfoTable.OriginSettings.ScalePercent / 100，默认 1）。客户端按此倍率绘制。</summary>
@@ -3015,6 +3016,7 @@ namespace ServerPackets
             Colour = Color.FromArgb(reader.ReadInt32());
             Location = new Point(reader.ReadInt32(), reader.ReadInt32());
             Direction = (MirDirection)reader.ReadByte();
+            ConfigIndex = reader.ReadInt32();
 
             int count = reader.ReadInt32();
 
@@ -3034,6 +3036,7 @@ namespace ServerPackets
             writer.Write(Location.X);
             writer.Write(Location.Y);
             writer.Write((byte)Direction);
+            writer.Write(ConfigIndex);
 
             writer.Write(QuestIDs.Count);
 
