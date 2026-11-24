@@ -1,7 +1,6 @@
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirObjects;
-using System.Globalization;
 using System.Security.Principal;
 
 namespace Server
@@ -50,8 +49,6 @@ namespace Server
             bannedHeader.Width = -2;
             banReasonHeader.Width = -2;
             expiryDateHeader.Width = -2;
-            Gold.Width = -2;
-            GameGold.Width = -2;
         }
 
         private void Update(ListViewItem ListItem, AccountInfo account)
@@ -63,9 +60,6 @@ namespace Server
             ListItem.SubItems[4].Text = account.Banned.ToString();
             ListItem.SubItems[5].Text = account.BanReason;
             ListItem.SubItems[6].Text = account.ExpiryDate.ToString();
-            // 货币已改为角色级：账号列表显示该账号下所有角色的货币合计。
-            ListItem.SubItems[7].Text = account.Characters.Sum(c => (long)c.Gold).ToString();
-            ListItem.SubItems[8].Text = account.Characters.Sum(c => (long)c.Credit).ToString();
         }
 
         private ListViewItem CreateListView(AccountInfo account)
@@ -78,9 +72,6 @@ namespace Server
             ListItem.SubItems.Add(account.Banned.ToString());
             ListItem.SubItems.Add(account.BanReason);
             ListItem.SubItems.Add(account.ExpiryDate.ToString());
-            // 货币已改为角色级：显示该账号下所有角色的货币合计。
-            ListItem.SubItems.Add(account.Characters.Sum(c => (long)c.Gold).ToString());
-            ListItem.SubItems.Add(account.Characters.Sum(c => (long)c.Credit).ToString());
 
             return ListItem;
         }
@@ -94,18 +85,6 @@ namespace Server
             }
 
             List<AccountInfo> accounts = SMain.Envir.AccountList;
-
-            // 货币已改为角色级：服务器总量按所有角色的货币求和（跳过 GM/封禁账号下的角色）。
-            IEnumerable<CharacterInfo> validCharacters = accounts
-                .Where(account => !account.AdminAccount && !account.Banned)
-                .SelectMany(account => account.Characters);
-
-            long totalGold = validCharacters.Sum(c => (long)c.Gold);
-            ServerGoldTextBox.Text = totalGold.ToString("N0", CultureInfo.GetCultureInfo("en-GB"));
-
-            long totalCredit = validCharacters.Sum(c => (long)c.Credit);
-
-            ServerCreditTextBox.Text = totalCredit.ToString("N0", CultureInfo.GetCultureInfo("en-GB"));
 
             if (FilterTextBox.Text.Length > 0)
                 accounts = SMain.Envir.MatchAccounts(FilterTextBox.Text, MatchFilterCheckBox.Checked);
