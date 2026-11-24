@@ -1733,6 +1733,7 @@ namespace Server.MirObjects
                     }
                     existing.Level = targetLevel;
                     existing.Experience = 0;
+                    ReceiveOutputMessage($"恭喜您已领悟：【{learned.Name}】", OutputMessageType.Quest);
                 }
 
                 SendMagicInfo(existing);
