@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Server.ExcelConfig;
 using Server.MirEnvir;
 using Server.MirObjects;
@@ -14,18 +13,6 @@ namespace Server.MirDatabase
         {
             get { return Envir.Main; }
         }
-
-        protected static Envir EditEnvir
-        {
-            get { return Envir.Edit; }
-        }
-
-        protected static MessageQueue MessageQueue
-        {
-            get { return MessageQueue.Instance; }
-        }
-
-        private readonly Regex _regexMessage = new Regex("\"([^\"]*)\"");
 
         public QuestInfoTable Info { get; set; }
 
@@ -41,6 +28,9 @@ namespace Server.MirDatabase
         public QuestInfoRunItem(QuestInfoTable info)
         {
             Info = info ?? new QuestInfoTable();
+            ExpReward = Info.ExpReward;
+            GoldReward = Info.GoldReward;
+            CreditReward = Info.CreditReward;
             KillMessage = Info.KillMessage;
             ItemMessage = Info.ItemMessage;
             FlagMessage = Info.FlagMessage;
@@ -343,49 +333,11 @@ namespace Server.MirDatabase
         public List<QuestItemReward> FixedRewards { get; set; } = new List<QuestItemReward>();
         public List<QuestItemReward> SelectRewards { get; set; } = new List<QuestItemReward>();
 
-        public void LoadInfo(bool clear = false)
+        // 所有任务都来自原始传奇配置（source=_task），没有 .txt 任务脚本。
+        // 运行期数据全部由 QuestInfo.json 在 LoadFromOrigin() 里重建。
+        public void LoadInfo()
         {
-            if (clear) ClearInfo();
-
-            if (!string.IsNullOrEmpty(source))
-            {
-                LoadFromOrigin();
-                return;
-            }
-
-            if (!Directory.Exists(Settings.QuestPath)) return;
-
-            string fileName = Path.Combine(Settings.QuestPath, FileName + ".txt");
-
-            if (File.Exists(fileName))
-            {
-                List<string> lines = File.ReadAllLines(fileName).ToList();
-                ParseFile(lines);
-            }
-            else
-                MessageQueue.Enqueue(string.Format("File Not Found: {0}, Quest: {1}", fileName, Name));
-        }
-
-        public void ClearInfo()
-        {
-            Description.Clear();
-            TaskDescription.Clear();
-            ReturnDescription.Clear();
-            CompletionDescription.Clear();
-            PlayerTaskTalk.Clear();
-            CarryItems = new List<QuestItemTask>();
-            KillTasks = new List<QuestKillTask>();
-            ItemTasks = new List<QuestItemTask>();
-            FlagTasks = new List<QuestFlagTask>();
-            FixedRewards = new List<QuestItemReward>();
-            SelectRewards = new List<QuestItemReward>();
-            ExpReward = 0;
-            GoldReward = 0;
-            CreditReward = 0;
-            KillMessage = Info.KillMessage;
-            ItemMessage = Info.ItemMessage;
-            FlagMessage = Info.FlagMessage;
-            GotoMessage = Info.GotoMessage;
+            LoadFromOrigin();
         }
 
         public void LoadFromOrigin()
@@ -455,188 +407,6 @@ namespace Server.MirDatabase
                 string t = line.Trim();
                 if (t.Length > 0) target.Add(t);
             }
-        }
-
-        public void ParseFile(List<string> lines)
-        {
-            const string
-                npcTaskTalkKey = "[@NPC_TASK_TALK]",
-                descriptionLegacyKey = "[@DESCRIPTION]",
-                descriptionTaskKey = "[@TASKDESCRIPTION]",
-                descriptionReturnKey = "[@RETURNDESCRIPTION]",
-                descriptionCompletionKey = "[@COMPLETION]",
-                carryItemsKey = "[@CARRYITEMS]",
-                killTasksKey = "[@KILLTASKS]",
-                itemTasksKey = "[@ITEMTASKS]",
-                flagTasksKey = "[@FLAGTASKS]",
-                fixedRewardsKey = "[@FIXEDREWARDS]",
-                selectRewardsKey = "[@SELECTREWARDS]",
-                expRewardKey = "[@EXPREWARD]",
-                goldRewardKey = "[@GOLDREWARD]",
-                creditRewardKey = "[@CREDITREWARD]",
-                playerTaskTalkKey = "[@PLAYER_TASK_TALK]";
-
-            List<string> headers = new List<string>
-            {
-                npcTaskTalkKey, descriptionLegacyKey, descriptionTaskKey, descriptionCompletionKey,
-                carryItemsKey, killTasksKey, itemTasksKey, flagTasksKey,
-                fixedRewardsKey, selectRewardsKey, expRewardKey, goldRewardKey, creditRewardKey, descriptionReturnKey,
-                playerTaskTalkKey
-            };
-
-            int currentHeader = 0;
-
-            while (currentHeader < headers.Count)
-            {
-                for (int i = 0; i < lines.Count; i++)
-                {
-                    string line = lines[i].ToUpper();
-
-                    if (line != headers[currentHeader].ToUpper()) continue;
-
-                    for (int j = i + 1; j < lines.Count; j++)
-                    {
-                        string innerLine = lines[j];
-
-                        if (innerLine.StartsWith("[") || innerLine.StartsWith("//")) break;
-                        if (string.IsNullOrEmpty(lines[j])) continue;
-
-                        switch (line)
-                        {
-                            case npcTaskTalkKey:
-                            case descriptionLegacyKey:
-                                Description.Add(innerLine);
-                                break;
-                            case descriptionTaskKey:
-                                TaskDescription.Add(innerLine);
-                                break;
-                            case descriptionReturnKey:
-                                ReturnDescription.Add(innerLine);
-                                break;
-                            case playerTaskTalkKey:
-                                PlayerTaskTalk.Add(innerLine);
-                                break;
-                            case descriptionCompletionKey:
-                                CompletionDescription.Add(innerLine);
-                                break;
-                            case carryItemsKey:
-                                QuestItemTask carry = ParseItem(innerLine);
-                                if (carry != null) CarryItems.Add(carry);
-                                break;
-                            case killTasksKey:
-                                QuestKillTask kill = ParseKill(innerLine);
-                                if (kill != null) KillTasks.Add(kill);
-                                break;
-                            case itemTasksKey:
-                                QuestItemTask itemTask = ParseItem(innerLine);
-                                if (itemTask != null) ItemTasks.Add(itemTask);
-                                break;
-                            case flagTasksKey:
-                                QuestFlagTask flag = ParseFlag(innerLine);
-                                if (flag != null) FlagTasks.Add(flag);
-                                break;
-                            case fixedRewardsKey:
-                                ParseReward(FixedRewards, innerLine);
-                                break;
-                            case selectRewardsKey:
-                                ParseReward(SelectRewards, innerLine);
-                                break;
-                            case expRewardKey:
-                                uint.TryParse(innerLine, out uint expReward);
-                                ExpReward = expReward;
-                                break;
-                            case goldRewardKey:
-                                uint.TryParse(innerLine, out uint goldReward);
-                                GoldReward = goldReward;
-                                break;
-                            case creditRewardKey:
-                                uint.TryParse(innerLine, out uint creditReward);
-                                CreditReward = creditReward;
-                                break;
-                        }
-                    }
-                }
-
-                currentHeader++;
-            }
-        }
-
-        public void ParseReward(List<QuestItemReward> list, string line)
-        {
-            if (line.Length < 1) return;
-
-            string[] split = line.Split(' ');
-            ushort count = 1;
-
-            if (split.Length > 1) ushort.TryParse(split[1], out count);
-
-            ItemInfoTable mInfo = Envir.GetItemInfo(split[0]);
-
-            if (mInfo == null)
-            {
-                mInfo = Envir.GetItemInfo(split[0] + "(M)");
-                if (mInfo != null) list.Add(new QuestItemReward() { Item = mInfo, Count = count });
-
-                mInfo = Envir.GetItemInfo(split[0] + "(F)");
-                if (mInfo != null) list.Add(new QuestItemReward() { Item = mInfo, Count = count });
-            }
-            else
-            {
-                list.Add(new QuestItemReward() { Item = mInfo, Count = count });
-            }
-        }
-
-        public QuestKillTask ParseKill(string line)
-        {
-            if (line.Length < 1) return null;
-
-            string[] split = line.Split(' ');
-            int count = 1;
-            string message = "";
-
-            MonsterInfoTable mInfo = Envir.GetMonsterInfo(split[0]);
-            if (split.Length > 1) int.TryParse(split[1], out count);
-
-            var match = _regexMessage.Match(line);
-            if (match.Success) message = match.Groups[1].Captures[0].Value;
-
-            return mInfo == null ? null : new QuestKillTask() { Monster = mInfo, Count = count, Message = message };
-        }
-
-        public QuestItemTask ParseItem(string line)
-        {
-            if (line.Length < 1) return null;
-
-            string[] split = line.Split(' ');
-            ushort count = 1;
-            string message = "";
-
-            ItemInfoTable mInfo = Envir.GetItemInfo(split[0]);
-            if (split.Length > 1) ushort.TryParse(split[1], out count);
-
-            var match = _regexMessage.Match(line);
-            if (match.Success) message = match.Groups[1].Captures[0].Value;
-
-            return mInfo == null ? null : new QuestItemTask { Item = mInfo, Count = count, Message = message };
-        }
-
-        public QuestFlagTask ParseFlag(string line)
-        {
-            if (line.Length < 1) return null;
-
-            string[] split = line.Split(' ');
-
-            int number = -1;
-            string message = "";
-
-            int.TryParse(split[0], out number);
-
-            if (number < 0 || number > Globals.FlagIndexCount - 1000) return null;
-
-            var match = _regexMessage.Match(line);
-            if (match.Success) message = match.Groups[1].Captures[0].Value;
-
-            return new QuestFlagTask { Number = number, Message = message };
         }
 
         /// <summary>判断该任务是否应当开放给玩家，即“是否可提供任务”。</summary>

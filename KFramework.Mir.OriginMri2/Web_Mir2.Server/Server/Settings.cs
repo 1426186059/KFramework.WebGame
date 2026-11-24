@@ -41,7 +41,6 @@ namespace Server
         public static string NPCPath => Path.Combine(EnvirPath, "NPCs");
         public static string GoodsPath => Path.Combine(EnvirPath, "Goods");
         public static string RecipePath => Path.Combine(EnvirPath, "Recipe");
-        public static string QuestPath => Path.Combine(EnvirPath, "Quests");
         public static string DropPath => Path.Combine(EnvirPath, "Drops");
         public static string RoutePath => Path.Combine(EnvirPath, "Routes");
         public static string NameListPath => Path.Combine(EnvirPath, "NameLists");
@@ -590,8 +589,6 @@ namespace Server
                 Directory.CreateDirectory(NPCPath);
             if (!Directory.Exists(GoodsPath))
                 Directory.CreateDirectory(GoodsPath);
-            if (!Directory.Exists(QuestPath))
-                Directory.CreateDirectory(QuestPath);
             if (!Directory.Exists(DropPath))
                 Directory.CreateDirectory(DropPath);
             if (!Directory.Exists(ExportPath))
