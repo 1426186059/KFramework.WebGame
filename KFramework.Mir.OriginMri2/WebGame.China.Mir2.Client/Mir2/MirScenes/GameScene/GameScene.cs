@@ -4002,8 +4002,12 @@ namespace Client.MirScenes
 
         private void GainExperience(S.GainExperience p)
         {
-            OutputMessage($"<color=lime>获得</color> 经验 x{p.Amount}");
-            MapObject.User.Experience += p.Amount;
+            // 一句话显示：有 10倍经验点额外部分就一起带上，不拆两行刷屏。
+            string text = p.ExtraExp > 0
+                ? $"<color=lime>获得</color> 经验 x{p.Amount}，额外经验 x{p.ExtraExp}"
+                : $"<color=lime>获得</color> 经验 x{p.Amount}";
+            OutputMessage(text);
+            MapObject.User.Experience += p.Amount + p.ExtraExp;
         }
 
         private void GainHeroExperience(S.GainHeroExperience p)

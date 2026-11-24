@@ -2828,15 +2828,19 @@ namespace ServerPackets
         }
 
         public uint Amount;
+        // 10倍经验点带来的额外经验（原始传奇 8003 包的 extraExp），追加在包尾不改原有线序。
+        public uint ExtraExp;
 
         protected override void ReadPacket(BinaryReader reader)
         {
             Amount = reader.ReadUInt32();
+            ExtraExp = reader.ReadUInt32();
         }
 
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(Amount);
+            writer.Write(ExtraExp);
         }
     }
 

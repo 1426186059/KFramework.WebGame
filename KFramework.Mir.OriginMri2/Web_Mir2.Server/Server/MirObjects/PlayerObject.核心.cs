@@ -677,6 +677,9 @@ namespace Server.MirObjects
 
             RefreshStats();
         }
+        // 本次击杀由 10倍经验点带来的额外经验，WinExp 设置、GainExp 发包后清零。
+        private uint _pendingTenFoldExtra;
+
         public override void WinExp(uint amount, uint targetLevel = 0)
         {
             if (CurrentMap?.Info?.NoExperience == true) return;
@@ -689,11 +692,14 @@ namespace Server.MirObjects
 
             // 10倍经验点（原始传奇 expMedal.actPoints）：有就消耗 1 点，本次击杀经验 ×10。
             // 消耗在击杀者身上，倍率作用于整份经验（组队时全队共享 10 倍收益）。
+            // 额外经验记入 _pendingTenFoldExtra，由 GainExp 发 S.GainExperience.ExtraExp 让客户端显示"获得 额外经验"。
+            _pendingTenFoldExtra = 0;
             if (Info.SExp > 0)
             {
                 Info.SExp--;
+                int beforeTenFold = expPoint;
                 expPoint *= 10;
-                ReceiveOutputMessage("10倍经验点 -1", OutputMessageType.Normal);
+                _pendingTenFoldExtra = (uint)(expPoint - beforeTenFold);
             }
 
             //party
@@ -785,7 +791,11 @@ namespace Server.MirObjects
 
             Experience += amount;
 
-            Enqueue(new S.GainExperience { Amount = amount });
+            // 基础经验 = 总额 - 10倍额外；ExtraExp 让客户端像原始传奇那样显示"获得 额外经验"。
+            // 读后清零，避免非击杀来源（任务/脚本）的下一次 GainExp 误带。
+            uint baseExp = amount > _pendingTenFoldExtra ? amount - _pendingTenFoldExtra : amount;
+            Enqueue(new S.GainExperience { Amount = baseExp, ExtraExp = _pendingTenFoldExtra });
+            _pendingTenFoldExtra = 0;
 
             for (int i = 0; i < Pets.Count; i++)
             {
