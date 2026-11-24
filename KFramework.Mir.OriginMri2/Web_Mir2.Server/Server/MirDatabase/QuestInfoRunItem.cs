@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Server.ExcelConfig;
 using Server.MirEnvir;
 using Server.MirObjects;
 
-namespace Server.ExcelConfig
+namespace Server.MirDatabase
 {
     // 运行期任务对象：外层持有静态配置 Info，所有解析结果/NPC 绑定都保存在本类，不写回 QuestInfo.json。
     public class QuestInfoRunItem
