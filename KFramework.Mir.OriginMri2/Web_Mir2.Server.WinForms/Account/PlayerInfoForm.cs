@@ -55,9 +55,10 @@ namespace Server
             NameTextBox.Text = Character.Name;
             LevelTextBox.Text = Character.Level.ToString();
             PKPointsTextBox.Text = Character.PKPoints.ToString();
-            GoldTextBox.Text = $"{Character.AccountInfo.Gold:n0}";
-            GameGoldTextBox.Text = String.Format("{0:n0}", Character.AccountInfo.Credit);
-            LegendCoinTextBox.Text = $"{Character.AccountInfo.LegendCoin:n0}";
+            // 货币已改为角色级：编辑/显示当前角色自己的货币，不再是账号共享值。
+            GoldTextBox.Text = $"{Character.Gold:n0}";
+            GameGoldTextBox.Text = String.Format("{0:n0}", Character.Credit);
+            LegendCoinTextBox.Text = $"{Character.LegendCoin:n0}";
 
 
             if (Character?.Player != null)
@@ -302,9 +303,10 @@ namespace Server
             info.Name = NameTextBox.Text;
             info.Level = Convert.ToByte(LevelTextBox.Text);
             info.PKPoints = Convert.ToInt32(PKPointsTextBox.Text);
-            info.AccountInfo.Gold = Convert.ToUInt32(tempGold);
-            info.AccountInfo.Credit = Convert.ToUInt32(tempCredit);
-            info.AccountInfo.LegendCoin = Convert.ToUInt32(tempLegendCoin);
+            // 货币已改为角色级：保存到当前角色，不再是账号共享值。
+            info.Gold = Convert.ToUInt32(tempGold);
+            info.Credit = Convert.ToUInt32(tempCredit);
+            info.LegendCoin = Convert.ToUInt32(tempLegendCoin);
 
             UpdateTabs();
         }

@@ -57,11 +57,11 @@ namespace Server.MirDatabase
         public int HP, MP;
         public long Experience;
 
-        // 三种货币改为角色级（原始传奇页游：每个角色各自持有、不通用）。
-        // 旧账号的 AccountInfo 上仍保留同样字段仅为存档兼容，运行时一律读写这里的角色货币。
-        public uint Gold;
-        public uint Credit;
-        public uint LegendCoin;
+        // 角色存档三种货币，角色各自持有、不通用；账号 AccountInfo 已不含货币。
+        // 本游戏不区分绑定/非绑定：绑定与非绑定都并入同一字段（原始传奇 cost 里绑定的金币/元宝/传奇币也走同一 id）。
+        public uint Gold;       // 金币（原始传奇 cost 货币 id 1 / 499，绑定金币也并入此字段）
+        public uint Credit;     // 元宝（原始传奇 cost 货币 id 6，绑定元宝也并入此字段）
+        public uint LegendCoin; // 传奇币（原始传奇 cost 货币 id 41，绑定传奇币也并入此字段）
 
         public AttackMode AMode;
         public PetMode PMode;
@@ -464,7 +464,8 @@ namespace Server.MirDatabase
                 ActiveLiaoShang = reader.ReadInt32();
             }
 
-            // 角色级货币（直接清库运行，无旧档兼容：无条件读写）
+            // 角色存档尾部：三种货币（金币 / 元宝 / 传奇币），顺序必须与 Save 一致。
+            // 直接清库运行，无旧档兼容：无条件读取。
             Gold = reader.ReadUInt32();
             Credit = reader.ReadUInt32();
             LegendCoin = reader.ReadUInt32();
@@ -675,7 +676,7 @@ namespace Server.MirDatabase
             writer.Write(ActivePiFeng);
             writer.Write(ActiveLiaoShang);
 
-            // 角色级货币（与 Load 的 version>120 段对应，追加在尾部）
+            // 角色存档尾部：三种货币（金币 Gold / 元宝 Credit / 传奇币 LegendCoin），顺序必须与 Load 一致。
             writer.Write(Gold);
             writer.Write(Credit);
             writer.Write(LegendCoin);

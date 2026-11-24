@@ -63,8 +63,9 @@ namespace Server
             ListItem.SubItems[4].Text = account.Banned.ToString();
             ListItem.SubItems[5].Text = account.BanReason;
             ListItem.SubItems[6].Text = account.ExpiryDate.ToString();
-            ListItem.SubItems[7].Text = account.Gold.ToString();
-            ListItem.SubItems[8].Text = account.Credit.ToString();
+            // 货币已改为角色级：账号列表显示该账号下所有角色的货币合计。
+            ListItem.SubItems[7].Text = account.Characters.Sum(c => (long)c.Gold).ToString();
+            ListItem.SubItems[8].Text = account.Characters.Sum(c => (long)c.Credit).ToString();
         }
 
         private ListViewItem CreateListView(AccountInfo account)
@@ -77,8 +78,9 @@ namespace Server
             ListItem.SubItems.Add(account.Banned.ToString());
             ListItem.SubItems.Add(account.BanReason);
             ListItem.SubItems.Add(account.ExpiryDate.ToString());
-            ListItem.SubItems.Add(account.Gold.ToString());
-            ListItem.SubItems.Add(account.Credit.ToString());
+            // 货币已改为角色级：显示该账号下所有角色的货币合计。
+            ListItem.SubItems.Add(account.Characters.Sum(c => (long)c.Gold).ToString());
+            ListItem.SubItems.Add(account.Characters.Sum(c => (long)c.Credit).ToString());
 
             return ListItem;
         }
@@ -93,16 +95,15 @@ namespace Server
 
             List<AccountInfo> accounts = SMain.Envir.AccountList;
 
-            long totalGold = accounts
-            .Where(account => !account.AdminAccount && !account.Banned)
-            .Sum(account => account.Gold);
+            // 货币已改为角色级：服务器总量按所有角色的货币求和（跳过 GM/封禁账号下的角色）。
+            IEnumerable<CharacterInfo> validCharacters = accounts
+                .Where(account => !account.AdminAccount && !account.Banned)
+                .SelectMany(account => account.Characters);
 
+            long totalGold = validCharacters.Sum(c => (long)c.Gold);
             ServerGoldTextBox.Text = totalGold.ToString("N0", CultureInfo.GetCultureInfo("en-GB"));
 
-
-            long totalCredit = accounts
-            .Where(account => !account.AdminAccount && !account.Banned)
-            .Sum(account => account.Credit);
+            long totalCredit = validCharacters.Sum(c => (long)c.Credit);
 
             ServerCreditTextBox.Text = totalCredit.ToString("N0", CultureInfo.GetCultureInfo("en-GB"));
 
