@@ -4910,6 +4910,7 @@ namespace Client.MirScenes
                     // 飞行时长按经典 Missile.Process 口径：距离*50ms（与服务端 Fireball 的 delay 一致）。
                     // 不再读本地 skillEffects.delaytime——时序由经典逻辑决定，原始数据只用来选特效资源。
                     int flight = Math.Max(1, Functions.MaxDistance(source.CurrentLocation, dest) * 50);
+                    // 与灵魂火符同款：子弹各用自己 model 的 stand，不做覆盖。
                     OriginMissile missile = new OriginMissile(flyStep.effect, source, target, dest,
                                                               flightDuration: flight);
                     if (target != null && hitStep != null)
@@ -4920,9 +4921,9 @@ namespace Client.MirScenes
                         missile.Complete += (o, e) =>
                         {
                             if (hitTarget.CurrentAction == MirAction.Dead) return;
-                            // 原始传奇 JS：有子弹命中 playTargetEffects(60)，再叠加配置 x/y 偏移。
+                            // 与灵魂火符同款：命中特效不抬升(yOffset=0)，子弹终点已抬 60，两者错开才对。
                             hitTarget.Effects.Add(new OriginEffect(hitEffect, hitTarget,
-                                xOffset: hitX, yOffset: OriginMissile.SkillHitTestY - hitY));
+                                xOffset: hitX, yOffset: -hitY));
                             if (hitSound > 0) SoundManager.PlaySound(hitSound);
                         };
                     }

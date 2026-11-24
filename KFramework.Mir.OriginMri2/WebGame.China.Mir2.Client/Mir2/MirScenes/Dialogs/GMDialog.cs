@@ -49,7 +49,7 @@ namespace Client.MirScenes.Dialogs
 
         // 调试开关面板（地图物体绘制区域 / MirControl 绘制区域）
         private MirImageControl DebugPanel;
-        private MirButton MapRegionToggle, ControlRegionToggle;
+        private MirButton MapRegionToggle, ControlRegionToggle, SkillAnchorToggle;
 
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
@@ -248,6 +248,7 @@ namespace Client.MirScenes.Dialogs
 
             BuildDebugRow("是否显示地图上物体的绘制区域", 30, out MapRegionToggle, () => Client.MirObjects.MapObject.DebugShowDrawLocation, v => Client.MirObjects.MapObject.DebugShowDrawLocation = v);
             BuildDebugRow("是否显示 MirControl 的绘制区域", 74, out ControlRegionToggle, () => MirControl.DebugShowDrawRegion, v => MirControl.DebugShowDrawRegion = v);
+            BuildDebugRow("显示技能特效锚点(红命中/青子弹)", 118, out SkillAnchorToggle, () => Client.MirObjects.OriginEffect.DebugDrawAnchor, v => Client.MirObjects.OriginEffect.DebugDrawAnchor = v);
 
             ShowGMCommandTab();
         }
@@ -315,6 +316,7 @@ namespace Client.MirScenes.Dialogs
             DebugTab.ForeColour = TabActive;
             MapRegionToggle.Label.Text = Client.MirObjects.MapObject.DebugShowDrawLocation ? "显示" : "不显示";
             ControlRegionToggle.Label.Text = MirControl.DebugShowDrawRegion ? "显示" : "不显示";
+            SkillAnchorToggle.Label.Text = Client.MirObjects.OriginEffect.DebugDrawAnchor ? "显示" : "不显示";
         }
 
         #region GM 命令行

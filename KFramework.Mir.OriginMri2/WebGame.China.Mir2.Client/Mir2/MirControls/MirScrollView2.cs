@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using SlimDX;
-using Client.MirGraphics;
-using KFramework.MonoGameExtend;
-
 namespace Client.MirControls
 {
     /// <summary>

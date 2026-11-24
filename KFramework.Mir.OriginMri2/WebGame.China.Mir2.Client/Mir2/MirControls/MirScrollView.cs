@@ -1,8 +1,5 @@
-using System;
-using SlimDX;
-using SlimDX.Direct3D9;
 using Client.MirGraphics;
-using KFramework.MonoGameExtend;
+using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client; // CMain.MPoint（与 DisplayLocation 同一坐标系）
 
 namespace Client.MirControls

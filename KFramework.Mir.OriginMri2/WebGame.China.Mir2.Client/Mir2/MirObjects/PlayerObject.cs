@@ -920,20 +920,22 @@ namespace Client.MirObjects
                 return any || steps.Any(x => x.type == 0);
             }
 
-            // 有子弹技能：原始传奇 JS flyComplete() → playTargetEffects(60)，命中特效抬到子弹终点高度。
+            // 严格照灵魂火符(SoulFireBall)已验证正常的模式：
+            //   · 子弹仅用自己 model 的 stand，不做覆盖（火球子弹 485 / 命中 537 本来不同，灵魂火符 485/530 也不同却正常）
+            //   · 终点用目标 CurrentLocation（格子坐标），由 OriginMissile 内部按起点抬 60、终点脚底处理
+            //   · 命中特效 new OriginEffect(effect, owner)，yOffset=0（灵魂火符就是这样），不额外抬 60
             if (fly.sound > 0) SoundManager.PlaySound(fly.sound);
             Point dest = target != null ? target.CurrentLocation : targetPoint;
             OriginMissile missile = new OriginMissile(fly.effect, this, target, dest,
                                                       flightDuration: Math.Max(1, fly.delaytime));
             foreach (var s in hits)
             {
-                int hitEffect = s.effect, hitSound = s.sound, hx = s.x, hy = s.y;
+                int hitEffect = s.effect, hitSound = s.sound;
                 MapObject hitOwner = target ?? this;
                 missile.Complete += (o, e) =>
                 {
                     if (hitOwner.CurrentAction == MirAction.Dead) return;
-                    hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner,
-                        xOffset: hx, yOffset: OriginMissile.SkillHitTestY - hy));
+                    hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner));
                     if (hitSound > 0) SoundManager.PlaySound(hitSound);
                 };
             }

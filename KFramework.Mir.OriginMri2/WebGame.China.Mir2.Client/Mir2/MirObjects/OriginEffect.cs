@@ -12,6 +12,9 @@ namespace Client.MirObjects
     /// </summary>
     public sealed class OriginEffect : Effect
     {
+        /// <summary>调试开关：在特效锚点画一个青色十字，用于核对子弹终点/命中特效落点是否重合。</summary>
+        public static bool DebugDrawAnchor = false;
+
         private readonly int _model;
         private readonly int _action;
         private readonly int _direction;
@@ -89,6 +92,18 @@ namespace Client.MirObjects
                 Mir2ObjectKind.Monster, _model, _action, _direction, CurrentFrame,
                 screenX, screenY, CommonColor.White, scale: _scale,
                 blend: _addBlend ? MirBlend.Additive : MirBlend.Normal);
+
+            if (DebugDrawAnchor) DrawAnchorMark(screenX, screenY, new KFramework.MonoGame.Color(255, 60, 60));
+        }
+
+        /// <summary>调试：在锚点画一个 11x11 十字（红=命中特效锚点，青=子弹终点锚点）。</summary>
+        internal static void DrawAnchorMark(int x, int y, KFramework.MonoGame.Color color)
+        {
+            var src = new KFramework.MonoGame.Rectangle(0, 0, 1, 1);
+            DXManager.Draw(DXManager.WhitePixel, src,
+                new RectangleF(x - 5, y, 11, 1), color);
+            DXManager.Draw(DXManager.WhitePixel, src,
+                new RectangleF(x, y - 5, 1, 11), color);
         }
     }
 
@@ -99,19 +114,13 @@ namespace Client.MirObjects
     /// </summary>
     public sealed class OriginMissile : Effect
     {
-        /// <summary>
-        /// 原始传奇 GameDefine.SKILL_HitTestY=60：飞行子弹的起点/终点都在实体像素 Y 基础上下移 60px
-        /// （JS: addSkillBullet(t.x, t.y - SKILL_HitTestY, ...)，把发射点从脚底抬到手/胸高度）。
-        /// 客户端格子 CellHeight=32，与原始传奇 MAP_GRID_HEIGHT=32 一致，故该值可直接作为屏幕像素偏移。
-        /// </summary>
-        public const int SkillHitTestY = 60;
-
         private readonly int _model;
         private readonly int _action;
         private readonly int _direction;
         private readonly int _intval;
         private readonly bool _addBlend;
-        private readonly Point _source;
+        private readonly Point _source;         // 构造时施法者格子坐标（仅估算飞行时长用）
+        private readonly Point _screenStart;    // 构造时施法者屏幕坐标：弹道起点固定，避免施法者移动导致起点漂移
         private readonly int _flightDuration;   // 飞行总时长(ms)：0=按距离估算；>0=用配置 delaytime
         private readonly int _startYOffset;     // 起点/终点屏幕 Y 偏移（抬到手部）
         private int _totalFrames;
@@ -121,14 +130,15 @@ namespace Client.MirObjects
         public Point Destination;
 
         /// <param name="flightDuration">飞行时长(ms)。原始传奇 5config.skillEffects 里灵魂火符 type=2 子弹 delaytime=400。</param>
-        /// <param name="startYOffset">起点屏幕像素 Y 偏移（抬到手部）。原始传奇 SKILL_HitTestY=60。</param>
+        /// <param name="startYOffset">起点/终点屏幕像素 Y 偏移（抬到手部）。默认取原始传奇 GameDefine.SKILL_HitTestY。</param>
         public OriginMissile(int effectId, MapObject owner, MapObject target, Point destination,
-                             long duration = 500, int flightDuration = 0, int startYOffset = SkillHitTestY)
+                             long duration = 500, int flightDuration = 0, int startYOffset = GameDefine.SKILL_HitTestY)
             : base(null, 0, 1, (int)duration, owner)
         {
             Target = target;
             Destination = destination;
             _source = owner.CurrentLocation;
+            _screenStart = owner != null ? owner.DrawLocation : _source;
             _flightDuration = flightDuration;
             _startYOffset = startYOffset;
 
@@ -196,12 +206,13 @@ namespace Client.MirObjects
             // 直接用施法者/目标的 DrawLocation（屏幕坐标，含 Movement 平滑插值、OffSetMove、ManualLocationOffset），
             // 终点与命中特效(OriginEffect 用 Owner.DrawLocation)完全一致——之前用格子坐标 CurrentLocation 自己算，
             // 与目标的 DrawLocation 存在偏差，子弹停下后命中特效跳到另一位置，看起来像突然位移。
-            Point startScreen = Owner != null ? Owner.DrawLocation : _source;
+            Point startScreen = _screenStart;
             Point endScreen = Target != null ? Target.DrawLocation : Destination;
             int screenX = startScreen.X + (int)((endScreen.X - startScreen.X) * t);
             int screenY = startScreen.Y + (int)((endScreen.Y - startScreen.Y) * t);
-            // 从脚底抬到手/胸高度发射（原始传奇 SKILL_HitTestY=60）：起点与终点同步上移，
-            // 保证整条飞行轨迹都落在身体上半部，而不是贴着地面从身上穿过。
+            // 原始传奇 JS SkillBullet：起点(t.y-60)与终点(target.y-60)都抬 SKILL_HitTestY，
+            // tween 在这两点间移动、rotation 用这两点算。起点终点同步抬保证弹道是两点直连、朝向一致。
+            // 之前让终点不抬(lift=60*(1-t))，导致弹道与 rotation 基准不一致 → 弹道稍微歪。
             screenY -= _startYOffset;
 
             // 原始传奇 SkillBullet：用 effect.dir(4) 的精灵帧，靠 t.rotation=orientation-90 旋转朝向目标，
@@ -209,22 +220,25 @@ namespace Client.MirObjects
             // 注意原始子弹动画是多帧（同一火球自转），这里按飞行进度推进帧，不是固定帧 0。
             int frame = CurrentFrame % _totalFrames;
 
-            // 原始: rotation = DirectionUtil.orientation(x1,y1,x2,y2) - 90 (度)，egret rotation 是度，
-            // MonoGame 是弧度：atan2(dy,dx) - π/2 即为等价弧度。
+            // 旋转角必须用屏幕坐标方向算：格子是 48x32 的菱形(非等比)，用格子 delta 算 atan2 会导致
+            // 视觉弹道(屏幕 48:32)与精灵朝向(格子 1:1)不一致 → 看起来"45度歪"。
+            // 精灵默认朝上(dir=4)，故屏幕方向角再减 π/2（MonoGame 弧度、y 轴向下与 egret 一致）。
             float rotation = 0f;
-            if (Target != null)
             {
-                float dx = Destination.X - _source.X;
-                float dy = Destination.Y - _source.Y;
-                rotation = (float)Math.Atan2(dy, dx) - (float)(Math.PI / 2);
+                float dx = endScreen.X - startScreen.X;
+                float dy = endScreen.Y - startScreen.Y;
+                if (dx != 0 || dy != 0)
+                    rotation = (float)Math.Atan2(dy, dx) - (float)(Math.PI / 2);
             }
 
-            // 与命中特效(OriginEffect)统一用 DrawAnchored：model 枢轴 + 帧 OffX/OffY 锚定，
-            // 保证飞行终点与命中特效落点完全一致，不再有"子弹停下后命中特效突然位移"的错位。
+            // 与灵魂火符同款锚定：各用自己 model 的 stand，不做覆盖。
             Mir2OriginObjectLibrary.DrawAnchored(
                 Mir2ObjectKind.Monster, _model, _action, _direction, frame,
                 screenX, screenY, CommonColor.White, scale: 1f,
                 blend: _addBlend ? MirBlend.Additive : MirBlend.Normal, rotation: rotation);
+
+            if (OriginEffect.DebugDrawAnchor)
+                OriginEffect.DrawAnchorMark(screenX, screenY, new KFramework.MonoGame.Color(60, 220, 220));
         }
     }
 }
