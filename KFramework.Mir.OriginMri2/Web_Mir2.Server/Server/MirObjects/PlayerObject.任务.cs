@@ -478,15 +478,17 @@ namespace Server.MirObjects
             GainCredit(info.CreditReward);
         }
 
-        /// <summary>构建任务固定+可选奖励的物品列表（按职业过滤 box 分支奖励）。</summary>
+        /// <summary>构建任务固定+可选奖励的物品列表（固定与可选奖励都按职业过滤）。</summary>
         private List<UserItem> BuildQuestRewardItems(QuestInfoRunItem info)
         {
             List<UserItem> rewardItems = new List<UserItem>();
 
             foreach (var reward in info.FixedRewards)
             {
-                // 原始传奇 box 里同一奖励按职业分三支（1战/2法/3道），只发玩家职业那一支。
-                if (reward.Career > 0 && reward.Career != (int)Class + 1) continue;
+                if (!RewardMatchesClass(reward))
+                {
+                    continue;
+                }
 
                 ushort count = reward.Count;
                 while (count > 0)
@@ -506,9 +508,15 @@ namespace Server.MirObjects
                 }
             }
 
-            // 可选奖励全部发放（不再要求玩家选择）
+            // 可选奖励全部发放（不再要求玩家选择），但同样要按职业过滤，
+            // 否则 box 里 Career=0 的战士专属装备会发给法师。
             foreach (var selectReward in info.SelectRewards)
             {
+                if (!RewardMatchesClass(selectReward))
+                {
+                    continue;
+                }
+
                 ushort count = selectReward.Count;
                 while (count > 0)
                 {
@@ -528,6 +536,30 @@ namespace Server.MirObjects
             }
 
             return rewardItems;
+        }
+
+        /// <summary>
+        /// 奖励项是否适配玩家职业：先按原始 box 的职业分支（0=不限，1战/2法/3道）过滤，
+        /// 再按物品自身的 RequiredClass 位掩码过滤。
+        /// 后台任务“悲剧的淘金者”奖励骷髅戒指发给法师，根因就是 box 里 Career=0
+        /// 但物品自身 RequiredClass=Warrior，旧代码只看前者，把战士装备发给了法师。
+        /// </summary>
+        private bool RewardMatchesClass(QuestItemReward reward)
+        {
+            int playerCareer = (int)Class + 1; // MirClass 0/1/2 → 原始传奇 1战/2法/3道
+            if (reward.Career > 0 && reward.Career != playerCareer)
+            {
+                return false;
+            }
+
+            RequiredClass required = reward.Item.RequiredClass;
+            if (required == RequiredClass.None)
+            {
+                return true;
+            }
+
+            RequiredClass playerClass = (RequiredClass)(1 << (int)Class);
+            return (required & playerClass) != 0;
         }
 
         /// <summary>
