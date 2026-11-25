@@ -23,6 +23,7 @@ namespace Client.MirObjects
         public const int DefaultHitDamageId = 1;     // number=1（hurt1_* 白色普通伤害，71 项主流）
         public const int DefaultCritDamageId = 12;   // number=1 + 起始放大
         public const int DefaultHealDamageId = 15;   // number=3（JS 取绝对值，回血）
+        public const int DefaultMissDamageId = 7;    // 无 number + title=36，即 BloodFont_json.plus_36（闪避图标）
 
         /// <summary>飘血基准高度：相对脚底 DrawLocation 上移像素（75 基础上 +20 上移）。可配置。</summary>
         public static int BaseYOffset = 95;
@@ -319,6 +320,9 @@ namespace Client.MirObjects
                 {
                     float titleWidth = titleFrame.Size.X * scale;
                     DrawGlyphFrame(titleFrame, titleKey, x - titleWidth - 2, y, scale, tint);
+                    // 纯图标配置（如未命中 title=36 的“闪避”）没有数字，也必须算绘制成功，
+                    // 否则会继续走 DrawFallback，把“Miss/未命中”小字又画出来。
+                    any = true;
                 }
             }
 

@@ -3693,9 +3693,10 @@ namespace Client.MirScenes
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
                                 OriginMir2Damage.DefaultHitDamageId, side));
                             break;
-                        case DamageType.Miss: // 文字类无对应数字帧，走回退 Label
-                            obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Miss"), 1200,
-                                obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 0, side));
+                        case DamageType.Miss: // 原始传奇 damage id=7：只画 plus_36“闪避”图标，不画小字
+                            obj.Damages.Add(new OriginMir2Damage(string.Empty, 1200,
+                                obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray,
+                                OriginMir2Damage.DefaultMissDamageId, side));
                             break;
                         case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大），显示实际伤害数字
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
