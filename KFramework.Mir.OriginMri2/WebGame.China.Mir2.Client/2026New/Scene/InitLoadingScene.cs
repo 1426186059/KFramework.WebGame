@@ -84,16 +84,12 @@ namespace Client.MirScenes
             try
             {
                 await CMain.RunGameInitializationAsync(SetStatus).ConfigureAwait(false);
+                Dispose();
             }
             catch (Exception ex)
             {
                 SetStatus("初始化失败：" + ex.Message);
-                //PrintTool.LogError("[InitLoading] 初始化异常：" + ex);
-            }
-            finally
-            {
-                // RunGameInitializationAsync 内已切换到 LoginScene；此处释放本场景（ControlTexture 等）。
-                Dispose();
+                PrintTool.LogError("[InitLoading] 初始化异常：" + ex);
             }
         }
     }
