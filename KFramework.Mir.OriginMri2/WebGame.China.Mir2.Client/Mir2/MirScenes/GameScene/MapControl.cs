@@ -404,7 +404,7 @@ public sealed class MapControl : MirControl
             if (_autoRun == value) return;
             _autoRun = value;
             if (GameScene.Scene != null)
-                GameScene.Scene.ChatDialog.ReceiveChat(value ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AutoRunOn) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AutoRunOff),
+                GameScene.Scene.ChatDialog.ReceiveChat(value ? LanguageMgr.Get("AutoRunOn"): LanguageMgr.Get("AutoRunOff"),
                     ChatType.System);
         }
 
@@ -1209,14 +1209,14 @@ public sealed class MapControl : MirControl
             MirItemCell cell = GameScene.SelectedCell;
             if (cell.Item.Info.Bind.HasFlag(BindMode.DontDrop))
             {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouCannotDrop), cell.Item.FriendlyName), MirMessageBoxButtons.OK);
+                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("YouCannotDrop", cell.Item.FriendlyName), MirMessageBoxButtons.OK);
                 messageBox.Show();
                 GameScene.SelectedCell = null;
                 return;
             }
             if (cell.Item.Count == 1)
             {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DropTip), cell.Item.FriendlyName), MirMessageBoxButtons.YesNo);
+                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("DropTip", cell.Item.FriendlyName), MirMessageBoxButtons.YesNo);
 
                 messageBox.YesButton.Click += (o, a) =>
                 {
@@ -1233,7 +1233,7 @@ public sealed class MapControl : MirControl
             }
             else
             {
-                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DropAmount), (int)cell.Item.Info.Image, cell.Item.Count);
+                MirAmountBox amountBox = new MirAmountBox(LanguageMgr.Get("DropAmount"), (int)cell.Item.Info.Image, cell.Item.Count);
 
                 amountBox.OKButton.Click += (o, a) =>
                 {
@@ -1257,7 +1257,7 @@ public sealed class MapControl : MirControl
 
         if (GameScene.PickedUpGold)
         {
-            MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DropAmount), 116, GameScene.Gold);
+            MirAmountBox amountBox = new MirAmountBox(LanguageMgr.Get("DropAmount"), 116, GameScene.Gold);
 
             amountBox.OKButton.Click += (o, a) =>
             {
@@ -1334,7 +1334,7 @@ public sealed class MapControl : MirControl
                         if (CMain.Time >= OutputDelay)
                         {
                             OutputDelay = CMain.Time + 1000;
-                            GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TargetTooFar));
+                            GameScene.Scene.OutputMessage(LanguageMgr.Get("TargetTooFar"));
                         }
                     }
                     //  return;
@@ -1423,7 +1423,7 @@ public sealed class MapControl : MirControl
                                         if (CMain.Time >= OutputDelay)
                                         {
                                             OutputDelay = CMain.Time + 1000;
-                                            GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TargetTooFar));
+                                            GameScene.Scene.OutputMessage(LanguageMgr.Get("TargetTooFar"));
                                         }
                                         return;
                                     }
@@ -1460,7 +1460,7 @@ public sealed class MapControl : MirControl
                             if (CMain.Time >= OutputDelay)
                             {
                                 OutputDelay = CMain.Time + 1000;
-                                GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TargetTooFar));
+                                GameScene.Scene.OutputMessage(LanguageMgr.Get("TargetTooFar"));
                             }
                         }
                         return;
@@ -2051,7 +2051,7 @@ public sealed class MapControl : MirControl
             if (CMain.Time >= OutputDelay)
             {
                 OutputDelay = CMain.Time + 1000;
-                GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CannotCastSpellSeconds), magic.Name,
+                GameScene.Scene.OutputMessage(LanguageMgr.Get("CannotCastSpellSeconds", magic.Name,
                     ((magic.CastTime + magic.Delay) - CMain.Time - 1) / 1000 + 1));
             }
 
@@ -2079,7 +2079,7 @@ public sealed class MapControl : MirControl
             if (CMain.Time >= OutputDelay)
             {
                 OutputDelay = CMain.Time + 1000;
-                GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowMana));
+                GameScene.Scene.OutputMessage(LanguageMgr.Get("LowMana"));
             }
             actor.ClearMagic();
             return;
@@ -2127,7 +2127,7 @@ public sealed class MapControl : MirControl
             case Spell.SummonSnakes: // 召唤蛇
                 if (!actor.HasClassWeapon)
                 {
-                    GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MustWearBowForSkill));
+                    GameScene.Scene.OutputMessage(LanguageMgr.Get("MustWearBowForSkill"));
                     actor.ClearMagic();
                     return;
                 }
@@ -2138,7 +2138,7 @@ public sealed class MapControl : MirControl
             case Spell.Stonetrap: // 石陷阱
                 if (!User.HasClassWeapon)
                 {
-                    GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MustWearBowForSkill));
+                    GameScene.Scene.OutputMessage(LanguageMgr.Get("MustWearBowForSkill"));
                     User.ClearMagic();
                     return;
                 }
@@ -2246,7 +2246,7 @@ public sealed class MapControl : MirControl
             if (CMain.Time >= OutputDelay)
             {
                 OutputDelay = CMain.Time + 1000;
-                GameScene.Scene.OutputMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TargetTooFar));
+                GameScene.Scene.OutputMessage(LanguageMgr.Get("TargetTooFar"));
             }
             actor.ClearMagic();
             return;

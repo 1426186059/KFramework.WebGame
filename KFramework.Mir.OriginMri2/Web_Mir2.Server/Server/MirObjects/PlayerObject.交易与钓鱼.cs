@@ -114,7 +114,7 @@ namespace Server.MirObjects
 
             if (TradePartner != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.AlreadyTrading), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("AlreadyTrading"), ChatType.System);
                 return;
             }
 
@@ -126,7 +126,7 @@ namespace Server.MirObjects
 
             if (cell.Objects == null || cell.Objects.Count == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceToTrade), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FaceToTrade"), ChatType.System);
                 return;
             }
 
@@ -140,7 +140,7 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceToTrade), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FaceToTrade"), ChatType.System);
                 return;
             }
 
@@ -148,43 +148,43 @@ namespace Server.MirObjects
             {
                 if (!Functions.FacingEachOther(Direction, CurrentLocation, player.Direction, player.CurrentLocation))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceToTrade), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("FaceToTrade"), ChatType.System);
                     return;
                 }
 
                 if (player == this)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotTradeWithSelf), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotTradeWithSelf"), ChatType.System);
                     return;
                 }
 
                 if (player.Dead || Dead)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotTradeWhenDead), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotTradeWhenDead"), ChatType.System);
                     return;
                 }
 
                 if (player.TradeInvitation != null)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyHasTradeInvitation), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerAlreadyHasTradeInvitation", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (!player.AllowTrade)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerNotAllowingTrade), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerNotAllowingTrade", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (!Functions.InRange(player.CurrentLocation, CurrentLocation, Globals.DataRange) || player.CurrentMap != CurrentMap)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerNotInTradeRange), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerNotInTradeRange", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (player.TradePartner != null)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyTrading), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerAlreadyTrading", player.Info.Name), ChatType.System);
                     return;
                 }
 
@@ -202,21 +202,21 @@ namespace Server.MirObjects
 
             if (!accept)
             {
-                TradeInvitation.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerRefusedTrade), Info.Name), ChatType.System);
+                TradeInvitation.ReceiveChat(LanguageMgr.Get("PlayerRefusedTrade", Info.Name), ChatType.System);
                 TradeInvitation = null;
                 return;
             }
 
             if (TradePartner != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.AlreadyTrading), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("AlreadyTrading"), ChatType.System);
                 TradeInvitation = null;
                 return;
             }
 
             if (TradeInvitation.TradePartner != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyTrading), TradeInvitation.Info.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerAlreadyTrading", TradeInvitation.Info.Name), ChatType.System);
                 TradeInvitation = null;
                 return;
             }
@@ -298,7 +298,7 @@ namespace Server.MirObjects
 
             if (TradeLocked && !TradePartner.TradeLocked)
             {
-                TradePartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerWaitingConfirmTrade), Info.Name), ChatType.System);
+                TradePartner.ReceiveChat(LanguageMgr.Get("PlayerWaitingConfirmTrade", Info.Name), ChatType.System);
             }
 
             if (!TradeLocked || !TradePartner.TradeLocked) return;
@@ -316,10 +316,10 @@ namespace Server.MirObjects
                 if (!TradePair[o].CanGainItems(TradePair[p].Info.Trade))
                 {
                     CanTrade = false;
-                    TradePair[p].ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TradingPartnerCannotAcceptAllItems), ChatType.System);
+                    TradePair[p].ReceiveChat(LanguageMgr.Get("TradingPartnerCannotAcceptAllItems"), ChatType.System);
                     TradePair[p].Enqueue(new S.TradeCancel { Unlock = true });
 
-                    TradePair[o].ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.UnableAcceptAllItems), ChatType.System);
+                    TradePair[o].ReceiveChat(LanguageMgr.Get("UnableAcceptAllItems"), ChatType.System);
                     TradePair[o].Enqueue(new S.TradeCancel { Unlock = true });
 
                     return;
@@ -328,10 +328,10 @@ namespace Server.MirObjects
                 if (!TradePair[o].CanGainGold(TradePair[p].TradeGoldAmount))
                 {
                     CanTrade = false;
-                    TradePair[p].ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PartnerCannotAcceptMoreGold), ChatType.System);
+                    TradePair[p].ReceiveChat(LanguageMgr.Get("PartnerCannotAcceptMoreGold"), ChatType.System);
                     TradePair[p].Enqueue(new S.TradeCancel { Unlock = true });
 
-                    TradePair[o].ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.UnableAcceptMoreGold), ChatType.System);
+                    TradePair[o].ReceiveChat(LanguageMgr.Get("UnableAcceptMoreGold"), ChatType.System);
                     TradePair[o].Enqueue(new S.TradeCancel { Unlock = true });
 
                     return;
@@ -354,18 +354,18 @@ namespace Server.MirObjects
                         TradePair[o].GainItem(u);
                         TradePair[p].Info.Trade[i] = null;
 
-                        Report.ItemMoved(u, MirGridType.Trade, MirGridType.Inventory, i, -99, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.TradeFromTo), TradePair[p].Name, TradePair[o].Name));
+                        Report.ItemMoved(u, MirGridType.Trade, MirGridType.Inventory, i, -99, LanguageMgr.Get("TradeFromTo", TradePair[p].Name, TradePair[o].Name));
                     }
 
                     if (TradePair[p].TradeGoldAmount > 0)
                     {
-                        Report.GoldChanged(TradePair[p].TradeGoldAmount, true, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.TradeFromTo), TradePair[p].Name, TradePair[o].Name));
+                        Report.GoldChanged(TradePair[p].TradeGoldAmount, true, LanguageMgr.Get("TradeFromTo", TradePair[p].Name, TradePair[o].Name));
 
                         TradePair[o].GainGold(TradePair[p].TradeGoldAmount);
                         TradePair[p].TradeGoldAmount = 0;
                     }
 
-                    TradePair[p].ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TradeSuccessful), ChatType.System);
+                    TradePair[p].ReceiveChat(LanguageMgr.Get("TradeSuccessful"), ChatType.System);
                     TradePair[p].Enqueue(new S.TradeConfirm());
 
                     TradePair[p].TradeLocked = false;
@@ -492,7 +492,7 @@ namespace Server.MirObjects
 
             if (hook == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NeedHook), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NeedHook"), ChatType.System);
                 return;
             }
             else
@@ -564,7 +564,7 @@ namespace Server.MirObjects
 
                 if (item == null)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNeedBait), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouNeedBait"), ChatType.System);
                     return;
                 }
 
@@ -614,11 +614,11 @@ namespace Server.MirObjects
 
                         if (dropItem == null)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FishGotAway), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("FishGotAway"), ChatType.System);
                         }
                         else if (FreeSpace(Info.Inventory) < 1)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoBagSpace), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("NoBagSpace"), ChatType.System);
                             cancel = true;
                         }
                         else
@@ -645,7 +645,7 @@ namespace Server.MirObjects
                     }
                     else
                     {
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FishGotAway), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("FishGotAway"), ChatType.System);
                     }
                 }
 

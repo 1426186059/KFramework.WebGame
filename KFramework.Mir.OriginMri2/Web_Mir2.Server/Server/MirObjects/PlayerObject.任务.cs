@@ -77,13 +77,13 @@ namespace Server.MirObjects
 
             if (CurrentQuests.Count >= Globals.MaxConcurrentQuests)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MaximumQuestsTaken), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("MaximumQuestsTaken"), ChatType.System);
                 return;
             }
 
             if (CompletedQuests.Contains(index))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.QuestAlreadyCompleted), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("QuestAlreadyCompleted"), ChatType.System);
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace Server.MirObjects
 
             if (!canAccept)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CouldNotAcceptQuest), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CouldNotAcceptQuest"), ChatType.System);
                 return;
             }
 
@@ -284,7 +284,7 @@ namespace Server.MirObjects
 
             if (!CanGainItems(rewardItems.ToArray()))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotHandInQuestBagFull), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotHandInQuestBagFull"), ChatType.System);
                 return;
             }
 
@@ -727,7 +727,7 @@ namespace Server.MirObjects
                     GainQuestItem(item);
                     quest.ProcessItem(Info.QuestInventory);
 
-                    Enqueue(new S.SendOutputMessage { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouFound), item.FriendlyName), Type = OutputMessageType.Quest });
+                    Enqueue(new S.SendOutputMessage { Message = LanguageMgr.Get("YouFound", item.FriendlyName), Type = OutputMessageType.Quest });
 
                     SendUpdateQuest(quest, QuestState.Update);
 
@@ -762,7 +762,7 @@ namespace Server.MirObjects
             {
                 quest.ProcessKill(mInfo);
 
-                Enqueue(new S.SendOutputMessage { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouKilled), mInfo.GameName), Type = OutputMessageType.Quest });
+                Enqueue(new S.SendOutputMessage { Message = LanguageMgr.Get("YouKilled", mInfo.GameName), Type = OutputMessageType.Quest });
 
                 SendUpdateQuest(quest, QuestState.Update);
             }

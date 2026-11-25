@@ -441,7 +441,7 @@ namespace Client.MirScenes.Dialogs
                     Cells[row].ForeColour = CommonColor.White;
                     // 技能描述 + 按键/MP/CD 摘要
                     Cells[row].Hint = SkillDescriptionHelper.Get(magic) + "\n\n" +
-                        GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillMpCooldownKey), magic.Name,
+                        LanguageMgr.Get("SkillMpCooldownKey", magic.Name,
                         (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
                 }
             }
@@ -1114,219 +1114,219 @@ namespace Client.MirScenes.Dialogs
                 switch (EffectSpellOf(magic))
                 {  //Warrior
                     case Spell.Fencing: // 基本剑术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FencingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
+                        return LanguageMgr.Get("FencingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
                     case Spell.Slaying: // 攻杀剑术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SlayingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
+                        return LanguageMgr.Get("SlayingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
                     case Spell.Thrusting: // 刺杀剑术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ThrustingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
+                        return LanguageMgr.Get("ThrustingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
                     case Spell.Rage: // 无极真气
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RageSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("RageSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ProtectionField: // 护体神盾
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ProtectionFieldSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ProtectionFieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.HalfMoon: // 半月弯刀
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HalfMoonSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HalfMoonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FlamingSword: // 烈火剑法
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FlamingSwordSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FlamingSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ShoulderDash: // 野蛮冲撞
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ShoulderDashSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ShoulderDashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.CrossHalfMoon: // 半月弯刀（双）
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CrossHalfMoonSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("CrossHalfMoonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.TwinDrakeBlade: // 双烈火剑
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TwinDrakeBladeSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("TwinDrakeBladeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Entrapment: // 困魔咒
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.EntrapmentSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("EntrapmentSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.LionRoar: // 狮子吼
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LionRoarSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("LionRoarSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.CounterAttack: // 反击
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CounterAttackSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("CounterAttackSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ImmortalSkin: // 金刚护体
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ImmortalSkinSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ImmortalSkinSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Fury: // 狂暴
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FurySkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FurySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SlashingBurst: // 逐日剑法
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SlashingBurstSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SlashingBurstSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.BladeAvalanche: // 剑刃风暴
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BladeAvalancheSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("BladeAvalancheSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Wizard
                     case Spell.FireBall: // 火球术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FireballSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FireballSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ThunderBolt: // 雷电术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ThunderboltSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ThunderboltSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.GreatFireBall: // 大火球
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GreatFireballSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("GreatFireballSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Repulsion: // 抗拒火环
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RepulsionSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("RepulsionSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.HellFire: // 地狱火
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HellfireSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HellfireSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Lightning: // 疾光电影
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LightningSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("LightningSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ElectricShock: // 电击
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ElectricShockSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ElectricShockSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Teleport: // 瞬间移动
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TeleportSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("TeleportSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FireWall: // 火墙
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FireWallSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FireWallSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FireBang: // 爆裂火焰
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FireBangSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FireBangSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ThunderStorm: // 地狱雷光
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ThunderstormSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ThunderstormSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MagicShield: // 魔法盾
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MagicShieldSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MagicShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.TurnUndead: // 驱尸术（复活死尸）
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TurnUndeadSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("TurnUndeadSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.IceStorm: // 冰咆哮
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.IceStormSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("IceStormSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FlameDisruptor: // 灭天火
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FlameDisruptorSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FlameDisruptorSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FrostCrunch: // 寒冰掌
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FrostCrunchSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FrostCrunchSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Mirroring: // 分身术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MirroringSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MirroringSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FlameField: // 狂雷紫电
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FlameFieldSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FlameFieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Vampirism: // 噬血术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.VampirismSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("VampirismSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Blizzard: // 暴风雪
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BlizzardSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("BlizzardSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MeteorStrike: // 流星火雨
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MeteorStrikeSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MeteorStrikeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.IceThrust: // 冰刺
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.IceThrustSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("IceThrustSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MagicBooster: // 魔法强化
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MagicBoosterSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MagicBoosterSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FastMove: // 快速移动
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FastMoveSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FastMoveSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.StormEscape: // 风暴逃脱
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.StormEscapeSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("StormEscapeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Blink: // 瞬移
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BlinkSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("BlinkSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Taoist
                     case Spell.SpiritSword: // 精神力战法
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SpiritSwordSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SpiritSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Healing: // 治愈术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HealingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HealingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Poisoning: // 施毒术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PoisoningSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PoisoningSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SoulFireBall: // 灵魂火符
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SoulFireBallSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SoulFireBallSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SoulShield: // 幽灵盾
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SoulShieldSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SoulShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.BlessedArmour: // 神圣战甲术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BlessedArmourSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("BlessedArmourSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.TrapHexagon: // 困魔咒
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TrapHexagonSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("TrapHexagonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonSkeleton: // 召唤骷髅
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonSkeletonSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonSkeletonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Hiding: // 隐身术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HidingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HidingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MassHiding: // 集体隐身术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MassHidingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MassHidingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Revelation: // 心灵启示
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RevelationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("RevelationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MassHealing: // 群体治愈术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MassHealingSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MassHealingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonShinsu: // 召唤神兽
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonShinsuSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonShinsuSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.UltimateEnhancer: // 强化术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.UltimateEnhancerSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("UltimateEnhancerSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.EnergyRepulsor: // 气功波
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.EnergyRepulsorSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("EnergyRepulsorSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Purification: // 净化术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PurificationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PurificationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonHolyDeva: // 召唤骨龙
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonHolyDevaSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonHolyDevaSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Curse: // 诅咒术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CurseSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("CurseSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Hallucination: // 幻象术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HallucinationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HallucinationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Reincarnation: // 重生术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ReincarnationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ReincarnationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.PoisonCloud: // 毒云术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PoisonCloudSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PoisonCloudSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.EnergyShield: // 能量护盾
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.EnergyShieldSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("EnergyShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Plague: // 瘟疫术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PlagueSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PlagueSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.HealingCircle: // 治愈术（范围）
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HealingCircleSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HealingCircleSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.PetEnhancer: // 宠物强化
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PetEnhancerSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PetEnhancerSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Assassin
                     case Spell.FatalSword: // 致命剑
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FatalSwordPassiveSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FatalSwordPassiveSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.DoubleSlash: // 双斩
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DoubleSlashToggleSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("DoubleSlashToggleSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Haste: // 疾速
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HasteBuffSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HasteBuffSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FlashDash: // 十步一杀
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FlashDashSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FlashDashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.HeavenlySword: // 开天斩
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HeavenlySwordSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HeavenlySwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.FireBurst: // 爆炎斩
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FireBurstSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FireBurstSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Trap: // 陷阱
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TrapSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("TrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MoonLight: // 月光斩
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MoonlightSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MoonlightSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MPEater: // 吸魔
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MPEaterSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MPEaterSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SwiftFeet: // 疾风步
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SwiftFeetSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SwiftFeetSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.LightBody: // 轻身术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LightBodySkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("LightBodySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.PoisonSword: // 毒剑
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PoisonSwordSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PoisonSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.DarkBody: // 暗影术
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DarkBodySkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("DarkBodySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.CrescentSlash: // 新月斩
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CrescentSlashSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("CrescentSlashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Hemorrhage: // 出血
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HemorrhageSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("HemorrhageSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.MoonMist: // 月雾
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MoonMistSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MoonMistSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Archer
                     case Spell.Focus: // 专注
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FocusSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("FocusSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.StraightShot: // 直射击
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.StraightShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("StraightShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.DoubleShot: // 双重射击
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DoubleShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("DoubleShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ExplosiveTrap: // 爆炸陷阱
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ExplosiveTrapSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ExplosiveTrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.DelayedExplosion: // 延迟爆炸
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DelayedExplosionSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("DelayedExplosionSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Meditation: // 冥想
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MeditationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("MeditationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.BackStep: // 后跃
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BackStepSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("BackStepSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ElementalShot: // 元素箭
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ElementalShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ElementalShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Concentration: // 集中
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ConcentrationSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ConcentrationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.Stonetrap: // 石陷阱
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.StoneTrapSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("StoneTrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.ElementalBarrier: // 元素屏障
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ElementalBarrierSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("ElementalBarrierSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonVampire: // 召唤吸血鬼
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonVampireSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonVampireSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.VampireShot: // 吸血箭
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.VampireShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("VampireShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonToad: // 召唤蟾蜍
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonToadSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonToadSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.PoisonShot: // 毒箭
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.PoisonShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("PoisonShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.CrippleShot: // 残废箭
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CrippleShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("CrippleShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.SummonSnakes: // 召唤蛇
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SummonSnakesSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("SummonSnakesSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.NapalmShot: // 燃烧箭
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.NapalmShotSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("NapalmShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
                     case Spell.OneWithNature: // 天人合一
-                        return GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.OneWithNatureSkillDescription), magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
+                        return LanguageMgr.Get("OneWithNatureSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
 
                     default:

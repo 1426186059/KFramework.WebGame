@@ -23,13 +23,13 @@ namespace Server.MirObjects
         {
             if (Dead)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.UnableRentItemsWhileDead), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableRentItemsWhileDead"), ChatType.System);
                 return;
             }
 
             if (ItemRentalPartner != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAreRentingItem), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAreRentingItem"), ChatType.System);
                 return;
             }
 
@@ -51,51 +51,51 @@ namespace Server.MirObjects
 
             if (targetPlayer == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FacePlayerToRentItem), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FacePlayerToRentItem"), ChatType.System);
                 return;
             }
 
             if (Info.RentedItems.Count >= 3)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.UnableRentMoreThan3Items), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableRentMoreThan3Items"), ChatType.System);
                 return;
             }
 
             if (targetPlayer.Info.HasRentedItem)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerUnableToRentItems), targetPlayer.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerUnableToRentItems", targetPlayer.Name), ChatType.System);
                 return;
             }
 
             if (!Functions.FacingEachOther(Direction, CurrentLocation, targetPlayer.Direction,
                 targetPlayer.CurrentLocation))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FacePlayerToRentItem), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FacePlayerToRentItem"), ChatType.System);
                 return;
             }
 
             if (targetPlayer == this)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCannotRentItemsYourself), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCannotRentItemsYourself"), ChatType.System);
                 return;
             }
 
             if (targetPlayer.Dead)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableRentItemsToPlayerWhileDead), targetPlayer.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableRentItemsToPlayerWhileDead", targetPlayer.Name), ChatType.System);
                 return;
             }
 
             if (!Functions.InRange(targetPlayer.CurrentLocation, CurrentLocation, Globals.DataRange)
                 || targetPlayer.CurrentMap != CurrentMap)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.TargetNotInRange), targetPlayer.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("TargetNotInRange", targetPlayer.Name), ChatType.System);
                 return;
             }
 
             if (targetPlayer.ItemRentalPartner != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerIsBusy), targetPlayer.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerIsBusy", targetPlayer.Name), ChatType.System);
                 return;
             }
 
@@ -175,21 +175,21 @@ namespace Server.MirObjects
 
             if (item.RentalInformation?.RentalLocked == true)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToRentUntil), item.FriendlyName, item.RentalInformation.ExpiryDate), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableToRentUntil", item.FriendlyName, item.RentalInformation.ExpiryDate), ChatType.System);
                 Enqueue(packet);
                 return;
             }
 
             if (item.Info.Bind.HasFlag(BindMode.UnableToRent))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToRent), item.FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableToRent", item.FriendlyName), ChatType.System);
                 Enqueue(packet);
                 return;
             }
 
             if (item.RentalInformation != null && item.RentalInformation.BindingFlags.HasFlag(BindMode.UnableToRent))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToRentBelongsTo), item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("UnableToRentBelongsTo", item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
                 Enqueue(packet);
                 return;
             }
@@ -340,7 +340,7 @@ namespace Server.MirObjects
             if (ItemRentalFeeLocked && ItemRentalPartner.ItemRentalItemLocked)
                 ItemRentalPartner.Enqueue(new S.CanConfirmItemRental());
             else if (ItemRentalFeeLocked && !ItemRentalPartner.ItemRentalItemLocked)
-                ItemRentalPartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLockedRentalFee), Name), ChatType.System);
+                ItemRentalPartner.ReceiveChat(LanguageMgr.Get("PlayerLockedRentalFee", Name), ChatType.System);
 
             Enqueue(p);
         }
@@ -361,7 +361,7 @@ namespace Server.MirObjects
             if (ItemRentalItemLocked && ItemRentalPartner.ItemRentalFeeLocked)
                 Enqueue(new S.CanConfirmItemRental());
             else if (ItemRentalItemLocked && !ItemRentalPartner.ItemRentalFeeLocked)
-                ItemRentalPartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLockedRentalItem), Name), ChatType.System);
+                ItemRentalPartner.ReceiveChat(LanguageMgr.Get("PlayerLockedRentalItem", Name), ChatType.System);
 
 
             Enqueue(p);
@@ -425,10 +425,10 @@ namespace Server.MirObjects
 
             if (!ItemRentalPartner.CanGainItem(ItemRentalDepositedItem))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerUnableReceiveItem), ItemRentalPartner.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerUnableReceiveItem", ItemRentalPartner.Name), ChatType.System);
                 Enqueue(new S.CancelItemRental());
 
-                ItemRentalPartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.UnableToAcceptRentalItem), ChatType.System);
+                ItemRentalPartner.ReceiveChat(LanguageMgr.Get("UnableToAcceptRentalItem"), ChatType.System);
                 ItemRentalPartner.Enqueue(new S.CancelItemRental());
 
                 return;
@@ -436,10 +436,10 @@ namespace Server.MirObjects
 
             if (!CanGainGold(ItemRentalPartner.ItemRentalFeeAmount))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCannotReceiveMoreGold), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCannotReceiveMoreGold"), ChatType.System);
                 Enqueue(new S.CancelItemRental());
 
-                ItemRentalPartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerUnableReceiveGold), Name), ChatType.System);
+                ItemRentalPartner.ReceiveChat(LanguageMgr.Get("PlayerUnableReceiveGold", Name), ChatType.System);
                 ItemRentalPartner.Enqueue(new S.CancelItemRental());
 
                 return;
@@ -467,10 +467,10 @@ namespace Server.MirObjects
 
             ItemRentalPartner.GainItem(item);
             ItemRentalPartner.Info.HasRentedItem = true;
-            ItemRentalPartner.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouHaveRentedFromUntil), item.FriendlyName, Name, item.RentalInformation.ExpiryDate), ChatType.System);
+            ItemRentalPartner.ReceiveChat(LanguageMgr.Get("YouHaveRentedFromUntil", item.FriendlyName, Name, item.RentalInformation.ExpiryDate), ChatType.System);
 
             GainGold(ItemRentalPartner.ItemRentalFeeAmount);
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ReceivedGoldForItemRental), ItemRentalPartner.ItemRentalFeeAmount), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("ReceivedGoldForItemRental", ItemRentalPartner.ItemRentalFeeAmount), ChatType.System);
             ItemRentalPartner.ItemRentalFeeAmount = 0;
 
             Enqueue(new S.ConfirmItemRental());

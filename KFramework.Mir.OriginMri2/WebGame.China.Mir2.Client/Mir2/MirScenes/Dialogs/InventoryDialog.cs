@@ -299,7 +299,7 @@ namespace Client.MirScenes.Dialogs
             uint openGold = (uint)(InventoryLayout.InventoryExpandBaseGold * (1 + openLevel));
 
             MirMessageBox messageBox = new MirMessageBox(
-                GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraSlots4, openGold),
+                LanguageMgr.Get("ExtraSlots4", openGold),
                 MirMessageBoxButtons.OKCancel);
 
             messageBox.OKButton.Click += (o, a) =>
@@ -559,7 +559,7 @@ namespace Client.MirScenes.Dialogs
 
             if (item.Count > 1)
             {
-                var amountPrompt = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DeleteItemAmountPrompt, name);
+                var amountPrompt = LanguageMgr.Get("DeleteItemAmountPrompt", name);
                 var amountBox = new MirAmountBox(amountPrompt, item.Image, item.Count);
 
                 amountBox.OKButton.Click += (o, a) =>
@@ -576,7 +576,7 @@ namespace Client.MirScenes.Dialogs
             }
             else
             {
-                var confirmPrompt = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DeleteItemConfirmPrompt, name);
+                var confirmPrompt = LanguageMgr.Get("DeleteItemConfirmPrompt", name);
                 var mb = new MirMessageBox(confirmPrompt, MirMessageBoxButtons.YesNo);
                 mb.YesButton.Click += (o, a) => { DoDelete(1); };
                 mb.NoButton.Click += (o, a) => { CancelDelete(); };

@@ -42,7 +42,7 @@ namespace Client.MirObjects
         }
         public void Load(S.ObjectGold info)
         {
-            Name = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GoldAmount), info.Gold);
+            Name = LanguageMgr.Get("GoldAmount", info.Gold);
 
 
             BodyLibrary = Libraries.FloorItems;

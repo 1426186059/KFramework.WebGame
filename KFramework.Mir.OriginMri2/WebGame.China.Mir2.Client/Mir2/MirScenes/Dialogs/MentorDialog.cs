@@ -57,8 +57,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 116,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MentorRequests)
-            };
+                Hint = LanguageMgr.Get("MentorRequests")};
             AllowButton.Click += (o, e) =>
             {
                 if (AllowButton.Index == 116)
@@ -87,17 +86,16 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 215,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AddMentor)
-            };
+                Hint = LanguageMgr.Get("AddMentor")};
             AddButton.Click += (o, e) =>
             {
                 if (MentorLevel != 0)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAlreadyHaveMentor), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouAlreadyHaveMentor"), ChatType.System);
                     return;
                 }
 
-                string message = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MentorEnterName);
+                string message = LanguageMgr.Get("MentorEnterName");
 
                 MirInputBox inputBox = new MirInputBox(message);
 
@@ -120,17 +118,16 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 218,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RemoveMentorMentee)
-            };
+                Hint = LanguageMgr.Get("RemoveMentorMentee")};
             RemoveButton.Click += (o, e) =>
             {
                 if (MentorName == "")
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NoMentorship), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NoMentorship"), ChatType.System);
                     return;
                 }
 
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CancellingMentorshipCausesCooldown), MirMessageBoxButtons.YesNo);
+                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("CancellingMentorshipCausesCooldown"), MirMessageBoxButtons.YesNo);
 
                 messageBox.YesButton.Click += (oo, ee) => Network.Enqueue(new C.CancelMentor { });
                 messageBox.NoButton.Click += (oo, ee) => { messageBox.Dispose(); };
@@ -174,7 +171,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Font = new Font(Settings.FontName, 7F),
                 Visible = false,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ONLINE),
+                Text = LanguageMgr.Get("ONLINE"),
             };
 
             StudentNameLabel = new MirLabel
@@ -212,7 +209,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Font = new Font(Settings.FontName, 7F),
                 Visible = false,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ONLINE),
+                Text = LanguageMgr.Get("ONLINE"),
             };
 
             MentorLabel = new MirLabel
@@ -225,7 +222,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 7F),
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MENTOR),
+                Text = LanguageMgr.Get("MENTOR"),
             };
 
             StudentLabel = new MirLabel
@@ -238,7 +235,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 NotControl = true,
                 Font = new Font(Settings.FontName, 7F),
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MENTEE),
+                Text = LanguageMgr.Get("MENTEE"),
             };
 
             MenteeEXPLabel = new MirLabel
@@ -293,7 +290,7 @@ namespace Client.MirScenes.Dialogs
                     StudentOnlineLabel.Visible = false;
 
                 MenteeEXPLabel.Visible = true;
-                MenteeEXPLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MenteeExp) + MenteeEXP;
+                MenteeEXPLabel.Text = LanguageMgr.Get("MenteeExp")+ MenteeEXP;
             }
             else
             {

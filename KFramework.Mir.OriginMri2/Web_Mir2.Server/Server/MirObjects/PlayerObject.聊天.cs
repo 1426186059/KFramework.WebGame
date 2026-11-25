@@ -25,13 +25,13 @@ namespace Server.MirObjects
                     IsGM = true;
                     UpdateGMBuff();
                     MessageQueue.Enqueue(string.Format("{0} is now a GM", Name));
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouHaveBeenMadeGM), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouHaveBeenMadeGM"), ChatType.System);
                     Envir.RemoveRank(Info);//remove gm chars from ranking to avoid causing bugs in rank list
                 }
                 else
                 {
                     MessageQueue.Enqueue(string.Format("{0} attempted a GM login", Name));
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.LoginPasswordInvalid), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("LoginPasswordInvalid"), ChatType.System);
                 }
                 GMLogin = false;
                 return;
@@ -44,13 +44,13 @@ namespace Server.MirObjects
                     TimeSpan chatBanRemaining = Info.ChatBanExpiryDate - Envir.Now;
 
                     if (chatBanRemaining.Days > 0)
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ChatBanRemainingTimeByDay), chatBanRemaining.Days, chatBanRemaining.Hours, chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ChatBanRemainingTimeByDay", chatBanRemaining.Days, chatBanRemaining.Hours, chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
                     else if (chatBanRemaining.Hours > 0)
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ChatBanRemainingTimeByHour), chatBanRemaining.Hours, chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ChatBanRemainingTimeByHour", chatBanRemaining.Hours, chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
                     else if (chatBanRemaining.Minutes > 0)
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ChatBanRemainingTimeByMinutes), chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ChatBanRemainingTimeByMinutes", chatBanRemaining.Minutes, chatBanRemaining.Seconds), ChatType.System);
                     else
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ChatBanRemainingTimeBySecond), chatBanRemaining.Seconds), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ChatBanRemainingTimeBySecond", chatBanRemaining.Seconds), ChatType.System);
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace Server.MirObjects
                     {
                         Info.ChatBanned = true;
                         Info.ChatBanExpiryDate = Envir.Now.AddMinutes(5);
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ChatBanDuration5Minutes), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ChatBanDuration5Minutes"), ChatType.System);
                         return;
                     }
 
@@ -109,7 +109,7 @@ namespace Server.MirObjects
 
                             if (player == null)
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.TargetIsNotOnline), Mentor.Name), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("TargetIsNotOnline", Mentor.Name), ChatType.System);
                                 return;
                             }
 
@@ -136,7 +136,7 @@ namespace Server.MirObjects
 
                             if (player == null)
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.TargetIsNotOnline), Lover.Name), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("TargetIsNotOnline", Lover.Name), ChatType.System);
                                 return;
                             }
 
@@ -160,7 +160,7 @@ namespace Server.MirObjects
 
                                 if (player == null)
                                 {
-                                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFind), targetInfo != null ? targetInfo.Name : privateTargetId.ToString()), ChatType.System);
+                                    ReceiveChat(LanguageMgr.Get("CouldNotFind", targetInfo != null ? targetInfo.Name : privateTargetId.ToString()), ChatType.System);
                                     return;
                                 }
                             }
@@ -181,20 +181,20 @@ namespace Server.MirObjects
                                         creature.ReceiveChat(message.Remove(0, parts[0].Length), ChatType.PrivateChat);
                                         return;
                                     }
-                                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFind), parts[0]), ChatType.System);
+                                    ReceiveChat(LanguageMgr.Get("CouldNotFind", parts[0]), ChatType.System);
                                     return;
                                 }
                             }
 
                             if (player.Info.Friends.Any(e => e.Info == Info && e.Blocked))
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PlayerNotAcceptingMessages), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("PlayerNotAcceptingMessages"), ChatType.System);
                                 return;
                             }
 
                             if (Info.Friends.Any(e => e.Info == player.Info && e.Blocked))
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotMessageBlacklistedPlayer), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("CannotMessageBlacklistedPlayer"), ChatType.System);
                                 return;
                             }
 
@@ -239,12 +239,12 @@ namespace Server.MirObjects
                         //Shout
                         if (Envir.Time < ShoutTime)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotShoutForSeconds), Math.Ceiling((ShoutTime - Envir.Time) / 1000D)), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("CannotShoutForSeconds", Math.Ceiling((ShoutTime - Envir.Time) / 1000D)), ChatType.System);
                             break;
                         }
                         if (Level < 8 && (!HasMapShout && !HasServerShout))
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RequiredLevel8ForShout), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("RequiredLevel8ForShout"), ChatType.System);
                             break;
                         }
 

@@ -148,7 +148,7 @@ namespace Client.MirScenes.Dialogs
 
         public void InputRentalPeroid()
         {
-            var inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RentItemDurationQuestion), RentalItem.FriendlyName, GameScene.Scene.GuestItemRentDialog.GuestName));
+            var inputBox = new MirInputBox(LanguageMgr.Get("RentItemDurationQuestion", RentalItem.FriendlyName, GameScene.Scene.GuestItemRentDialog.GuestName));
 
             inputBox.OKButton.Click += (o1, e1) =>
             {
@@ -170,7 +170,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = GameScene.User.Name;
-            _rentalPeriodLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RentalPeriodDays), RentalPeriod);
+            _rentalPeriodLabel.Text = LanguageMgr.Get("RentalPeriodDays", RentalPeriod);
 
             GameScene.Scene.GuestItemRentDialog.RefreshInterface();
             GameScene.Scene.GuestItemRentingDialog.RefreshInterface();
@@ -285,8 +285,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(150, 14),
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 NotControl = true,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RentalPeriodZeroDays)
-            };
+                Text = LanguageMgr.Get("RentalPeriodZeroDays")};
 
             _guestItemCell = new MirItemCell
             {
@@ -302,7 +301,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInterface()
         {
             _nameLabel.Text = _guestName;
-            _rentalPeriodLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RentalPeriodDays), GuestRentalPeriod);
+            _rentalPeriodLabel.Text = LanguageMgr.Get("RentalPeriodDays", GuestRentalPeriod);
 
             if (GuestLoanItem != null)
                 GameScene.Bind(GuestLoanItem);

@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
     ReadCommentHandling = JsonCommentHandling.Skip,
     AllowTrailingCommas = true)]
 [JsonSerializable(typeof(TextMap))]
+[JsonSerializable(typeof(Dictionary<string, string>), TypeInfoPropertyName = "LanguageTextDictionary")]
 [JsonSerializable(typeof(MapTable))]
 [JsonSerializable(typeof(ModelInfoTable))]
 [JsonSerializable(typeof(OriginMir2Config2))]

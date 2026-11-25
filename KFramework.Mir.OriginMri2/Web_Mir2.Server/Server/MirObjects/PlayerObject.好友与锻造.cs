@@ -19,19 +19,19 @@ namespace Server.MirObjects
 
             if (info == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PlayerDoesNotExist), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerDoesNotExist"), ChatType.System);
                 return;
             }
 
             if (Name == name)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotAddYourself), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotAddYourself"), ChatType.System);
                 return;
             }
 
             if (Info.Friends.Any(e => e.Index == info.Index))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PlayerAlreadyAdded), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerAlreadyAdded"), ChatType.System);
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace Server.MirObjects
                         {
                             MailID = ++Envir.NextMailID,
                             Sender = "Refiner",
-                            Message = GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RefiningCancelledItemNotReturned),
+                            Message = LanguageMgr.Get("RefiningCancelledItemNotReturned"),
                             Items = new List<UserItem> { temp },
                         };
 
@@ -249,25 +249,25 @@ namespace Server.MirObjects
 
             if (Info.Inventory[index].RefineAdded != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CheckBeforeRefine), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CheckBeforeRefine", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
             if ((Info.Inventory[index].Info.Type != ItemType.Weapon) && (Settings.OnlyRefineWeapon))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemCannotBeRefined), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemCannotBeRefined", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
             if (Info.Inventory[index].Info.Bind.HasFlag(BindMode.DontUpgrade))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemCannotBeRefined), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemCannotBeRefined", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
             if (Info.Inventory[index].RentalInformation != null && Info.Inventory[index].RentalInformation.BindingFlags.HasFlag(BindMode.DontUpgrade))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemCannotBeRefined), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemCannotBeRefined", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
@@ -282,7 +282,7 @@ namespace Server.MirObjects
 
             if (cost > Info.Gold)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotEnoughGoldToRefine), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotEnoughGoldToRefine", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
@@ -352,7 +352,7 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemRefiningCheckLater), Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("ItemRefiningCheckLater", Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
                 }
 
                 return;
@@ -369,7 +369,7 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemRefiningCheckLater), Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("ItemRefiningCheckLater", Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
                 }
                 return;
             }
@@ -442,7 +442,7 @@ namespace Server.MirObjects
             }
             else
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemRefiningCheckLater), Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemRefiningCheckLater", Info.CurrentRefine.FriendlyName, Settings.RefineTime), ChatType.System);
             }
         }
         public void CollectRefine()
@@ -451,14 +451,14 @@ namespace Server.MirObjects
 
             if (Info.CurrentRefine == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotRefiningItems), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotRefiningItems"), ChatType.System);
                 Enqueue(p);
                 return;
             }
 
             if (Info.CollectTime > Envir.Time)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemReadyInMinutes), Info.CurrentRefine.FriendlyName, ((Info.CollectTime - Envir.Time) / Settings.Minute)), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemReadyInMinutes", Info.CurrentRefine.FriendlyName, ((Info.CollectTime - Envir.Time) / Settings.Minute)), ChatType.System);
                 Enqueue(p);
                 return;
             }
@@ -474,12 +474,12 @@ namespace Server.MirObjects
 
             if (index == -1)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.BagNoRoomForItem), Info.CurrentRefine.FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("BagNoRoomForItem", Info.CurrentRefine.FriendlyName), ChatType.System);
                 Enqueue(p);
                 return;
             }
 
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ItemReturned), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("ItemReturned"), ChatType.System);
             p.Success = true;
 
             GainItem(Info.CurrentRefine);
@@ -508,7 +508,7 @@ namespace Server.MirObjects
 
             if (Info.Inventory[index].RefineAdded == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NoCheckNotRefined), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NoCheckNotRefined", Info.Inventory[index].FriendlyName), ChatType.System);
                 return;
             }
 
@@ -524,7 +524,7 @@ namespace Server.MirObjects
 
             if ((Info.Inventory[index].RefinedValue == RefinedValue.DC) && (Info.Inventory[index].RefineAdded > 0))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CongratulationsExtraDC), Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CongratulationsExtraDC", Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
                 Info.Inventory[index].AddedStats[Stat.MaxDC] = (int)Math.Min(int.MaxValue, Info.Inventory[index].AddedStats[Stat.MaxDC] + Info.Inventory[index].RefineAdded);
                 Info.Inventory[index].RefineAdded = 0;
                 Info.Inventory[index].RefinedValue = RefinedValue.None;
@@ -533,7 +533,7 @@ namespace Server.MirObjects
             }
             else if ((Info.Inventory[index].RefinedValue == RefinedValue.MC) && (Info.Inventory[index].RefineAdded > 0))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CongratulationsExtraMC), Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CongratulationsExtraMC", Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
                 Info.Inventory[index].AddedStats[Stat.MaxMC] = (int)Math.Min(int.MaxValue, Info.Inventory[index].AddedStats[Stat.MaxMC] + Info.Inventory[index].RefineAdded);
                 Info.Inventory[index].RefineAdded = 0;
                 Info.Inventory[index].RefinedValue = RefinedValue.None;
@@ -542,7 +542,7 @@ namespace Server.MirObjects
             }
             else if ((Info.Inventory[index].RefinedValue == RefinedValue.SC) && (Info.Inventory[index].RefineAdded > 0))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CongratulationsExtraSC), Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CongratulationsExtraSC", Info.Inventory[index].FriendlyName, Info.Inventory[index].RefineAdded), ChatType.System);
                 Info.Inventory[index].AddedStats[Stat.MaxSC] = (int)Math.Min(int.MaxValue, Info.Inventory[index].AddedStats[Stat.MaxSC] + Info.Inventory[index].RefineAdded);
                 Info.Inventory[index].RefineAdded = 0;
                 Info.Inventory[index].RefinedValue = RefinedValue.None;
@@ -550,7 +550,7 @@ namespace Server.MirObjects
             }
             else if ((Info.Inventory[index].RefinedValue == RefinedValue.None) && (Info.Inventory[index].RefineAdded > 0))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemSmashedOnTest), Info.Inventory[index].FriendlyName), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ItemSmashedOnTest", Info.Inventory[index].FriendlyName), ChatType.System);
                 Enqueue(new S.RefineItem { UniqueID = Info.Inventory[index].UniqueID });
                 Info.Inventory[index].RefineSuccessChance = 0;
                 Info.Inventory[index] = null;

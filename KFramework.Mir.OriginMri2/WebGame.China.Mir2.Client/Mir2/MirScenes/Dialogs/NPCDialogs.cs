@@ -111,7 +111,7 @@ namespace Client.MirScenes.Dialogs
             //    Location = new Point(500, 10),
             //    Sound = SoundList.ButtonA,
             //};
-            //HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing));
+            //HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(LanguageMgr.Get("Purchasing"));
 
             BigButtonDialog = new BigButtonDialog()
             {
@@ -638,14 +638,14 @@ namespace Client.MirScenes.Dialogs
                         else
                         {
                             GameScene.RequestMonsterInfo(monsterIdx);
-                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexTitle, linkName);
-                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterInfoLoading);
+                            title = LanguageMgr.Get("MonsterIndexTitle", linkName);
+                            content = LanguageMgr.Get("MonsterInfoLoading");
                         }
                     }
                     else
                     {
-                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexTitle, linkName);
-                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                        title = LanguageMgr.Get("MonsterIndexTitle", linkName);
+                        content = LanguageMgr.Get("InvalidLinkIndex");
                     }
                     break;
                 case "NPC":
@@ -670,14 +670,14 @@ namespace Client.MirScenes.Dialogs
                         else
                         {
                             GameScene.RequestNPCInfo(npcIdx);
-                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexTitle, linkName);
-                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCInfoLoading);
+                            title = LanguageMgr.Get("NPCIndexTitle", linkName);
+                            content = LanguageMgr.Get("NPCInfoLoading");
                         }
                     }
                     else
                     {
-                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexTitle, linkName);
-                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                        title = LanguageMgr.Get("NPCIndexTitle", linkName);
+                        content = LanguageMgr.Get("InvalidLinkIndex");
                     }
                     break;
                 case "ITEM":
@@ -699,14 +699,14 @@ namespace Client.MirScenes.Dialogs
                         else
                         {
                             GameScene.RequestItemInfo(itemIdx);
-                            title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexTitle, linkName);
-                            content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemInfoLoading);
+                            title = LanguageMgr.Get("ItemIndexTitle", linkName);
+                            content = LanguageMgr.Get("ItemInfoLoading");
                         }
                     }
                     else
                     {
-                        title = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexTitle, linkName);
-                        content = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidLinkIndex);
+                        title = LanguageMgr.Get("ItemIndexTitle", linkName);
+                        content = LanguageMgr.Get("InvalidLinkIndex");
                     }
                     break;
             }
@@ -802,19 +802,19 @@ namespace Client.MirScenes.Dialogs
                 {
                     return string.Join("\n", new[]
                     {
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipLevel, monster.Level),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipHealth, monster.Stats[Stat.HP]),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipExperience, monster.Experience),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipDC, monster.Stats[Stat.MinDC], monster.Stats[Stat.MaxDC]),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipMC, monster.Stats[Stat.MinMC], monster.Stats[Stat.MaxMC]),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipAC, monster.Stats[Stat.MinAC], monster.Stats[Stat.MaxAC]),
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterTooltipMAC, monster.Stats[Stat.MinMAC], monster.Stats[Stat.MaxMAC])
+                        LanguageMgr.Get("MonsterTooltipLevel", monster.Level),
+                        LanguageMgr.Get("MonsterTooltipHealth", monster.Stats[Stat.HP]),
+                        LanguageMgr.Get("MonsterTooltipExperience", monster.Experience),
+                        LanguageMgr.Get("MonsterTooltipDC", monster.Stats[Stat.MinDC], monster.Stats[Stat.MaxDC]),
+                        LanguageMgr.Get("MonsterTooltipMC", monster.Stats[Stat.MinMC], monster.Stats[Stat.MaxMC]),
+                        LanguageMgr.Get("MonsterTooltipAC", monster.Stats[Stat.MinAC], monster.Stats[Stat.MaxAC]),
+                        LanguageMgr.Get("MonsterTooltipMAC", monster.Stats[Stat.MinMAC], monster.Stats[Stat.MaxMAC])
                     });
                 }
                 GameScene.RequestMonsterInfo(idx);
-                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MonsterIndexLoading, idx);
+                return LanguageMgr.Get("MonsterIndexLoading", idx);
             }
-            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidMonsterIndex);
+            return LanguageMgr.Get("InvalidMonsterIndex");
         }
 
         private string GetNPCInfo(string npcIdx)
@@ -843,12 +843,12 @@ namespace Client.MirScenes.Dialogs
 
                     List<string> npcInfoLines = new List<string>
                     {
-                        GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipName, npc.Name)
+                        LanguageMgr.Get("NPCTooltipName", npc.Name)
                     };
 
                     if (!string.IsNullOrWhiteSpace(mapName))
                     {
-                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, mapName));
+                        npcInfoLines.Add(LanguageMgr.Get("NPCTooltipLocation", mapName));
                     }
                     else if (npc.MapIndex > 0)
                     {
@@ -859,21 +859,21 @@ namespace Client.MirScenes.Dialogs
                         }
 
                         // Show a loading placeholder while we wait for the map title to arrive.
-                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipMapLoading)));
+                        npcInfoLines.Add(LanguageMgr.Get("NPCTooltipLocation", LanguageMgr.Get("NPCTooltipMapLoading")));
                     }
                     else
                     {
-                        npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipLocation, GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipUnknownMap)));
+                        npcInfoLines.Add(LanguageMgr.Get("NPCTooltipLocation", LanguageMgr.Get("NPCTooltipUnknownMap")));
                     }
 
-                    npcInfoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCTooltipCoordinates, npc.Location.X, npc.Location.Y));
+                    npcInfoLines.Add(LanguageMgr.Get("NPCTooltipCoordinates", npc.Location.X, npc.Location.Y));
 
                     return string.Join("\n", npcInfoLines);
                 }
                 GameScene.RequestNPCInfo(idx);
-                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NPCIndexLoading, idx);
+                return LanguageMgr.Get("NPCIndexLoading", idx);
             }
-            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidNPCIndex);
+            return LanguageMgr.Get("InvalidNPCIndex");
         }
 
         private string GetItemInfo(string itemIdx)
@@ -889,32 +889,32 @@ namespace Client.MirScenes.Dialogs
                     string localizedType = item.Type.ToLocalizedString();
                     if (!string.IsNullOrEmpty(localizedType))
                     {
-                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemTooltipType, localizedType));
+                        infoLines.Add(LanguageMgr.Get("ItemTooltipType", localizedType));
                     }
 
                     if (item.RequiredType == RequiredType.Level && item.RequiredAmount > 0)
                     {
-                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RequiredLevel, item.RequiredAmount));
+                        infoLines.Add(LanguageMgr.Get("RequiredLevel", item.RequiredAmount));
                     }
 
                     if (item.ClassBased)
                     {
-                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ClassRequired, item.RequiredClass.ToLocalizedString()));
+                        infoLines.Add(LanguageMgr.Get("ClassRequired", item.RequiredClass.ToLocalizedString()));
                     }
 
                     if (item.Weight > 0)
                     {
-                        infoLines.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemTooltipWeight, item.Weight));
+                        infoLines.Add(LanguageMgr.Get("ItemTooltipWeight", item.Weight));
                     }
 
                     return string.Join("\n", infoLines);
                 }
 
                 GameScene.RequestItemInfo(idx);
-                return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemIndexLoading, idx);
+                return LanguageMgr.Get("ItemIndexLoading", idx);
             }
 
-            return GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvalidItemIndex);
+            return LanguageMgr.Get("InvalidItemIndex");
         }
 
         public static string GetDisplayNameForLink(string linkType, string linkIdx, string providedName = null)
@@ -1137,7 +1137,7 @@ namespace Client.MirScenes.Dialogs
                 case PanelType.Sell:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontSell))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotSellItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CannotSellItem"), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold + TargetItem.Price() / 2 <= uint.MaxValue)
@@ -1146,12 +1146,12 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotCarryMoreGold), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CannotCarryMoreGold"), ChatType.System);
                     break;
                 case PanelType.Repair:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontRepair))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotRepairItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CannotRepairItem"), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold >= TargetItem.RepairPrice() * GameScene.NPCRate)
@@ -1160,12 +1160,12 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowGold"), ChatType.System);
                     break;
                 case PanelType.SpecialRepair:
                     if ((TargetItem.Info.Bind.HasFlag(BindMode.DontRepair)) || (TargetItem.Info.Bind.HasFlag(BindMode.NoSRepair)))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotRepairItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CannotRepairItem"), ChatType.System);
                         return;
                     }
                     if (GameScene.Gold >= (TargetItem.RepairPrice() * 3) * GameScene.NPCRate)
@@ -1174,15 +1174,15 @@ namespace Client.MirScenes.Dialogs
                         TargetItem = null;
                         return;
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowGold), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowGold"), ChatType.System);
                     break;
                 case PanelType.Consign:
                     if (TargetItem.Info.Bind.HasFlag(BindMode.DontStore) || TargetItem.Info.Bind.HasFlag(BindMode.DontSell))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CannotConsignItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CannotConsignItem"), ChatType.System);
                         return;
                     }
-                    MirAmountBox box = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ConsignmentPrice), TargetItem.Image, Globals.MaxConsignment, Globals.MinConsignment)
+                    MirAmountBox box = new MirAmountBox(LanguageMgr.Get("ConsignmentPrice"), TargetItem.Image, Globals.MaxConsignment, Globals.MinConsignment)
                     {
                         InputTextBox = { Text = string.Empty },
                         Amount = 0
@@ -1219,18 +1219,18 @@ namespace Client.MirScenes.Dialogs
                                 TargetItem = null;
                                 return;
                             }
-                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouDontHaveEnoughGoldToRefine), TargetItem.FriendlyName), ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDontHaveEnoughGoldToRefine", TargetItem.FriendlyName), ChatType.System);
                             return;
                         }
 
                     }
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.YouHaventDepositedItemsToRefine), TargetItem.FriendlyName), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouHaventDepositedItemsToRefine", TargetItem.FriendlyName), ChatType.System);
                     break;
                 case PanelType.CheckRefine:
 
                     if (TargetItem.RefineAdded == 0)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemHasntBeenRefinedNoChecking), TargetItem.FriendlyName), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ItemHasntBeenRefinedNoChecking", TargetItem.FriendlyName), ChatType.System);
                         return;
                     }
                     Network.Enqueue(new C.CheckRefine { UniqueID = TargetItem.UniqueID });
@@ -1240,7 +1240,7 @@ namespace Client.MirScenes.Dialogs
 
                     if (TargetItem.Info.Type != ItemType.Ring)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ItemIsNotRing), TargetItem.FriendlyName), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ItemIsNotRing", TargetItem.FriendlyName), ChatType.System);
                         return;
                     }
 
@@ -1368,19 +1368,19 @@ namespace Client.MirScenes.Dialogs
             switch (PType)
             {
                 case PanelType.Sell:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sale);
+                    text = LanguageMgr.Get("Sale");
                     break;
                 case PanelType.Repair:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Repair);
+                    text = LanguageMgr.Get("Repair");
                     break;
                 case PanelType.SpecialRepair:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SpecialRepair);
+                    text = LanguageMgr.Get("SpecialRepair");
                     break;
                 case PanelType.Consign:
-                    InfoLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Consignment);
+                    InfoLabel.Text = LanguageMgr.Get("Consignment");
                     return;
                 case PanelType.Disassemble:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItemWillBeDestroyed);
+                    text = LanguageMgr.Get("ItemWillBeDestroyed");
                     HoldButton.Visible = false;
                     Index = 711;
                     Library = Libraries.Title;
@@ -1393,26 +1393,26 @@ namespace Client.MirScenes.Dialogs
                     ItemCell.Location = new Point(83, 94);
                     break;
                 case PanelType.Downgrade:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Downgrade);
+                    text = LanguageMgr.Get("Downgrade");
                     HoldButton.Visible = false;
                     break;
                 case PanelType.Reset:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Reset);
+                    text = LanguageMgr.Get("Reset");
                     HoldButton.Visible = false;
                     break;
                 case PanelType.Refine:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Refine);
+                    text = LanguageMgr.Get("Refine");
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     GameScene.Scene.RefineDialog.Show();
                     break;
                 case PanelType.CheckRefine:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CheckRefine);
+                    text = LanguageMgr.Get("CheckRefine");
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     break;
                 case PanelType.ReplaceWedRing:
-                    text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReplaceWedRing);
+                    text = LanguageMgr.Get("ReplaceWedRing");
                     HoldButton.Visible = false;
                     ConfirmButton.Visible = true;
                     break;
@@ -1453,7 +1453,7 @@ namespace Client.MirScenes.Dialogs
                     default: return;
                 }
 
-                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Gold2);
+                text += LanguageMgr.Get("Gold2");
             }
 
             InfoLabel.Text = text;
@@ -1655,7 +1655,7 @@ namespace Client.MirScenes.Dialogs
 
             if (Items[0] == null)
             {
-                SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeItem));
+                SelectAwakeType.Items.Add(LanguageMgr.Get("SelectUpgradeItem"));
                 SelectAwakeType.SelectedIndex = SelectAwakeType.Items.Count - 1;
                 CurrentAwakeType = AwakeType.None;
             }
@@ -1663,21 +1663,21 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Items[0].Awake.GetAwakeLevel() == 0)
                 {
-                    SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeType));
+                    SelectAwakeType.Items.Add(LanguageMgr.Get("SelectUpgradeType"));
                     if (Items[0].Info.Type == ItemType.Weapon)
                     {
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph));
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph));
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("BraveryGlyph"));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("MagicGlyph"));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("SoulGlyph"));
                     }
                     else if (Items[0].Info.Type == ItemType.Helmet)
                     {
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph));
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("ProtectionGlyph"));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("EvilSlayerGlyph"));
                     }
                     else
                     {
-                        SelectAwakeType.Items.Add(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph));
+                        SelectAwakeType.Items.Add(LanguageMgr.Get("BodyGlyph"));
                     }
                 }
                 else
@@ -1697,31 +1697,31 @@ namespace Client.MirScenes.Dialogs
             string typeName = "";
             if (type == AwakeType.DC)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph);
+                typeName = LanguageMgr.Get("BraveryGlyph");
             }
             else if (type == AwakeType.MC)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph);
+                typeName = LanguageMgr.Get("MagicGlyph");
             }
             else if (type == AwakeType.SC)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph);
+                typeName = LanguageMgr.Get("SoulGlyph");
             }
             else if (type == AwakeType.AC)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph);
+                typeName = LanguageMgr.Get("ProtectionGlyph");
             }
             else if (type == AwakeType.MAC)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph);
+                typeName = LanguageMgr.Get("EvilSlayerGlyph");
             }
             else if (type == AwakeType.HPMP)
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph);
+                typeName = LanguageMgr.Get("BodyGlyph");
             }
             else
             {
-                typeName = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SelectUpgradeItem);
+                typeName = LanguageMgr.Get("SelectUpgradeItem");
             }
 
             return typeName;
@@ -1730,27 +1730,27 @@ namespace Client.MirScenes.Dialogs
         public AwakeType getAwakeType(string typeName)
         {
             AwakeType type = AwakeType.None;
-            if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BraveryGlyph))
+            if (typeName == LanguageMgr.Get("BraveryGlyph"))
             {
                 type = AwakeType.DC;
             }
-            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MagicGlyph))
+            else if (typeName == LanguageMgr.Get("MagicGlyph"))
             {
                 type = AwakeType.MC;
             }
-            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SoulGlyph))
+            else if (typeName == LanguageMgr.Get("SoulGlyph"))
             {
                 type = AwakeType.SC;
             }
-            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ProtectionGlyph))
+            else if (typeName == LanguageMgr.Get("ProtectionGlyph"))
             {
                 type = AwakeType.AC;
             }
-            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EvilSlayerGlyph))
+            else if (typeName == LanguageMgr.Get("EvilSlayerGlyph"))
             {
                 type = AwakeType.MAC;
             }
-            else if (typeName == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BodyGlyph))
+            else if (typeName == LanguageMgr.Get("BodyGlyph"))
             {
                 type = AwakeType.HPMP;
             }
@@ -1780,7 +1780,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ItemCells[1].Item = new UserItem(Materials[0]);
                 ItemCells[1].Item.Count = MaterialsCount[0];
-                NeedItemLabel1.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.NeedItemQuantity), Regex.Replace(ItemCells[1].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[0].ToString());
+                NeedItemLabel1.Text = LanguageMgr.Get("NeedItemQuantity", Regex.Replace(ItemCells[1].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[0].ToString());
             }
             else
             {
@@ -1792,7 +1792,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ItemCells[2].Item = new UserItem(Materials[1]);
                 ItemCells[2].Item.Count = MaterialsCount[1];
-                NeedItemLabel2.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.NeedItemQuantity), Regex.Replace(ItemCells[2].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[1].ToString());
+                NeedItemLabel2.Text = LanguageMgr.Get("NeedItemQuantity", Regex.Replace(ItemCells[2].Item.Info.Name, @"[\d-]", string.Empty), MaterialsCount[1].ToString());
             }
             else
             {
@@ -2165,7 +2165,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (Recipe.Gold > GameScene.Gold)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughGold), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughGold"), ChatType.System);
                     return;
                 }
 
@@ -2173,7 +2173,7 @@ namespace Client.MirScenes.Dialogs
 
             if (max > 1)
             {
-                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CraftAmount), (int)RecipeItem.Info.Image, max, 0, max);
+                MirAmountBox amountBox = new MirAmountBox(LanguageMgr.Get("CraftAmount"), (int)RecipeItem.Info.Image, max, 0, max);
 
                 amountBox.OKButton.Click += (o, e) =>
                 {
@@ -2181,13 +2181,13 @@ namespace Client.MirScenes.Dialogs
                     {
                         if (!HasCraftItems((ushort)amountBox.Amount))
                         {
-                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveRequiredToolsOrIngredients), ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveRequiredToolsOrIngredients"), ChatType.System);
                             return;
                         }
                         
                         if ((Recipe.Gold * amountBox.Amount) > GameScene.Gold)
                         {
-                            GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughGold), ChatType.System);
+                            GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughGold"), ChatType.System);
                             return;
                         }
 
@@ -2488,9 +2488,9 @@ namespace Client.MirScenes.Dialogs
                 MirMessageBox messageBox;
 
                 if (GameScene.User.HasExpandedStorage)
-                    messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtendYourRentalPeriod), MirMessageBoxButtons.OKCancel);
+                    messageBox = new MirMessageBox(LanguageMgr.Get("ExtendYourRentalPeriod"), MirMessageBoxButtons.OKCancel);
                 else
-                    messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraStorage), MirMessageBoxButtons.OKCancel);
+                    messageBox = new MirMessageBox(LanguageMgr.Get("ExtraStorage"), MirMessageBoxButtons.OKCancel);
 
                 messageBox.OKButton.Click += (o1, a) =>
                 {
@@ -2530,7 +2530,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked),
+                Text = LanguageMgr.Get("ExpandedStorageLocked"),
                 ForeColour = CommonColor.Red
             };
 
@@ -2626,13 +2626,13 @@ namespace Client.MirScenes.Dialogs
                     Show();
                     return;
                 case 1:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNotAcceptable));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordNotAcceptable"));
                     return;
                 case 2:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordWrong));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordWrong"));
                     return;
                 case 3:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordUnavailable));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordUnavailable"));
                     return;
             }
         }
@@ -2650,17 +2650,17 @@ namespace Client.MirScenes.Dialogs
             switch (p.Result)
             {
                 case 0:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordUnavailable));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordUnavailable"));
                     return;
                 case 1:
                 case 3:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNotAcceptable));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordNotAcceptable"));
                     return;
                 case 2:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordWrong));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordWrong"));
                     return;
                 case 5:
-                    SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNoPasswordSet));
+                    SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordNoPasswordSet"));
                     return;
                 case 4:
                     _storageUnlocked = true;
@@ -2668,15 +2668,15 @@ namespace Client.MirScenes.Dialogs
                     {
                         _pendingOpenAfterPasswordSet = false;
                         _forcingPasswordSetup = false;
-                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordRemoveSuccess));
+                        SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordRemoveSuccess"));
                         _storageUnlocked = false;
                         Hide();
                         return;
                     }
                     if (hadPassword)
-                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordChangeSuccess));
+                        SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordChangeSuccess"));
                     else
-                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordSetSuccess));
+                        SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordSetSuccess"));
                     if (_pendingOpenAfterPasswordSet)
                     {
                         _pendingOpenAfterPasswordSet = false;
@@ -2706,10 +2706,10 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            string prompt = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordChangePrompt);
+            string prompt = LanguageMgr.Get("StoragePasswordChangePrompt");
             if (GameScene.User.StoragePasswordLastSet != DateTime.MinValue)
             {
-                string lastSet = string.Format(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordLastSetLabel),
+                string lastSet = string.Format(LanguageMgr.Get("StoragePasswordLastSetLabel"),
                     GameScene.User.StoragePasswordLastSet.ToString("g"));
                 prompt = $"{prompt}{Environment.NewLine}{lastSet}";
             }
@@ -2735,7 +2735,7 @@ namespace Client.MirScenes.Dialogs
 
         private void BeginSetStoragePassword(Action onCancel = null, bool force = false)
         {
-            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNewPrompt), newPassword =>
+            PromptStoragePassword(LanguageMgr.Get("StoragePasswordNewPrompt"), newPassword =>
             {
                 if (string.IsNullOrEmpty(newPassword))
                 {
@@ -2748,11 +2748,11 @@ namespace Client.MirScenes.Dialogs
                     return false;
                 }
 
-                PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordConfirmPrompt), confirmPassword =>
+                PromptStoragePassword(LanguageMgr.Get("StoragePasswordConfirmPrompt"), confirmPassword =>
                 {
                     if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
                     {
-                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordMismatch));
+                        SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordMismatch"));
                         if (force)
                         {
                             BeginSetStoragePassword(onCancel, true);
@@ -2771,25 +2771,25 @@ namespace Client.MirScenes.Dialogs
 
         private void BeginChangeStoragePassword()
         {
-            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordCurrentPrompt), currentPassword =>
+            PromptStoragePassword(LanguageMgr.Get("StoragePasswordCurrentPrompt"), currentPassword =>
             {
                 if (string.IsNullOrEmpty(currentPassword))
                 {
                     return false;
                 }
 
-                PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordNewPrompt), newPassword =>
+                PromptStoragePassword(LanguageMgr.Get("StoragePasswordNewPrompt"), newPassword =>
                 {
                     if (string.IsNullOrEmpty(newPassword))
                     {
                         return false;
                     }
 
-                    PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordConfirmPrompt), confirmPassword =>
+                    PromptStoragePassword(LanguageMgr.Get("StoragePasswordConfirmPrompt"), confirmPassword =>
                     {
                         if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
                         {
-                        SendStorageSystemMessage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordMismatch));
+                        SendStorageSystemMessage(LanguageMgr.Get("StoragePasswordMismatch"));
                             return false;
                         }
 
@@ -2804,7 +2804,7 @@ namespace Client.MirScenes.Dialogs
 
         private void PromptStorageUnlock()
         {
-            PromptStoragePassword(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordPrompt), password =>
+            PromptStoragePassword(LanguageMgr.Get("StoragePasswordPrompt"), password =>
             {
                 if (string.IsNullOrEmpty(password))
                 {
@@ -2818,7 +2818,7 @@ namespace Client.MirScenes.Dialogs
 
         private void PromptStoragePassword(string prompt, Func<string, bool> onSubmit, Action onCancel = null)
         {
-            string rules = string.Format(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.StoragePasswordRules),
+            string rules = string.Format(LanguageMgr.Get("StoragePasswordRules"),
                 Globals.MinPasswordLength, Globals.MaxPasswordLength);
             MirInputBox inputBox = new MirInputBox($"{prompt}{Environment.NewLine}{rules}");
             inputBox.InputTextBox.Password = true;
@@ -2889,12 +2889,12 @@ namespace Client.MirScenes.Dialogs
             {
                 RentButton.Visible = true;
                 LockedPage.Visible = false;
-                RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageExpiresOn) + GameScene.User.ExpandedStorageExpiryTime.ToString();
+                RentalLabel.Text = LanguageMgr.Get("ExpandedStorageExpiresOn")+ GameScene.User.ExpandedStorageExpiryTime.ToString();
                 RentalLabel.ForeColour = CommonColor.White;
             }
             else
             {
-                RentalLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpandedStorageLocked);
+                RentalLabel.Text = LanguageMgr.Get("ExpandedStorageLocked");
                 RentalLabel.ForeColour = CommonColor.Red;
                 RentButton.Visible = true;
                 LockedPage.Visible = true;

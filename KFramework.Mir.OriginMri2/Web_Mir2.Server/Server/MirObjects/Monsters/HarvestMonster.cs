@@ -62,7 +62,7 @@ namespace Server.MirObjects.Monsters
                     _drops = null;
                     Broadcast(new S.ObjectHarvested { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
                 }
-                else player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCannotCarryAnymore), ChatType.System);
+                else player.ReceiveChat(LanguageMgr.Get("YouCannotCarryAnymore"), ChatType.System);
 
                 return true;
             }
@@ -102,7 +102,7 @@ namespace Server.MirObjects.Monsters
 
             if (_drops.Count == 0)
             {
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NothingWasFound), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("NothingWasFound"), ChatType.System);
                 Harvested = true;
                 _drops = null;
                 Broadcast(new S.ObjectHarvested { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });

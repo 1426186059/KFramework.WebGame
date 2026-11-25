@@ -22,7 +22,7 @@ namespace Server.MirObjects
 
             if (CurrentMap?.Info?.NoIntelligentCreatures == true)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.IntelligentCreaturesCannotBeSummonedOnMap), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("IntelligentCreaturesCannotBeSummonedOnMap"), ChatType.System);
                 return;
             }
 
@@ -66,7 +66,7 @@ namespace Server.MirObjects
                 CreatureSummoned = true;
                 SummonedCreatureType = pType;
 
-                ReceiveChat((GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CreatureSummoned), Info.IntelligentCreatures[i].CustomName)), ChatType.System);
+                ReceiveChat((LanguageMgr.Get("CreatureSummoned", Info.IntelligentCreatures[i].CustomName)), ChatType.System);
                 break;
             }
 
@@ -84,7 +84,7 @@ namespace Server.MirObjects
 
                 var pet = (IntelligentCreatureObject)Pets[i];
                 if (pet.PetType != pType) continue;
-                if (doUpdate) ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CreatureDismissed), pet.CustomName), ChatType.System);
+                if (doUpdate) ReceiveChat(LanguageMgr.Get("CreatureDismissed", pet.CustomName), ChatType.System);
 
                 pet.Die();
 
@@ -106,7 +106,7 @@ namespace Server.MirObjects
             {
                 if (Info.IntelligentCreatures[i].PetType != pType) continue;
 
-                if (doUpdate) ReceiveChat((GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CreatureReleased), Info.IntelligentCreatures[i].CustomName)), ChatType.System);
+                if (doUpdate) ReceiveChat((LanguageMgr.Get("CreatureReleased", Info.IntelligentCreatures[i].CustomName)), ChatType.System);
 
                 Info.IntelligentCreatures.Remove(Info.IntelligentCreatures[i]);
                 break;
@@ -177,7 +177,7 @@ namespace Server.MirObjects
 
                 for (int i = (releasedPets.Count - 1); i >= 0; i--)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CreatureExpired), Info.IntelligentCreatures[releasedPets[i]].CustomName), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CreatureExpired", Info.IntelligentCreatures[releasedPets[i]].CustomName), ChatType.System);
                     ReleaseIntelligentCreature(Info.IntelligentCreatures[releasedPets[i]].PetType, false);
                 }
 
@@ -212,7 +212,7 @@ namespace Server.MirObjects
 
             if (!petFound)
             {
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SummonedCreatureNotExist), Name, SummonedCreatureType.ToString()));
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("SummonedCreatureNotExist", Name, SummonedCreatureType.ToString()));
                 CreatureSummoned = false;
                 SummonedCreatureType = IntelligentCreatureType.None;
             }
@@ -264,7 +264,7 @@ namespace Server.MirObjects
                 {
                     MailID = ++Envir.NextMailID,
                     Sender = "BlackStone",
-                    Message = GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PetProducedBlackStoneInventoryFull),
+                    Message = LanguageMgr.Get("PetProducedBlackStoneInventoryFull"),
                     Items = new List<UserItem> { item },
                 };
 
@@ -312,7 +312,7 @@ namespace Server.MirObjects
 
             if (dropItem == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NothingFound), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NothingFound"), ChatType.System);
                 return;
             }
 
@@ -325,7 +325,7 @@ namespace Server.MirObjects
 
             if (FreeSpace(Info.Inventory) < 1)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoMoreSpace), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NoMoreSpace"), ChatType.System);
                 return;
             }
 
@@ -348,7 +348,7 @@ namespace Server.MirObjects
             }
             if (FreeSpace(Info.Inventory) < 1)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoMoreSpace), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NoMoreSpace"), ChatType.System);
                 return;
             }
             if (dropItem != null) GainItem(dropItem);

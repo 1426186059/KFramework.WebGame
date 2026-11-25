@@ -100,8 +100,7 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 362,
                 Library = Libraries.Prguse,
                 Location = new Point(544, 8),
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExitButton)
-            };
+                Hint = LanguageMgr.Get("ExitButton")};
             closeButton.Click += (o, e) => Hide();
 
             var prevButton = new MirButton
@@ -113,8 +112,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 242,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PageBack)
-            };
+                Hint = LanguageMgr.Get("PageBack")};
             prevButton.Click += (o, e) =>
             {
                 if ((Page - 1) >= 0)
@@ -134,8 +132,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 245,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PageForward)
-            };
+                Hint = LanguageMgr.Get("PageForward")};
             nextButton.Click += (o, e) =>
             {
                 if (((Page + 1) * 7) < Lenght)
@@ -156,13 +153,12 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(262, 208),
                 Sound = SoundList.ButtonA,
                 Parent = this,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.MailGuildLeader)
-            };
+                Hint = LanguageMgr.Get("MailGuildLeader")};
             mailButton.Click += (o, e) =>
             {
                 var GT = GTRowList.FirstOrDefault(x => x.Idx.Text == selectedIndex.ToString());
 
-                if (GT == null || GT.OwnerName.Text == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None)) return;
+                if (GT == null || GT.OwnerName.Text == LanguageMgr.Get("None")) return;
 
                 GameScene.Scene.MailComposeLetterDialog.ComposeMail(GT.Owner1);
             };
@@ -176,15 +172,15 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(292, 208),
                 Sound = SoundList.ButtonA,
                 Parent = this,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchase),
+                Hint = LanguageMgr.Get("Purchase"),
                 Visible = false
             };
             BuyButton.Click += (o, e) =>
             {
                 var GT = GTRowList.FirstOrDefault(x => x.Idx.Text == selectedIndex.ToString());
 
-                if (GT == null || GT.OwnerName.Text == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None)) return;
-                if (GT.Status.Text != GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ForSale)) return;
+                if (GT == null || GT.OwnerName.Text == LanguageMgr.Get("None")) return;
+                if (GT.Status.Text != LanguageMgr.Get("ForSale")) return;
 
                 Network.Enqueue(new C.PurchaseGuildTerritory { Owner = GT.GuildOwner.Text });
             };
@@ -220,8 +216,7 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OwningGuild)
-            };
+                Text = LanguageMgr.Get("OwningGuild")};
 
             var __gtguildownersLabel = new MirLabel
             {
@@ -232,8 +227,7 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildLeaders)
-            };
+                Text = LanguageMgr.Get("GuildLeaders")};
 
             var __gtstatusLabel = new MirLabel
             {
@@ -244,8 +238,7 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GTStatus)
-            };
+                Text = LanguageMgr.Get("GTStatus")};
 
             var __gtpriceLabel = new MirLabel
             {
@@ -256,8 +249,7 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, 8F),
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GTPrice)
-            };
+                Text = LanguageMgr.Get("GTPrice")};
 
             for (int i = 0; i < 7; i++)
             {
@@ -269,9 +261,9 @@ namespace Client.MirScenes.Dialogs
                     BorderColour = CommonColor.Lime,
                 };
                 gt.Idx.Text = (i + 1).ToString();
-                gt.GuildOwner.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None);
-                gt.OwnerName.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None);
-                gt.Status.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Available);
+                gt.GuildOwner.Text = LanguageMgr.Get("None");
+                gt.OwnerName.Text = LanguageMgr.Get("None");
+                gt.Status.Text = LanguageMgr.Get("Available");
                 gt.Price.Text = "10,000,000";
 
                 gt.Click += (e, o) =>
@@ -284,7 +276,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         int.TryParse(obj.Idx.Text, out selectedIndex);
                         obj.Border = true;
-                        BuyButton.Visible = obj.Status.Text == GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ForSale);
+                        BuyButton.Visible = obj.Status.Text == LanguageMgr.Get("ForSale");
                     }
 
                 };
@@ -328,15 +320,15 @@ namespace Client.MirScenes.Dialogs
                     gtRow.Owner2 = gtMap.Leader2;
                     gtRow.OwnerName.Text = gtMap.Leader;
                     if (gtMap.Leader2 != string.Empty)
-                        gtRow.OwnerName.Text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.AndPlaceholder), gtMap.Leader2);
+                        gtRow.OwnerName.Text += LanguageMgr.Get("AndPlaceholder", gtMap.Leader2);
 
-                    if (gtMap.Owner != GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.None))
+                    if (gtMap.Owner != LanguageMgr.Get("None"))
                         if (gtMap.begin > 0)
-                            gtRow.Status.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SalePending);
+                            gtRow.Status.Text = LanguageMgr.Get("SalePending");
                     else
-                        gtRow.Status.Text = gtMap.price > 0 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ForSale) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Unavailable);
+                        gtRow.Status.Text = gtMap.price > 0 ? LanguageMgr.Get("ForSale"): LanguageMgr.Get("Unavailable");
                     else
-                        gtRow.Status.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Available);
+                        gtRow.Status.Text = LanguageMgr.Get("Available");
 
                     gtRow.Price.Text = gtMap.price.ToString("###,###,##0");
                 }

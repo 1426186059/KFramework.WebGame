@@ -363,7 +363,7 @@ namespace Client.MirScenes.Dialogs
             // （FindPath 的 MaxNodes 默认 0 仅限制“找到后”的路径长度，对不可达点仍会搜索整张地图）。
             if (X < 0 || Y < 0 || X >= map.Width || Y >= map.Height || !map.EmptyCell(new Point(X, Y)))
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CouldNotFindPath), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CouldNotFindPath"), ChatType.System);
                 return;
             }
 
@@ -371,7 +371,7 @@ namespace Client.MirScenes.Dialogs
 
             if (path == null || path.Count == 0)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CouldNotFindPath), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("CouldNotFindPath"), ChatType.System);
             }
             else
             {

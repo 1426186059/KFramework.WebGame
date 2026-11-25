@@ -560,7 +560,7 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
 
-                TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? LanguageMgr.Get("TaskCompleted"): ""));
                 Targets.Add(KillTaskCount.Count > 0 ? MakeMonsterTarget(KillTaskCount[0].Info.Monster) ?? MakeNPCTarget() : MakeNPCTarget());
                 return;
             }
@@ -571,7 +571,7 @@ namespace Server.MirDatabase
 
                 if (string.IsNullOrEmpty(Info.KillTasks[i].Message))
                 {
-                    TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.KillCountProgress), KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
+                    TaskList.Add(LanguageMgr.Get("KillCountProgress", KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
                         KillTaskCount[i].Info.Count, ""));
                     Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster) ?? MakeNPCTarget());
                 }
@@ -606,7 +606,7 @@ namespace Server.MirDatabase
 
                 if (string.IsNullOrEmpty(Info.ItemTasks[i].Message))
                 {
-                    TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CollectProgress), Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
+                    TaskList.Add(LanguageMgr.Get("CollectProgress", Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
                         Info.ItemTasks[i].Count, ""));
                     Targets.Add(MakeItemTarget());
                 }
@@ -641,7 +641,7 @@ namespace Server.MirDatabase
 
                 if (string.IsNullOrEmpty(Info.FlagTasks[i].Message))
                 {
-                    TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ActivateFlag), Info.FlagTasks[i].Number, ""));
+                    TaskList.Add(LanguageMgr.Get("ActivateFlag", Info.FlagTasks[i].Number, ""));
                     Targets.Add(MakeNPCTarget());
                 }
                 else

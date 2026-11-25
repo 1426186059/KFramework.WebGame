@@ -247,7 +247,7 @@ namespace Client.MirControls
 
                             if (GameScene.Scene.ChatDialog.ChatTextBox.Text.Length + text.Length > Globals.MaxChatLength)
                             {
-                                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UnableLinkItemMessageTooLong), ChatType.System);
+                                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("UnableLinkItemMessageTooLong"), ChatType.System);
                                 return;
                             }
 
@@ -272,13 +272,13 @@ namespace Client.MirControls
                             {
                                 if (FreeSpace() == 0)
                                 {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NoRoomToSplitStack), ChatType.System);
+                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NoRoomToSplitStack"), ChatType.System);
                                     return;
                                 }
 
                                 if (Item.Count > 1)
                                 {
-                                    MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SplitAmount), Item.Image, (uint)(Item.Count - 1));
+                                    MirAmountBox amountBox = new MirAmountBox(LanguageMgr.Get("SplitAmount"), Item.Image, (uint)(Item.Count - 1));
 
                                     amountBox.OKButton.Click += (o, a) =>
                                     {
@@ -331,7 +331,7 @@ namespace Client.MirControls
             MirAmountBox amountBox;
             if (Item.Count > 1)
             {
-                amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PurchaseAmount), Item.Image, Item.Count);
+                amountBox = new MirAmountBox(LanguageMgr.Get("PurchaseAmount"), Item.Image, Item.Count);
 
                 amountBox.OKButton.Click += (o, e) =>
                 {
@@ -341,7 +341,7 @@ namespace Client.MirControls
             }
             else
             {
-                amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchase), Item.Image, GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ValueGold), Item.Price()));
+                amountBox = new MirAmountBox(LanguageMgr.Get("Purchase"), Item.Image, LanguageMgr.Get("ValueGold", Item.Price()));
 
                 amountBox.OKButton.Click += (o, e) =>
                 {
@@ -564,7 +564,7 @@ namespace Client.MirControls
                         if (CMain.Time < GameScene.UseItemTime) return;
                         if (Item.Info.Type == ItemType.Potion && Item.Info.Shape == 4)
                         {
-                            MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AreYouWantUsePotion), MirMessageBoxButtons.YesNo);
+                            MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("AreYouWantUsePotion"), MirMessageBoxButtons.YesNo);
                             messageBox.YesButton.Click += (o, e) =>
                             {
                                 Network.Enqueue(new C.UseItem { UniqueID = Item.UniqueID, Grid = GridType });
@@ -1004,7 +1004,7 @@ namespace Client.MirControls
                                 {
                                     if (CMain.Ctrl)
                                     {
-                                        MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouWantCombineItems), MirMessageBoxButtons.YesNo);
+                                        MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("YouWantCombineItems"), MirMessageBoxButtons.YesNo);
                                         messageBox.YesButton.Click += (o, e) =>
                                         {
                                             //Combine
@@ -1132,12 +1132,12 @@ namespace Client.MirControls
                             case MirGridType.GuildStorage:
                                 if (Item != null)
                                 {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouCannotSwapItems), ChatType.System);
+                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouCannotSwapItems"), ChatType.System);
                                     return;
                                 }
                                 if (!GuildDialog.MyOptions.HasFlag(GuildRankOptions.CanRetrieveItem))
                                 {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InsufficientRightsRetrieveItems), ChatType.System);
+                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("InsufficientRightsRetrieveItems"), ChatType.System);
                                     return;
                                 }
                                 Network.Enqueue(new C.GuildStorageItemChange { Type = 1, From = GameScene.SelectedCell.ItemSlot, To = ItemSlot });
@@ -1261,7 +1261,7 @@ namespace Client.MirControls
                             case MirGridType.Renting:
                                 if (GameScene.User.RentalItemLocked)
                                 {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.UnableRemoveLockedItem), ChatType.System);
+                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("UnableRemoveLockedItem"), ChatType.System);
                                     GameScene.SelectedCell = null;
                                     return;
                                 }
@@ -1475,7 +1475,7 @@ namespace Client.MirControls
                                 {
                                     if (!GuildDialog.MyOptions.HasFlag(GuildRankOptions.CanStoreItem))
                                     {
-                                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InsufficientRightsStoreItems), ChatType.System);
+                                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("InsufficientRightsStoreItems"), ChatType.System);
                                         return;
                                     }
 
@@ -1496,12 +1496,12 @@ namespace Client.MirControls
                                 {
                                     if (Item != null)
                                     {
-                                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouCannotSwapItems), ChatType.System);
+                                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouCannotSwapItems"), ChatType.System);
                                         return;
                                     }
                                     if (!GuildDialog.MyOptions.HasFlag(GuildRankOptions.CanStoreItem))
                                     {
-                                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InsufficientRightsStoreItems), ChatType.System);
+                                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("InsufficientRightsStoreItems"), ChatType.System);
                                         return;
                                     }
                                     if (ItemArray[ItemSlot] == null)
@@ -1783,13 +1783,13 @@ namespace Client.MirControls
                         {
                             if (Item != null)
                             {
-                                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouCannotSwapItems), ChatType.System);
+                                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouCannotSwapItems"), ChatType.System);
                                 return;
                             }
 
                             if (GameScene.SelectedCell.Item.Info.Bind.HasFlag(BindMode.DontTrade))
                             {
-                                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouCannotMailItem), ChatType.System);
+                                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouCannotMailItem"), ChatType.System);
                                 return;
                             }
 
@@ -1815,7 +1815,7 @@ namespace Client.MirControls
                                 {
                                     if (CMain.Ctrl)
                                     {
-                                        MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouWantCombineItems), MirMessageBoxButtons.YesNo);
+                                        MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("YouWantCombineItems"), MirMessageBoxButtons.YesNo);
                                         messageBox.YesButton.Click += (o, e) =>
                                         {
                                             //Combine
@@ -1905,7 +1905,7 @@ namespace Client.MirControls
 
                                 if (GameScene.SelectedCell.Item.Weight + MapObject.Hero.CurrentBagWeight > MapObject.Hero.Stats[Stat.BagWeight])
                                 {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TooHeavyToTransfer), ChatType.System);
+                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TooHeavyToTransfer"), ChatType.System);
                                     GameScene.SelectedCell = null;
                                     return;
                                 }
@@ -2131,14 +2131,14 @@ namespace Client.MirControls
                 case MirGender.Male:
                     if (!Item.Info.RequiredGender.HasFlag(RequiredGender.Male))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotFemale), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NotFemale"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirGender.Female:
                     if (!Item.Info.RequiredGender.HasFlag(RequiredGender.Female))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotMale), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NotMale"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2149,35 +2149,35 @@ namespace Client.MirControls
                 case MirClass.Warrior:
                     if (!Item.Info.RequiredClass.HasFlag(RequiredClass.Warrior))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WarriorsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("WarriorsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Wizard:
                     if (!Item.Info.RequiredClass.HasFlag(RequiredClass.Wizard))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WizardsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("WizardsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Taoist:
                     if (!Item.Info.RequiredClass.HasFlag(RequiredClass.Taoist))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TaoistsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TaoistsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Assassin:
                     if (!Item.Info.RequiredClass.HasFlag(RequiredClass.Assassin))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssassinsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("AssassinsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Archer:
                     if (!Item.Info.RequiredClass.HasFlag(RequiredClass.Archer))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ArchersCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ArchersCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2188,84 +2188,84 @@ namespace Client.MirControls
                 case RequiredType.Level:
                     if (actor.Level < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowLevel), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowLevel"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxAC:
                     if (actor.Stats[Stat.MaxAC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxMAC:
                     if (actor.Stats[Stat.MaxMAC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowMAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowMAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxDC:
                     if (actor.Stats[Stat.MaxDC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowDC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowDC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxMC:
                     if (actor.Stats[Stat.MaxMC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowMC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowMC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxSC:
                     if (actor.Stats[Stat.MaxSC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowSC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowSC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxLevel:
                     if (actor.Level > Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouExceededMaxLevel), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouExceededMaxLevel"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinAC:
                     if (actor.Stats[Stat.MinAC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughBaseAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughBaseAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinMAC:
                     if (actor.Stats[Stat.MinMAC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughBaseMac), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughBaseMac"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinDC:
                     if (actor.Stats[Stat.MinDC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouLackBaseDC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouLackBaseDC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinMC:
                     if (actor.Stats[Stat.MinMC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouLackBaseMC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouLackBaseMC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinSC:
                     if (actor.Stats[Stat.MinSC] < Item.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouLackBaseSC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouLackBaseSC"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2280,7 +2280,7 @@ namespace Client.MirControls
                 case ItemType.Reins:
                     if (actor.Equipment[(int)EquipmentSlot.Mount] == null)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveMountEquipped), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveMountEquipped"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2291,7 +2291,7 @@ namespace Client.MirControls
                 case ItemType.Reel:
                     if (actor.Equipment[(int)EquipmentSlot.Weapon] == null || !actor.Equipment[(int)EquipmentSlot.Weapon].Info.IsFishingRod)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveFishingRodEquipped), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveFishingRodEquipped"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2313,14 +2313,14 @@ namespace Client.MirControls
                 case MirGender.Male:
                     if (!i.Info.RequiredGender.HasFlag(RequiredGender.Male))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotFemale), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NotFemale"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirGender.Female:
                     if (!i.Info.RequiredGender.HasFlag(RequiredGender.Female))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NotMale), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NotMale"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2331,35 +2331,35 @@ namespace Client.MirControls
                 case MirClass.Warrior:
                     if (!i.Info.RequiredClass.HasFlag(RequiredClass.Warrior))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WarriorsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("WarriorsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Wizard:
                     if (!i.Info.RequiredClass.HasFlag(RequiredClass.Wizard))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WizardsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("WizardsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Taoist:
                     if (!i.Info.RequiredClass.HasFlag(RequiredClass.Taoist))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TaoistsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TaoistsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Assassin:
                     if (!i.Info.RequiredClass.HasFlag(RequiredClass.Assassin))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssassinsCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("AssassinsCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
                 case MirClass.Archer:
                     if (!i.Info.RequiredClass.HasFlag(RequiredClass.Archer))
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ArchersCannotUseItem), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ArchersCannotUseItem"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2370,84 +2370,84 @@ namespace Client.MirControls
                 case RequiredType.Level:
                     if (actor.Level < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowLevel), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowLevel"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxAC:
                     if (actor.Stats[Stat.MaxAC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxMAC:
                     if (actor.Stats[Stat.MaxMAC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowMAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowMAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxDC:
                     if (actor.Stats[Stat.MaxDC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowDC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowDC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxMC:
                     if (actor.Stats[Stat.MaxMC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowMC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowMC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxSC:
                     if (actor.Stats[Stat.MaxSC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LowSC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("LowSC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MaxLevel:
                     if (actor.Level > i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouExceededMaxLevel), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouExceededMaxLevel"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinAC:
                     if (actor.Stats[Stat.MinAC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughBaseAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughBaseAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinMAC:
                     if (actor.Stats[Stat.MinMAC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughBaseMAC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughBaseMAC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinDC:
                     if (actor.Stats[Stat.MinDC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNotEnoughBaseDC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouNotEnoughBaseDC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinMC:
                     if (actor.Stats[Stat.MinMC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNotEnoughBaseMC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouNotEnoughBaseMC"), ChatType.System);
                         return false;
                     }
                     break;
                 case RequiredType.MinSC:
                     if (actor.Stats[Stat.MinSC] < i.Info.RequiredAmount)
                     {
-                        GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouDoNotHaveEnoughBaseSC), ChatType.System);
+                        GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouDoNotHaveEnoughBaseSC"), ChatType.System);
                         return false;
                     }
                     break;
@@ -2457,7 +2457,7 @@ namespace Client.MirControls
             {
                 if (i.Weight - (Item != null ? Item.Weight : 0) + actor.CurrentHandWeight > actor.Stats[Stat.HandWeight])
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TooHeavyToHold), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TooHeavyToHold"), ChatType.System);
                     return false;
                 }
             }
@@ -2465,7 +2465,7 @@ namespace Client.MirControls
             {
                 if (i.Weight - (Item != null ? Item.Weight : 0) + actor.CurrentWearWeight > actor.Stats[Stat.WearWeight])
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ItIsTooHeavyToWear), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ItIsTooHeavyToWear"), ChatType.System);
                     return false;
                 }
             }

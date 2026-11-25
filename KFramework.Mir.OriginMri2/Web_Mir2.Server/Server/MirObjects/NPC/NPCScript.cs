@@ -1092,7 +1092,7 @@ namespace Server.MirObjects
                 case RefineKey:
                     if (player.Info.CurrentRefine != null)
                     {
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAreRefiningItem), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("YouAreRefiningItem"), ChatType.System);
                         player.Enqueue(new S.NPCRefine { Rate = (Settings.RefineCost), Refining = true });
                         break;
                     }
@@ -1159,7 +1159,7 @@ namespace Server.MirObjects
                 case GuildCreateKey:
                     if (player.Info.Level < Settings.Guild_RequiredLevel)
                     {
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouNeedLevelToCreateGuild), Settings.Guild_RequiredLevel), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("YouNeedLevelToCreateGuild", Settings.Guild_RequiredLevel), ChatType.System);
                     }
                     else if (player.MyGuild == null)
                     {
@@ -1167,21 +1167,21 @@ namespace Server.MirObjects
                         player.Enqueue(new S.GuildNameRequest());
                     }
                     else
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAreInGuild), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("YouAreInGuild"), ChatType.System);
                     break;
                 case RequestWarKey:
                     if (player.MyGuild != null)
                     {
                         if (player.MyGuildRank != player.MyGuild.Ranks[0])
                         {
-                            player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouMustBeLeaderToRequestWar), ChatType.System);
+                            player.ReceiveChat(LanguageMgr.Get("YouMustBeLeaderToRequestWar"), ChatType.System);
                             return;
                         }
                         player.Enqueue(new S.GuildRequestWar());
                     }
                     else
                     {
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotInGuild), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("NotInGuild"), ChatType.System);
                     }
                     break;
                 case SendParcelKey:
@@ -1226,7 +1226,7 @@ namespace Server.MirObjects
                 case HeroCreateKey:
                     if (player.Info.Level < Settings.Hero_RequiredLevel)
                     {
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouMustBeLevelToCreateHero), Settings.Hero_RequiredLevel), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("YouMustBeLevelToCreateHero", Settings.Hero_RequiredLevel), ChatType.System);
                         break;
                     }
                     player.CanCreateHero = true;
@@ -1626,7 +1626,7 @@ namespace Server.MirObjects
 
             if (Envir.Random.Next(100) >= recipe.Chance + player.Stats[Stat.CraftRatePercent])
             {
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CraftingAttemptFailed), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("CraftingAttemptFailed"), ChatType.System);
             }
             else
             {

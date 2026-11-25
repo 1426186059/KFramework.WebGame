@@ -80,7 +80,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredFromInventory), item.Info.FriendlyName), ChatType.System);
+                        rentingPlayer.Player.ReceiveChat(LanguageMgr.Get("ItemExpiredFromInventory", item.Info.FriendlyName), ChatType.System);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }
@@ -108,7 +108,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredInventory), item.Info.FriendlyName), ChatType.System);
+                        rentingPlayer.Player.ReceiveChat(LanguageMgr.Get("ItemExpiredInventory", item.Info.FriendlyName), ChatType.System);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }
@@ -315,7 +315,7 @@ namespace Server.MirEnvir
 
             con.Enqueue(new S.PlayerInspect
             {
-                Name = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHero), ownerName),
+                Name = LanguageMgr.Get("PlayerHero", ownerName),
                 Equipment = heroInfo.Equipment,
                 GuildName = String.Empty,
                 GuildRank = String.Empty,

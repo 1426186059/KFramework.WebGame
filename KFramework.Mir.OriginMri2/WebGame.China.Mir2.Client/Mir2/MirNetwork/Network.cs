@@ -39,9 +39,9 @@ namespace Client.MirNetwork
             {
                 if (ErrorShown) return;
                 ErrorShown = true;
-                MirMessageBox errorBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ErrorConnectingToServer), MirMessageBoxButtons.Cancel);
+                MirMessageBox errorBox = new MirMessageBox(LanguageMgr.Get("ErrorConnectingToServer"), MirMessageBoxButtons.Cancel);
                 errorBox.CancelButton.Click += (o, e) => CMain.Instance.Close();
-                errorBox.Label.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MaximumConnectionAttemptsReached), MaxAttempts);
+                errorBox.Label.Text = LanguageMgr.Get("MaximumConnectionAttemptsReached", MaxAttempts);
                 errorBox.Show();
                 return;
             }
@@ -114,7 +114,7 @@ namespace Client.MirNetwork
                         _receiveList = new ConcurrentQueue<Packet>();
                         return;
                     }
-                    MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LostConnectionWithServer), true);
+                    MirMessageBox.Show(LanguageMgr.Get("LostConnectionWithServer"), true);
                     CMain.SaveError(string.Format("[网络] 与服务器失去连接（LostConnectionWithServer）。TimeOutTime={0}, CMain.Time={1}", TimeOutTime, CMain.Time));
                     Disconnect();
                     return;

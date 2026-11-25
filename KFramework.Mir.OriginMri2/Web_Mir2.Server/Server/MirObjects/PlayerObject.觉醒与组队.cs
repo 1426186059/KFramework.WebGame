@@ -101,7 +101,7 @@ namespace Server.MirObjects
                     {
                         if (item.RentalInformation != null)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToDowngradeBelongsTo), item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("UnableToDowngradeBelongsTo", item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
                             return;
                         }
 
@@ -115,7 +115,7 @@ namespace Server.MirObjects
                             switch (result)
                             {
                                 case 0:
-                                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.RemoveFailedLevel0), item.FriendlyName), ChatType.System);
+                                    ReceiveChat(LanguageMgr.Get("RemoveFailedLevel0", item.FriendlyName), ChatType.System);
                                     break;
                                 case 1:
                                     ushort maxDura = (Envir.Random.Next(20) == 0) ? (ushort)(item.MaxDura - 1000) : item.MaxDura;
@@ -123,7 +123,7 @@ namespace Server.MirObjects
 
                                     Info.Inventory[i].CurrentDura = (Info.Inventory[i].CurrentDura >= maxDura) ? maxDura : Info.Inventory[i].CurrentDura;
                                     Info.Inventory[i].MaxDura = maxDura;
-                                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.RemoveSuccessLevel), item.FriendlyName, item.Awake.GetAwakeLevel()), ChatType.System);
+                                    ReceiveChat(LanguageMgr.Get("RemoveSuccessLevel", item.FriendlyName, item.Awake.GetAwakeLevel()), ChatType.System);
                                     Enqueue(new S.RefreshItem { Item = item });
                                     break;
                                 default:
@@ -149,13 +149,13 @@ namespace Server.MirObjects
 
                 if (item.Info.Bind.HasFlag(BindMode.UnableToDisassemble))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToDisassemble), item.FriendlyName), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("UnableToDisassemble", item.FriendlyName), ChatType.System);
                     return;
                 }
 
                 if (item.RentalInformation != null && item.RentalInformation.BindingFlags.HasFlag(BindMode.UnableToDisassemble))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToDisassembleBelongsTo), item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("UnableToDisassembleBelongsTo", item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
                     return;
                 }
 
@@ -211,7 +211,7 @@ namespace Server.MirObjects
                     {
                         if (item.RentalInformation != null)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UnableToResetBelongsTo), item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("UnableToResetBelongsTo", item.FriendlyName, item.RentalInformation.OwnerName), ChatType.System);
                             return;
                         }
 
@@ -488,20 +488,20 @@ namespace Server.MirObjects
 
             if (GroupMembers != null && GroupMembers[0] != this)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotGroupLeader), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotGroupLeader"), ChatType.System);
                 return;
             }
 
             if (GroupMembers != null && GroupMembers.Count >= Globals.MaxGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouGroupMaxMembers), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouGroupMaxMembers"), ChatType.System);
                 return;
             }
 
             // New: leader cannot invite on NoGroup maps
             if (CurrentMap != null && CurrentMap.Info.NoGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCannotInviteOnSoloMaps), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCannotInviteOnSoloMaps"), ChatType.System);
                 return;
             }
 
@@ -509,37 +509,37 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotBeFound), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CouldNotBeFound", name), ChatType.System);
                 return;
             }
             if (player == this)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotGroupSelf), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotGroupSelf"), ChatType.System);
                 return;
             }
 
             if (!player.AllowGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotAllowGroup), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotAllowGroup", name), ChatType.System);
                 return;
             }
 
             if (player.GroupMembers != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AlreadyInAnotherGroup), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("AlreadyInAnotherGroup", name), ChatType.System);
                 return;
             }
 
             if (player.GroupInvitation != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AlreadyReceivingInviteFromOtherPlayer), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("AlreadyReceivingInviteFromOtherPlayer", name), ChatType.System);
                 return;
             }
 
             if (player.CurrentMap != null && player.CurrentMap.Info.NoGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.SoloMapTargetCannotAccept, player.Name), ChatType.System);
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.SoloMapCannotAccept), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("SoloMapTargetCannotAccept", player.Name), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("SoloMapCannotAccept"), ChatType.System);
                 return;
             }
 
@@ -552,12 +552,12 @@ namespace Server.MirObjects
         {
             if (GroupMembers == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotInGroup), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotInGroup"), ChatType.System);
                 return;
             }
             if (GroupMembers[0] != this)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotGroupLeader), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotGroupLeader"), ChatType.System);
                 return;
             }
 
@@ -572,7 +572,7 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotInYourGroup), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotInYourGroup", name), ChatType.System);
                 return;
             }
 
@@ -584,54 +584,54 @@ namespace Server.MirObjects
         {
             if (GroupInvitation == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotInvitedToGroup), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotInvitedToGroup"), ChatType.System);
                 return;
             }
 
             if (!accept)
             {
-                GroupInvitation.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.DeclinedGroupInvite), Name), ChatType.System);
+                GroupInvitation.ReceiveChat(LanguageMgr.Get("DeclinedGroupInvite", Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
 
             if (GroupMembers != null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotJoinGroup), GroupInvitation.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotJoinGroup", GroupInvitation.Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
 
             if (GroupInvitation.GroupMembers != null && GroupInvitation.GroupMembers[0] != GroupInvitation)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NoLongerGroupLeader), GroupInvitation.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NoLongerGroupLeader", GroupInvitation.Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
 
             if (GroupInvitation.GroupMembers != null && GroupInvitation.GroupMembers.Count >= Globals.MaxGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.GroupMaxMembers), GroupInvitation.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("GroupMaxMembers", GroupInvitation.Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
             if (!GroupInvitation.AllowGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotInAllowGroup), GroupInvitation.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotInAllowGroup", GroupInvitation.Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
             if (GroupInvitation.Node == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerNoLongerOnline), GroupInvitation.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerNoLongerOnline", GroupInvitation.Name), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
 
             if (GroupInvitation.CurrentMap != null && GroupInvitation.CurrentMap.Info.NoGroup)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.SoloMapTargetCannotAccept, GroupInvitation.Name), ChatType.System);
-                GroupInvitation.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.SoloMapCannotAccept), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("SoloMapTargetCannotAccept", GroupInvitation.Name), ChatType.System);
+                GroupInvitation.ReceiveChat(LanguageMgr.Get("SoloMapCannotAccept"), ChatType.System);
                 GroupInvitation = null;
                 return;
             }
@@ -778,7 +778,7 @@ namespace Server.MirObjects
                 targetLocation = new Point(targetMap.Width / 2, targetMap.Height / 2);
 
             Teleport(targetMap, targetLocation);
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNoLongerMeetGroupRequirementsForMap), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("YouNoLongerMeetGroupRequirementsForMap"), ChatType.System);
         }
 
         public void CheckGroupValidityOnMap()

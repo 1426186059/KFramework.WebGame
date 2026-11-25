@@ -62,8 +62,8 @@ namespace Server.MirObjects
 
             if (Product == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouBuyItemNotInShop), ChatType.System);
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyNonexistentItem), Info.Name));
+                ReceiveChat(LanguageMgr.Get("YouBuyItemNotInShop"), ChatType.System);
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyNonexistentItem", Info.Name));
                 return;
             }
 
@@ -87,9 +87,9 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouBuyMoreThanAvailable), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouBuyMoreThanAvailable"), ChatType.System);
                     GameShopStock(Product);
-                    MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyItemStockUnavailable), Info.Name, Product.Info.FriendlyName, Quantity));
+                    MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyItemStockUnavailable", Info.Name, Product.Info.FriendlyName, Quantity));
                     return;
                 }
             }
@@ -100,7 +100,7 @@ namespace Server.MirObjects
 
             if (stockAvailable)
             {
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyItemStockAvailable), Info.Name, Product.Info.FriendlyName, Quantity));
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyItemStockAvailable", Info.Name, Product.Info.FriendlyName, Quantity));
 
                 if (PType == 0)
                 {
@@ -122,8 +122,8 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouDontHaveEnoughCurrency), ChatType.System);
-                    MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyItemNotEnoughCurrency), Info.Name, Product.Info.FriendlyName, Quantity));
+                    ReceiveChat(LanguageMgr.Get("YouDontHaveEnoughCurrency"), ChatType.System);
+                    MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyItemNotEnoughCurrency", Info.Name, Product.Info.FriendlyName, Quantity));
                     return;
                 }
             }
@@ -134,7 +134,7 @@ namespace Server.MirObjects
 
             if (canAfford)
             {
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyItemEnoughCurrency), Info.Name, Product.Info.FriendlyName, Quantity, PType));
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyItemEnoughCurrency", Info.Name, Product.Info.FriendlyName, Quantity, PType));
                 if (PType == 0)
                 {
                     Info.Credit -= CreditCost;
@@ -215,13 +215,13 @@ namespace Server.MirObjects
             {
                 MailID = ++Envir.NextMailID,
                 Sender = "Gameshop",
-                Message = GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ThankYouPurchaseGameshop),
+                Message = LanguageMgr.Get("ThankYouPurchaseGameshop"),
                 Items = mailItems,
             };
             mail.Send();
 
-            MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBuyingItemsSent), Info.Name, Product.Info.FriendlyName, Quantity));
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PurchasesSentMailbox), ChatType.System);
+            MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerBuyingItemsSent", Info.Name, Product.Info.FriendlyName, Quantity));
+            ReceiveChat(LanguageMgr.Get("PurchasesSentMailbox"), ChatType.System);
         }
 
         public void GetGameShop()

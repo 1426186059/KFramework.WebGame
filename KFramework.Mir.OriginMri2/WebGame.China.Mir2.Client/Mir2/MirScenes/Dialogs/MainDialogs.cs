@@ -146,7 +146,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 1905,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.InventoryKey), CMain.InputKeys.GetKey(KeybindOptions.Inventory))
+                Hint = LanguageMgr.Get("InventoryKey", CMain.InputKeys.GetKey(KeybindOptions.Inventory))
             };
 
             InventoryButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
@@ -173,8 +173,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(this.Size.Width - 250, 55),
                 Parent = this,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CharacterKey)
-            };
+                Hint = LanguageMgr.Get("CharacterKey")};
             CharacterButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
             CharacterButton.LabelImage.AtlasFrame = "word_xitong_09";
             CharacterButton.LabelImage.Size = new Size(25, 14);
@@ -202,7 +201,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(this.Size.Width - 150, 50),
                 Parent = this,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillsKey), CMain.InputKeys.GetKey(KeybindOptions.Skills))
+                Hint = LanguageMgr.Get("SkillsKey", CMain.InputKeys.GetKey(KeybindOptions.Skills))
             };
             SkillButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
             SkillButton.LabelImage.AtlasFrame = "word_xitong_14";
@@ -225,7 +224,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 1911,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.QuestsKey), CMain.InputKeys.GetKey(KeybindOptions.Quests))
+                Hint = LanguageMgr.Get("QuestsKey", CMain.InputKeys.GetKey(KeybindOptions.Quests))
             };
             QuestButton.Click += (o, e) =>
             {
@@ -243,7 +242,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 1914,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.OptionsKey), CMain.InputKeys.GetKey(KeybindOptions.Options))
+                Hint = LanguageMgr.Get("OptionsKey", CMain.InputKeys.GetKey(KeybindOptions.Options))
             };
             OptionButton.Click += (o, e) =>
             {
@@ -261,8 +260,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 1962,
                 Sound = SoundList.ButtonC,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Menu)
-            };
+                Hint = LanguageMgr.Get("Menu")};
             MenuButton.Click += (o, e) =>
             {
                 if (!GameScene.Scene.MenuDialog.Visible) GameScene.Scene.MenuDialog.Show();
@@ -278,7 +276,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(this.Size.Width - 170, 100),
                 Parent = this,
                 Sound = SoundList.ButtonC,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GameShopKey), CMain.InputKeys.GetKey(KeybindOptions.GameShop))
+                Hint = LanguageMgr.Get("GameShopKey", CMain.InputKeys.GetKey(KeybindOptions.GameShop))
             };
 
             GameShopButton.Click += (o, e) =>
@@ -290,55 +288,55 @@ namespace Client.MirScenes.Dialogs
             this.RankBtn = this.RankBtnStyle(
                 "word_xitong_03", 
                 0, 
-                GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                 );
 
             this.GuildBtn = this.RankBtnStyle(
                  "word_xitong_02", 
                  1,
-                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                  );
 
             this.HeChengBtn = this.RankBtnStyle(
                  "word_xitong_04",
                  2,
-                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                  );
 
             this.QiangXingBtn = this.RankBtnStyle(
                  "word_xitong_05",
                  3,
-                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                  );
                 
             this.ZhuangBanBtn = this.RankBtnStyle(
                  "word_xitong_06",
                  4,
-                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                  );
 
             this.RongLuBtn = this.RankBtnStyle(
                    "word_xitong_07",
                    5,
-                   GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                   LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                    );
 
             this.SheJiaoBtn = this.RankBtnStyle(
                 "word_xitong_08",
                 6,
-                GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                 );
 
             this.TianShenBtn = this.RankBtnStyle(
                   "word_xitong_16",
                   7,
-                  GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                  LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                   );
 
             this.ShenChongBtn = this.RankBtnStyle(
                   "word_xitong_17",
                   8,
-                  GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                  LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                   );
 
             // 自动战斗开关按钮（原始传奇 btn_auto）：左侧空位，点击切换 MapControl.AutoFight。
@@ -603,41 +601,41 @@ namespace Client.MirScenes.Dialogs
             switch (GameScene.Scene.AMode)
             {
                 case AttackMode.Peace:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_Peace);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_Peace");
                     break;
                 case AttackMode.Group:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_Group);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_Group");
                     break;
                 case AttackMode.Guild:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_Guild);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_Guild");
                     break;
                 case AttackMode.EnemyGuild:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_EnemyGuild);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_EnemyGuild");
                     break;
                 case AttackMode.RedBrown:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_RedBrown);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_RedBrown");
                     break;
                 case AttackMode.All:
-                    AModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttackMode_All);
+                    AModeLabel.Text = LanguageMgr.Get("AttackMode_All");
                     break;
             }
 
             switch (GameScene.Scene.PMode)
             {
                 case PetMode.Both:
-                    PModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PetMode_Both);
+                    PModeLabel.Text = LanguageMgr.Get("PetMode_Both");
                     break;
                 case PetMode.MoveOnly:
-                    PModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PetMode_MoveOnly);
+                    PModeLabel.Text = LanguageMgr.Get("PetMode_MoveOnly");
                     break;
                 case PetMode.AttackOnly:
-                    PModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PetMode_AttackOnly);
+                    PModeLabel.Text = LanguageMgr.Get("PetMode_AttackOnly");
                     break;
                 case PetMode.None:
-                    PModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PetMode_None);
+                    PModeLabel.Text = LanguageMgr.Get("PetMode_None");
                     break;
                 case PetMode.FocusMasterTarget:
-                    PModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PetMode_FocusMasterTarget);
+                    PModeLabel.Text = LanguageMgr.Get("PetMode_FocusMasterTarget");
                     break;
             }
 

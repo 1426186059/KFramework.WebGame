@@ -323,33 +323,33 @@ namespace Server.MirObjects
             {
                 //0-10 are 'senddisconnect to client'
                 case 0:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ServerClosed), Name);
+                    return LanguageMgr.Get("ServerClosed", Name);
                 case 1:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.DoubleLogin), Name);
+                    return LanguageMgr.Get("DoubleLogin", Name);
                 case 2:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ChatMsgTooLong), Name);
+                    return LanguageMgr.Get("ChatMsgTooLong", Name);
                 case 3:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ServerCrashed), Name);
+                    return LanguageMgr.Get("ServerCrashed", Name);
                 case 4:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.KickedByAdmin), Name);
+                    return LanguageMgr.Get("KickedByAdmin", Name);
                 case 5:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MaximunConnectionsReached), Name);
+                    return LanguageMgr.Get("MaximunConnectionsReached", Name);
                 case 6:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AccountBanded), Name);
+                    return LanguageMgr.Get("AccountBanded", Name);
                 case 10:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WrongClientVersion), Name);
+                    return LanguageMgr.Get("WrongClientVersion", Name);
                 case 20:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggedOutMissingReason), Name);
+                    return LanguageMgr.Get("UserLoggedOutMissingReason", Name);
                 case 21:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLogoutReasonTimeoutMessage), Name);
+                    return LanguageMgr.Get("UserLogoutReasonTimeoutMessage", Name);
                 case 22:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLogoutClosedGameMessage), Name);
+                    return LanguageMgr.Get("UserLogoutClosedGameMessage", Name);
                 case 23:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggedOutSelectCharReasonMessage), Name);
+                    return LanguageMgr.Get("UserLoggedOutSelectCharReasonMessage", Name);
                 case 24:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggedOutReasonObserve), Name);
+                    return LanguageMgr.Get("UserLoggedOutReasonObserve", Name);
                 default:
-                    return GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggedOutUnknownReason), Name);
+                    return LanguageMgr.Get("UserLoggedOutUnknownReason", Name);
             }
         }
         protected override void NewCharacter()
@@ -385,7 +385,7 @@ namespace Server.MirObjects
 
             if (NewMail)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NewMail), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NewMail"), ChatType.System);
 
                 GetMail();
             }
@@ -393,7 +393,7 @@ namespace Server.MirObjects
             if (Account.HasExpandedStorage && Envir.Now > Account.ExpandedStorageExpiryDate)
             {
                 Account.HasExpandedStorage = false;
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ExpandedStorageExpired), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("ExpandedStorageExpired"), ChatType.System);
                 Enqueue(new S.ResizeStorage { Size = Account.Storage.Length, HasExpandedStorage = Account.HasExpandedStorage, ExpiryTime = Account.ExpandedStorageExpiryDate });
             }
 
@@ -475,7 +475,7 @@ namespace Server.MirObjects
                     item.CurrentDura = (ushort)(item.CurrentDura - 1000);
                     Enqueue(new S.DuraChanged { UniqueID = item.UniqueID, CurrentDura = item.CurrentDura });
                     RefreshStats();
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.SecondChanceAtLife), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("SecondChanceAtLife"), ChatType.System);
                     return;
                 }
             }
@@ -486,20 +486,20 @@ namespace Server.MirObjects
 
                 if (AtWar(hitter) || WarZone)
                 {
-                    hitter.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ProtectedByLaw), ChatType.System);
+                    hitter.ReceiveChat(LanguageMgr.Get("ProtectedByLaw"), ChatType.System);
                 }
                 else if (Envir.Time > BrownTime && PKPoints < 200)
                 {
                     UserItem weapon = hitter.Info.Equipment[(byte)EquipmentSlot.Weapon];
 
                     hitter.PKPoints = Math.Min(int.MaxValue, LastHitter.PKPoints + 100);
-                    hitter.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MurderPlayer), Name), ChatType.System);
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MurderedByPlayer), LastHitter.Name), ChatType.System);
+                    hitter.ReceiveChat(LanguageMgr.Get("MurderPlayer", Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("MurderedByPlayer", LastHitter.Name), ChatType.System);
 
                     if (weapon != null && weapon.AddedStats[Stat.Luck] > (Settings.MaxLuck * -1) && Envir.Random.Next(4) == 0)
                     {
                         weapon.AddedStats[Stat.Luck]--;
-                        hitter.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.WeaponHasBeenCursed), ChatType.System);
+                        hitter.ReceiveChat(LanguageMgr.Get("WeaponHasBeenCursed"), ChatType.System);
                         hitter.Enqueue(new S.RefreshItem { Item = weapon });
                     }
                 }
@@ -574,7 +574,7 @@ namespace Server.MirObjects
                     {
                         Info.Equipment[i] = null;
                         Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ShatteredOnDeath), item.FriendlyName), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("ShatteredOnDeath", item.FriendlyName), ChatType.System);
                         Report.ItemChanged(item, item.Count, 1, "RedDeathDrop");
                     }
 
@@ -607,7 +607,7 @@ namespace Server.MirObjects
                             Info.Equipment[i] = null;
                             Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
 
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerDeathItemReturn), item.Info.FriendlyName), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("PlayerDeathItemReturn", item.Info.FriendlyName), ChatType.System);
                             Report.ItemMailed(item, 1, 1, "Death Dropped Rental Item");
 
                             continue;
@@ -619,7 +619,7 @@ namespace Server.MirObjects
                         if (item.Info.GlobalDropNotify)
                             foreach (var player in Envir.Players)
                             {
-                                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerDroppedItem), Name, item.FriendlyName), ChatType.System);
+                                player.ReceiveChat(LanguageMgr.Get("PlayerDroppedItem", Name, item.FriendlyName), ChatType.System);
                             }
 
                         Info.Equipment[i] = null;
@@ -652,7 +652,7 @@ namespace Server.MirObjects
                     Info.Inventory[i] = null;
                     Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
 
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemReturnedToOwnerOnDeath), item.Info.FriendlyName), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("ItemReturnedToOwnerOnDeath", item.Info.FriendlyName), ChatType.System);
                     Report.ItemMailed(item, 1, 1, "Death Dropped Rental Item");
 
                     continue;
@@ -664,7 +664,7 @@ namespace Server.MirObjects
                 if (item.Info.GlobalDropNotify)
                     foreach (var player in Envir.Players)
                     {
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerItemDropped), Name, item.FriendlyName), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("PlayerItemDropped", Name, item.FriendlyName), ChatType.System);
                     }
 
                 Info.Inventory[i] = null;

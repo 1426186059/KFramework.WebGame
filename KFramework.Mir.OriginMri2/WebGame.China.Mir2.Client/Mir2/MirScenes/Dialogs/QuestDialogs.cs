@@ -584,7 +584,7 @@ namespace Client.MirScenes.Dialogs
         public Font Font = new Font(Settings.FontName, 8F);
         public List<string> CurrentLines = new List<string>();
 
-        private readonly string TaskTitle = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Tasks), ProgressTitle = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Progress), ReturnTitle = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.QuestReturn), TimeLimitTitle = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TimeLimit);
+        private readonly string TaskTitle = LanguageMgr.Get("Tasks"), ProgressTitle = LanguageMgr.Get("Progress"), ReturnTitle = LanguageMgr.Get("QuestReturn"), TimeLimitTitle = LanguageMgr.Get("TimeLimit");
 
         public QuestMessage(MirButton scrollUpButton, MirButton scrollDownButton, MirButton positionBar, int lineCount, bool displayProgress = false)
         {
@@ -1394,7 +1394,7 @@ namespace Client.MirScenes.Dialogs
 
             string name = QuestTypeLabel.Decorate(Quest.QuestInfo.Type, Quest.QuestInfo.Name);
             string level = string.Format("Lv{0}", Quest.QuestInfo.MinLevelNeeded);
-            string state = quest.Completed ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Complete) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InProgress);
+            string state = quest.Completed ? LanguageMgr.Get("Complete"): LanguageMgr.Get("InProgress");
 
             bool lowLevelQuest = (MapObject.User.Level - quest.QuestInfo.MinLevelNeeded) > 10;
 

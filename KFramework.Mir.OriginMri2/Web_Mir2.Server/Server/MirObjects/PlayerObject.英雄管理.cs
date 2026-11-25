@@ -62,7 +62,7 @@ namespace Server.MirObjects
         {
             if (CurrentMap.Info.NoHero)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotSummonHeroOnMap), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotSummonHeroOnMap"), ChatType.System);
                 return;
             }
 
@@ -117,7 +117,7 @@ namespace Server.MirObjects
         {
             if (CurrentMap.Info.NoHero)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroCannotReviveOnMap), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("HeroCannotReviveOnMap"), ChatType.System);
                 return;
             }
             if (CurrentHero == null) return;
@@ -148,7 +148,7 @@ namespace Server.MirObjects
 
             if (Settings.HeroMaximumSealCount > 0 && CurrentHero.SealCount >= Settings.HeroMaximumSealCount)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroCannotBeSealed), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("HeroCannotBeSealed"), ChatType.System);
                 return;
             }
 
@@ -185,7 +185,7 @@ namespace Server.MirObjects
 
             Info.Heroes[CurrentHeroIndex] = null;
             CurrentHero = null;
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroReleasedFromService), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("HeroReleasedFromService"), ChatType.System);
         }
 
         private bool AddHero(HeroInfo hero)
@@ -194,7 +194,7 @@ namespace Server.MirObjects
 
             if (heroCount >= Info.MaximumHeroCount)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCannotSummonMoreHeroes), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCannotSummonMoreHeroes"), ChatType.System);
                 return false;
             }
 
@@ -210,7 +210,7 @@ namespace Server.MirObjects
                 }
                 else
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroAddedToStorage), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("HeroAddedToStorage"), ChatType.System);
                     Enqueue(new S.NewHeroInfo { Info = hero.ClientInformation, StorageIndex = i - 1 });
                 }
 

@@ -18,7 +18,7 @@ namespace Server.MirObjects
         {
             if (Info.Married == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNotMarried), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouNotMarried"), ChatType.System);
                 return;
             }
 
@@ -44,7 +44,7 @@ namespace Server.MirObjects
             if (player != null)
             {
                 player.GetRelationship(false);
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ForcefullyDivorced), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("ForcefullyDivorced"), ChatType.System);
                 if (player.Info.Equipment[(int)EquipmentSlot.RingL] != null)
                     player.Enqueue(new S.RefreshItem { Item = player.Info.Equipment[(int)EquipmentSlot.RingL] });
             }
@@ -54,25 +54,25 @@ namespace Server.MirObjects
         {
             if (Info.Married == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NeedMarriedForWeddingRing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NeedMarriedForWeddingRing"), ChatType.System);
                 return false;
             }
 
             if (Info.Equipment[(int)EquipmentSlot.RingL] == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NeedRingOnLeftFinger), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NeedRingOnLeftFinger"), ChatType.System);
                 return false;
             }
 
             if (Info.Equipment[(int)EquipmentSlot.RingL].WeddingRing != -1)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.AlreadyWearingWeddingRing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("AlreadyWearingWeddingRing"), ChatType.System);
                 return false;
             }
 
             if (Info.Equipment[(int)EquipmentSlot.RingL].Info.Bind.HasFlag(BindMode.NoWeddingRing))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotUseRingType), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotUseRingType"), ChatType.System);
                 return false;
             }
 
@@ -99,13 +99,13 @@ namespace Server.MirObjects
 
             if (CurrentRing == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotWearingUpgradeRing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotWearingUpgradeRing"), ChatType.System);
                 return;
             }
 
             if (CurrentRing.WeddingRing == -1)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotWearingWeddingRingUpgrade), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotWearingWeddingRingUpgrade"), ChatType.System);
                 return;
             }
 
@@ -126,19 +126,19 @@ namespace Server.MirObjects
 
             if (temp.Info.Type != ItemType.Ring)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotReplaceWeddingRing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotReplaceWeddingRing"), ChatType.System);
                 return;
             }
 
             if (!CanEquipItem(temp, (int)EquipmentSlot.RingL))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotEquipItemInUse), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotEquipItemInUse"), ChatType.System);
                 return;
             }
 
             if (temp.Info.Bind.HasFlag(BindMode.NoWeddingRing))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotUseRingType), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotUseRingType"), ChatType.System);
                 return;
             }
 
@@ -146,7 +146,7 @@ namespace Server.MirObjects
 
             if (cost > Info.Gold)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NotEnoughGoldForWeddingRing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NotEnoughGoldForWeddingRing"), ChatType.System);
                 return;
             }
 
@@ -172,19 +172,19 @@ namespace Server.MirObjects
 
             if (Info.Married != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAlreadyMarried), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAlreadyMarried"), ChatType.System);
                 return;
             }
 
             if (Info.MarriedDate.AddDays(Settings.MarriageCooldown) > Envir.Now)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MarriageCooldownAfterDivorce), Settings.MarriageCooldown), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("MarriageCooldownAfterDivorce", Settings.MarriageCooldown), ChatType.System);
                 return;
             }
 
             if (Info.Level < Settings.MarriageLevelRequired)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NeedLevelToMarry), Settings.MarriageLevelRequired), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NeedLevelToMarry", Settings.MarriageLevelRequired), ChatType.System);
                 return;
             }
 
@@ -212,55 +212,55 @@ namespace Server.MirObjects
 
                 if (!Functions.FacingEachOther(Direction, CurrentLocation, player.Direction, player.CurrentLocation))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NeedFaceEachOtherForMarriage), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("NeedFaceEachOtherForMarriage"), ChatType.System);
                     return;
                 }
 
                 if (player.Level < Settings.MarriageLevelRequired)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.LoverMinLevelMarriage), Settings.MarriageLevelRequired), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("LoverMinLevelMarriage", Settings.MarriageLevelRequired), ChatType.System);
                     return;
                 }
 
                 if (player.Info.MarriedDate.AddDays(Settings.MarriageCooldown) > Envir.Now)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MarriageCooldownAfterDivorceOther), player.Name, Settings.MarriageCooldown), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("MarriageCooldownAfterDivorceOther", player.Name, Settings.MarriageCooldown), ChatType.System);
                     return;
                 }
 
                 if (!player.AllowMarriage)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ProposalNotAllowed), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("ProposalNotAllowed"), ChatType.System);
                     return;
                 }
 
                 if (player == this)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CantMarryYourself), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CantMarryYourself"), ChatType.System);
                     return;
                 }
 
                 if (player.Dead || Dead)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotMarryDeadPlayer), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotMarryDeadPlayer"), ChatType.System);
                     return;
                 }
 
                 if (player.MarriageProposal != null)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AlreadyHasMarriageInvitation), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("AlreadyHasMarriageInvitation", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (!Functions.InRange(player.CurrentLocation, CurrentLocation, Globals.DataRange) || player.CurrentMap != CurrentMap)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotWithinMarriageRange), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("NotWithinMarriageRange", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (player.Info.Married != 0)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyMarried), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerAlreadyMarried", player.Info.Name), ChatType.System);
                     return;
                 }
 
@@ -269,7 +269,7 @@ namespace Server.MirObjects
             }
             else
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FacePlayerForMarriageRequest), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FacePlayerForMarriageRequest"), ChatType.System);
                 return;
             }
         }
@@ -284,21 +284,21 @@ namespace Server.MirObjects
 
             if (!accept)
             {
-                MarriageProposal.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.HasRefusedToMarryYou), Info.Name), ChatType.System);
+                MarriageProposal.ReceiveChat(LanguageMgr.Get("HasRefusedToMarryYou", Info.Name), ChatType.System);
                 MarriageProposal = null;
                 return;
             }
 
             if (Info.Married != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAlreadyMarried), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAlreadyMarried"), ChatType.System);
                 MarriageProposal = null;
                 return;
             }
 
             if (MarriageProposal.Info.Married != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyMarried), MarriageProposal.Info.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerAlreadyMarried", MarriageProposal.Info.Name), ChatType.System);
                 MarriageProposal = null;
                 return;
             }
@@ -313,8 +313,8 @@ namespace Server.MirObjects
             GetRelationship(false);
             MarriageProposal.GetRelationship(false);
 
-            MarriageProposal.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CongratulationsMarriedTo), Info.Name), ChatType.System);
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CongratulationsMarriedTo), MarriageProposal.Info.Name), ChatType.System);
+            MarriageProposal.ReceiveChat(LanguageMgr.Get("CongratulationsMarriedTo", Info.Name), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("CongratulationsMarriedTo", MarriageProposal.Info.Name), ChatType.System);
 
             MarriageProposal = null;
         }
@@ -324,7 +324,7 @@ namespace Server.MirObjects
 
             if (Info.Married == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNotMarried), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouNotMarried"), ChatType.System);
                 return;
             }
 
@@ -346,7 +346,7 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceLoverToDivorce), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FaceLoverToDivorce"), ChatType.System);
                 return;
             }
 
@@ -354,31 +354,31 @@ namespace Server.MirObjects
             {
                 if (!Functions.FacingEachOther(Direction, CurrentLocation, player.Direction, player.CurrentLocation))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceLoverToDivorce), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("FaceLoverToDivorce"), ChatType.System);
                     return;
                 }
 
                 if (player == this)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CantDivorceSelf), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CantDivorceSelf"), ChatType.System);
                     return;
                 }
 
                 if (player.Dead || Dead)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CantDivorceDeadPlayer), ChatType.System); //GOT TO HERE, NEED TO KEEP WORKING ON IT.
+                    ReceiveChat(LanguageMgr.Get("CantDivorceDeadPlayer"), ChatType.System); //GOT TO HERE, NEED TO KEEP WORKING ON IT.
                     return;
                 }
 
                 if (player.Info.Index != Info.Married)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouNotMarriedTo), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouNotMarriedTo", player.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (!Functions.InRange(player.CurrentLocation, CurrentLocation, Globals.DataRange) || player.CurrentMap != CurrentMap)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NotInDivorceRange), player.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("NotInDivorceRange", player.Info.Name), ChatType.System);
                     return;
                 }
 
@@ -387,7 +387,7 @@ namespace Server.MirObjects
             }
             else
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FaceLoverToDivorce), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("FaceLoverToDivorce"), ChatType.System);
                 return;
             }
         }
@@ -402,14 +402,14 @@ namespace Server.MirObjects
 
             if (!accept)
             {
-                DivorceProposal.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.HasRefusedDivorceYou), Info.Name), ChatType.System);
+                DivorceProposal.ReceiveChat(LanguageMgr.Get("HasRefusedDivorceYou", Info.Name), ChatType.System);
                 DivorceProposal = null;
                 return;
             }
 
             if (Info.Married == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNotRequireDivorce), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouNotRequireDivorce"), ChatType.System);
                 DivorceProposal = null;
                 return;
             }
@@ -430,8 +430,8 @@ namespace Server.MirObjects
                 Enqueue(new S.RefreshItem { Item = Info.Equipment[(int)EquipmentSlot.RingL] });
             }
 
-            DivorceProposal.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouAreDivorced), Info.Name), ChatType.System);
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAreDivorced), ChatType.System);
+            DivorceProposal.ReceiveChat(LanguageMgr.Get("YouAreDivorced", Info.Name), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("YouAreDivorced"), ChatType.System);
 
             GetRelationship(false);
             DivorceProposal.GetRelationship(false);
@@ -458,7 +458,7 @@ namespace Server.MirObjects
                     if (CheckOnline)
                     {
                         player.GetRelationship(false);
-                        player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasComeOnline), Info.Name), ChatType.System);
+                        player.ReceiveChat(LanguageMgr.Get("PlayerHasComeOnline", Info.Name), ChatType.System);
                     }
                 }
             }
@@ -470,7 +470,7 @@ namespace Server.MirObjects
 
             if (lover == null)
             {
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerMarriedIdNotFound), Name, Info.Married));
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerMarriedIdNotFound", Name, Info.Married));
                 return;
             }
 
@@ -478,7 +478,7 @@ namespace Server.MirObjects
             if (player != null)
             {
                 player.Enqueue(new S.LoverUpdate { Name = Info.Name, Date = player.Info.MarriedDate, MapName = "", MarriedDays = (short)(Envir.Now - Info.MarriedDate).TotalDays });
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasGoneOffline), Info.Name), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("PlayerHasGoneOffline", Info.Name), ChatType.System);
             }
         }
 
@@ -490,7 +490,7 @@ namespace Server.MirObjects
         {
             if (Info.Mentor == 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoMentorship), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("NoMentorship"), ChatType.System);
                 return;
             }
 
@@ -500,11 +500,11 @@ namespace Server.MirObjects
             if (force)
             {
                 Info.MentorDate = Envir.Now.AddDays(Settings.MentorLength);
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouHaveMentorshipCooldown), Settings.MentorLength), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouHaveMentorshipCooldown", Settings.MentorLength), ChatType.System);
             }
             else
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MentorshipExpired), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("MentorshipExpired"), ChatType.System);
             }
 
             if (Info.IsMentor)
@@ -537,7 +537,7 @@ namespace Server.MirObjects
 
             if (partnerP != null)
             {
-                partnerP.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MentorshipExpired), ChatType.System);
+                partnerP.ReceiveChat(LanguageMgr.Get("MentorshipExpired"), ChatType.System);
                 partnerP.GetMentor(false);
                 if (partner.IsMentor && partner.MentorExp > 0)
                 {
@@ -564,19 +564,19 @@ namespace Server.MirObjects
         {
             if (Info.Mentor != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAlreadyHaveMentor), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAlreadyHaveMentor"), ChatType.System);
                 return;
             }
 
             if (Info.Name == Name)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCantMentorYourself), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCantMentorYourself"), ChatType.System);
                 return;
             }
 
             if (Info.MentorDate > Envir.Now)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCantStartNewMentorship), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouCantStartNewMentorship"), ChatType.System);
                 return;
             }
 
@@ -584,7 +584,7 @@ namespace Server.MirObjects
 
             if (mentor == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotFindPlayerByName), Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotFindPlayerByName", Name), ChatType.System);
             }
             else
             {
@@ -592,36 +592,36 @@ namespace Server.MirObjects
 
                 if (!mentor.AllowMentor)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerNotAllowMentorRequests), mentor.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerNotAllowMentorRequests", mentor.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (mentor.Info.MentorDate > Envir.Now)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerCantStartMentorshipYet), mentor.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerCantStartMentorshipYet", mentor.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (mentor.Info.Mentor != 0)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerIsAlreadyMentor), mentor.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerIsAlreadyMentor", mentor.Info.Name), ChatType.System);
                     return;
                 }
 
                 if (Info.Class != mentor.Info.Class)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MentoredBySameClass), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("MentoredBySameClass"), ChatType.System);
                     return;
                 }
                 if ((Info.Level + Settings.MentorLevelGap) > mentor.Level)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouCanBeMentoredByHigherLevel), Settings.MentorLevelGap), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouCanBeMentoredByHigherLevel", Settings.MentorLevelGap), ChatType.System);
                     return;
                 }
 
                 mentor.MentorRequest = this;
                 mentor.Enqueue(new S.MentorRequest { Name = Info.Name, Level = Info.Level });
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RequestSent), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("RequestSent"), ChatType.System);
             }
 
         }
@@ -636,14 +636,14 @@ namespace Server.MirObjects
 
             if (!accept)
             {
-                MentorRequest.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerRefusedMentor), Info.Name), ChatType.System);
+                MentorRequest.ReceiveChat(LanguageMgr.Get("PlayerRefusedMentor", Info.Name), ChatType.System);
                 MentorRequest = null;
                 return;
             }
 
             if (Info.Mentor != 0)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAlreadyHaveStudent), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAlreadyHaveStudent"), ChatType.System);
                 return;
             }
 
@@ -652,24 +652,24 @@ namespace Server.MirObjects
 
             if (student == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerNoLongerOnline), student.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerNoLongerOnline", student.Name), ChatType.System);
                 return;
             }
             else
             {
                 if (student.Info.Mentor != 0)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAlreadyHasMentor), student.Info.Name), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PlayerAlreadyHasMentor", student.Info.Name), ChatType.System);
                     return;
                 }
                 if (Info.Class != student.Info.Class)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCanOnlyMentorSameClass), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouCanOnlyMentorSameClass"), ChatType.System);
                     return;
                 }
                 if ((Info.Level - Settings.MentorLevelGap) < student.Level)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouCanMentorBelowLevel), Settings.MentorLevelGap), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("YouCanMentorBelowLevel", Settings.MentorLevelGap), ChatType.System);
                     return;
                 }
 
@@ -680,8 +680,8 @@ namespace Server.MirObjects
                 student.Info.MentorDate = Envir.Now;
                 Info.MentorDate = Envir.Now;
 
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouAreMentorOf), student.Info.Name), ChatType.System);
-                student.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouAreMentoredBy), Info.Name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("YouAreMentorOf", student.Info.Name), ChatType.System);
+                student.ReceiveChat(LanguageMgr.Get("YouAreMentoredBy", Info.Name), ChatType.System);
                 GetMentor(false);
                 student.GetMentor(false);
             }
@@ -704,7 +704,7 @@ namespace Server.MirObjects
                 if (player != null && CheckOnline)
                 {
                     player.GetMentor(false);
-                    player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasComeOnline), Info.Name), ChatType.System);
+                    player.ReceiveChat(LanguageMgr.Get("PlayerHasComeOnline", Info.Name), ChatType.System);
                 }
             }
         }
@@ -717,7 +717,7 @@ namespace Server.MirObjects
 
             if (mentor == null)
             {
-                MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerMentorIdNotFound), Name, Info.Mentor));
+                MessageQueue.EnqueueDebugging(LanguageMgr.Get("PlayerMentorIdNotFound", Name, Info.Mentor));
                 return;
             }
 
@@ -731,7 +731,7 @@ namespace Server.MirObjects
             if (player != null)
             {
                 player.Enqueue(new S.MentorUpdate { Name = Info.Name, Level = Info.Level, Online = false, MenteeEXP = mentor.MentorExp });
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasGoneOffline), Info.Name), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("PlayerHasGoneOffline", Info.Name), ChatType.System);
             }
         }
 

@@ -29,7 +29,7 @@ namespace Client.MirScenes
 
                 KeyEscButton = new MirButton
                 {
-                    Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BtnEsc),
+                    Text = LanguageMgr.Get("BtnEsc"),
                     HoverIndex = 301,
                     Index = 300,
                     Library = Libraries.Title,
@@ -42,7 +42,7 @@ namespace Client.MirScenes
 
                 KeyDelButton = new MirButton
                 {
-                    Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BtnDelete),
+                    Text = LanguageMgr.Get("BtnDelete"),
                     HoverIndex = 304,
                     Index = 303,
                     Library = Libraries.Title,
@@ -55,7 +55,7 @@ namespace Client.MirScenes
 
                 KeyEnterButton = new MirButton
                 {
-                    Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BtnEnter),
+                    Text = LanguageMgr.Get("BtnEnter"),
                     HoverIndex = 307,
                     Index = 306,
                     Library = Libraries.Title,
@@ -74,7 +74,7 @@ namespace Client.MirScenes
 
                 KeyRandButton = new MirButton
                 {
-                    Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BtnRandom),
+                    Text = LanguageMgr.Get("BtnRandom"),
                     HoverIndex = 310,
                     Index = 309,
                     Library = Libraries.Title,

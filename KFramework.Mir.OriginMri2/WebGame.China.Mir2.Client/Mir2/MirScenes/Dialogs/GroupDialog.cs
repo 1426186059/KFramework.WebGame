@@ -75,8 +75,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 116,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupSwitch)
-            };
+                Hint = LanguageMgr.Get("GroupSwitch")};
             SwitchButton.Click += (o, e) => Network.Enqueue(new C.SwitchGroup { AllowGroup = !AllowGroup });
 
             AddButton = new MirButton
@@ -88,8 +87,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 135,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupAdd)
-            };
+                Hint = LanguageMgr.Get("GroupAdd")};
             AddButton.Click += (o, e) => AddMember();
 
             DelButton = new MirButton
@@ -101,8 +99,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 138,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupRemove)
-            };
+                Hint = LanguageMgr.Get("GroupRemove")};
             DelButton.Click += (o, e) => DelMember();
 
             BeforeDraw += GroupPanel_BeforeDraw;
@@ -169,12 +166,12 @@ namespace Client.MirScenes.Dialogs
         {
             if (GroupList.Count >= Globals.MaxGroup)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupHasMaxMembers), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("GroupHasMaxMembers"), ChatType.System);
                 return;
             }
             if (GroupList.Count > 0 && GroupList[0] != MapObject.User.Name)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotGroupLeader), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouAreNotGroupLeader"), ChatType.System);
                 return;
             }
 
@@ -185,17 +182,17 @@ namespace Client.MirScenes.Dialogs
         {
             if (GroupList.Count >= Globals.MaxGroup)
             {
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupHasMaxMembers), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("GroupHasMaxMembers"), ChatType.System);
                 return;
             }
             if (GroupList.Count > 0 && GroupList[0] != MapObject.User.Name)
             {
 
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotGroupLeader), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouAreNotGroupLeader"), ChatType.System);
                 return;
             }
 
-            MirInputBox inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupAddEnterName));
+            MirInputBox inputBox = new MirInputBox(LanguageMgr.Get("GroupAddEnterName"));
 
             inputBox.OKButton.Click += (o, e) =>
             {
@@ -209,11 +206,11 @@ namespace Client.MirScenes.Dialogs
             if (GroupList.Count > 0 && GroupList[0] != MapObject.User.Name)
             {
 
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouAreNotGroupLeader), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouAreNotGroupLeader"), ChatType.System);
                 return;
             }
 
-            MirInputBox inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupRemoveEnterName));
+            MirInputBox inputBox = new MirInputBox(LanguageMgr.Get("GroupRemoveEnterName"));
 
             inputBox.OKButton.Click += (o, e) =>
             {

@@ -1171,7 +1171,7 @@ namespace Server.MirObjects
 
             foreach (var player in Envir.Players)
             {
-                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasDroppedItem), Name, item.FriendlyName), ChatType.System);
+                player.ReceiveChat(LanguageMgr.Get("PlayerHasDroppedItem", Name, item.FriendlyName), ChatType.System);
             }
 
             return ob.Drop(Settings.DropRange);
@@ -1349,7 +1349,7 @@ namespace Server.MirObjects
             // Prevent pet from warping into NoPets maps (unless exempt e.g. pickup pets)
             if (Master.CurrentMap.Info.NoPets && !IgnoresNoPetRestriction)
             {
-                Master.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotFollowIntoMapWaitHere, Name), ChatType.System);
+                Master.ReceiveChat(LanguageMgr.Get("CannotFollowIntoMapWaitHere", Name), ChatType.System);
 
                 Frozen = true;
                 Target = null;
@@ -1380,7 +1380,7 @@ namespace Server.MirObjects
                 // Only show message if returning from frozen/waiting state
                 if (wasFrozen)
                 {
-                    Master.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HasReturnedToYourSide,Name), ChatType.System);
+                    Master.ReceiveChat(LanguageMgr.Get("HasReturnedToYourSide",Name), ChatType.System);
                 }
             }
         }

@@ -26,7 +26,7 @@ namespace Server.MirObjects
 
             if (message.Length > 500)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TextExceedsMailLimit), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("TextExceedsMailLimit"), ChatType.System);
                 return;
             }
 
@@ -34,25 +34,25 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFindPlayer), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CouldNotFindPlayer", name), ChatType.System);
                 return;
             }
 
             if (player.Mail.Count > 50)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RecipientsMailboxFull), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("RecipientsMailboxFull"), ChatType.System);
                 return;
             }
 
             if (player.Friends.Any(e => e.Info == Info && e.Blocked))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PlayerNotAcceptingMail), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("PlayerNotAcceptingMail"), ChatType.System);
                 return;
             }
 
             if (Info.Friends.Any(e => e.Info == player && e.Blocked))
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotMailPlayerOnBlacklist), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CannotMailPlayerOnBlacklist"), ChatType.System);
                 return;
             }
 
@@ -79,7 +79,7 @@ namespace Server.MirObjects
 
             if (message.Length > 500)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TextExceedsMailSizeLimit), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("TextExceedsMailSizeLimit"), ChatType.System);
                 return;
             }
 
@@ -87,13 +87,13 @@ namespace Server.MirObjects
 
             if (player == null)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFindPlayer), name), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("CouldNotFindPlayer", name), ChatType.System);
                 return;
             }
 
             if (player.Mail.Count > 50)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RecipientsMailboxFull), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("RecipientsMailboxFull"), ChatType.System);
                 return;
             }
 
@@ -142,20 +142,20 @@ namespace Server.MirObjects
 
                     if (item.Info.Bind.HasFlag(BindMode.DontTrade))
                     {
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotBeMailed), item.FriendlyName), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("CannotBeMailed", item.FriendlyName), ChatType.System);
                         return;
                     }
 
                     if (item.Info.Bind.HasFlag(BindMode.NoMail))
                     {
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotBeMailed), item.FriendlyName), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("CannotBeMailed", item.FriendlyName), ChatType.System);
                         Enqueue(new S.MailSent { Result = -1 });
                         return;
                     }
 
                     if (item.RentalInformation != null && item.RentalInformation.BindingFlags.HasFlag(BindMode.DontTrade))
                     {
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotBeMailed), item.FriendlyName), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("CannotBeMailed", item.FriendlyName), ChatType.System);
                         return;
                     }
 
@@ -206,7 +206,7 @@ namespace Server.MirObjects
 
             if (!mail.Collected)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MailCollectFromPostOffice), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("MailCollectFromPostOffice"), ChatType.System);
                 return;
             }
 
@@ -214,7 +214,7 @@ namespace Server.MirObjects
             {
                 if (!CanGainItems(mail.Items.ToArray()))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotCollectWhenBagFull), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotCollectWhenBagFull"), ChatType.System);
                     return;
                 }
 

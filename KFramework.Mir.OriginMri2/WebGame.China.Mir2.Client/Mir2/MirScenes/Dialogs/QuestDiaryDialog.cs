@@ -71,7 +71,7 @@ namespace Client.MirScenes.Dialogs
 
             Quests = GameScene.User.CurrentQuests;
 
-            _takenQuestsLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TakenQuestsList), Quests.Count, Globals.MaxConcurrentQuests);
+            _takenQuestsLabel.Text = LanguageMgr.Get("TakenQuestsList", Quests.Count, Globals.MaxConcurrentQuests);
 
             var groupedQuests = Quests.GroupBy(d => d.QuestInfo.Group).ToList();
 

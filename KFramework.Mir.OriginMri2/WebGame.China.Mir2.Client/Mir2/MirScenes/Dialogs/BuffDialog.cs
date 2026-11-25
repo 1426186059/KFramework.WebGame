@@ -282,65 +282,65 @@ namespace Client.MirScenes.Dialogs
                 case BuffType.GameMaster:
                     GMOptions options = (GMOptions)buff.Values[0];
 
-                    if (options.HasFlag(GMOptions.GameMaster)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Invisible);
-                    if (options.HasFlag(GMOptions.Superman)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Superman);
-                    if (options.HasFlag(GMOptions.Observer)) text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Observer);
+                    if (options.HasFlag(GMOptions.GameMaster)) text += LanguageMgr.Get("Invisible");
+                    if (options.HasFlag(GMOptions.Superman)) text += LanguageMgr.Get("Superman");
+                    if (options.HasFlag(GMOptions.Observer)) text += LanguageMgr.Get("Observer");
                     break;
                 case BuffType.MentalState:
                     switch (buff.Values[0])
                     {
                         case 0:
-                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AgressiveFullDamageCantShootOverWalls);
+                            text += LanguageMgr.Get("AgressiveFullDamageCantShootOverWalls");
                             break;
                         case 1:
-                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TrickShotMinimalDamage);
+                            text += LanguageMgr.Get("TrickShotMinimalDamage");
                             break;
                         case 2:
-                            text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupModeMediumDamageDontStealAgro);
+                            text += LanguageMgr.Get("GroupModeMediumDamageDontStealAgro");
                             break;
                     }
                     break;
                 case BuffType.Hiding:
                 case BuffType.ClearRing:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToManyMonsters);
+                    text += LanguageMgr.Get("InvisibleToManyMonsters");
                     break;
                 case BuffType.MoonLight:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToPlayersAndMonstersAtDistance);
+                    text += LanguageMgr.Get("InvisibleToPlayersAndMonstersAtDistance");
                     break;
                 case BuffType.EnergyShield:
                     overridestats = true;
-                    text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ChanceGainHpWhenAttacked), buff.Stats[Stat.EnergyShieldPercent], buff.Stats[Stat.EnergyShieldHPGain]);
+                    text += LanguageMgr.Get("ChanceGainHpWhenAttacked", buff.Stats[Stat.EnergyShieldPercent], buff.Stats[Stat.EnergyShieldHPGain]);
                     break;
                 case BuffType.DarkBody:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InvisibleToManyMonstersAbleToMove);
+                    text += LanguageMgr.Get("InvisibleToManyMonstersAbleToMove");
                     break;
                 case BuffType.VampireShot:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GivesVampiricAbility);
+                    text += LanguageMgr.Get("GivesVampiricAbility");
                     break;
                 case BuffType.PoisonShot:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GivesPoisonAbility);
+                    text += LanguageMgr.Get("GivesPoisonAbility");
                     break;
                 case BuffType.Concentration:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.IncreaseElementExtractionChance);
+                    text += LanguageMgr.Get("IncreaseElementExtractionChance");
                     break;
                 case BuffType.MagicBooster:
                     overridestats = true;
-                    text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.IncreaseMcAndConsumption), buff.Stats[Stat.MinMC], buff.Stats[Stat.MaxMC], buff.Stats[Stat.ManaPenaltyPercent]);
+                    text += LanguageMgr.Get("IncreaseMcAndConsumption", buff.Stats[Stat.MinMC], buff.Stats[Stat.MaxMC], buff.Stats[Stat.ManaPenaltyPercent]);
                     break;
                 case BuffType.Transform:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DisguisesYourAppearance);
+                    text += LanguageMgr.Get("DisguisesYourAppearance");
                     break;
                 case BuffType.Mentee:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LearnSkillPointsTwiceAsQuick);
+                    text += LanguageMgr.Get("LearnSkillPointsTwiceAsQuick");
                     break;
                 case BuffType.Guild:
                     text += GameScene.Scene.GuildDialog.ActiveStats;
                     break;
                 case BuffType.Blindness:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReducesVisibility);
+                    text += LanguageMgr.Get("ReducesVisibility");
                     break;
                 case BuffType.Newbie:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GuildMemberBoost);
+                    text += LanguageMgr.Get("GuildMemberBoost");
                     break;
             }
 
@@ -348,7 +348,7 @@ namespace Client.MirScenes.Dialogs
             {
                 foreach (var val in buff.Stats.Values)
                 {
-                    var c = val.Value < 0 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Decreases) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Increases);
+                    var c = val.Value < 0 ? LanguageMgr.Get("Decreases"): LanguageMgr.Get("Increases");
                     var strKey = val.Key.ToLocalizedString();
 
                     var sign = "";
@@ -358,7 +358,7 @@ namespace Client.MirScenes.Dialogs
                     else if (val.Key.ToString().Contains("Multiplier"))
                         sign = "x";
 
-                    var txt = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BuffEffect), c, strKey, val.Value, sign);
+                    var txt = LanguageMgr.Get("BuffEffect", c, strKey, val.Value, sign);
 
                     text += txt;
                 }
@@ -366,25 +366,25 @@ namespace Client.MirScenes.Dialogs
 
             if (buff.Paused)
             {
-                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpirePaused);
+                text += LanguageMgr.Get("ExpirePaused");
             }
             else if (buff.Infinite)
             {
-                text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExpireNever);
+                text += LanguageMgr.Get("ExpireNever");
             }
             else
             {
-                text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.Expire), Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
+                text += LanguageMgr.Get("Expire", Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
             }
 
-            if (!string.IsNullOrEmpty(buff.Caster)) text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CasterName), buff.Caster);
+            if (!string.IsNullOrEmpty(buff.Caster)) text += LanguageMgr.Get("CasterName", buff.Caster);
 
             return text;
         }
 
         private string CombinedBuffText()
         {
-            string text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ActiveBuffs);
+            string text = LanguageMgr.Get("ActiveBuffs");
             var stats = new Stats();
 
             for (var i = 0; i < _buffList.Count; i++)
@@ -396,7 +396,7 @@ namespace Client.MirScenes.Dialogs
 
             foreach (var val in stats.Values)
             {
-                var c = val.Value < 0 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Decreases) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Increases);
+                var c = val.Value < 0 ? LanguageMgr.Get("Decreases"): LanguageMgr.Get("Increases");
                 var strKey = val.Key.ToLocalizedString();
 
                 var sign = "";
@@ -406,7 +406,7 @@ namespace Client.MirScenes.Dialogs
                 else if (val.Key.ToString().Contains("Multiplier"))
                     sign = "x";
 
-                var txt = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.BuffEffect), c, strKey, val.Value, sign);;
+                var txt = LanguageMgr.Get("BuffEffect", c, strKey, val.Value, sign);;
 
                 text += txt;
             }
@@ -648,61 +648,61 @@ namespace Client.MirScenes.Dialogs
                 case PoisonType.Green:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
+                        var tickName = tick > 1 ? LanguageMgr.Get("Seconds"): LanguageMgr.Get("Second");
 
-                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ReceiveDamageEveryTick), buff.Value, tick, tickName);
+                        text += LanguageMgr.Get("ReceiveDamageEveryTick", buff.Value, tick, tickName);
                     }
                     break;
                 case PoisonType.Red:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
+                        var tickName = tick > 1 ? LanguageMgr.Get("Seconds"): LanguageMgr.Get("Second");
 
-                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ReducesArmourRatePerTick), tick, tickName);
+                        text += LanguageMgr.Get("ReducesArmourRatePerTick", tick, tickName);
                     }
                     break;
                 case PoisonType.Slow:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReducesMovementSpeed);
+                    text += LanguageMgr.Get("ReducesMovementSpeed");
                     break;
                 case PoisonType.Frozen:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsCastingMovingAttacking);
+                    text += LanguageMgr.Get("PreventsCastingMovingAttacking");
                     break;
                 case PoisonType.Stun:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
+                        var tickName = tick > 1 ? LanguageMgr.Get("Seconds"): LanguageMgr.Get("Second");
 
-                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.DamageReceivedIncrease), tick, tickName);
+                        text += LanguageMgr.Get("DamageReceivedIncrease", tick, tickName);
                     }
                     break;
                 case PoisonType.Paralysis:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsMoveAndAttack);
+                    text += LanguageMgr.Get("PreventsMoveAndAttack");
                     break;
                 case PoisonType.DelayedExplosion:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TickingTimeBomb);
+                    text += LanguageMgr.Get("TickingTimeBomb");
                     break;
                 case PoisonType.Bleeding:
                     {
                         var tick = buff.TickSpeed / 1000;
-                        var tickName = tick > 1 ? GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Seconds) : GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Second);
+                        var tickName = tick > 1 ? LanguageMgr.Get("Seconds"): LanguageMgr.Get("Second");
 
-                        text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RecieveDamageEveryTime), buff.Value, tick, tickName);
+                        text += LanguageMgr.Get("RecieveDamageEveryTime", buff.Value, tick, tickName);
                     }
                     break;
                 case PoisonType.LRParalysis:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsMoveAttackCancelOnHit);
+                    text += LanguageMgr.Get("PreventsMoveAttackCancelOnHit");
                     break;
                 case PoisonType.Blindness:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CausesTemporaryBlindness);
+                    text += LanguageMgr.Get("CausesTemporaryBlindness");
                     break;
                 case PoisonType.Dazed:
-                    text += GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PreventsAttacking);
+                    text += LanguageMgr.Get("PreventsAttacking");
                     break;
             }
 
-            text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.Expire), Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
+            text += LanguageMgr.Get("Expire", Functions.PrintTimeSpanFromSeconds(Math.Round((buff.ExpireTime - CMain.Time) / 1000D)));
 
-            if (!string.IsNullOrEmpty(buff.Caster)) text += GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CasterName), buff.Caster);
+            if (!string.IsNullOrEmpty(buff.Caster)) text += LanguageMgr.Get("CasterName", buff.Caster);
 
             return text;
         }
@@ -886,7 +886,7 @@ namespace Client.MirScenes.Dialogs
 
         private string CombinedBuffText()
         {
-            string text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ActivePoisons);
+            string text = LanguageMgr.Get("ActivePoisons");
 
             return text;
         }

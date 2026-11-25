@@ -1906,17 +1906,17 @@ namespace Server.MirNetwork
             {
                 Player.AllowMarriage = !Player.AllowMarriage;
                 if (Player.AllowMarriage)
-                    Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAllowMarriageRequests), ChatType.System);
+                    Player.ReceiveChat(LanguageMgr.Get("YouAllowMarriageRequests"), ChatType.System);
                 else
-                    Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouBlockMarriageRequests), ChatType.System);
+                    Player.ReceiveChat(LanguageMgr.Get("YouBlockMarriageRequests"), ChatType.System);
             }
             else
             {
                 Player.AllowLoverRecall = !Player.AllowLoverRecall;
                 if (Player.AllowLoverRecall)
-                    Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouAllowRecallFromLover), ChatType.System);
+                    Player.ReceiveChat(LanguageMgr.Get("YouAllowRecallFromLover"), ChatType.System);
                 else
-                    Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouBlockRecallFromLover), ChatType.System);
+                    Player.ReceiveChat(LanguageMgr.Get("YouBlockRecallFromLover"), ChatType.System);
             }
         }
 
@@ -1954,9 +1954,9 @@ namespace Server.MirNetwork
 
                 Player.AllowMentor = !Player.AllowMentor;
                 if (Player.AllowMentor)
-                Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.AllowingMentorRequests), ChatType.System);
+                Player.ReceiveChat(LanguageMgr.Get("AllowingMentorRequests"), ChatType.System);
                 else
-                    Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.BlockingMentorRequests), ChatType.System);
+                    Player.ReceiveChat(LanguageMgr.Get("BlockingMentorRequests"), ChatType.System);
         }
 
         private void CancelMentor(C.CancelMentor p)
@@ -2062,7 +2062,7 @@ namespace Server.MirNetwork
                 return;
             }
 
-            Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ReincarnationFailed), ChatType.System);
+            Player.ReceiveChat(LanguageMgr.Get("ReincarnationFailed"), ChatType.System);
         }
 
         private void CancelReincarnation()

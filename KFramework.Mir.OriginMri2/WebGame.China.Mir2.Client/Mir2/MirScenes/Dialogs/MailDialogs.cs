@@ -44,7 +44,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleTypeLabel = new MirLabel
             {
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Type),
+                Text = LanguageMgr.Get("Type"),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
@@ -54,7 +54,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleSenderLabel = new MirLabel
             {
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sender),
+                Text = LanguageMgr.Get("Sender"),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
@@ -64,7 +64,7 @@ namespace Client.MirScenes.Dialogs
 
             TitleMessageLabel = new MirLabel
             {
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Message),
+                Text = LanguageMgr.Get("Message"),
                 Parent = this,
                 Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
@@ -159,11 +159,10 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(75, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Send)
-            };
+                Hint = LanguageMgr.Get("Send")};
             SendButton.Click += (o, e) =>
                 {
-                    MirInputBox inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EnterMailToName));
+                    MirInputBox inputBox = new MirInputBox(LanguageMgr.Get("EnterMailToName"));
 
                     inputBox.OKButton.Click += (o1, e1) =>
                     {
@@ -185,8 +184,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(102, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Reply)
-            };
+                Hint = LanguageMgr.Get("Reply")};
             ReplyButton.Click += (o, e) =>
             {
                 if (SelectedMail == null) return;
@@ -203,8 +201,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(129, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Read)
-            };
+                Hint = LanguageMgr.Get("Read")};
             ReadButton.Click += (o, e) =>
             {
                 if (SelectedMail == null) return;
@@ -228,15 +225,14 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(156, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Delete)
-            };
+                Hint = LanguageMgr.Get("Delete")};
             DeleteButton.Click += (o, e) =>
             {
                 if (SelectedMail == null || SelectedMail.Locked) return;
 
                 if (SelectedMail.Items.Count > 0 || SelectedMail.Gold > 0)
                 {
-                    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ParcelContainsItemsOrGoldDeleteConfirm), MirMessageBoxButtons.YesNo);
+                    MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("ParcelContainsItemsOrGoldDeleteConfirm"), MirMessageBoxButtons.YesNo);
 
                     messageBox.YesButton.Click += (o1, e1) =>
                     {
@@ -262,7 +258,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(183, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BlockList),
+                Hint = LanguageMgr.Get("BlockList"),
                 GrayScale = true,
                 Enabled = false
             };
@@ -276,7 +272,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(210, 414),
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ReportBug),
+                Hint = LanguageMgr.Get("ReportBug"),
                 GrayScale = true,
                 Enabled = false
             };
@@ -807,7 +803,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (GameScene.SelectedCell == null && GameScene.Gold > 0)
                 {
-                    MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SendAmount), 116, GameScene.Gold);
+                    MirAmountBox amountBox = new MirAmountBox(LanguageMgr.Get("SendAmount"), 116, GameScene.Gold);
 
                     amountBox.OKButton.Click += (c, a) =>
                     {

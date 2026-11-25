@@ -30,15 +30,15 @@ namespace Client.MirScenes.Dialogs
         public MirGender Gender;
 
 
-        public readonly string WarriorDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WarriorsDescription);
+        public readonly string WarriorDescription = LanguageMgr.Get("WarriorsDescription");
 
-        public readonly string WizardDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WizardsDescription);
+        public readonly string WizardDescription = LanguageMgr.Get("WizardsDescription");
 
-        public readonly string TaoistDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.TaoistsDescription);
+        public readonly string TaoistDescription = LanguageMgr.Get("TaoistsDescription");
 
-        public readonly string AssassinDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssassinsDescription);
+        public readonly string AssassinDescription = LanguageMgr.Get("AssassinsDescription");
 
-        public readonly string ArcherDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ArchersDescription);
+        public readonly string ArcherDescription = LanguageMgr.Get("ArchersDescription");
 
 
         public NewCharacterDialog()

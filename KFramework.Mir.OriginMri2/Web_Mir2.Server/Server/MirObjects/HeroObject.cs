@@ -364,11 +364,11 @@ namespace Server.MirObjects
                         case 2: //MysteryWater
                             if (UnlockCurse)
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ReincarnationFailed), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("ReincarnationFailed"), ChatType.System);
                                 Owner.Enqueue(p);
                                 return;
                             }
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouCanUnequipCursedItem), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("YouCanUnequipCursedItem"), ChatType.System);
                             UnlockCurse = true;
                             break;
                         case 3: //Buff
@@ -445,7 +445,7 @@ namespace Server.MirObjects
                             temp.CurrentDura = (ushort)Math.Min(temp.MaxDura, temp.CurrentDura + 5000);
                             temp.DuraChanged = false;
 
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroWeaponPartiallyRepaired), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("HeroWeaponPartiallyRepaired"), ChatType.System);
                             Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
                             break;
                         case 5: //WarGodOil
@@ -463,13 +463,13 @@ namespace Server.MirObjects
                             temp.CurrentDura = temp.MaxDura;
                             temp.DuraChanged = false;
 
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroWeaponRepaired), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("HeroWeaponRepaired"), ChatType.System);
                             Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
                             break;
                         case 6: //ResurrectionScroll
                             if (CurrentMap.Info.NoReincarnation)
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotUseOnThisMap), ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("CannotUseOnThisMap"), ChatType.System);
                                 Owner.Enqueue(p);
                                 return;
                             }
@@ -482,13 +482,12 @@ namespace Server.MirObjects
                         case 15: //Increase Hero inventory
                             if (Info.Inventory.Length >= 42)
                             {
-                                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroInventoryMax)
-                                    , ChatType.System);
+                                ReceiveChat(LanguageMgr.Get("HeroInventoryMax"), ChatType.System);
                                 Owner.Enqueue(p);
                                 return;
                             }
                             Enqueue(new S.ResizeInventory { Size = Info.ResizeInventory() });
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroInventoryIncreased), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("HeroInventoryIncreased"), ChatType.System);
                             Owner.Enqueue(p);
                             break;
                     }
@@ -526,7 +525,7 @@ namespace Server.MirObjects
                     temp.CurrentDura = (ushort)Math.Min(temp.MaxDura, temp.CurrentDura + item.CurrentDura);
                     temp.DuraChanged = false;
 
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroMountFed), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("HeroMountFed"), ChatType.System);
                     Owner.Enqueue(new S.ItemRepaired { UniqueID = temp.UniqueID, MaxDura = temp.MaxDura, CurrentDura = temp.CurrentDura });
 
                     RefreshStats();
@@ -567,7 +566,7 @@ namespace Server.MirObjects
                     {
                         if (Pets.Count(t => !t.Dead && t.Race != ObjectType.Creature) >= Globals.MaxPets)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MaximumPetsReached), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("MaximumPetsReached"), ChatType.System);
                             Owner.Enqueue(p);
                             return;
                         }
@@ -584,7 +583,7 @@ namespace Server.MirObjects
                         var con = CurrentMap.GetConquest(CurrentLocation);
                         if (con == null)
                         {
-                            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MonsterOnlySpawnDuringConquest), monsterInfo.GameName), ChatType.System);
+                            ReceiveChat(LanguageMgr.Get("MonsterOnlySpawnDuringConquest", monsterInfo.GameName), ChatType.System);
                             Owner.Enqueue(p);
                             return;
                         }
@@ -628,7 +627,7 @@ namespace Server.MirObjects
                     item.CurrentDura = (ushort)(item.CurrentDura - 1000);
                     Enqueue(new S.DuraChanged { UniqueID = item.UniqueID, CurrentDura = item.CurrentDura });
                     RefreshStats();
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroSecondChanceLife), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("HeroSecondChanceLife"), ChatType.System);
                     return;
                 }
             }

@@ -99,11 +99,11 @@ namespace Server.MirObjects
             Connection.Stage = GameStage.Game;
 
             Enqueue(new S.StartGame { Result = 4, Resolution = Settings.AllowedResolution });
-            ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.Welcome), GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.GameName)), ChatType.System);
+            ReceiveChat(LanguageMgr.Get("Welcome", LanguageMgr.Get("GameName")), ChatType.System);
 
             if (Settings.TestServer)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.GameIsTestMode), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("GameIsTestMode"), ChatType.System);
                 Chat("@GAMEMASTER");
             }
 
@@ -123,7 +123,7 @@ namespace Server.MirObjects
                 if (MyGuild == null)
                 {
                     Info.GuildIndex = -1;
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RemoveGuild), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("RemoveGuild"), ChatType.System);
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace Server.MirObjects
                     {
                         MyGuild = null;
                         Info.GuildIndex = -1;
-                        ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.RemoveGuild), ChatType.System);
+                        ReceiveChat(LanguageMgr.Get("RemoveGuild"), ChatType.System);
                     }
                 }
             }
@@ -299,7 +299,7 @@ namespace Server.MirObjects
 
             if (Info.Mail.Count > Settings.MailCapacity)
             {
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MailOverflowing), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("MailOverflowing"), ChatType.System);
             }
 
             Report.Connected(Connection.IPAddress);
@@ -436,7 +436,7 @@ namespace Server.MirObjects
                 int have = GroupMembers?.Count ?? 0;
                 if (have < required)
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MapGroupRequirement, required), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("MapGroupRequirement", required), ChatType.System);
                     return false;
                 }
             }
@@ -484,7 +484,7 @@ namespace Server.MirObjects
             // NoGroup: solo-only maps
             if (CurrentMap.Info.NoGroup && GroupMembers != null)
             {
-                DisbandGroup(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.GroupingDisabledOnMap));
+                DisbandGroup(LanguageMgr.Get("GroupingDisabledOnMap"));
             }
 
             // NoPets: freeze combat pets while allowing pickup creatures to keep working
@@ -506,7 +506,7 @@ namespace Server.MirObjects
                 }
 
                 if (restrictedPetFound)
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.PetsNotAllowedOnMap), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("PetsNotAllowedOnMap"), ChatType.System);
             }
 
             else
@@ -526,14 +526,14 @@ namespace Server.MirObjects
             {
                 IntelligentCreatureType dismissedType = SummonedCreatureType;
                 UnSummonIntelligentCreature(dismissedType);
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.IntelligentCreaturesNotAllowedOnMap), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("IntelligentCreaturesNotAllowedOnMap"), ChatType.System);
             }
 
             // NoHero: despawn on entry
             if (CurrentMap.Info.NoHero && Hero != null)
             {
                 DespawnHero();
-                ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.HeroesNotAllowedOnMap), ChatType.System);
+                ReceiveChat(LanguageMgr.Get("HeroesNotAllowedOnMap"), ChatType.System);
 
                 if (Hero != null && Envir.Heroes.Contains(Hero))
                     Envir.Heroes.Remove(Hero);

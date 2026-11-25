@@ -264,7 +264,7 @@ namespace Server.MirEnvir
                 if (account.WrongPasswordCount++ >= 5)
                 {
                     account.Banned = true;
-                    account.BanReason = GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TooManyWrongLoginAttempts);
+                    account.BanReason = LanguageMgr.Get("TooManyWrongLoginAttempts");
                     account.ExpiryDate = Now.AddMinutes(2);
 
                     c.Enqueue(new ServerPackets.LoginBanned
@@ -342,7 +342,7 @@ namespace Server.MirEnvir
                 if (account.WrongPasswordCount++ >= 5)
                 {
                     account.Banned = true;
-                    account.BanReason = GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TooManyWrongLoginAttempts);
+                    account.BanReason = LanguageMgr.Get("TooManyWrongLoginAttempts");
                     account.ExpiryDate = Now.AddMinutes(2);
                     return 5;
                 }

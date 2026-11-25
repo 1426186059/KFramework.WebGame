@@ -43,7 +43,7 @@ namespace Client.MirScenes.Dialogs
 
             PageLabel = new MirLabel
             {
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.KeyboardSettings),
+                Text = LanguageMgr.Get("KeyboardSettings"),
                 Font = new Font(Settings.FontName, 8F + 2, KFramework.MonoGame.FontStyle.Bold),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
@@ -161,7 +161,7 @@ namespace Client.MirScenes.Dialogs
 
                 UpdateText();
 
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.KeyboardSettingsResetDefault), MirMessageBoxButtons.OK);
+                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("KeyboardSettingsResetDefault"), MirMessageBoxButtons.OK);
                 messageBox.Show();
             };
 
@@ -193,8 +193,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(120, 404),
                 AutoSize = true,
-                Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssignRuleStrict)
-            };
+                Text = LanguageMgr.Get("AssignRuleStrict")};
 
             UpdateText();
         }
@@ -205,8 +204,8 @@ namespace Client.MirScenes.Dialogs
 
             EnforceButtonChecked.Visible = Enforce;
 
-            if (Enforce) EnforceButtonLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssignRuleStrict);
-            else EnforceButtonLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AssignRuleRelaxed);
+            if (Enforce) EnforceButtonLabel.Text = LanguageMgr.Get("AssignRuleStrict");
+            else EnforceButtonLabel.Text = LanguageMgr.Get("AssignRuleRelaxed");
         }
 
         public void UpdateText()

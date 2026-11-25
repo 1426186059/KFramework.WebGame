@@ -76,7 +76,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Sound = SoundList.ButtonA,
             };
-            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Mounts));
+            HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(LanguageMgr.Get("Mounts"));
 
             MountImage = new MirAnimatedControl
             {
@@ -219,7 +219,7 @@ namespace Client.MirScenes.Dialogs
                 if (item != null)
                 {
                     MountName.Text = item.FriendlyName;
-                    MountLoyalty.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LoyaltyProgress), item.CurrentDura, item.MaxDura);
+                    MountLoyalty.Text = LanguageMgr.Get("LoyaltyProgress", item.CurrentDura, item.MaxDura);
                 }
             }
 
@@ -243,7 +243,7 @@ namespace Client.MirScenes.Dialogs
             if (Visible) return;
             if (GameScene.User.MountType < 0)
             {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NoMount), MirMessageBoxButtons.OK);
+                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("NoMount"), MirMessageBoxButtons.OK);
                 messageBox.Show();
                 return;
             }

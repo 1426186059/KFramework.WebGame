@@ -279,7 +279,7 @@ namespace Server.MirObjects
 
                 if (script.Types.Count != 0 && !script.Types.Contains(temp.Info.Type))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotSellItemHere), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotSellItemHere"), ChatType.System);
                     Enqueue(p);
                     return;
                 }
@@ -357,7 +357,7 @@ namespace Server.MirObjects
 
                 if ((temp.Info.Bind.HasFlag(BindMode.DontRepair)) || (temp.Info.Bind.HasFlag(BindMode.NoSRepair) && special))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotRepairItem), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotRepairItem"), ChatType.System);
                     return;
                 }
 
@@ -365,7 +365,7 @@ namespace Server.MirObjects
 
                 if (script.Types.Count != 0 && !script.Types.Contains(temp.Info.Type))
                 {
-                    ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.CannotRepairItemHere), ChatType.System);
+                    ReceiveChat(LanguageMgr.Get("CannotRepairItemHere"), ChatType.System);
                     return;
                 }
 
@@ -657,7 +657,7 @@ namespace Server.MirObjects
 
             Enqueue(new S.NPCMarket { Listings = clientListings, Pages = (Search.Count - 1) / 10 + 1, UserMode = UserMatch });
 
-            MessageQueue.EnqueueDebugging(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MsToMatchItems), Envir.Stopwatch.ElapsedMilliseconds - start, MarketPanelType == MarketPanelType.GameShop ? Envir.GameShopList.Count : (UserMatch ? Account.Auctions.Count : Envir.Auctions.Count)));
+            MessageQueue.EnqueueDebugging(LanguageMgr.Get("MsToMatchItems", Envir.Stopwatch.ElapsedMilliseconds - start, MarketPanelType == MarketPanelType.GameShop ? Envir.GameShopList.Count : (UserMatch ? Account.Auctions.Count : Envir.Auctions.Count)));
         }
 
         public void MarketSearch(string match, ItemType type)
@@ -717,7 +717,7 @@ namespace Server.MirObjects
 
                     Info.Credit -= auction.Price;
                     GainItem(item);
-                    Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.BoughtItemForCredit), auction.Item.FriendlyName, auction.Price) });
+                    Enqueue(new S.MarketSuccess { Message = LanguageMgr.Get("BoughtItemForCredit", auction.Item.FriendlyName, auction.Price) });
                     MarketSearch(MatchName, MatchType);
 
                     return;
@@ -788,8 +788,8 @@ namespace Server.MirObjects
                             Enqueue(new S.LoseGold { Gold = auction.Price });
                             GainItem(auction.Item);
 
-                            Envir.MessageAccount(auction.SellerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SoldItemForGold), auction.Item.FriendlyName, auction.Price), ChatType.System);
-                            Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.BoughtItemForGold), auction.Item.FriendlyName, auction.Price) });
+                            Envir.MessageAccount(auction.SellerInfo.AccountInfo, LanguageMgr.Get("SoldItemForGold", auction.Item.FriendlyName, auction.Price), ChatType.System);
+                            Enqueue(new S.MarketSuccess { Message = LanguageMgr.Get("BoughtItemForGold", auction.Item.FriendlyName, auction.Price) });
                             MarketSearch(MatchName, MatchType);
                         }
                         else
@@ -802,7 +802,7 @@ namespace Server.MirObjects
 
                             if (auction.CurrentBuyerInfo != null)
                             {
-                                string message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.OutbidRefundGold), auction.Item.FriendlyName, auction.CurrentBid);
+                                string message = LanguageMgr.Get("OutbidRefundGold", auction.Item.FriendlyName, auction.CurrentBid);
 
                                 Envir.MailCharacter(auction.CurrentBuyerInfo, gold: auction.CurrentBid, customMessage: message);
                             }
@@ -814,8 +814,8 @@ namespace Server.MirObjects
                             Info.Gold -= bidPrice;
                             Enqueue(new S.LoseGold { Gold = bidPrice });
 
-                            Envir.MessageAccount(auction.SellerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SomeoneBidGoldForItem), auction.Item.FriendlyName, auction.CurrentBid), ChatType.System);
-                            Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouBidGoldForItem), auction.Item.FriendlyName, auction.CurrentBid) });
+                            Envir.MessageAccount(auction.SellerInfo.AccountInfo, LanguageMgr.Get("SomeoneBidGoldForItem", auction.Item.FriendlyName, auction.CurrentBid), ChatType.System);
+                            Enqueue(new S.MarketSuccess { Message = LanguageMgr.Get("YouBidGoldForItem", auction.Item.FriendlyName, auction.CurrentBid) });
                             MarketSearch(MatchName, MatchType);
                         }
 
@@ -886,15 +886,15 @@ namespace Server.MirObjects
 
                     auction.Sold = true;
 
-                    string message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouWonItemForGold), auction.Item.FriendlyName, auction.CurrentBid);
+                    string message = LanguageMgr.Get("YouWonItemForGold", auction.Item.FriendlyName, auction.CurrentBid);
 
                     Envir.MailCharacter(auction.CurrentBuyerInfo, item: auction.Item, customMessage: message);
-                    Envir.MessageAccount(auction.CurrentBuyerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouBoughtItemForGold), auction.Item.FriendlyName, auction.CurrentBid), ChatType.System);
+                    Envir.MessageAccount(auction.CurrentBuyerInfo.AccountInfo, LanguageMgr.Get("YouBoughtItemForGold", auction.Item.FriendlyName, auction.CurrentBid), ChatType.System);
 
                     Account.Auctions.Remove(auction);
                     Envir.Auctions.Remove(auction);
                     GainGold(gold);
-                    Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouSoldItemGoldEarningsCommission), auction.Item.FriendlyName, cost, gold, cost - gold) });
+                    Enqueue(new S.MarketSuccess { Message = LanguageMgr.Get("YouSoldItemGoldEarningsCommission", auction.Item.FriendlyName, cost, gold, cost - gold) });
                     MarketSearch(MatchName, MatchType);
                     return;
                 }
@@ -936,7 +936,7 @@ namespace Server.MirObjects
 
                         if (auction.CurrentBuyerInfo != null)
                         {
-                            string message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AuctionOutbidRefund), auction.Item.FriendlyName, auction.CurrentBid);
+                            string message = LanguageMgr.Get("AuctionOutbidRefund", auction.Item.FriendlyName, auction.CurrentBid);
 
                             Envir.MailCharacter(auction.CurrentBuyerInfo, gold: auction.CurrentBid, customMessage: message);
                         }
@@ -959,7 +959,7 @@ namespace Server.MirObjects
                     uint gold = (uint)Math.Max(0, cost - cost * Globals.Commission);
 
                     GainGold(gold);
-                    Enqueue(new S.MarketSuccess { Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SoldItemEarningsCommission), auction.Item.FriendlyName, cost, gold, cost - gold) });
+                    Enqueue(new S.MarketSuccess { Message = LanguageMgr.Get("SoldItemEarningsCommission", auction.Item.FriendlyName, cost, gold, cost - gold) });
                     return true;
                 }
 

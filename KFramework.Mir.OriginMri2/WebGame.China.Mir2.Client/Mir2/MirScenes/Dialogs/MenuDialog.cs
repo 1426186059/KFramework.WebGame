@@ -130,20 +130,20 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 433,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.InviteToGroup),
+                Hint = LanguageMgr.Get("InviteToGroup"),
             };
             GroupButton.Click += (o, e) =>
             {
 
                 if (GroupDialog.GroupList.Count >= Globals.MaxGroup)
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.GroupHasMaxMembers), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("GroupHasMaxMembers"), ChatType.System);
                     return;
                 }
                 if (GroupDialog.GroupList.Count > 0 && GroupDialog.GroupList[0] != MapObject.User.Name)
                 {
 
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouNotGroupLeader), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("YouNotGroupLeader"), ChatType.System);
                 }
 
                 Network.Enqueue(new C.AddMember { Name = Name });
@@ -159,7 +159,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 436,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AddToFriendsList),
+                Hint = LanguageMgr.Get("AddToFriendsList"),
             };
             FriendButton.Click += (o, e) =>
             {
@@ -175,7 +175,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 439,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SendMail),
+                Hint = LanguageMgr.Get("SendMail"),
             };
             MailButton.Click += (o, e) => GameScene.Scene.MailComposeLetterDialog.ComposeMail(Name);
 
@@ -188,7 +188,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 525,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Trade),
+                Hint = LanguageMgr.Get("Trade"),
             };
             TradeButton.Click += (o, e) => Network.Enqueue(new C.TradeRequest());
 
@@ -201,7 +201,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Title,
                 Parent = this,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Observe),
+                Hint = LanguageMgr.Get("Observe"),
             };
             ObserveButton.Click += (o, e) =>
             {
@@ -211,7 +211,7 @@ namespace Client.MirScenes.Dialogs
                 }
                 else
                 {
-                    GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.PlayerDisabledObservation), ChatType.System);
+                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("PlayerDisabledObservation"), ChatType.System);
                 }
             };
 
@@ -564,7 +564,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOn.Click += (o, e) =>
             {
                 Settings.HPView = true;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode1), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("HpMpMode1"), ChatType.System);
             };
 
             HPViewOff = new MirButton
@@ -579,7 +579,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOff.Click += (o, e) =>
             {
                 Settings.HPView = false;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode2), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("HpMpMode2"), ChatType.System);
             };
 
             SoundBar = new MirImageControl
@@ -636,7 +636,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOn.Click += (o, e) =>
             {
                 Settings.NewMove = true;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NewMovementStyle), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("NewMovementStyle"), ChatType.System);
             };
 
             NewMoveOff = new MirButton
@@ -651,7 +651,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOff.Click += (o, e) =>
             {
                 Settings.NewMove = false;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OldMovementStyle), ChatType.System);
+                GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("OldMovementStyle"), ChatType.System);
             };
 
             ObserveOn = new MirButton
@@ -880,7 +880,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Title,
                 Location = new Point(3, 12),
                 PressedIndex = 635,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ExitKey), CMain.InputKeys.GetKey(KeybindOptions.Exit))
+                Hint = LanguageMgr.Get("ExitKey", CMain.InputKeys.GetKey(KeybindOptions.Exit))
             };
             ExitButton.Click += (o, e) => GameScene.Scene.QuitGame();
 
@@ -892,7 +892,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Title,
                 Location = new Point(3, 31),
                 PressedIndex = 638,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.LogOutKey), CMain.InputKeys.GetKey(KeybindOptions.Logout))
+                Hint = LanguageMgr.Get("LogOutKey", CMain.InputKeys.GetKey(KeybindOptions.Logout))
             };
             LogOutButton.Click += (o, e) => GameScene.Scene.LogOut();
 
@@ -905,7 +905,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 50),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.HelpKey), CMain.InputKeys.GetKey(KeybindOptions.Help))
+                Hint = LanguageMgr.Get("HelpKey", CMain.InputKeys.GetKey(KeybindOptions.Help))
             };
             HelpButton.Click += (o, e) =>
             {
@@ -923,7 +923,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse,
                 Location = new Point(3, 69),
                 Visible = true,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.KeyboardKeybind), CMain.InputKeys.GetKey(KeybindOptions.Keybind))
+                Hint = LanguageMgr.Get("KeyboardKeybind", CMain.InputKeys.GetKey(KeybindOptions.Keybind))
             };
             KeyboardLayoutButton.Click += (o, e) =>
             {
@@ -940,7 +940,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 88),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                Hint = LanguageMgr.Get("RankingKey", CMain.InputKeys.GetKey(KeybindOptions.Ranking))
                 //Visible = false
             };
             RankingButton.Click += (o, e) =>
@@ -973,7 +973,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse2,
                 Location = new Point(3, 126),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CreaturesKey), CMain.InputKeys.GetKey(KeybindOptions.Creature))
+                Hint = LanguageMgr.Get("CreaturesKey", CMain.InputKeys.GetKey(KeybindOptions.Creature))
             };
             IntelligentCreatureButton.Click += (o, e) =>
             {
@@ -989,7 +989,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 145),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MountKey), CMain.InputKeys.GetKey(KeybindOptions.MountWindow))
+                Hint = LanguageMgr.Get("MountKey", CMain.InputKeys.GetKey(KeybindOptions.MountWindow))
             };
             RideButton.Click += (o, e) =>
             {
@@ -1006,7 +1006,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 164),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FishingKey), CMain.InputKeys.GetKey(KeybindOptions.Fishing))
+                Hint = LanguageMgr.Get("FishingKey", CMain.InputKeys.GetKey(KeybindOptions.Fishing))
             };
             FishingButton.Click += (o, e) =>
             {
@@ -1024,7 +1024,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse,
                 Location = new Point(3, 183),
                 Visible = true,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.FriendsKey), CMain.InputKeys.GetKey(KeybindOptions.Friends))
+                Hint = LanguageMgr.Get("FriendsKey", CMain.InputKeys.GetKey(KeybindOptions.Friends))
             };
             FriendButton.Click += (o, e) =>
             {
@@ -1042,7 +1042,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse,
                 Location = new Point(3, 202),
                 Visible = true,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MentorKey), CMain.InputKeys.GetKey(KeybindOptions.Mentor))
+                Hint = LanguageMgr.Get("MentorKey", CMain.InputKeys.GetKey(KeybindOptions.Mentor))
             };
             MentorButton.Click += (o, e) =>
             {
@@ -1061,7 +1061,7 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse,
                 Location = new Point(3, 221),
                 Visible = true,
-                Hint = string.Format(   GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.RelationshipKey), CMain.InputKeys.GetKey(KeybindOptions.Relationship))
+                Hint = string.Format(   LanguageMgr.Get("RelationshipKey"), CMain.InputKeys.GetKey(KeybindOptions.Relationship))
             };
             RelationshipButton.Click += (o, e) =>
             {
@@ -1078,7 +1078,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 240),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GroupsKey), CMain.InputKeys.GetKey(KeybindOptions.Group))
+                Hint = LanguageMgr.Get("GroupsKey", CMain.InputKeys.GetKey(KeybindOptions.Group))
             };
             GroupButton.Click += (o, e) =>
             {
@@ -1095,7 +1095,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Library = Libraries.Prguse,
                 Location = new Point(3, 259),
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GuildKey), CMain.InputKeys.GetKey(KeybindOptions.Guilds))
+                Hint = LanguageMgr.Get("GuildKey", CMain.InputKeys.GetKey(KeybindOptions.Guilds))
             };
             GuildButton.Click += (o, e) =>
             {
@@ -1128,8 +1128,7 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 2111,
                 PressedIndex = 2112,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DuraPanel)
-            };
+                Hint = LanguageMgr.Get("DuraPanel")};
             Character.Click += (o, e) =>
             {
                 if (GameScene.Scene.CharacterDuraPanel.Visible == true)

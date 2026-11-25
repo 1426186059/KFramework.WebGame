@@ -20,6 +20,7 @@ namespace Shared.Helpers
     [JsonSerializable(typeof(OriginMir2Config4))]
     [JsonSerializable(typeof(OriginMir2Config5))]
     [JsonSerializable(typeof(TextMap))]
+    [JsonSerializable(typeof(Dictionary<string, string>), TypeInfoPropertyName = "LanguageTextDictionary")]
     internal sealed partial class AppJsonContext : JsonSerializerContext
     {
         // Json 源产生器
