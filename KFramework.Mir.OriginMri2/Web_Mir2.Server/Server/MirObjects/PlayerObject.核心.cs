@@ -1,12 +1,9 @@
 // partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
-using System.Drawing;
-using C = ClientPackets;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirNetwork;
+using System.Drawing;
 using S = ServerPackets;
-using System.Text.RegularExpressions;
-using Timer = Server.MirEnvir.Timer;
 
 namespace Server.MirObjects
 {
