@@ -362,6 +362,24 @@ void main()
             CMain.DPSCounter++;
         }
 
+        /// <summary>用调用方提供的材质绘制纹理（如 Mask.Alpha 遮罩材质）。
+        /// 不走 BeginSprite 的全局后效合成，避免自定义 ShaderEffect 被冲掉；同时同步批次字段保证切批正确。</summary>
+        public static void DrawWithMaterial(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.Material material, KFramework.MonoGame.SpriteEffects effects = KFramework.MonoGame.SpriteEffects.None)
+        {
+            if (texture == null || material == null) return;
+            bool sameMaterial = ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, RenderTransform);
+            if (!sameMaterial)
+            {
+                Batch.AutoEndBatch();
+                Batch.Begin(material, KFramework.MonoGame.SpriteSortMode.Deferred, RenderTransform);
+                _batchMaterial = material;
+                _batchTransform = RenderTransform;
+                if (material.Effect != null) _appliedEffectVersion = _effectVersion;
+            }
+            Batch.Draw(texture, destRect, sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
+            CMain.DPSCounter++;
+        }
+
         public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, KFramework.MonoGame.Vector3? position, KFramework.MonoGame.Color color, float opacity)
         {
             Draw(texture, sourceRect, position, color.WithAlpha((byte)(opacity * 255)));

@@ -365,11 +365,13 @@ namespace Client.MirScenes.Dialogs
                 GameScene.Scene.LogOut();
             };
 
+
+
             var mLevel0 = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_22",
-                Location = new Point(this.Size.Width - 225, 135),
+                Location = new Point(this.Size.Width - 250, 115),
                 Parent = this,
                 NotControl = true,
             };
@@ -378,7 +380,7 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_21",
-                Location = new Point(this.Size.Width - 250, 130),
+                Location = new Point(this.Size.Width - 270, 110),
                 Parent = this,
                 NotControl = true,
             };
@@ -387,27 +389,35 @@ namespace Client.MirScenes.Dialogs
             {
                 Size = new Size(50, 22),
                 Parent = this,
-                Location = new Point(this.Size.Width - 218, 135),
+                Location = new Point(this.Size.Width - 240, 116),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 OutLine = true,
                 Font = new Font(Settings.FontName, 9F)
             };
 
-            var mProgressBar00 = new MirImageControl
+            // 原始传奇主界面 img_exp：图集 y_homeUI-sheet#btn_gongneng_25，宽 70，scaleX=经验比例。
+            // 用 MirProgressBar 的 Fill 拉伸同一帧实现，轨道/左右端盖仍用上面的独立图片。
+            ExperienceBar = new MirProgressBar
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "y_h_bg3",
-                Location = new Point(this.Size.Width - 225, 168),
+                Location = new Point(this.Size.Width - 248, 155),
                 Parent = this,
                 NotControl = true,
+                AutoSize = false,
+                Size = new Size(78, 13),
+                Minimum = 0,
+                Maximum = 100,
             };
+            ExperienceBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_25";
+            ExperienceBar.Fill.DrawControlTexture = false;
 
             var mProgressBar0 = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_26",
-                Location = new Point(this.Size.Width - 225, 165),
+                Location = new Point(this.Size.Width - 250, 150),
                 Parent = this,
                 NotControl = true,
             };
@@ -416,90 +426,69 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_24",
-                Location = new Point(this.Size.Width - 250, 160),
+                Location = new Point(this.Size.Width - 270, 145),
                 Parent = this,
                 NotControl = true,
             };
-
-            // 原始传奇主界面 img_exp：图集 y_homeUI-sheet#btn_gongneng_25，宽 70，scaleX=经验比例。
-            // 用 MirProgressBar 的 Fill 拉伸同一帧实现，轨道/左右端盖仍用上面的独立图片。
-            ExperienceBar = new MirProgressBar
-            {
-                Location = new Point(this.Size.Width - 220, 170),
-                Parent = this,
-                AutoSize = false,
-                Size = new Size(70, 15),
-                DrawImage = false,
-                DrawControlTexture = false,
-                NotControl = true,
-                Minimum = 0,
-                Maximum = 100,
-            };
-            ExperienceBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_25";
-            ExperienceBar.Fill.DrawControlTexture = false;
-
+            
             ExperienceLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(this.Size.Width - 218, 165),
-                AutoSize = false,
-                Size = new Size(50, 22),
-                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                NotControl = true,
-                Font = new Font(Settings.FontName, 9F)
-            };
-
-            // 原始传奇 10倍经验点条：img_expMedal = btn_gongneng_28，宽 90；阈值 cm.global[34201]=40。
-            var sexpBg = new MirImageControl
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "y_h_bg2",
-                Location = new Point(this.Size.Width - 225, 202),
-                Parent = this,
-                NotControl = true,
-            };
-            var sexpLeft = new MirImageControl
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_27",
-                Location = new Point(this.Size.Width - 240, 199),
-                Parent = this,
-                NotControl = true,
-            };
-            var sexpRight = new MirImageControl
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_29",
-                Location = new Point(this.Size.Width - 225, 199),
-                Parent = this,
-                NotControl = true,
-            };
-
-            SExpBar = new MirProgressBar
-            {
-                Location = new Point(this.Size.Width - 240, 199),
-                Parent = this,
-                AutoSize = false,
-                Size = new Size(90, 11),
-                DrawImage = false,
-                DrawControlTexture = false,
-                NotControl = true,
-                Minimum = 0,
-                Maximum = 100,
-            };
-            SExpBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_28";
-            SExpBar.Fill.DrawControlTexture = false;
-
-            SExpLabel = new MirLabel
-            {
-                Parent = this,
-                Location = new Point(this.Size.Width - 250, 199),
+                Location = new Point(this.Size.Width - 240, 151),
                 AutoSize = false,
                 Size = new Size(60, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 Font = new Font(Settings.FontName, 9F)
             };
+
+            // 原始传奇 10倍经验点条：img_expMedal = btn_gongneng_28，宽 90；阈值 cm.global[34201]=40。
+            SExpBar = new MirProgressBar
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_bg2",
+                Location = new Point(this.Size.Width - 248, 190),
+                Parent = this,
+                NotControl = true,
+
+                AutoSize = false,
+                Size = new Size(98, 11),
+                Minimum = 0,
+                Maximum = 100,
+            };
+            SExpBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_28";
+            SExpBar.Fill.DrawControlTexture = false;
+            
+            var sexpRight = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_29",
+                Location = new Point(this.Size.Width - 250, 185),
+                Parent = this,
+                NotControl = true,
+            };
+
+            var sexpLeft = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_27",
+                Location = new Point(this.Size.Width - 270, 180),
+                Parent = this,
+                NotControl = true,
+            };
+
+            SExpLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(this.Size.Width - 240, 186),
+                AutoSize = false,
+                Size = new Size(70, 22),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
+                NotControl = true,
+                Font = new Font(Settings.FontName, 9F)
+            };
+
+
 
             SpaceLabel = new MirLabel
             {

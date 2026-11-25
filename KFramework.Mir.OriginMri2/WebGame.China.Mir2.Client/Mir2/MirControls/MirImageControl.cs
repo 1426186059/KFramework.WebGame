@@ -28,6 +28,9 @@ namespace Client.MirControls
         // 默认 false：全局保持 Point 最近邻，文字/精灵锐利；仅立绘这类被放大的小图控件置 true。
         public bool UseUISampler { get; set; } = false;
 
+        // 自定义材质（如 Mask.Alpha 遮罩）：非 null 时本控件图像用它绘制；null = 默认行为。
+        public KFramework.MonoGame.Material Material { get; set; }
+
         // 填充裁剪（类似 Unity Image.fillAmount）：FillAmount<1 时只绘制图像的指定比例部分，不拉伸图像。
         // 用于固定形状（如半月血条）按比例显隐，避免改 Size 把形状压变形。
         public float FillAmount { get; set; } = 1f;
@@ -446,10 +449,18 @@ namespace Client.MirControls
                 var srcRect = new KFramework.MonoGame.Rectangle(0, 0, Texture.Width, Texture.Height);
                 var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
                 var drawBlend = (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState();
-                if (UseUISampler)
+                if (Material != null)
+                {
+                    DXManager.DrawWithMaterial(Texture, srcRect, dstRect, drawColor, Material, FlipEffects);
+                }
+                else if (UseUISampler)
+                {
                     DXManager.DrawWithUISampler(Texture, srcRect, dstRect, drawColor, drawBlend, FlipEffects);
+                }
                 else
+                {
                     DXManager.Draw(Texture, srcRect, dstRect, drawColor, drawBlend, FlipEffects);
+                }
                 return;
             }
 
@@ -521,7 +532,14 @@ namespace Client.MirControls
                         {
                             var sR = new KFramework.MonoGame.Rectangle(srcFull.X + src.X, srcFull.Y + src.Y, src.Width, src.Height);
                             var dR = new KFramework.MonoGame.Rectangle((int)Math.Round(dst.X), (int)Math.Round(dst.Y), (int)Math.Round(dst.Width), (int)Math.Round(dst.Height));
-                            DXManager.Draw(atlasSprite.Texture, sR, dR, drawColor, imgBlend);
+                            if (Material != null)
+                            {
+                                DXManager.DrawWithMaterial(atlasSprite.Texture, sR, dR, drawColor, Material);
+                            }
+                            else
+                            {
+                                DXManager.Draw(atlasSprite.Texture, sR, dR, drawColor, imgBlend);
+                            }
                         });
                     if (GrayScale) DXManager.SetGrayscale(oldGray);
                     return;
@@ -535,7 +553,14 @@ namespace Client.MirControls
                 KFramework.MonoGame.Rectangle dstRect = new KFramework.MonoGame.Rectangle(dstSD.X, dstSD.Y, dstSD.Width, dstSD.Height);
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / 场景烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
-                DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend, FlipEffects);
+                if (Material != null)
+                {
+                    DXManager.DrawWithMaterial(atlasSprite.Texture, srcRect, dstRect, drawColor, Material, FlipEffects);
+                }
+                else
+                {
+                    DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend, FlipEffects);
+                }
 
                 if (GrayScale)
                 {

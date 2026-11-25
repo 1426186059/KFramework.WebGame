@@ -1,3 +1,5 @@
+using Client.MirGraphics;
+
 namespace Client.MirControls
 {
     // 进度条（Unity Slider/ProgressBar 风格）：自身图像作底，内嵌一个 Fill 子控件按百分比拉伸。
@@ -54,6 +56,61 @@ namespace Client.MirControls
         }
 
         public float Percent => _maximum > _minimum ? (_value - _minimum) / (_maximum - _minimum) : 0f;
+
+        /// <summary>遮罩源控件：从其图集帧取 Alpha 图，材质挂到 Fill 上；遮罩随 Fill 按进度一起拉伸。</summary>
+        public MirImageControl Mask { get; private set; }
+        public bool MaskInvert { get; private set; }
+
+        public void SetAlphaMask(MirImageControl maskControl, bool invert = false)
+        {
+            ClearAlphaMask();
+            if (maskControl == null)
+            {
+                return;
+            }
+
+            Mask = maskControl;
+            MaskInvert = invert;
+            maskControl.AtlasLoaded += MaskControl_AtlasLoaded;
+            ApplyMaskFromControl();
+        }
+
+        private void MaskControl_AtlasLoaded(object sender, EventArgs e)
+        {
+            ApplyMaskFromControl();
+        }
+
+        private void ApplyMaskFromControl()
+        {
+            MirImageControl ctrl = Mask;
+            if (ctrl == null || ctrl.AtlasSheet == null || string.IsNullOrEmpty(ctrl.AtlasFrame))
+            {
+                return;
+            }
+            if (!ctrl.AtlasSheet.Frames.TryGetValue(ctrl.AtlasFrame, out var sprite) || sprite == null)
+            {
+                return;
+            }
+
+            var mat = KFramework.MonoGameExtend.Mask.CreateMaterial(DXManager.GDevice, KFramework.MonoGameExtend.Mask.MaskFeature.Alpha);
+            KFramework.MonoGameExtend.Mask.ApplyMask(mat.Effect, sprite.Texture, sprite.SourceRectangle, MaskInvert, true);
+            Fill.Material = mat;
+            Fill.Redraw();
+        }
+
+        public void ClearAlphaMask()
+        {
+            if (Mask != null)
+            {
+                Mask.AtlasLoaded -= MaskControl_AtlasLoaded;
+            }
+            Mask = null;
+            if (Fill != null)
+            {
+                Fill.Material = null;
+                Fill.Redraw();
+            }
+        }
 
         private bool _vertical;
         // true=竖直（从底部向上增长）；false=水平（从左向右）。
@@ -112,8 +169,19 @@ namespace Client.MirControls
             if (!disposing) return;
 
             ValueChanged = null;
-            if (_fill != null && !_fill.IsDisposed)
-                _fill.Dispose();
+            if (Mask != null)
+            {
+                Mask.AtlasLoaded -= MaskControl_AtlasLoaded;
+                Mask = null;
+            }
+            if (_fill != null)
+            {
+                _fill.Material = null;
+                if (!_fill.IsDisposed)
+                {
+                    _fill.Dispose();
+                }
+            }
             _fill = null;
         }
     }
