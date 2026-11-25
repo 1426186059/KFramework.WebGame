@@ -389,21 +389,37 @@ namespace WebGame.Mir2.MonoGame.Client
 
             HintBaseLabel.Visible = true;
 
-            HintTextLabel.Text = MirControl.MouseControl.Hint;
+            if (HintTextLabel.Text != MirControl.MouseControl.Hint)
+            {
+                HintTextLabel.Text = MirControl.MouseControl.Hint;
+            }
+            // AutoSize 的 SizeChanged -> ResizeBaseToText 是异步冒泡的，文本刚换的这一帧
+            // HintBaseLabel.Size 可能还是上一个提示的旧尺寸，用它定位会让提示框跑到屏幕外
+            //（表现为鼠标在部分图标上"看不到提示"）。这里按当前 HintTextLabel 的实际像素宽高重算。
+            ResizeBaseToText(HintBaseLabel, HintTextLabel);
 
-            Point point = MPoint.Add(-HintTextLabel.Size.Width, 20);
+            int hx = MPoint.X + 20;
+            int hy = MPoint.Y + 20;
 
-            if (point.X + HintBaseLabel.Size.Width >= Settings.ScreenWidth)
-                point.X = Settings.ScreenWidth - HintBaseLabel.Size.Width - 1;
-            if (point.Y + HintBaseLabel.Size.Height >= Settings.ScreenHeight)
-                point.Y = Settings.ScreenHeight - HintBaseLabel.Size.Height - 1;
+            if (hx + HintBaseLabel.Size.Width >= Settings.ScreenWidth)
+            {
+                hx = MPoint.X - HintBaseLabel.Size.Width - 10;
+            }
+            if (hy + HintBaseLabel.Size.Height >= Settings.ScreenHeight)
+            {
+                hy = MPoint.Y - HintBaseLabel.Size.Height - 10;
+            }
 
-            if (point.X < 0)
-                point.X = 0;
-            if (point.Y < 0)
-                point.Y = 0;
+            if (hx < 0)
+            {
+                hx = 0;
+            }
+            if (hy < 0)
+            {
+                hy = 0;
+            }
 
-            HintBaseLabel.Location = point;
+            HintBaseLabel.Location = new Point(hx, hy);
         }
 
         private static void ResizeBaseToText(MirControl baseLabel, MirLabel textLabel)
