@@ -458,7 +458,7 @@ namespace Client.MirObjects
             ChatLabel = new MirLabel
             {
                 AutoSize = true,
-                BackColour = CommonColor.Transparent,
+                BackColour = CommonColor.FromArgb(150, 12, 12, 12),
                 ForeColour = CommonColor.DeepSkyBlue,
                 OutLine = true,
                 OutLineColour = CommonColor.Black,
