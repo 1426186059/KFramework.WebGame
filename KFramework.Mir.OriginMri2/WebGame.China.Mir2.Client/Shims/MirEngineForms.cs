@@ -45,13 +45,13 @@ namespace MirEngine
 
         public Color BackColor
         {
-            get => new Color(_inner.BackColor.A, _inner.BackColor.R, _inner.BackColor.G, _inner.BackColor.B);
+            get => _inner.BackColor;
             set => _inner.BackColor = value;
         }
 
         public Color ForeColor
         {
-            get => new Color(_inner.ForeColor.A, _inner.ForeColor.R, _inner.ForeColor.G, _inner.ForeColor.B);
+            get => _inner.ForeColor;
             set => _inner.ForeColor = value;
         }
 
