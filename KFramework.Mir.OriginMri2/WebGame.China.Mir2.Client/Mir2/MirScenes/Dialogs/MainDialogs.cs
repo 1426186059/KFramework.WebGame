@@ -139,55 +139,32 @@ namespace Client.MirScenes.Dialogs
                 PixelDetect = true,
             };
 
-            InventoryButton = new MirButton
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_09",
-                PressedAtlasFrame = "btn_gongneng_10",
-
-                Size = new Size(45, 45),
-                Location = new Point(this.Size.Width - 200, 30),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Hint = LanguageMgr.Get("InventoryKey", CMain.InputKeys.GetKey(KeybindOptions.Inventory))
-            };
-
-            InventoryButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
-            InventoryButton.LabelImage.AtlasFrame = "word_xitong_10";
-            InventoryButton.LabelImage.Size = new Size(25, 14);
-            InventoryButton.LabelImage.Location =
-                InventoryButton.LabelImage.Bottom.Add(new Point(0, 0));
-            InventoryButton.LabelImage.Visible = true;
-
+            InventoryButton = CreateMainButton(
+                "btn_gongneng_09", "btn_gongneng_10", "word_xitong_10",
+                new Point(this.Size.Width - 205, 40),
+                LanguageMgr.Get("InventoryKey", CMain.InputKeys.GetKey(KeybindOptions.Inventory)));
             InventoryButton.Click += (o, e) =>
             {
                 if (GameScene.Scene.InventoryDialog.Visible)
+                {
                     GameScene.Scene.InventoryDialog.Hide();
+                }
                 else
+                {
                     GameScene.Scene.InventoryDialog.Show();
+                }
             };
 
-            CharacterButton = new MirButton
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_07",
-                PressedAtlasFrame = "btn_gongneng_08",
-                Size = new Size(45, 45),
-                Location = new Point(this.Size.Width - 250, 55),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Hint = LanguageMgr.Get("CharacterKey")};
-            CharacterButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
-            CharacterButton.LabelImage.AtlasFrame = "word_xitong_09";
-            CharacterButton.LabelImage.Size = new Size(25, 14);
-            CharacterButton.LabelImage.Location =
-                CharacterButton.LabelImage.Bottom.Add(new Point(0, 0));
-            CharacterButton.LabelImage.Visible = true;
-
+            CharacterButton = CreateMainButton(
+                "btn_gongneng_07", "btn_gongneng_08", "word_xitong_09",
+                new Point(this.Size.Width - 250, 60),
+                LanguageMgr.Get("CharacterKey"));
             CharacterButton.Click += (o, e) =>
             {
                 if (GameScene.Scene.CharacterDialog.Visible && GameScene.Scene.CharacterDialog.CharacterPage.Visible)
+                {
                     GameScene.Scene.CharacterDialog.Hide();
+                }
                 else
                 {
                     GameScene.Scene.CharacterDialog.Show();
@@ -195,24 +172,10 @@ namespace Client.MirScenes.Dialogs
                 }
             };
 
-            SkillButton = new MirButton
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_11",
-                PressedAtlasFrame = "btn_gongneng_12",
-                Size = new Size(45, 45),
-                Location = new Point(this.Size.Width - 150, 50),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Hint = LanguageMgr.Get("SkillsKey", CMain.InputKeys.GetKey(KeybindOptions.Skills))
-            };
-            SkillButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
-            SkillButton.LabelImage.AtlasFrame = "word_xitong_14";
-            SkillButton.LabelImage.Size = new Size(25, 14);
-            SkillButton.LabelImage.Location =
-                SkillButton.LabelImage.Bottom.Add(new Point(0, 0));
-            SkillButton.LabelImage.Visible = true;
-
+            SkillButton = CreateMainButton(
+                "btn_gongneng_11", "btn_gongneng_12", "word_xitong_14",
+                new Point(this.Size.Width - 155, 50),
+                LanguageMgr.Get("SkillsKey", CMain.InputKeys.GetKey(KeybindOptions.Skills)));
             SkillButton.Click += (o, e) =>
             {
                 GameScene.Scene.CharacterSkillDialog.Toggle();
