@@ -8,6 +8,7 @@ namespace Client.MirObjects
         public string Text;
         public Color Colour;
         public int Distance;
+        public long StartTime;
         public long ExpireTime;
         public double Factor;
         public int Offset;
@@ -16,6 +17,7 @@ namespace Client.MirObjects
 
         public Damage(string text, int duration, Color colour, int distance = 50)
         {
+            StartTime = CMain.Time;
             ExpireTime = (long)(CMain.Time + duration);
             Text = text;
             Distance = distance;
@@ -23,7 +25,7 @@ namespace Client.MirObjects
             Colour = colour;
         }
 
-        public void Draw(Point displayLocation)
+        public virtual void Draw(Point displayLocation)
         {
             long timeRemaining = ExpireTime - CMain.Time;
 
