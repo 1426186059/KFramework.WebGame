@@ -388,8 +388,10 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(50, 22),
                 Parent = this,
                 Location = new Point(this.Size.Width - 218, 135),
-                DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
+                OutLine = true,
+                Font = new Font(Settings.FontName, 9F)
             };
 
             var mProgressBar00 = new MirImageControl
@@ -423,10 +425,10 @@ namespace Client.MirScenes.Dialogs
             // 用 MirProgressBar 的 Fill 拉伸同一帧实现，轨道/左右端盖仍用上面的独立图片。
             ExperienceBar = new MirProgressBar
             {
-                Location = new Point(this.Size.Width - 250, 165),
+                Location = new Point(this.Size.Width - 220, 170),
                 Parent = this,
                 AutoSize = false,
-                Size = new Size(70, 11),
+                Size = new Size(70, 15),
                 DrawImage = false,
                 DrawControlTexture = false,
                 NotControl = true,
@@ -439,11 +441,12 @@ namespace Client.MirScenes.Dialogs
             ExperienceLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(this.Size.Width - 250, 165),
+                Location = new Point(this.Size.Width - 218, 165),
                 AutoSize = false,
-                Size = new Size(88, 22),
+                Size = new Size(50, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
+                Font = new Font(Settings.FontName, 9F)
             };
 
             // 原始传奇 10倍经验点条：img_expMedal = btn_gongneng_28，宽 90；阈值 cm.global[34201]=40。
@@ -459,7 +462,7 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_27",
-                Location = new Point(this.Size.Width - 250, 199),
+                Location = new Point(this.Size.Width - 240, 199),
                 Parent = this,
                 NotControl = true,
             };
@@ -474,7 +477,7 @@ namespace Client.MirScenes.Dialogs
 
             SExpBar = new MirProgressBar
             {
-                Location = new Point(this.Size.Width - 250, 199),
+                Location = new Point(this.Size.Width - 240, 199),
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(90, 11),
@@ -492,9 +495,10 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(this.Size.Width - 250, 199),
                 AutoSize = false,
-                Size = new Size(88, 22),
+                Size = new Size(60, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
+                Font = new Font(Settings.FontName, 9F)
             };
 
             SpaceLabel = new MirLabel
@@ -696,24 +700,24 @@ namespace Client.MirScenes.Dialogs
 
         private void UpdateExperienceBar()
         {
-            LevelLabel.Text = User.Level.ToString();
+            LevelLabel.Text = $"{User.Level}级";
 
             double expPercent = User.MaxExperience > 0
                 ? Math.Min(1d, Math.Max(0d, User.Experience / (double)User.MaxExperience))
                 : 0d;
-            int percent = (int)Math.Round(expPercent * 100);
-            ExperienceBar.Value = Math.Min(100, percent);
-            // 原始传奇 getExpPercentText：未满级时最多显示 99%，避免满经验时看起来已经升级。
-            ExperienceLabel.Text = Math.Min(99, percent) + "%";
+
+            float percent = (float)expPercent * 100f;
+            ExperienceBar.Value = percent;
+            ExperienceLabel.Text = Math.Min(99, (int)Math.Round(percent)) + "%";
         }
 
         private void UpdateSExpBar()
         {
             const uint SExpMaxPoints = 40; // cm.global[34201]
-            int sexpPercent = User.SExp >= SExpMaxPoints
-                ? 100
-                : (int)Math.Round(User.SExp * 100d / SExpMaxPoints);
-            SExpBar.Value = Math.Min(100, sexpPercent);
+            float sexpPercent = User.SExp >= SExpMaxPoints
+                ? 100f
+                : (float)User.SExp * 100f / SExpMaxPoints;
+            SExpBar.Value = sexpPercent;
             SExpLabel.Text = User.SExp.ToString();
         }
 

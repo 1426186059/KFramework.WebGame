@@ -629,9 +629,9 @@ namespace Client.MirScenes.Dialogs
             double expPercent = MaxExperience > 0
                 ? Math.Min(1d, Math.Max(0d, Experience / (double)MaxExperience))
                 : 0d;
-            int percent = (int)Math.Round(expPercent * 100);
-            ExperienceBar.Value = Math.Min(100, percent);
-            ExLabel.Text = Math.Min(99, percent) + "%";
+            float percent = (float)expPercent * 100f;
+            ExperienceBar.Value = percent;
+            ExLabel.Text = Math.Min(99, (int)Math.Round(percent)) + "%";
         }
 
         private void Avatar_BeforeDraw(object sender, EventArgs e)

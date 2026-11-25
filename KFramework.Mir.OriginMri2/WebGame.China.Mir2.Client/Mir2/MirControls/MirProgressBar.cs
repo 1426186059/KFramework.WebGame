@@ -13,8 +13,8 @@ namespace Client.MirControls
             private set { _fill = value; }
         }
 
-        private int _minimum;
-        public int Minimum
+        private float _minimum;
+        public float Minimum
         {
             get { return _minimum; }
             set
@@ -26,8 +26,8 @@ namespace Client.MirControls
             }
         }
 
-        private int _maximum = 100;
-        public int Maximum
+        private float _maximum = 100f;
+        public float Maximum
         {
             get { return _maximum; }
             set
@@ -39,13 +39,13 @@ namespace Client.MirControls
             }
         }
 
-        private int _value;
-        public int Value
+        private float _value;
+        public float Value
         {
             get { return _value; }
             set
             {
-                int v = Math.Max(_minimum, Math.Min(_maximum, value));
+                float v = Math.Max(_minimum, Math.Min(_maximum, value));
                 if (_value == v) return;
                 _value = v;
                 UpdateFill();
@@ -53,7 +53,7 @@ namespace Client.MirControls
             }
         }
 
-        public float Percent => _maximum > _minimum ? (float)(_value - _minimum) / (_maximum - _minimum) : 0f;
+        public float Percent => _maximum > _minimum ? (_value - _minimum) / (_maximum - _minimum) : 0f;
 
         private bool _vertical;
         // true=竖直（从底部向上增长）；false=水平（从左向右）。
