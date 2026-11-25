@@ -16,20 +16,42 @@ using System.Text.Json.Serialization;
 // 字段全部由 [JsonPropertyName] 绑定，取值交给 System.Text.Json，不手写 JsonValue/TryGetValue。
 // =====================================================================================
 
-/// <summary>图集里一个子图的矩形 / 裁剪信息（frames 元素与 res 元素共用）。</summary>
+/// <summary>
+/// 图集里一张小图的打包信息（frames 元素与 res 元素共用）。
+///
+/// Egret 做图集时，会把小图四周的透明像素裁掉再塞进一张大 PNG，因此这里有两套尺寸：
+/// 1. x/y/w/h：裁剪后真正存在于大 PNG 里的矩形，绘制时只能拿这个矩形去采样；
+/// 2. sourceW/sourceH：裁剪前的逻辑画布大小，UI 排版和相邻字符间距按它算。
+/// offX/offY 是裁剪矩形放回逻辑画布时的左上角位置。
+///
+/// 例：hurt1_- 是 w=15,h=5, offX=0,offY=7, sourceW=15,sourceH=19。
+/// 含义是：贴图上只有一条 15×5 的横线，要放在 15×19 的虚拟框内、向下偏 7 像素的位置。
+/// 如果错误地把 15×5 的采样矩形拉伸到 15×19，横线就会被拉成一团黑块。
+/// </summary>
 public sealed class EgretRectJson
 {
+    /// <summary>裁剪后的小图在大 PNG 里的左上角 X。</summary>
     [JsonPropertyName("x")] public int X { get; set; }
+
+    /// <summary>裁剪后的小图在大 PNG 里的左上角 Y。</summary>
     [JsonPropertyName("y")] public int Y { get; set; }
+
+    /// <summary>裁剪后的真实宽度，采样和绘制尺寸用它，不要用 sourceW 拉伸。</summary>
     [JsonPropertyName("w")] public int W { get; set; }
+
+    /// <summary>裁剪后的真实高度，采样和绘制尺寸用它，不要用 sourceH 拉伸。</summary>
     [JsonPropertyName("h")] public int H { get; set; }
 
-    /// <summary>子图相对原始画布的偏移，仅模型图集(frames 数组)与裁剪过的 UI 图集有。</summary>
+    /// <summary>裁剪后的小图放回逻辑画布时，左上角向右偏多少像素。</summary>
     [JsonPropertyName("offX")] public int? OffX { get; set; }
+
+    /// <summary>裁剪后的小图放回逻辑画布时，左上角向下偏多少像素。</summary>
     [JsonPropertyName("offY")] public int? OffY { get; set; }
 
-    /// <summary>裁剪前的原始画布尺寸；缺省即等于 w/h。</summary>
+    /// <summary>裁剪前的逻辑宽度，用来算字符 advance/排版占位，不是贴图实际宽度。</summary>
     [JsonPropertyName("sourceW")] public int? SourceW { get; set; }
+
+    /// <summary>裁剪前的逻辑高度，用来保持虚拟框高度，不是贴图实际高度。</summary>
     [JsonPropertyName("sourceH")] public int? SourceH { get; set; }
 }
 

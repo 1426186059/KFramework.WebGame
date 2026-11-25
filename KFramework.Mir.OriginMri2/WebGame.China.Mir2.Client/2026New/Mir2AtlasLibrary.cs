@@ -254,7 +254,10 @@ public static class Mir2AtlasLibrary
         return fn != null && s.Frames.TryGetValue(fn, out frame);
     }
 
-    /// <summary>取图集帧的裁剪偏移 offX/offY（Egret 子图在原始画布里的位置）。</summary>
+    /// <summary>
+    /// 取裁剪帧的 offX/offY：也就是“去掉透明边后的小图”放回原始逻辑画布时，左上角该往哪放。
+    /// 绘制真实小图时必须先加这个偏移；只用 KSpriteInfo.SourceRectangle 会把字形贴到框左上角。
+    /// </summary>
     public static bool TryGetFrameAnchor(string sheetOrFrameName, string frameName, out Vector2 anchor)
     {
         anchor = Vector2.Zero;

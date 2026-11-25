@@ -296,8 +296,10 @@ namespace Client.MirObjects
                     continue; // 0/逗号/空格：原始逻辑不绘制
                 }
 
-                // 用逻辑宽度推进光标；绘制时用裁剪后的真实矩形 + offX/offY，
-                // 否则 hurt1_- 这种 15x5 的裁剪帧会被拉伸到 15x19，出现黑块/阴影。
+                // 字符排版按“裁剪前的逻辑框”算，所以光标推进用 Size.X（sourceW）。
+                // 真正画到屏幕上的只能是裁剪后的 w×h 小图，并加上 offX/offY 放回框内。
+                // 减号就是典型例子：逻辑框 15×19，实际只有 15×5 的一条横线，offY=7；
+                // 之前把 15×5 拉成 15×19，才会看到一团黑影。
                 float advance = glyph.Size.X * scale;
                 if (advance <= 0)
                 {
@@ -323,7 +325,13 @@ namespace Client.MirObjects
             return any;
         }
 
-        /// <summary>按 Egret 裁剪帧的真实尺寸与 offX/offY 绘制，避免把 Trim 后的子图拉伸回虚拟画布。</summary>
+        /// <summary>
+        /// 按 Egret 的方式画“裁剪帧”：x/y 是字符在屏幕上的排版位置，
+        /// 真正的贴图矩形是 glyph.SourceRectangle（w×h），再放到逻辑框内的 offX/offY 位置。
+        /// 即：屏幕绘制框 = (x + offX*scale, y + offY*scale, w*scale, h*scale)。
+        /// 注意 offX/offY 不是额外移动文字，而是把被裁掉透明边后的小图放回原位；
+        /// 千万别用 glyph.Size（sourceW/sourceH）当绘制宽高，那会把裁剪帧拉伸。
+        /// </summary>
         private static void DrawGlyphFrame(KSpriteInfo glyph, string key, float x, float y, float scale, Color tint)
         {
             if (glyph == null || glyph.Texture == null)

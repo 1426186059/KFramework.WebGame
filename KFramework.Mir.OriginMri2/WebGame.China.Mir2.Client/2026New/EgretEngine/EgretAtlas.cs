@@ -126,12 +126,22 @@ public sealed class EgretAtlas
     private void AddFrame(Dictionary<string, KSpriteInfo> frames, Dictionary<string, Vector2> anchors,
                           string name, EgretRectJson r, bool named)
     {
-        if (r == null) return;
+        if (r == null)
+        {
+            return;
+        }
+
+        // Size 是“逻辑占位尺寸”，只用来算排版推进：
+        // UI 命名帧用裁剪前的 sourceW/sourceH，模型帧本身就是完整帧、用 w/h。
+        // 真正采样请一律用 SourceRectangle（x/y/w/h），别把 w/h 拉到 Size。
         var size = named
-            ? new Vector2(r.SourceW ?? r.W, r.SourceH ?? r.H)   // UI 图集：裁剪前尺寸
-            : new Vector2(r.W, r.H);                              // 模型帧：子图自身尺寸
+            ? new Vector2(r.SourceW ?? r.W, r.SourceH ?? r.H)
+            : new Vector2(r.W, r.H);
         frames[name] = new KSpriteInfo(name, Texture, new Rectangle(r.X, r.Y, r.W, r.H),
                                        size, Vector2.Zero, false);
+
+        // 裁剪后的小图放回逻辑画布时的左上角偏移。
+        // 绘制公式：目标框 X = 排版位置 + offX，Y = 排版位置 + offY，宽高 = w/h。
         anchors[name] = new Vector2(r.OffX ?? 0, r.OffY ?? 0);
     }
 
