@@ -18,7 +18,7 @@ namespace Client.MirScenes.Dialogs
 
         public MirProgressBar ExperienceBar, SExpBar;
         public MirImageControl WeightBar, LeftCap, RightCap;
-        public MirButton GameShopButton, MenuButton, InventoryButton, CharacterButton, SkillButton, QuestButton, OptionButton;
+        public MirButton GameShopButton, InventoryButton, CharacterButton, SkillButton;
         public MirButton SettingButton, AuctionButton, RebirthButton;
         public MirControl HealthOrb;
         public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, SExpLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel;
@@ -148,7 +148,6 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(45, 45),
                 Location = new Point(this.Size.Width - 200, 30),
                 Parent = this,
-                PressedIndex = 1905,
                 Sound = SoundList.ButtonA,
                 Hint = LanguageMgr.Get("InventoryKey", CMain.InputKeys.GetKey(KeybindOptions.Inventory))
             };
@@ -217,58 +216,6 @@ namespace Client.MirScenes.Dialogs
             SkillButton.Click += (o, e) =>
             {
                 GameScene.Scene.CharacterSkillDialog.Toggle();
-            };
-
-            QuestButton = new MirButton
-            {
-                HoverIndex = 1910,
-                Index = 1909,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 120, 100),
-                Parent = this,
-                PressedIndex = 1911,
-                Sound = SoundList.ButtonA,
-                Hint = LanguageMgr.Get("QuestsKey", CMain.InputKeys.GetKey(KeybindOptions.Quests))
-            };
-            QuestButton.Click += (o, e) =>
-            {
-                if (!GameScene.Scene.QuestLogDialog.Visible)
-                    GameScene.Scene.QuestLogDialog.Show();
-                else GameScene.Scene.QuestLogDialog.Hide();
-            };
-
-            OptionButton = new MirButton
-            {
-                HoverIndex = 1913,
-                Index = 1912,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 100, 130),
-                Parent = this,
-                PressedIndex = 1914,
-                Sound = SoundList.ButtonA,
-                Hint = LanguageMgr.Get("OptionsKey", CMain.InputKeys.GetKey(KeybindOptions.Options))
-            };
-            OptionButton.Click += (o, e) =>
-            {
-                if (!GameScene.Scene.OptionDialog.Visible)
-                    GameScene.Scene.OptionDialog.Show();
-                else GameScene.Scene.OptionDialog.Hide();
-            };
-
-            MenuButton = new MirButton
-            {
-                HoverIndex = 1961,
-                Index = 1960,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 100, 160),
-                Parent = this,
-                PressedIndex = 1962,
-                Sound = SoundList.ButtonC,
-                Hint = LanguageMgr.Get("Menu")};
-            MenuButton.Click += (o, e) =>
-            {
-                if (!GameScene.Scene.MenuDialog.Visible) GameScene.Scene.MenuDialog.Show();
-                else GameScene.Scene.MenuDialog.Hide();
             };
 
             GameShopButton = new MirButton
@@ -684,11 +631,6 @@ namespace Client.MirScenes.Dialogs
             }
 
             return button;
-        }
-
-        private void MainDialog_AtlasLoaded(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public void Process()
