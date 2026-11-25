@@ -186,8 +186,6 @@ namespace Client
             DisplayDamage = true,
             TargetDead = false,
             HighlightTarget = true,
-            ExpandedBuffWindow = true,
-            ExpandedHeroBuffWindow = true,
             DisplayBodyName = false,
             NewMove = true;
 
@@ -276,8 +274,6 @@ namespace Client
             DisplayDamage = Reader.ReadBoolean("Game", "DisplayDamage", DisplayDamage);
             TargetDead = Reader.ReadBoolean("Game", "TargetDead", TargetDead);
             HighlightTarget = Reader.ReadBoolean("Game", "HighlightTarget", HighlightTarget);
-            ExpandedBuffWindow = Reader.ReadBoolean("Game", "ExpandedBuffWindow", ExpandedBuffWindow);
-            ExpandedHeroBuffWindow = Reader.ReadBoolean("Game", "ExpandedHeroBuffWindow", ExpandedHeroBuffWindow);
             DisplayBodyName = Reader.ReadBoolean("Game", "DisplayBodyName", DisplayBodyName);
             NewMove = Reader.ReadBoolean("Game", "NewMove", NewMove);
             //Language = Reader.ReadString("Game", "Language", Language); //我们只使用中文啊
@@ -363,8 +359,6 @@ namespace Client
             Reader.Write("Game", "DisplayDamage", DisplayDamage);
             Reader.Write("Game", "TargetDead", TargetDead);
             Reader.Write("Game", "HighlightTarget", HighlightTarget);
-            Reader.Write("Game", "ExpandedBuffWindow", ExpandedBuffWindow);
-            Reader.Write("Game", "ExpandedHeroBuffWindow", ExpandedBuffWindow);
             Reader.Write("Game", "DisplayBodyName", DisplayBodyName);
             Reader.Write("Game", "NewMove", NewMove);
             //Reader.Write("Game", "Language", Language);

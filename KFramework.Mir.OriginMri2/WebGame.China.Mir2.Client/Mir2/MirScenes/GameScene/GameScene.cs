@@ -137,7 +137,6 @@ namespace Client.MirScenes
         public ItemRentalDialog ItemRentalDialog;
 
         public BuffDialog BuffsDialog;
-        public BuffDialog HeroBuffsDialog;
 
         public KeyboardLayoutDialog KeyboardLayoutDialog;
         public WelcomeNoticeDialog WelcomeNoticeDialog;
@@ -410,10 +409,6 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Anchor = EAnchorType.BottomRight,
-                AnchorPos = new Point(-8, -8),
-                GetExpandedParameter = () => { return Settings.ExpandedBuffWindow; },
-                SetExpandedParameter = (value) => { Settings.ExpandedBuffWindow = value; }
             };
 
             KeyboardLayoutDialog = new KeyboardLayoutDialog { Parent = this, Visible = false };
@@ -1336,7 +1331,6 @@ namespace Client.MirScenes
             }
 
             BuffsDialog.Process();
-            HeroBuffsDialog?.Process();
 
             MapControl.Process();
             MainDialog.Process();
@@ -5451,23 +5445,6 @@ namespace Client.MirScenes
                 User.RefreshStats();
             }
 
-            if (Hero != null && buff.ObjectID == Hero.ObjectID)
-            {
-                for (int i = 0; i < HeroBuffsDialog.Buffs.Count; i++)
-                {
-                    if (HeroBuffsDialog.Buffs[i].Type != buff.Type) continue;
-
-                    HeroBuffsDialog.Buffs[i] = buff;
-                    Hero.RefreshStats();
-                    return;
-                }
-
-                HeroBuffsDialog.Buffs.Add(buff);
-                HeroBuffsDialog.CreateBuff(buff);
-
-                Hero.RefreshStats();
-            }
-
             if (!buff.Visible || buff.ObjectID <= 0) return;
 
             if (MapControl.Objects.TryGetValue(buff.ObjectID, out var ob) && (ob is PlayerObject || ob is MonsterObject))
@@ -5512,28 +5489,6 @@ namespace Client.MirScenes
                 User.RefreshStats();
             }
 
-            if (Hero != null && Hero.ObjectID == p.ObjectID)
-            {
-                for (int i = 0; i < HeroBuffsDialog.Buffs.Count; i++)
-                {
-                    if (HeroBuffsDialog.Buffs[i].Type != p.Type) continue;
-
-                    switch (HeroBuffsDialog.Buffs[i].Type)
-                    {
-                        case BuffType.SwiftFeet:
-                            Hero.Sprint = false;
-                            break;
-                        case BuffType.Transform:
-                            Hero.TransformType = -1;
-                            break;
-                    }
-
-                    HeroBuffsDialog.RemoveBuff(i);
-                    HeroBuffsDialog.Buffs.RemoveAt(i);
-                }
-                Hero.RefreshStats();
-            }
-
             if (p.ObjectID <= 0) return;
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
@@ -5568,28 +5523,6 @@ namespace Client.MirScenes
                 }
             }
 
-            if (Hero != null && Hero.ObjectID == p.ObjectID)
-            {
-                for (int i = 0; i < HeroBuffsDialog.Buffs.Count; i++)
-                {
-                    if (HeroBuffsDialog.Buffs[i].Type != p.Type) continue;
-
-                    Hero.RefreshStats();
-
-                    if (HeroBuffsDialog.Buffs[i].Paused == p.Paused) return;
-
-                    HeroBuffsDialog.Buffs[i].Paused = p.Paused;
-
-                    if (p.Paused)
-                    {
-                        HeroBuffsDialog.Buffs[i].ExpireTime -= CMain.Time;
-                    }
-                    else
-                    {
-                        HeroBuffsDialog.Buffs[i].ExpireTime += CMain.Time;
-                    }
-                }
-            }
         }
 
         private void ObjectHidden(S.ObjectHidden p)
@@ -6433,15 +6366,6 @@ namespace Client.MirScenes
             HeroDialog = new CharacterDialog(MirGridType.HeroEquipment, Hero) { Parent = this, Visible = false };
             HeroInventoryDialog = new HeroInventoryDialog { Parent = this };
             HeroBeltDialog = new HeroBeltDialog { Parent = this };
-            HeroBuffsDialog = new BuffDialog
-            {
-                Parent = this,
-                Visible = true,
-                Anchor = EAnchorType.BottomRight,
-                AnchorPos = new Point(-8 - BuffGrid.CellSize * BuffGrid.Columns - 8, -8),
-                GetExpandedParameter = () => { return Settings.ExpandedHeroBuffWindow; },
-                SetExpandedParameter = (value) => { Settings.ExpandedHeroBuffWindow = value; }
-            };
             MainDialog.HeroInfoPanel.Update();
 
             Hero.RefreshStats();
@@ -6462,7 +6386,6 @@ namespace Client.MirScenes
                 HeroInventoryDialog.Dispose();
                 HeroDialog.Dispose();
                 HeroBeltDialog.Dispose();
-                HeroBuffsDialog.Dispose();
             }
         }
 

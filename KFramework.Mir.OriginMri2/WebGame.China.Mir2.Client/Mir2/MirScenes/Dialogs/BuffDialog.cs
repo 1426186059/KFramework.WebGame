@@ -5,59 +5,29 @@ using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
-    // 原始传奇 buffGro 图标 35×35，本工程缩小 2 倍；每行 5 个。提到文件级供两个 Buff 窗口共用。
-    public static class BuffGrid
-    {
-        public const int CellSize = 17;
-        public const int Columns = 5;
-    }
-
     public class BuffDialog : MirImageControl
     {
+        // 原始传奇 buffGro 图标 35×35，本工程缩小 2 倍；每行 5 个。两个 Buff 窗口共用。
+        public const int CellSize = 17;
+        public const int Columns = 5;
+
         public List<ClientBuff> Buffs = new List<ClientBuff>();
 
-        protected MirButton _expandCollapseButton;
         protected MirLabel _buffCountLabel;
         protected List<MirImageControl> _buffList = new List<MirImageControl>();
         protected int _buffCount;
-        public Func<bool> GetExpandedParameter;
-        public Action<bool> SetExpandedParameter;
-        private bool ExpandedBuffWindow
-        {
-            get { return GetExpandedParameter(); }
-            set { SetExpandedParameter(value); }
-        }
 
         public BuffDialog()
         {
             // 对齐原始传奇：玩家/怪物 buffGro 无底板，图标 35×35 每行 5 个（main10.25487.1.min.js:
             // BuffRender.x = i%5*35, y = floor(i/5)*35）。原 Prguse2#20 底板与展开按钮都是旧图库白块，去掉。
             Movable = false;
-            Size = new Size(BuffGrid.Columns * BuffGrid.CellSize, BuffGrid.CellSize);
+            Size = new Size(BuffDialog.Columns * BuffDialog.CellSize, BuffDialog.CellSize);
             Sort = true;
+            Anchor = EAnchorType.BottomRight;
+            AnchorPos = new Point(-8, -8);
 
             Opacity = 1f;
-
-            _expandCollapseButton = new MirButton
-            {
-                Size = new Size(16, 15),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Visible = false,
-            };
-            _expandCollapseButton.Click += (o, e) =>
-            {
-                if (_buffCount == 1)
-                {
-                    ExpandedBuffWindow = true;
-                }
-                else
-                {
-                    ExpandedBuffWindow = !ExpandedBuffWindow;
-                }
-
-                UpdateWindow();
-            };
 
             _buffCountLabel = new MirLabel
             {
@@ -116,8 +86,8 @@ namespace Client.MirScenes.Dialogs
                 var buff = Buffs[i];
 
                 // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN，不再依赖旧 .Lib。
-                image.Location = new Point((i % BuffGrid.Columns) * BuffGrid.CellSize, (i / BuffGrid.Columns) * BuffGrid.CellSize);
-                image.Size = new Size(BuffGrid.CellSize, BuffGrid.CellSize);
+                image.Location = new Point((i % BuffDialog.Columns) * BuffDialog.CellSize, (i / BuffDialog.Columns) * BuffDialog.CellSize);
+                image.Size = new Size(BuffDialog.CellSize, BuffDialog.CellSize);
                 image.Hint = BuffString(buff);
                 image.ImageUrl = BuffIconUrl(buff.Type);
                 image.Visible = true;
@@ -144,10 +114,9 @@ namespace Client.MirScenes.Dialogs
 
             // 原始传奇 buffGro 网格布局（本工程图标缩小 2 倍），无底板、无收起态、无数量标签。
             _buffCountLabel.Visible = false;
-            _expandCollapseButton.Visible = false;
-            int columns = _buffCount > BuffGrid.Columns ? BuffGrid.Columns : _buffCount;
-            int rows = (_buffCount + BuffGrid.Columns - 1) / BuffGrid.Columns;
-            Size = new Size(columns * BuffGrid.CellSize, rows * BuffGrid.CellSize);
+            int columns = _buffCount > BuffDialog.Columns ? BuffDialog.Columns : _buffCount;
+            int rows = (_buffCount + BuffDialog.Columns - 1) / BuffDialog.Columns;
+            Size = new Size(columns * BuffDialog.CellSize, rows * BuffDialog.CellSize);
             ApplyAnchor();
         }
 
@@ -426,7 +395,6 @@ namespace Client.MirScenes.Dialogs
     {
         public List<ClientPoisonBuff> Buffs = new List<ClientPoisonBuff>();
 
-        private MirButton _expandCollapseButton;
         private MirLabel _buffCountLabel;
         private List<MirImageControl> _buffList = new List<MirImageControl>();
         private int _buffCount;
@@ -434,31 +402,10 @@ namespace Client.MirScenes.Dialogs
         public PoisonBuffDialog()
         {
             Movable = false;
-            Size = new Size(BuffGrid.Columns * BuffGrid.CellSize, BuffGrid.CellSize);
+            Size = new Size(BuffDialog.Columns * BuffDialog.CellSize, BuffDialog.CellSize);
             Sort = true;
 
             Opacity = 1f;
-
-            _expandCollapseButton = new MirButton
-            {
-                Size = new Size(16, 15),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Visible = false,
-            };
-            _expandCollapseButton.Click += (o, e) =>
-            {
-                if (_buffCount == 1)
-                {
-                    Settings.ExpandedBuffWindow = true;
-                }
-                else
-                {
-                    Settings.ExpandedBuffWindow = !Settings.ExpandedBuffWindow;
-                }
-
-                UpdateWindow();
-            };
 
             _buffCountLabel = new MirLabel
             {
@@ -602,8 +549,8 @@ namespace Client.MirScenes.Dialogs
                 var buff = Buffs[i];
 
                 // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN。
-                image.Location = new Point((i % BuffGrid.Columns) * BuffGrid.CellSize, (i / BuffGrid.Columns) * BuffGrid.CellSize);
-                image.Size = new Size(BuffGrid.CellSize, BuffGrid.CellSize);
+                image.Location = new Point((i % BuffDialog.Columns) * BuffDialog.CellSize, (i / BuffDialog.Columns) * BuffDialog.CellSize);
+                image.Size = new Size(BuffDialog.CellSize, BuffDialog.CellSize);
                 image.Hint = BuffString(buff);
                 image.ImageUrl = PoisonBuffIconUrl(buff.Type);
 
@@ -630,10 +577,9 @@ namespace Client.MirScenes.Dialogs
 
             // 原始传奇 buffGro 网格布局（本工程图标缩小 2 倍），无底板、无收起态、无数量标签。
             _buffCountLabel.Visible = false;
-            _expandCollapseButton.Visible = false;
-            int columns = _buffCount > BuffGrid.Columns ? BuffGrid.Columns : _buffCount;
-            int rows = (_buffCount + BuffGrid.Columns - 1) / BuffGrid.Columns;
-            Size = new Size(columns * BuffGrid.CellSize, rows * BuffGrid.CellSize);
+            int columns = _buffCount > BuffDialog.Columns ? BuffDialog.Columns : _buffCount;
+            int rows = (_buffCount + BuffDialog.Columns - 1) / BuffDialog.Columns;
+            Size = new Size(columns * BuffDialog.CellSize, rows * BuffDialog.CellSize);
             ApplyAnchor();
         }
     }

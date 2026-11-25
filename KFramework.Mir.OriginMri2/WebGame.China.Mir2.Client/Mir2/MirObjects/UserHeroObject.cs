@@ -13,7 +13,6 @@ namespace Client.MirObjects
 
         public UserItem[] HPItem = new UserItem[1];
         public UserItem[] MPItem = new UserItem[1];
-        public override BuffDialog GetBuffDialog => GameScene.Scene.HeroBuffsDialog;
         public UserHeroObject(uint objectID)
         {
             ObjectID = objectID;

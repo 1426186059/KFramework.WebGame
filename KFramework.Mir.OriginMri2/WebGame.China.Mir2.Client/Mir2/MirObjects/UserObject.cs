@@ -642,6 +642,8 @@ namespace Client.MirObjects
 
         private void RefreshBuffs()
         {
+            if (this is UserHeroObject) return;
+
             TransformType = -1;
             BuffDialog dialog = GetBuffDialog;
 
