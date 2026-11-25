@@ -3592,8 +3592,36 @@ namespace Client.MirScenes
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
             {
-                if (ob.Race == ObjectType.Monster) PrintTool.Log($"DBG:ObjectStruck id={p.ObjectID}");
-                if (ob.SkipFrames) return;
+                // 原始 JS 用攻击者与目标的 X 坐标差决定 startarr/stoparr/endarr 的第几组。
+                if (MapControl.Objects.TryGetValue(p.AttackerID, out MapObject damageAttacker))
+                {
+                    if (damageAttacker.CurrentLocation.X > p.Location.X)
+                    {
+                        ob.LastDamageSide = 1;
+                    }
+                    else if (damageAttacker.CurrentLocation.X < p.Location.X)
+                    {
+                        ob.LastDamageSide = 2;
+                    }
+                    else
+                    {
+                        ob.LastDamageSide = 0;
+                    }
+                }
+                else
+                {
+                    ob.LastDamageSide = 0;
+                }
+
+                if (ob.Race == ObjectType.Monster)
+                {
+                    PrintTool.Log($"DBG:ObjectStruck id={p.ObjectID}");
+                }
+
+                if (ob.SkipFrames)
+                {
+                    return;
+                }
                 if (ob.ActionFeed.Count > 0 && ob.ActionFeed[ob.ActionFeed.Count - 1].Action == MirAction.Struck) return;
 
                 if (ob.Race == ObjectType.Player)
@@ -3652,22 +3680,26 @@ namespace Client.MirScenes
             {
                 if (MapControl.Objects.TryGetValue(p.ObjectID, out var obj))
                 {
-                    if (obj.Damages.Count >= 10) return;
+                    if (obj.Damages.Count >= 10)
+                    {
+                        return;
+                    }
 
+                    int side = obj.LastDamageSide;
                     switch (p.Type)
                     {
                         case DamageType.Hit: // 原始传奇 damage id=1（number=1，hurt1_* 白色普通伤害）
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
-                                OriginMir2Damage.DefaultHitDamageId));
+                                OriginMir2Damage.DefaultHitDamageId, side));
                             break;
                         case DamageType.Miss: // 文字类无对应数字帧，走回退 Label
                             obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Miss"), 1200,
-                                obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 0));
+                                obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 0, side));
                             break;
                         case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大）
                             obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Crit"), 1000,
-                                CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId) { Offset = 15 });
+                                CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId, side) { Offset = 15 });
                             break;
                     }
                 }

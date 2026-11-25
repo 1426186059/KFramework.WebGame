@@ -12,8 +12,9 @@ namespace Client.MirObjects
     /// 忠实还原 BloodMovie.show / EntityInfo.showBloodEffect：
     /// - "hurt" + number 逐字符取 BloodFont_json 的 hurt{style}_{char} 帧横拼，数值 0 不显示；
     /// - title&gt;0 时叠加 plus_{title} 图标；
-    /// - startarr → stoparr → endarr 三段位移 [dx,dy,ms]，random_x/y_min/max 散布，
-    ///   performance=0 时 scaling/100 起始放大回弹、末段 alpha 淡出。
+    /// - startarr/stoparr/endarr 的 [dx,dy,ms] 按受击方向 side 取第 0/1/2 组（1=攻击者在右，2=攻击者在左）；
+    /// - performance=0 按原始四阶段：起点移动并放大 → 50ms 缩放回弹 → 等待 → 飘向终点并淡出；
+    /// - performance=1 直接起点飘向终点并淡出。
     /// 帧缺失（图集未就绪 / 该样式无此字符）时回退 MirLabel 文本，保证 Miss/Crit 等照常显示。
     /// </summary>
     public sealed class OriginMir2Damage : Damage
@@ -23,33 +24,75 @@ namespace Client.MirObjects
         public const int DefaultCritDamageId = 12;   // number=1 + 起始放大
         public const int DefaultHealDamageId = 15;   // number=3（JS 取绝对值，回血）
 
+        /// <summary>飘血基准高度：相对脚底 DrawLocation 上移像素（75 基础上 +20 上移）。可配置。</summary>
+        public static int BaseYOffset = 95;
+
+        private const int ScaleBackMs = 50;
+        private const float FadeHoldRatio = 0.10f;
+        private const float FadeInRatio = 0.12f;
+
         private static int _sheetRequested;
 
         private readonly DamageTable _cfg;
+        private readonly int _side;
         private readonly int _hurtStyle;
-        private readonly int _jitterX, _jitterY;
+        private int _jitterX, _jitterY;
         private readonly long _totalMs;
         private readonly int _offsetX, _offsetY;
+        private readonly int _startDx, _startDy, _phaseStart;
+        private readonly int _stopDx, _stopDy, _phaseWait;
+        private readonly int _endDx, _endDy, _phaseEnd;
         private MirLabel _fallbackLabel;
 
-        public OriginMir2Damage(string text, int duration, Color colour, int damageId)
+        public OriginMir2Damage(string text, int duration, Color colour, int damageId, int side = 0)
             : base(text, duration, colour, 50)
         {
+            _side = side;
             ExcelTableMgr.TryGetDamage(damageId, out _cfg);
 
             _hurtStyle = _cfg != null && _cfg.number >= 0 ? _cfg.number : 1;
             _offsetX = ParseInt(_cfg?.offsetX);
             _offsetY = ParseInt(_cfg?.offsetY);
 
-            int rxMin = _cfg?.random_x_min ?? 0, rxMax = _cfg?.random_x_max ?? 0;
-            int ryMin = _cfg?.random_y_min ?? 0, ryMax = _cfg?.random_y_max ?? 0;
-            _jitterX = rxMin != rxMax ? CMain.Random.Next(Math.Min(rxMin, rxMax), Math.Max(rxMin, rxMax) + 1) : rxMin;
-            _jitterY = ryMin != ryMax ? CMain.Random.Next(Math.Min(ryMin, ryMax), Math.Max(ryMin, ryMax) + 1) : ryMin;
+            GetPoint(_cfg?.startarr, _side, out _startDx, out _startDy, out _phaseStart);
+            GetPoint(_cfg?.stoparr, _side, out _stopDx, out _stopDy, out _phaseWait);
+            GetPoint(_cfg?.endarr, _side, out _endDx, out _endDy, out _phaseEnd);
 
-            _totalMs = Math.Max(1, ExpireTime - StartTime);
+            int configuredTotal = 0;
+            if (_cfg != null)
+            {
+                configuredTotal = _cfg.performance == 0
+                    ? _phaseStart + ScaleBackMs + _phaseWait + _phaseEnd
+                    : _phaseStart + _phaseEnd;
+            }
+
+            _totalMs = configuredTotal > 0 ? configuredTotal : Math.Max(1, ExpireTime - StartTime);
+            ExpireTime = StartTime + _totalMs;
+            Factor = _totalMs / (double)Math.Max(1, Distance);
+
+            SetJitter();
 
             if (System.Threading.Interlocked.Exchange(ref _sheetRequested, 1) == 0)
+            {
                 _ = Mir2AtlasLibrary.GetSheetAsync("BloodFont_json");
+            }
+        }
+
+        private void SetJitter()
+        {
+            int rxMin = _cfg?.random_x_min ?? 0;
+            int rxMax = _cfg?.random_x_max ?? 0;
+            int ryMin = _cfg?.random_y_min ?? 0;
+            int ryMax = _cfg?.random_y_max ?? 0;
+
+            // 原始 JS：先按同一个 random 选 min/max 组合，再分别乘两个独立 random。
+            double pick = CMain.Random.NextDouble();
+            double mx = CMain.Random.NextDouble();
+            double my = CMain.Random.NextDouble();
+            int baseX = pick > 0.5 ? Math.Max(rxMin, rxMax) : Math.Min(rxMin, rxMax);
+            int baseY = pick > 0.5 ? Math.Max(ryMin, ryMax) : Math.Min(ryMin, ryMax);
+            _jitterX = (int)(baseX * mx);
+            _jitterY = (int)(baseY * my);
         }
 
         private static int ParseInt(string s)
@@ -60,10 +103,22 @@ namespace Client.MirObjects
         private static KSpriteInfo GetGlyph(int style, char ch)
         {
             string key;
-            if (ch == '+') key = "hurt" + style + "_+";
-            else if (ch == '-') key = "hurt" + style + "_-";
-            else if (ch >= '0' && ch <= '9') key = "hurt" + style + "_" + ch;
-            else return null; // 逗号/空格/字母：原始 addNumber 不绘制，交给回退文本
+            if (ch == '+')
+            {
+                key = "hurt" + style + "_+";
+            }
+            else if (ch == '-')
+            {
+                key = "hurt" + style + "_-";
+            }
+            else if (ch >= '0' && ch <= '9')
+            {
+                key = "hurt" + style + "_" + ch;
+            }
+            else
+            {
+                return null; // 逗号/空格/字母：原始 addNumber 不绘制，交给回退文本
+            }
 
             return Mir2AtlasLibrary.TryGetFrame("BloodFont_json", key, out var frame) ? frame : null;
         }
@@ -71,96 +126,163 @@ namespace Client.MirObjects
         public override void Draw(Point displayLocation)
         {
             float progress = Math.Clamp((CMain.Time - StartTime) / (float)_totalMs, 0f, 1f);
+            float elapsed = progress * _totalMs;
 
-            // 三段轨迹：startarr → stoparr → endarr，每段 [dx,dy,ms] 按原始时序线性插值。
-            int dx = 0, dy = 0;
-            if (_cfg != null)
-            {
-                GetSegmentOffset(_cfg.startarr, _cfg.stoparr, _cfg.endarr, progress, out dx, out dy);
-            }
-            else
-            {
-                // 无配置兜底：左下→右上斜飘
-                dx = (int)(progress * 40) - 20;
-                dy = -(int)(progress * 50);
-            }
+            GetMotion(elapsed, out int dx, out int dy, out float scale, out float motionAlpha);
 
-            int x = displayLocation.X + _jitterX + dx + _offsetX;
-            int y = displayLocation.Y + _jitterY + dy + _offsetY - 75 - Offset;
+            int x = displayLocation.X + _offsetX + dx;
+            int y = displayLocation.Y + _offsetY + dy - BaseYOffset - Offset;
+            int alpha = (int)(GetUserAlpha(progress) * motionAlpha);
 
-            // 原始尺寸绘制；performance=0 时起始 scaling 回弹，末段 alpha 淡出。
-            float scale = 1f;
-            int alpha = 255;
-            if (_cfg != null && _cfg.performance == 0 && progress < 0.18f)
+            if (DrawOrigin(x, y, scale, alpha))
             {
-                float target = Math.Max(1f, _cfg.scaling / 100f);
-                float t = progress / 0.18f;
-                scale = target + (1f - target) * t * t;
-                alpha = (int)(255 * (progress / 0.06f > 1f ? 1f : progress / 0.06f)); // 开头淡入
-            }
-            else if (progress > 0.72f)
-            {
-                float t = (progress - 0.72f) / 0.28f;
-                alpha = (int)(255 * (1f - t));
-            }
-            else if (progress < 0.06f)
-            {
-                alpha = (int)(255 * (progress / 0.06f));
+                return;
             }
 
-            if (DrawOrigin(x, y, scale, alpha)) return;
             DrawFallback(x, y, alpha);
         }
 
-        /// <summary>按原始 startarr/stoparr/endarr 的三段 [dx,dy,ms] 时序计算当前累计偏移。</summary>
-        private static void GetSegmentOffset(List<List<string>> start, List<List<string>> stop, List<List<string>> end,
-            float progress, out int dx, out int dy)
+        /// <summary>按原始 Tween 四阶段计算当前位置、缩放与运动透明度。</summary>
+        private void GetMotion(float elapsed, out int dx, out int dy, out float scale, out float motionAlpha)
         {
-            dx = dy = 0;
-            int t1 = SegmentDuration(start), t2 = SegmentDuration(stop), t3 = SegmentDuration(end);
-            int total = Math.Max(1, t1 + t2 + t3);
-            float elapsed = progress * total;
+            dx = _startDx;
+            dy = _startDy;
+            scale = 1f;
+            motionAlpha = 1f;
 
-            var (sDx, sDy) = FirstPoint(start);
-            var (pDx, pDy) = FirstPoint(stop);
-            var (eDx, eDy) = FirstPoint(end);
+            if (_cfg == null)
+            {
+                float t = Math.Clamp(elapsed / Math.Max(1, _totalMs), 0f, 1f);
+                dx = (int)(t * 40) - 20;
+                dy = -(int)(t * 50);
+                motionAlpha = 1f - t;
+                return;
+            }
 
-            if (elapsed < t1)
+            float targetScale = Math.Max(1f, _cfg.scaling / 100f);
+            int stopX = _startDx + _stopDx + _jitterX;
+            int stopY = _startDy + _stopDy + _jitterY;
+            int endX = _startDx + _endDx + _jitterX;
+            int endY = _startDy + _endDy + _jitterY;
+
+            if (_cfg.performance == 0)
             {
-                float t = t1 > 0 ? elapsed / t1 : 0f;
-                dx = Lerp(0, sDx, t); dy = Lerp(0, sDy, t);
+                if (elapsed < _phaseStart)
+                {
+                    float t = SineIn(_phaseStart > 0 ? elapsed / _phaseStart : 0f);
+                    dx = Lerp(_startDx, stopX, t);
+                    dy = Lerp(_startDy, stopY, t);
+                    scale = LerpFloat(1f, targetScale, t);
+                    return;
+                }
+
+                float afterStart = elapsed - _phaseStart;
+                if (afterStart < ScaleBackMs)
+                {
+                    float t = SineIn((float)afterStart / ScaleBackMs);
+                    dx = stopX;
+                    dy = stopY;
+                    scale = LerpFloat(targetScale, 1f, t);
+                    return;
+                }
+
+                float afterScale = afterStart - ScaleBackMs;
+                if (afterScale < _phaseWait)
+                {
+                    dx = stopX;
+                    dy = stopY;
+                    return;
+                }
+
+                float endT = _phaseEnd > 0 ? Math.Clamp((afterScale - _phaseWait) / _phaseEnd, 0f, 1f) : 1f;
+                float e = SineIn(endT);
+                dx = Lerp(stopX, endX, e);
+                dy = Lerp(stopY, endY, e);
+                motionAlpha = 1f - e;
+                return;
             }
-            else if (elapsed < t1 + t2)
+
+            float moveT = SineIn(_phaseStart > 0 ? Math.Clamp(elapsed / _phaseStart, 0f, 1f) : 1f);
+            dx = Lerp(_startDx, endX, moveT);
+            dy = Lerp(_startDy, endY, moveT);
+            motionAlpha = 1f - moveT;
+        }
+
+        /// <summary>用户要求的额外淡入：开头先完全透明保持一段时间，再淡入到不透明。</summary>
+        private static int GetUserAlpha(float progress)
+        {
+            float holdEnd = FadeHoldRatio;
+            float fadeEnd = FadeHoldRatio + FadeInRatio;
+            if (progress < holdEnd)
             {
-                float t = t2 > 0 ? (elapsed - t1) / t2 : 0f;
-                dx = Lerp(sDx, pDx, t); dy = Lerp(sDy, pDy, t);
+                return 0;
             }
-            else
+
+            if (progress < fadeEnd)
             {
-                float t = t3 > 0 ? (elapsed - t1 - t2) / t3 : 0f;
-                dx = Lerp(pDx, eDx, t); dy = Lerp(pDy, eDy, t);
+                return (int)(255 * ((progress - holdEnd) / FadeInRatio));
+            }
+
+            return 255;
+        }
+
+        /// <summary>按 side 取 [dx,dy,ms]；side=0/1/2 对应原始三组，越界时回落到第 0 组。</summary>
+        private static void GetPoint(List<List<string>> seg, int side, out int dx, out int dy, out int duration)
+        {
+            dx = 0;
+            dy = 0;
+            duration = 0;
+            if (seg == null || seg.Count == 0)
+            {
+                return;
+            }
+
+            int index = side;
+            if (index < 0 || index >= seg.Count)
+            {
+                index = 0;
+            }
+
+            List<string> row = seg[index];
+            if (row.Count > 0)
+            {
+                dx = ParseInt(row[0]);
+            }
+
+            if (row.Count > 1)
+            {
+                dy = ParseInt(row[1]);
+            }
+
+            if (row.Count > 2)
+            {
+                duration = Math.Max(0, ParseInt(row[2]));
             }
         }
 
-        private static int SegmentDuration(List<List<string>> seg)
+        private static float SineIn(float t)
         {
-            if (seg == null || seg.Count == 0 || seg[0].Count < 3) return 0;
-            return ParseInt(seg[0][2]);
+            t = Math.Clamp(t, 0f, 1f);
+            return (float)(1.0 - Math.Cos(t * Math.PI / 2.0));
         }
 
-        private static (int dx, int dy) FirstPoint(List<List<string>> seg)
+        private static int Lerp(int a, int b, float t)
         {
-            if (seg == null || seg.Count == 0 || seg[0].Count < 2) return (0, 0);
-            return (ParseInt(seg[0][0]), ParseInt(seg[0][1]));
+            return (int)(a + (b - a) * t);
         }
 
-        private static int Lerp(int a, int b, float t) => (int)(a + (b - a) * t);
+        private static float LerpFloat(float a, float b, float t)
+        {
+            return a + (b - a) * t;
+        }
 
         /// <summary>逐字符取图集帧横拼（对齐原始 BloodMovie.addNumber）。false=帧未就绪，回退文本。</summary>
         private bool DrawOrigin(int x, int y, float scale, int alpha)
         {
             if (!Mir2AtlasLibrary.TryGetFrame("BloodFont_json", "hurt" + _hurtStyle + "_0", out var probe) || probe?.Texture == null)
+            {
                 return false;
+            }
 
             int cursor = x;
             bool any = false;
@@ -169,11 +291,17 @@ namespace Client.MirObjects
             foreach (char ch in Text)
             {
                 KSpriteInfo glyph = GetGlyph(_hurtStyle, ch);
-                if (glyph == null) continue; // 0/逗号/空格：原始逻辑不绘制
+                if (glyph == null)
+                {
+                    continue; // 0/逗号/空格：原始逻辑不绘制
+                }
 
                 float w = glyph.Size.X * scale;
                 float h = glyph.Size.Y * scale;
-                if (w <= 0 || h <= 0) continue;
+                if (w <= 0 || h <= 0)
+                {
+                    continue;
+                }
 
                 DXManager.Draw(glyph.Texture, glyph.SourceRectangle,
                     new RectangleF(cursor, y, w, h), tint, MirBlend.Normal.ToBlendState());

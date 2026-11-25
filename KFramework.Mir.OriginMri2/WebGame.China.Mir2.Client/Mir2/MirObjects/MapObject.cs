@@ -141,6 +141,8 @@ namespace Client.MirObjects
         public abstract bool Blocking { get; }
 
         public uint ObjectID;
+        // 原始传奇 startarr/stoparr/endarr 的受击方向索引：0=默认，1=攻击者在右，2=攻击者在左。
+        public int LastDamageSide;
         public string Name = string.Empty;
         public Point CurrentLocation, MapLocation;
         public MirDirection Direction;
