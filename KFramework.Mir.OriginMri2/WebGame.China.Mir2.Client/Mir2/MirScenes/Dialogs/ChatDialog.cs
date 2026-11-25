@@ -1,9 +1,6 @@
 using Client.MirControls;
-using Client.MirGraphics;
 using Client.MirNetwork;
-using Client.MirObjects;
 using Client.MirSounds;
-using SlimDX;
 using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
@@ -15,18 +12,16 @@ namespace Client.MirScenes.Dialogs
     {
         public List<ChatHistory> FullHistory = new List<ChatHistory>();
         public List<ChatHistory> History = new List<ChatHistory>();
-        public List<MirLabel> ChatLines = new List<MirLabel>();
-        private MirImageControl ChatHistoryPanel;
+        private MirScrollView2 ChatHistoryPanel;
 
         public List<ChatItem> LinkedItems = new List<ChatItem>();
-        public List<MirLabel> LinkedItemButtons = new List<MirLabel>();
 
         public MirButton SendChatBtn;
         public MirTextBox ChatTextBox;
         public MirButton ChatInputBtn;
         public Font ChatFont = FontConst.F10;
 
-        public int StartIndex, LineCount = 7, WindowSize;
+        private const int RowHeight = 16;
         // 私聊目标角色ID:由好友/伴侣等入口设置;非私聊为 0。取代原先把名字塞进消息文本的做法。
         public uint LastPrivateChatTargetId = 0;
 
@@ -72,8 +67,19 @@ namespace Client.MirScenes.Dialogs
             AnchorPos = new Point(0, -6);
             ApplyAnchor();
 
+            // 聊天历史：虚拟化滚动列表（自带滚动条/滚轮/拖拽）。先创建使其在绘制与命中上处于最底层，
+            // 保证后创建输入框、频道下拉、发送按钮仍可正常点击。
+            ChatHistoryPanel = new MirScrollView2
+            {
+                Parent = this,
+                Location = new Point(0, 0),
+                Size = new Size(Size.Width, Size.Height - 30),
+                BackColour = CommonColor.Transparent,
+                Border = false,
+                ShowScrollBar = true,
+            };
+
             KeyDown += ChatPanel_KeyDown;
-            MouseWheel += ChatPanel_MouseWheel;
 
             var mChatTextBoxBg = new MirImageControl
             {
@@ -124,16 +130,6 @@ namespace Client.MirScenes.Dialogs
             ChatInputBtn.Click += (o, e) =>
             {
                 StartChatInput();
-            };
-
-            // 聊天文字容器:把聊天接收文字(ChatLines / 物品链接)归到其下,使其绘制在输入框与下拉列表之下,
-            // 下拉展开时不再被聊天文字挡住。仅绘制、不拦截鼠标(点击/悬停穿透到下层控件)。
-            ChatHistoryPanel = new MirImageControl
-            {
-                Parent = this,
-                Location = new Point(0, 0),
-                Size = Size,
-                NotControl = true,
             };
 
             // 频道下拉 + 发送按钮(从 ChatControlBar 合并进来)
@@ -361,9 +357,6 @@ namespace Client.MirScenes.Dialogs
             if (chat.Count > 0 && !string.IsNullOrEmpty(channelPrefix))
                 chat[0] = channelPrefix + chat[0];
 
-            if (StartIndex == History.Count - LineCount)
-                StartIndex += chat.Count;
-
             for (int i = 0; i < chat.Count; i++)
                 FullHistory.Add(new ChatHistory { Text = chat[i], BackColour = backColour, ForeColour = foreColour, Type = type });
 
@@ -445,171 +438,165 @@ namespace Client.MirScenes.Dialogs
                 History.Add(FullHistory[i]);
             }
 
-            for (int i = 0; i < ChatLines.Count; i++)
-                ChatLines[i].Dispose();
+            // 交给 MirScrollView2 做虚拟化滚动：行数再多也只创建视口内的行，滚动条/滚轮/拖拽全由它负责。
+            int oldY = ChatHistoryPanel.ScrollOffset.Y;
+            int oldMaxY = Math.Max(0, ChatHistoryPanel.Content.Size.Height - ChatHistoryPanel.Size.Height);
+            bool atBottom = oldY >= oldMaxY - RowHeight;
 
-            for (int i = 0; i < LinkedItemButtons.Count; i++)
-                LinkedItemButtons[i].Dispose();
+            ChatHistoryPanel.SetDataSource(History.Count, RowHeight, CreateChatRow, BindChatRow);
 
-            ChatLines.Clear();
-            LinkedItemButtons.Clear();
-
-            if (StartIndex >= History.Count) StartIndex = History.Count - 1;
-            if (StartIndex < 0) StartIndex = 0;
-
-            int y = 1;
-
-            for (int i = StartIndex; i < History.Count; i++)
-            {
-                MirLabel temp = new MirLabel
-                {
-                    AutoSize = true,
-                    BackColour = History[i].BackColour,
-                    ForeColour = History[i].ForeColour,
-                    Location = new Point(1, y),
-                    OutLine = false,
-                    Parent = ChatHistoryPanel,
-                    Text = History[i].Text,
-                    Font = ChatFont,
-                };
-                temp.MouseWheel += ChatPanel_MouseWheel;
-                ChatLines.Add(temp);
-
-                temp.Click += (o, e) =>
-                {
-                    if (!(o is MirLabel l)) return;
-
-                    string[] parts = l.Text.Split(':', ' ');
-                    if (parts.Length == 0) return;
-
-                    string name = Regex.Replace(parts[0], "[^A-Za-z0-9]", "");
-
-                    ChatTextBox.SetFocus();
-                    ChatTextBox.Text = string.Format("/{0} ", name);
-                    ChatTextBox.Visible = true;
-                    ChatTextBox.TextBox.SelectionLength = 0;
-                    ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
-                };
-
-                string currentLine = History[i].Text;
-
-                int oldLength = currentLine.Length;
-
-                Capture capture = null;
-
-                foreach (Match match in RegexFunctions.ChatItemLinks.Matches(currentLine).Cast<Match>().OrderBy(o => o.Index).ToList())
-                {
-                    try
-                    {
-                        int offSet = oldLength - currentLine.Length;
-
-                        capture = match.Groups[1].Captures[0];
-                        string[] values = capture.Value.Split('/');
-                        currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
-                        string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                        Size size = TextRenderer.MeasureText(text, temp.Font, new Size(temp.Size.Width, int.MaxValue));
-
-                        ChatLink(values[0], ulong.Parse(values[1]), temp.Location.Add(new Point(size.Width - 10, 0)));
-                    }
-                    catch(Exception ex)
-                    {
-                        //Temporary debug to catch unknown error
-                        CMain.SaveError(ex.ToString());
-                        CMain.SaveError(currentLine);
-                        CMain.SaveError(capture.Value);
-                        throw;
-                    }
-                }
-
-                temp.Text = currentLine;
-
-                y += 16;
-                if (i - StartIndex == LineCount - 1) break;
-            }
-
+            // 新消息自动跟随到底部；用户上翻看历史则保持原滚动位置。
+            int maxY = Math.Max(0, History.Count * RowHeight - ChatHistoryPanel.Size.Height);
+            int targetY = atBottom ? maxY : oldY;
+            ChatHistoryPanel.SetScrollOffset(new Point(0, Math.Max(0, Math.Min(targetY, maxY))));
         }
 
-        private void ChatLink(string name, ulong uniqueID, Point p)
+        private sealed class ChatRow : MirControl
         {
-            UserItem item = GameScene.ChatItemList.FirstOrDefault(x => x.UniqueID == uniqueID);
+            public MirLabel Text;
+            public MirLabel Link;
+            public ulong LinkUniqueID;
+        }
 
-            if (item != null)
+        private MirControl CreateChatRow()
+        {
+            var row = new ChatRow
             {
-                MirLabel temp = new MirLabel
-                {
-                    AutoSize = true,
-                    Visible = true,
-                    Parent = ChatHistoryPanel,
-                    Location = p,
-                    Text = name,
-                    ForeColour = CommonColor.Blue,
-                    Sound = SoundList.ButtonC,
-                    Font = ChatFont,
-                    OutLine = false,
-                };
+                Size = new Size(Size.Width - MirScrollView.ScrollBarWidth, RowHeight),
+            };
 
-                temp.MouseEnter += (o, e) => temp.ForeColour = CommonColor.Red;
-                temp.MouseLeave += (o, e) =>
-                {
-                    GameScene.Scene.DisposeItemLabel();
-                    temp.ForeColour = CommonColor.Blue;
-                };
-                temp.MouseDown += (o, e) => temp.ForeColour = CommonColor.Blue;
-                temp.MouseUp += (o, e) => temp.ForeColour = CommonColor.Red;
+            row.Text = new MirLabel
+            {
+                Parent = row,
+                AutoSize = true,
+                Location = new Point(1, 0),
+                Font = ChatFont,
+                OutLine = false,
+                DrawControlTexture = false
+            };
+            row.Text.Click += ChatLine_Click;
 
-                temp.Click += (o, e) =>
-                {
-                    GameScene.Scene.CreateItemLabel(item);
-                };
+            row.Link = new MirLabel
+            {
+                Parent = row,
+                AutoSize = true,
+                Visible = false,
+                Font = ChatFont,
+                ForeColour = CommonColor.Blue,
+                OutLine = false,
+                DrawControlTexture = false
+            };
+            row.Link.MouseEnter += (o, e) => row.Link.ForeColour = CommonColor.Red;
+            row.Link.MouseLeave += (o, e) =>
+            {
+                GameScene.Scene.DisposeItemLabel();
+                row.Link.ForeColour = CommonColor.Blue;
+            };
+            row.Link.Click += (o, e) =>
+            {
+                UserItem item = GameScene.ChatItemList.FirstOrDefault(x => x.UniqueID == row.LinkUniqueID);
+                if (item != null) GameScene.Scene.CreateItemLabel(item);
+            };
 
-                LinkedItemButtons.Add(temp);
+            return row;
+        }
+
+        private void BindChatRow(MirControl control, int index)
+        {
+            var row = (ChatRow)control;
+            row.Link.Visible = false;
+
+            if (index < 0 || index >= History.Count)
+            {
+                row.Text.Text = string.Empty;
+                return;
             }
+
+            ChatHistory h = History[index];
+            string currentLine = h.Text;
+            row.Text.BackColour = h.BackColour;
+            row.Text.ForeColour = h.ForeColour;
+
+            int oldLength = currentLine.Length;
+            Capture capture = null;
+
+            foreach (Match match in RegexFunctions.ChatItemLinks.Matches(currentLine).Cast<Match>().OrderBy(o => o.Index).ToList())
+            {
+                try
+                {
+                    int offSet = oldLength - currentLine.Length;
+
+                    capture = match.Groups[1].Captures[0];
+                    string[] values = capture.Value.Split('/');
+                    currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
+                    string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
+                    Size size = TextRenderer.MeasureText(text, row.Text.Font, new Size(int.MaxValue, int.MaxValue));
+
+                    row.Link.Text = values[0];
+                    row.Link.Location = new Point(Math.Max(0, (int)size.Width - 10), 0);
+                    row.LinkUniqueID = ulong.Parse(values[1]);
+                    row.Link.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    CMain.SaveError(ex.ToString());
+                    CMain.SaveError(currentLine);
+                    if (capture != null) CMain.SaveError(capture.Value);
+                }
+            }
+
+            row.Text.Text = currentLine;
+        }
+
+        private void ChatLine_Click(object sender, EventArgs e)
+        {
+            if (!(sender is MirLabel l)) return;
+
+            string[] parts = l.Text.Split(':', ' ');
+            if (parts.Length == 0) return;
+
+            string name = Regex.Replace(parts[0], "[^A-Za-z0-9]", "");
+
+            ChatTextBox.SetFocus();
+            ChatTextBox.Text = string.Format("/{0} ", name);
+            ChatTextBox.Visible = true;
+            ChatTextBox.TextBox.SelectionLength = 0;
+            ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
         }
 
 
         private void ChatPanel_KeyDown(object sender, KeyEventArgs e)
         {
+            int maxY = Math.Max(0, History.Count * RowHeight - ChatHistoryPanel.Size.Height);
+            int page = Math.Max(RowHeight, ChatHistoryPanel.Size.Height - RowHeight);
+            int y;
+
             switch (e.KeyCode)
             {
                 case Keys.ArrowUp:
-                    if (StartIndex == 0) return;
-                    StartIndex--;
-                    break;
-                case Keys.Home:
-                    if (StartIndex == 0) return;
-                    StartIndex = 0;
+                    y = ChatHistoryPanel.ScrollOffset.Y - RowHeight;
                     break;
                 case Keys.ArrowDown:
-                    if (StartIndex == History.Count - 1) return;
-                    StartIndex++;
+                    y = ChatHistoryPanel.ScrollOffset.Y + RowHeight;
+                    break;
+                case Keys.Home:
+                    y = 0;
                     break;
                 case Keys.End:
-                    if (StartIndex == History.Count - 1) return;
-                    StartIndex = History.Count - 1;
+                    y = maxY;
                     break;
                 case Keys.PageUp:
-                    if (StartIndex == 0) return;
-                    StartIndex -= LineCount;
+                    y = ChatHistoryPanel.ScrollOffset.Y - page;
                     break;
                 case Keys.PageDown:
-                    if (StartIndex == History.Count - 1) return;
-                    StartIndex += LineCount;
+                    y = ChatHistoryPanel.ScrollOffset.Y + page;
                     break;
                 default:
                     return;
             }
-            Update();
+
+            ChatHistoryPanel.SetScrollOffset(new Point(0, Math.Max(0, Math.Min(y, maxY))));
             e.Handled = true;
-        }
-        private void ChatPanel_MouseWheel(object sender, MouseEventArgs e)
-        {
-            int count = e.Delta / SystemInformation.MouseWheelScrollDelta;
-
-            if (StartIndex == 0 && count >= 0) return;
-            if (StartIndex == History.Count - 1 && count <= 0) return;
-
-            StartIndex -= count;
-            Update();
         }
         private void ChatTextBox_KeyUp(object sender, KeyEventArgs e)
         {
