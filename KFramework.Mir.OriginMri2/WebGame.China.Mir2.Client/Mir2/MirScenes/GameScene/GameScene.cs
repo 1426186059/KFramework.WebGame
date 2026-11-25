@@ -92,8 +92,6 @@ namespace Client.MirScenes
 
         public BigMapDialog BigMapDialog;
         public TrustMerchantDialog TrustMerchantDialog;
-        public CharacterDuraPanel CharacterDuraPanel;
-        public DuraStatusDialog DuraStatusPanel;
         public TradeDialog TradeDialog;
         public GuestTradeDialog GuestTradeDialog;
 
@@ -366,8 +364,6 @@ namespace Client.MirScenes
 
             BigMapDialog = new BigMapDialog { Parent = this, Visible = false };
             TrustMerchantDialog = new TrustMerchantDialog { Parent = this, Visible = false };
-            CharacterDuraPanel = new CharacterDuraPanel { Parent = this, Visible = false };
-            DuraStatusPanel = new DuraStatusDialog { Parent = this, Visible = true };
             TradeDialog = new TradeDialog { Parent = this, Visible = false };
             GuestTradeDialog = new GuestTradeDialog { Parent = this, Visible = false };
 
@@ -740,7 +736,6 @@ namespace Client.MirScenes
                         InspectDialog.Hide();
                         StorageDialog.Hide();
                         TrustMerchantDialog.Hide();
-                        //CharacterDuraPanel.Hide();
                         QuestListDialog.Hide();
                         QuestDetailDialog.Hide();
                         QuestLogDialog.Hide();
@@ -900,8 +895,6 @@ namespace Client.MirScenes
                             ChatDialog.Show();
                             BeltDialog.Show();
                             MiniMapDialog.Show();
-                            CharacterDuraPanel.Show();
-                            DuraStatusPanel.Show();
                             BuffsDialog.Show();
                         }
                         else
@@ -910,8 +903,6 @@ namespace Client.MirScenes
                             ChatDialog.Hide();
                             BeltDialog.Hide();
                             MiniMapDialog.Hide();
-                            CharacterDuraPanel.Hide();
-                            DuraStatusPanel.Hide();
                             BuffsDialog.Hide();
                         }
                         break;
@@ -1367,11 +1358,6 @@ namespace Client.MirScenes
         public void DialogProcess()
         {
             Scene.SkillBarDialogs.Show();
-
-            if (Settings.DuraView)
-                CharacterDuraPanel.Show();
-            else
-                CharacterDuraPanel.Hide();
         }
 
         public override void ProcessPacket(Packet p)
@@ -2424,7 +2410,6 @@ namespace Client.MirScenes
             toCell.Item = i;
 
             User.RefreshStats();
-            CharacterDuraPanel.GetCharacterDura();
         }
 
         // 背包整理结果：服务器已完成「同类合并 + 排序 + 紧凑使用前面空格子」，
@@ -2448,7 +2433,6 @@ namespace Client.MirScenes
                 if (cell != null) cell.Item = cell.Item;
 
             User.RefreshStats();
-            CharacterDuraPanel.GetCharacterDura();
         }
         private void EquipItem(S.EquipItem p)
         {
@@ -2489,7 +2473,6 @@ namespace Client.MirScenes
             UserItem i = fromCell.Item;
             fromCell.Item = toCell.Item;
             toCell.Item = i;
-            CharacterDuraPanel.UpdateCharacterDura(i);
             if (p.Grid == MirGridType.HeroInventory)
                 Hero.RefreshStats();
             else
@@ -2709,7 +2692,6 @@ namespace Client.MirScenes
             if (!p.Success) return;
             toCell.Item = fromCell.Item;
             fromCell.Item = null;
-            CharacterDuraPanel.GetCharacterDura();
             if (p.Grid == MirGridType.HeroInventory)
                 Hero.RefreshStats();
             else
@@ -2756,7 +2738,6 @@ namespace Client.MirScenes
             if (!p.Success) return;
             toCell.Item = fromCell.Item;
             fromCell.Item = null;
-            CharacterDuraPanel.GetCharacterDura();
             User.RefreshStats();
         }
         private void TakeBackItem(S.TakeBackItem p)
@@ -2774,7 +2755,6 @@ namespace Client.MirScenes
             toCell.Item = fromCell.Item;
             fromCell.Item = null;
             User.RefreshStats();
-            CharacterDuraPanel.GetCharacterDura();
         }
         private void StoreItem(S.StoreItem p)
         {
@@ -3037,7 +3017,6 @@ namespace Client.MirScenes
             fromCell.Item = null;
             User.RefreshStats();
             Hero.RefreshStats();
-            CharacterDuraPanel.GetCharacterDura();
         }
 
         private void TransferHeroItem(S.TransferHeroItem p)
@@ -3056,7 +3035,6 @@ namespace Client.MirScenes
             fromCell.Item = null;
             User.RefreshStats();
             Hero.RefreshStats();
-            CharacterDuraPanel.GetCharacterDura();
         }
 
         private void MountUpdate(S.MountUpdate p)
@@ -3752,8 +3730,6 @@ namespace Client.MirScenes
                 DisposeItemLabel();
                 CreateItemLabel(item);
             }
-
-            CharacterDuraPanel.UpdateCharacterDura(item);
         }
         private void HealthChanged(S.HealthChanged p)
         {
@@ -10312,8 +10288,6 @@ namespace Client.MirScenes
                 HeroBeltDialog = null;
 
                 RelationshipDialog = null;
-                CharacterDuraPanel = null;
-                DuraStatusPanel = null;
 
                 HoverItem = null;
                 SelectedCell = null;

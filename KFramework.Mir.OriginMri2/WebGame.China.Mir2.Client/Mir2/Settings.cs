@@ -183,7 +183,6 @@ namespace Client
             HPView = true,
             TransparentChat = false,
             ModeView = false,
-            DuraView = false,
             DisplayDamage = true,
             TargetDead = false,
             HighlightTarget = true,
@@ -279,7 +278,6 @@ namespace Client
             HighlightTarget = Reader.ReadBoolean("Game", "HighlightTarget", HighlightTarget);
             ExpandedBuffWindow = Reader.ReadBoolean("Game", "ExpandedBuffWindow", ExpandedBuffWindow);
             ExpandedHeroBuffWindow = Reader.ReadBoolean("Game", "ExpandedHeroBuffWindow", ExpandedHeroBuffWindow);
-            DuraView = Reader.ReadBoolean("Game", "DuraWindow", DuraView);
             DisplayBodyName = Reader.ReadBoolean("Game", "DisplayBodyName", DisplayBodyName);
             NewMove = Reader.ReadBoolean("Game", "NewMove", NewMove);
             //Language = Reader.ReadString("Game", "Language", Language); //我们只使用中文啊
@@ -367,7 +365,6 @@ namespace Client
             Reader.Write("Game", "HighlightTarget", HighlightTarget);
             Reader.Write("Game", "ExpandedBuffWindow", ExpandedBuffWindow);
             Reader.Write("Game", "ExpandedHeroBuffWindow", ExpandedBuffWindow);
-            Reader.Write("Game", "DuraWindow", DuraView);
             Reader.Write("Game", "DisplayBodyName", DisplayBodyName);
             Reader.Write("Game", "NewMove", NewMove);
             //Reader.Write("Game", "Language", Language);
