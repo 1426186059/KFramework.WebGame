@@ -2325,10 +2325,13 @@ namespace Client.MirScenes
 
         private void ObjectChat(S.ObjectChat p)
         {
+            // 说话都进聊天窗口；头顶气泡只给玩家，怪物/NPC 不显示。
             ChatDialog.ReceiveChat(p.Text, p.Type);
 
-            if (MapControl.Objects.TryGetValue(p.ObjectID, out MapObject ob))
-                ob.Chat(RegexFunctions.CleanChatString(p.Text));
+            if (!MapControl.Objects.TryGetValue(p.ObjectID, out MapObject ob)) return;
+            if (!(ob is PlayerObject)) return;
+
+            ob.Chat(RegexFunctions.CleanChatString(p.Text));
         }
 
         private void NewMonsterInfo(S.NewMonsterInfo info)

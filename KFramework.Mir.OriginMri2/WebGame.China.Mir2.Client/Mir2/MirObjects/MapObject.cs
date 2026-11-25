@@ -428,6 +428,9 @@ namespace Client.MirObjects
             return null;
         }
 
+        /// <summary>头顶聊天文字【底部】相对脚底的上移像素。层级：名字(36) → 血条(BloodYOffset) → 称号/会员 → 聊天。</summary>
+        protected virtual int ChatYOffset => BloodYOffset + 50;
+
         public void Chat(string text)
         {
             if (ChatLabel != null && !ChatLabel.IsDisposed)
@@ -456,14 +459,16 @@ namespace Client.MirObjects
             {
                 AutoSize = true,
                 BackColour = CommonColor.Transparent,
-                ForeColour = CommonColor.White,
+                ForeColour = CommonColor.DeepSkyBlue,
                 OutLine = true,
                 OutLineColour = CommonColor.Black,
+                UnderLine = true,
                 DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 Text = text,
             };
             ChatTime = CMain.Time + 5000;
         }
+
         public virtual void DrawChat()
         {
             if (ChatLabel == null || ChatLabel.IsDisposed) return;
@@ -475,8 +480,11 @@ namespace Client.MirObjects
                 return;
             }
 
-            ChatLabel.ForeColour = Dead ? CommonColor.Gray : CommonColor.White;
-            ChatLabel.Location = new Point(DisplayRectangle.X + (48 - ChatLabel.Size.Width) / 2, DisplayRectangle.Y - (60 + ChatLabel.Size.Height) - (Dead ? 35 : 0));
+            ChatLabel.ForeColour = Dead ? CommonColor.Gray : CommonColor.DeepSkyBlue;
+            // 与名字一致：只用 DrawLocation（脚底逻辑坐标）+ 固定偏移，不依赖逐帧变化的 DisplayRectangle。
+            ChatLabel.Location = new Point(
+                DrawLocation.X - ChatLabel.Size.Width / 2,
+                DrawLocation.Y - ChatYOffset - ChatLabel.Size.Height - (Dead ? 35 : 0));
             ChatLabel.Draw();
         }
 
@@ -584,7 +592,8 @@ namespace Client.MirObjects
                 }
                 else
                 {
-                    info.Draw(DisplayRectangle.Location);
+                    // 伤害飘字与名字同源：用脚底 DrawLocation 作基准，避免转向/换帧时飘字跳动。
+                    info.Draw(DrawLocation);
                 }
             }
         }

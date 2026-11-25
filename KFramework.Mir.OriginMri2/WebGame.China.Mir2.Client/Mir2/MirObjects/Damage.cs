@@ -41,7 +41,8 @@ namespace Client.MirObjects
                 };
             }
 
-            displayLocation.Offset((int)(15 - (Text.Length * 3)), (int)(((int)((double)timeRemaining / Factor)) - Distance) - 75 - Offset);
+            // 与名字/头顶聊天一致：按标签实际宽度水平居中，不再用 Text.Length*3 估算。
+            displayLocation.Offset(-DamageLabel.Size.Width / 2, (int)(((int)((double)timeRemaining / Factor)) - Distance) - 75 - Offset);
 
             DamageLabel.Location = displayLocation;
             DamageLabel.Draw();

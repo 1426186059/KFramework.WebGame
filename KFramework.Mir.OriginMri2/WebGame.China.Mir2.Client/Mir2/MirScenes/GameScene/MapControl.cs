@@ -1026,7 +1026,8 @@ public sealed class MapControl : MirControl
             if (Settings.NameView && !(ob is ItemObject) && !ob.Dead)
                 ob.DrawName();
 
-            ob.DrawChat();
+            if (ob is PlayerObject) ob.DrawChat();
+
             //ob.DrawHealth();
             ob.DrawPoison();
             ob.DrawDamages();
