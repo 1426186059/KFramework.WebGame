@@ -3688,7 +3688,7 @@ namespace Client.MirScenes
                     int side = obj.LastDamageSide;
                     switch (p.Type)
                     {
-                        case DamageType.Hit: // 原始传奇 damage id=27（number=1 且无 title，普通命中只显示数字）
+                        case DamageType.Hit: // 原始传奇默认 damage id=0（number=2，hurt2_* 数字，无 title）
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
                                 OriginMir2Damage.DefaultHitDamageId, side));

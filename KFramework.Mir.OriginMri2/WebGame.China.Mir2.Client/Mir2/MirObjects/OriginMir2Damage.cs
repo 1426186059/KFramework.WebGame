@@ -20,7 +20,7 @@ namespace Client.MirObjects
     public sealed class OriginMir2Damage : Damage
     {
         /// <summary>客户端按 DamageType 映射的典型原始 damage id（原版服务端带 id，本工程协议没带）。</summary>
-        public const int DefaultHitDamageId = 27;    // number=1 且无 title：普通命中只显示数字，不带“致命”图标
+        public const int DefaultHitDamageId = 0;     // 原版默认伤害配置：number=2（hurt2_* 数字），无 title，只显示数字
         public const int DefaultCritDamageId = 1;    // number=1 + title=31：BloodFont_json.plus_31（“致命”图标）
         public const int DefaultHealDamageId = 15;   // number=3（JS 取绝对值，回血）
         public const int DefaultMissDamageId = 7;    // 无 number + title=36，即 BloodFont_json.plus_36（闪避图标）
@@ -131,8 +131,10 @@ namespace Client.MirObjects
 
             GetMotion(elapsed, out int dx, out int dy, out float scale, out float motionAlpha);
 
-            int x = displayLocation.X + _offsetX + dx;
-            int y = displayLocation.Y + _offsetY + dy - BaseYOffset - Offset;
+            // 原始 JS 是把整个 BloodMovie 按自身宽度居中到实体上，
+            // offsetX/offsetY 只在 BloodMovie 内部作为“有 title 时数字的起点”，不能直接加到实体坐标上。
+            int x = displayLocation.X + dx;
+            int y = displayLocation.Y + dy - BaseYOffset - Offset;
             int alpha = (int)(GetUserAlpha(progress) * motionAlpha);
 
             if (DrawOrigin(x, y, scale, alpha))
@@ -277,7 +279,12 @@ namespace Client.MirObjects
             return a + (b - a) * t;
         }
 
-        /// <summary>逐字符取图集帧横拼（对齐原始 BloodMovie.addNumber）。false=帧未就绪，回退文本。</summary>
+        /// <summary>
+        /// 对齐原始 BloodMovie.show + addNumber：
+        /// - title 图标画在本地 (0,0)；
+        /// - 只有 title&gt;0 时，数字起点才是 (offsetX,offsetY)；没有 title 时数字从 (0,0) 开始；
+        /// - 整个组按自身宽度居中到实体上方，不能把 offsetX 直接加到实体坐标。
+        /// </summary>
         private bool DrawOrigin(int x, int y, float scale, int alpha)
         {
             if (!Mir2AtlasLibrary.TryGetFrame("BloodFont_json", "hurt" + _hurtStyle + "_0", out var probe) || probe?.Texture == null)
@@ -285,45 +292,70 @@ namespace Client.MirObjects
                 return false;
             }
 
-            int cursor = x;
-            bool any = false;
             Color tint = new Color(Colour.R, Colour.G, Colour.B, (byte)alpha);
 
+            KSpriteInfo titleFrame = null;
+            string titleKey = null;
+            if (_cfg != null && _cfg.title > 0)
+            {
+                titleKey = "plus_" + _cfg.title;
+                if (Mir2AtlasLibrary.TryGetFrame("BloodFont_json", titleKey, out var tf) && tf?.Texture != null)
+                {
+                    titleFrame = tf;
+                }
+            }
+
+            List<(KSpriteInfo Glyph, string Key, float Width)> glyphs = new();
+            float digitsWidth = 0f;
             foreach (char ch in Text)
             {
                 KSpriteInfo glyph = GetGlyph(_hurtStyle, ch, out string key);
                 if (glyph == null)
                 {
-                    continue; // 0/逗号/空格：原始逻辑不绘制
+                    continue; // 0/逗号/空格/中文：原始 addNumber 不绘制
                 }
 
-                // 字符排版按“裁剪前的逻辑框”算，所以光标推进用 Size.X（sourceW）。
-                // 真正画到屏幕上的只能是裁剪后的 w×h 小图，并加上 offX/offY 放回框内。
-                // 减号就是典型例子：逻辑框 15×19，实际只有 15×5 的一条横线，offY=7；
-                // 之前把 15×5 拉成 15×19，才会看到一团黑影。
-                float advance = glyph.Size.X * scale;
-                if (advance <= 0)
+                // 原始 addNumber 的 n += d.width，d.width 是裁剪后的纹理宽度（SourceRectangle.Width），
+                // 不是 sourceW；减号的逻辑框 15×19 但实际只有 15×5 一条横线。
+                float w = glyph.SourceRectangle.Width * scale;
+                if (w <= 0)
                 {
                     continue;
                 }
 
-                DrawGlyphFrame(glyph, key, cursor, y, scale, tint);
-                cursor += (int)Math.Ceiling(advance);
+                glyphs.Add((glyph, key, w));
+                digitsWidth += w;
+            }
+
+            float titleWidth = titleFrame != null ? titleFrame.SourceRectangle.Width * scale : 0f;
+            float penX = titleFrame != null ? _offsetX * scale : 0f;
+            float penY = titleFrame != null ? _offsetY * scale : 0f;
+
+            // JS：有 title 时先 _w=title.width，随后 addNumber 把 _w 覆盖为 offsetX+数字总宽；
+            // 没有数字（如纯“闪避”图标）则保留 title 宽度。
+            float contentWidth = titleFrame != null
+                ? Math.Max(titleWidth, penX + digitsWidth)
+                : digitsWidth;
+            if (contentWidth <= 0)
+            {
+                return false;
+            }
+
+            float originX = x - contentWidth / 2f;
+            bool any = false;
+
+            if (titleFrame != null)
+            {
+                DrawGlyphFrame(titleFrame, titleKey, originX, y, scale, tint);
                 any = true;
             }
 
-            // title 图标（plus_{title}）：原始在数字之前叠加
-            if (_cfg != null && _cfg.title > 0)
+            float cursor = originX + penX;
+            foreach (var item in glyphs)
             {
-                string titleKey = "plus_" + _cfg.title;
-                if (Mir2AtlasLibrary.TryGetFrame("BloodFont_json", titleKey, out var titleFrame) && titleFrame?.Texture != null)
-                {
-                    float titleWidth = titleFrame.Size.X * scale;
-                    DrawGlyphFrame(titleFrame, titleKey, x - titleWidth - 2, y, scale, tint);
-                    // 纯图标配置（如未命中 title=36 的“闪避”）没有数字，也必须算绘制成功，
-                    // 否则会继续走 DrawFallback，把“Miss/未命中”小字又画出来。
-                    any = true;
-                }
+                DrawGlyphFrame(item.Glyph, item.Key, cursor, y + penY, scale, tint);
+                cursor += item.Width;
+                any = true;
             }
 
             return any;

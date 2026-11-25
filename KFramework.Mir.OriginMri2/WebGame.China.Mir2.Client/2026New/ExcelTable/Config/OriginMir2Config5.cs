@@ -139,11 +139,11 @@ public class DamageTable
     [JsonPropertyName("title")]
     public int title { get; set; } = -1;
 
-    /// <summary>水平基础偏移；当前客户端加在目标显示 X 上，再叠加 startarr/stoparr/endarr 的动画位移。</summary>
+    /// <summary> BloodMovie 内部“数字起点”的 X：只有 title&gt;0 时，数字从图标后的 offsetX 处开始排；无 title 时忽略，数字从 0 开始。</summary>
     [JsonPropertyName("offsetX")]
     public string offsetX { get; set; } = "";
 
-    /// <summary>垂直基础偏移；当前客户端加在目标显示 Y 上，再叠加 startarr/stoparr/endarr 的动画位移。</summary>
+    /// <summary> BloodMovie 内部“数字起点”的 Y：只有 title&gt;0 时生效；无 title 时数字 Y 固定为 0。</summary>
     [JsonPropertyName("offsetY")]
     public string offsetY { get; set; } = "";
 
