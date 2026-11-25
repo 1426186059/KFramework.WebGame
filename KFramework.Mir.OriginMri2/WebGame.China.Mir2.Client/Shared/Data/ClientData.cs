@@ -1,4 +1,4 @@
-﻿using MirEngine;
+using MirEngine;
 
 public class ClientMagic
 {
@@ -529,7 +529,7 @@ public class ClientQuestInfo
         writer.Write(MaxLevelNeeded);
         writer.Write(QuestNeeded);
         writer.Write((byte)ClassNeeded);
-        writer.Write((byte)Type);
+        writer.Write((int)Type);
         writer.Write(TimeLimitInSeconds);
         writer.Write(RewardGold);
         writer.Write(RewardExp);
@@ -695,7 +695,7 @@ public class QuestTaskTarget
     }
     public void Save(BinaryWriter writer)
     {
-        writer.Write((byte)Type);
+        writer.Write((int)Type);
         writer.Write(Name);
         writer.Write(MapIndex);
         writer.Write(X);
@@ -726,7 +726,7 @@ public class ClientBuff
     {
         Caster = null;
 
-        Type = (BuffType)reader.ReadByte();
+        Type = (BuffType)reader.ReadInt32();
         Visible = reader.ReadBoolean();
         ObjectID = reader.ReadUInt32();
         ExpireTime = reader.ReadInt64();
@@ -747,7 +747,7 @@ public class ClientBuff
 
     public void Save(BinaryWriter writer)
     {
-        writer.Write((byte)Type);
+        writer.Write((int)Type);
         writer.Write(Visible);
         writer.Write(ObjectID);
         writer.Write(ExpireTime);

@@ -134,7 +134,7 @@ namespace Server.MirDatabase
 
         public Buff(BinaryReader reader, int version, int customVersion)
         {
-            var type = (BuffType)reader.ReadByte();
+            var type = (BuffType)reader.ReadInt32();
 
             Info = Envir.GetBuffInfo(type);
 
@@ -209,7 +209,7 @@ namespace Server.MirDatabase
 
         public void Save(BinaryWriter writer)
         {
-            writer.Write((byte)Type);
+            writer.Write((int)Type);
             writer.Write(ObjectID);
             writer.Write(ExpireTime);
 

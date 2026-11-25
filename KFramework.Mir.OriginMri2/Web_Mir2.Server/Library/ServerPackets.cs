@@ -1003,7 +1003,7 @@ namespace ServerPackets
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                Buffs.Add((BuffType)reader.ReadByte());
+                Buffs.Add((BuffType)reader.ReadInt32());
             }
 
             LevelEffects = (LevelEffects)reader.ReadUInt16();
@@ -1065,7 +1065,7 @@ namespace ServerPackets
             writer.Write(Buffs.Count);
             for (int i = 0; i < Buffs.Count; i++)
             {
-                writer.Write((byte)Buffs[i]);
+                writer.Write((int)Buffs[i]);
             }
 
             writer.Write((ushort)LevelEffects);
@@ -2476,7 +2476,7 @@ namespace ServerPackets
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                Buffs.Add((BuffType)reader.ReadByte());
+                Buffs.Add((BuffType)reader.ReadInt32());
             }
         }
 
@@ -2506,7 +2506,7 @@ namespace ServerPackets
             writer.Write(Buffs.Count);
             for (int i = 0; i < Buffs.Count; i++)
             {
-                writer.Write((byte)Buffs[i]);
+                writer.Write((int)Buffs[i]);
             }
         }
 
@@ -4190,12 +4190,12 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Type = (BuffType)reader.ReadByte();
+            Type = (BuffType)reader.ReadInt32();
             ObjectID = reader.ReadUInt32();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
-            writer.Write((byte)Type);
+            writer.Write((int)Type);
             writer.Write(ObjectID);
         }
     }
@@ -4209,13 +4209,13 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
-            Type = (BuffType)reader.ReadByte();
+            Type = (BuffType)reader.ReadInt32();
             ObjectID = reader.ReadUInt32();
             Paused = reader.ReadBoolean();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
-            writer.Write((byte)Type);
+            writer.Write((int)Type);
             writer.Write(ObjectID);
             writer.Write(Paused);
         }

@@ -12,9 +12,7 @@ namespace Client.MirScenes.Dialogs
         protected MirButton _expandCollapseButton;
         protected MirLabel _buffCountLabel;
         protected List<MirImageControl> _buffList = new List<MirImageControl>();
-        protected bool _fadedOut, _fadedIn;
         protected int _buffCount;
-        protected long _nextFadeTime;
         public Func<bool> GetExpandedParameter;
         public Action<bool> SetExpandedParameter;
         private bool ExpandedBuffWindow
@@ -23,31 +21,22 @@ namespace Client.MirScenes.Dialogs
             set { SetExpandedParameter(value); }
         }
 
-    protected const long FadeDelay = 55;
-        protected const float FadeRate = 0.2f;
-
         public BuffDialog()
         {
-            Index = 20;
-            Library = Libraries.Prguse2;
+            // 对齐原始传奇：玩家/怪物 buffGro 无底板，图标 35×35 每行 5 个（main10.25487.1.min.js:
+            // BuffRender.x = i%5*35, y = floor(i/5)*35）。原 Prguse2#20 底板与展开按钮都是旧图库白块，去掉。
             Movable = false;
-            Size = new Size(44, 34);
-            Location = new Point(Settings.ScreenWidth - 170, 0);
+            Size = new Size(175, 35);
             Sort = true;
 
-            Opacity = 0f;
-            _fadedOut = true;
+            Opacity = 1f;
 
             _expandCollapseButton = new MirButton
             {
-                Index = 7,
-                HoverIndex = 8,
                 Size = new Size(16, 15),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 9,
                 Sound = SoundList.ButtonA,
-                Opacity = 0f
+                Visible = false,
             };
             _expandCollapseButton.Click += (o, e) =>
             {
@@ -77,31 +66,20 @@ namespace Client.MirScenes.Dialogs
             };
         }
 
+        // BuffType 的数值即原始传奇 5config buff id，直接查表取 icon（icon/skills/{icon}.png）。
+        private static string BuffIconUrl(BuffType type)
+        {
+            return Mir2OriginObjectLibrary.SkillIconPath(OriginBuffTable.GetIcon((int)type));
+        }
+
         public void CreateBuff(ClientBuff buff)
         {
-            var buffImage = BuffImage(buff.Type);
-
-            var buffLibrary = Libraries.BuffIcon;
-
-            if (buffImage >= 20000)
-            {
-                buffImage -= 20000;
-                buffLibrary = Libraries.MagIcon;
-            }
-
-            if (buffImage >= 10000)
-            {
-                buffImage -= 10000;
-                buffLibrary = Libraries.Prguse2;
-            }
-
             var image = new MirImageControl
             {
-                Library = buffLibrary,
                 Parent = this,
                 Visible = true,
                 Sort = false,
-                Index = buffImage
+                ImageUrl = BuffIconUrl(buff.Type),
             };
 
             _buffList.Insert(0, image);
@@ -130,146 +108,39 @@ namespace Client.MirScenes.Dialogs
                 var image = _buffList[i];
                 var buff = Buffs[i];
 
-                var buffImage = BuffImage(buff.Type);
-                var buffLibrary = Libraries.BuffIcon;
-
-                //ArcherSpells - VampireShot,PoisonShot
-                if (buffImage >= 20000)
-                {
-                    buffImage -= 20000;
-                    buffLibrary = Libraries.MagIcon;
-                }
-
-                if (buffImage >= 10000)
-                {
-                    buffImage -= 10000;
-                    buffLibrary = Libraries.Prguse2;
-                }
-
-                var location = new Point(Size.Width - 10 - 23 - (i * 23) + ((10 * 23) * (i / 10)), 6 + ((i / 10) * 24));
-
-                image.Location = new Point(location.X, location.Y);
-                image.Hint = ExpandedBuffWindow ? BuffString(buff) : CombinedBuffText();
-                image.Index = buffImage;
-                image.Library = buffLibrary;
-
-                if (ExpandedBuffWindow || !ExpandedBuffWindow && i == 0)
-                {
-                    image.Visible = true;
-                    image.Opacity = 1f;
-                }
-                else
-                {
-                    image.Visible = false;
-                    image.Opacity = 0.6f;
-                }
+                // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN，不再依赖旧 .Lib。
+                image.Location = new Point((i % 5) * 35, (i / 5) * 35);
+                image.Size = new Size(35, 35);
+                image.Hint = BuffString(buff);
+                image.ImageUrl = BuffIconUrl(buff.Type);
+                image.Visible = true;
+                image.Opacity = 1f;
 
                 if (buff.Paused || buff.Infinite || !(Math.Round((buff.ExpireTime - CMain.Time) / 1000D) <= 5))
+                {
                     continue;
+                }
 
                 var time = (buff.ExpireTime - CMain.Time) / 100D;
 
                 if (Math.Round(time) % 10 < 5)
-                    image.Index = -1;
-            }
-
-            if (IsMouseOver(CMain.MPoint))
-            { 
-                if (_buffCount == 0 || (!_fadedIn && CMain.Time <= _nextFadeTime))
-                    return;
-
-                Opacity += FadeRate;
-                _expandCollapseButton.Opacity += FadeRate;
-
-                if (Opacity > 1f)
                 {
-                    Opacity = 1f;
-                    _expandCollapseButton.Opacity = 1f;
-                    _fadedIn = true;
-                    _fadedOut = false;
+                    image.Visible = false;
                 }
-
-                _nextFadeTime = CMain.Time + FadeDelay;
             }
-            else
-            {
-                if (!_fadedOut && CMain.Time <= _nextFadeTime)
-                    return;
 
-                Opacity -= FadeRate;
-                _expandCollapseButton.Opacity -= FadeRate;
-
-                if (Opacity < 0f)
-                {
-                    Opacity = 0f;
-                    _expandCollapseButton.Opacity = 0f;
-                    _fadedOut = true;
-                    _fadedIn = false;
-                }
-                    
-                _nextFadeTime = CMain.Time + FadeDelay;
-            }
         }
 
         private void UpdateWindow()
         {
             _buffCount = _buffList.Count;
 
-            var baseImage = 20;
-            var heightOffset = Location.Y;
-
-            //foreach (var dialog in GameScene.Scene.BuffDialogs)
-            //{
-            //    if (dialog.Category == Category) break;
-
-            //    if (dialog.Buffs.Count > 0)
-            //    {
-            //        heightOffset += dialog.Size.Height;
-            //    }
-            //}
-
-            if (_buffCount > 0 && ExpandedBuffWindow)
-            {
-                var oldWidth = Size.Width;
-
-                if (_buffCount <= 10)
-                    Index = baseImage + _buffCount - 1;
-                else if (_buffCount > 10)
-                    Index = baseImage + 10;
-                else if (_buffCount > 20)
-                    Index = baseImage + 11;
-                else if (_buffCount > 30)
-                    Index = baseImage + 12;
-                else if (_buffCount > 40)
-                    Index = baseImage + 13;
-
-                var newX = Location.X - Size.Width + oldWidth;
-                var newY = heightOffset;
-                Location = new Point(newX, newY);
-
-                _buffCountLabel.Visible = false;
-
-                _expandCollapseButton.Location = new Point(Size.Width - 15, 0);
-                Size = new Size((_buffCount > 10 ? 10 : _buffCount) * 23, 24 + (_buffCount / 10) * 24);
-            }
-            else if (_buffCount > 0 && !ExpandedBuffWindow)
-            {
-                var oldWidth = Size.Width;
-
-                Index = 20;
-            
-                var newX = Location.X - Size.Width + oldWidth;
-                var newY = heightOffset;
-                Location = new Point(newX, newY);
-
-                _buffCountLabel.Visible = true;
-                _buffCountLabel.Text = $"{_buffCount}";
-                _buffCountLabel.Location = new Point(Size.Width / 2 - _buffCountLabel.Size.Width / 2, Size.Height / 2 - 10);
-                _buffCountLabel.BringToFront();
-
-                _expandCollapseButton.Location = new Point(Size.Width - 15, 0);
-                Size = new Size(44, 34);
-            }
+            // 原始传奇 buffGro：容器只按数量铺 35×35 网格，无底板、无收起态、无数量标签。
+            _buffCountLabel.Visible = false;
+            _expandCollapseButton.Visible = false;
+            int columns = _buffCount > 5 ? 5 : _buffCount;
+            int rows = (_buffCount + 4) / 5;
+            Size = new Size(columns * 35, rows * 35);
         }
 
         public string BuffString(ClientBuff buff)
@@ -550,35 +421,22 @@ namespace Client.MirScenes.Dialogs
         private MirButton _expandCollapseButton;
         private MirLabel _buffCountLabel;
         private List<MirImageControl> _buffList = new List<MirImageControl>();
-        private bool _fadedOut, _fadedIn;
         private int _buffCount;
-        private long _nextFadeTime;
-
-        private const long FadeDelay = 55;
-        private const float FadeRate = 0.2f;
 
         public PoisonBuffDialog()
         {
-            Index = 40;
-            Library = Libraries.Prguse2;
             Movable = false;
-            Size = new Size(44, 34);
-            Location = new Point(Settings.ScreenWidth - 170, 0);
+            Size = new Size(175, 35);
             Sort = true;
 
-            Opacity = 0f;
-            _fadedOut = true;
+            Opacity = 1f;
 
             _expandCollapseButton = new MirButton
             {
-                Index = 7,
-                HoverIndex = 8,
                 Size = new Size(16, 15),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 9,
                 Sound = SoundList.ButtonA,
-                Opacity = 0f
+                Visible = false,
             };
             _expandCollapseButton.Click += (o, e) =>
             {
@@ -608,31 +466,45 @@ namespace Client.MirScenes.Dialogs
             };
         }
 
+        // 原始传奇 5config buff 表：中毒=501、麻痹=442、眩晕=451；其余取经典技能图标。
+        private static string PoisonBuffIconId(PoisonType type)
+        {
+            switch (type)
+            {
+                case PoisonType.Green:
+                case PoisonType.Bleeding:
+                    return "501";       // 中毒
+                case PoisonType.Red:
+                case PoisonType.DelayedExplosion:
+                    return "13031";     // 施毒术
+                case PoisonType.Slow:
+                    return "452";
+                case PoisonType.Frozen:
+                    return "12131";     // 冰咆哮
+                case PoisonType.Stun:
+                case PoisonType.Dazed:
+                    return "451";       // 眩晕
+                case PoisonType.Paralysis:
+                case PoisonType.LRParalysis:
+                    return "442";       // 麻痹
+                default:
+                    return "501";
+            }
+        }
+
+        private static string PoisonBuffIconUrl(PoisonType type)
+        {
+            return Mir2OriginObjectLibrary.SkillIconPath(PoisonBuffIconId(type));
+        }
+
         public void CreateBuff(ClientPoisonBuff buff)
         {
-            var buffImage = BuffImage(buff.Type);
-
-            var buffLibrary = Libraries.BuffIcon;
-
-            if (buffImage >= 20000)
-            {
-                buffImage -= 20000;
-                buffLibrary = Libraries.MagIcon;
-            }
-
-            if (buffImage >= 10000)
-            {
-                buffImage -= 10000;
-                buffLibrary = Libraries.Prguse2;
-            }
-
             var image = new MirImageControl
             {
-                Library = buffLibrary,
                 Parent = this,
                 Visible = true,
                 Sort = false,
-                Index = buffImage
+                ImageUrl = PoisonBuffIconUrl(buff.Type),
             };
 
             _buffList.Insert(0, image);
@@ -707,37 +579,6 @@ namespace Client.MirScenes.Dialogs
             return text;
         }
 
-        private int BuffImage(PoisonType type)
-        {
-            switch (type)
-            {
-                case PoisonType.Green:
-                    return 221;
-                case PoisonType.Red:
-                    return 222;
-                case PoisonType.Slow:
-                    return 225;
-                case PoisonType.Frozen:
-                    return 223;
-                case PoisonType.Stun:
-                    return 224;
-                case PoisonType.Paralysis:
-                    return 233;
-                case PoisonType.DelayedExplosion:
-                    return 229;
-                case PoisonType.Bleeding:
-                    return 231;
-                case PoisonType.LRParalysis:
-                    return 233;
-                case PoisonType.Blindness:
-                    return 226;
-                case PoisonType.Dazed:
-                    return 230;
-                default:
-                    return 0;
-            }
-        }
-
         public void Process()
         {
             if (!Visible) return;
@@ -752,84 +593,26 @@ namespace Client.MirScenes.Dialogs
                 var image = _buffList[i];
                 var buff = Buffs[i];
 
-                var buffImage = BuffImage(buff.Type);
-                var buffLibrary = Libraries.BuffIcon;
+                // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN。
+                image.Location = new Point((i % 5) * 35, (i / 5) * 35);
+                image.Size = new Size(35, 35);
+                image.Hint = BuffString(buff);
+                image.ImageUrl = PoisonBuffIconUrl(buff.Type);
 
-                //ArcherSpells - VampireShot,PoisonShot
-                if (buffImage >= 20000)
-                {
-                    buffImage -= 20000;
-                    buffLibrary = Libraries.MagIcon;
-                }
-
-                if (buffImage >= 10000)
-                {
-                    buffImage -= 10000;
-                    buffLibrary = Libraries.Prguse2;
-                }
-
-                var location = new Point(Size.Width - 10 - 23 - (i * 23) + ((10 * 23) * (i / 10)), 6 + ((i / 10) * 24));
-
-                image.Location = new Point(location.X, location.Y);
-                image.Hint = Settings.ExpandedBuffWindow ? BuffString(buff) : CombinedBuffText();
-                image.Index = buffImage;
-                image.Library = buffLibrary;
-
-                if (Settings.ExpandedBuffWindow || !Settings.ExpandedBuffWindow && i == 0)
-                {
-                    image.Visible = true;
-                    image.Opacity = 1f;
-                }
-                else
-                {
-                    image.Visible = false;
-                    image.Opacity = 0.6f;
-                }
+                image.Visible = true;
+                image.Opacity = 1f;
 
                 if (!(Math.Round((buff.ExpireTime - CMain.Time) / 1000D) <= 5))
+                {
                     continue;
+                }
 
                 var time = (buff.ExpireTime - CMain.Time) / 100D;
 
                 if (Math.Round(time) % 10 < 5)
-                    image.Index = -1;
-            }
-
-            if (IsMouseOver(CMain.MPoint))
-            {
-                if (_buffCount == 0 || (!_fadedIn && CMain.Time <= _nextFadeTime))
-                    return;
-
-                Opacity += FadeRate;
-                _expandCollapseButton.Opacity += FadeRate;
-
-                if (Opacity > 1f)
                 {
-                    Opacity = 1f;
-                    _expandCollapseButton.Opacity = 1f;
-                    _fadedIn = true;
-                    _fadedOut = false;
+                    image.Visible = false;
                 }
-
-                _nextFadeTime = CMain.Time + FadeDelay;
-            }
-            else
-            {
-                if (!_fadedOut && CMain.Time <= _nextFadeTime)
-                    return;
-
-                Opacity -= FadeRate;
-                _expandCollapseButton.Opacity -= FadeRate;
-
-                if (Opacity < 0f)
-                {
-                    Opacity = 0f;
-                    _expandCollapseButton.Opacity = 0f;
-                    _fadedOut = true;
-                    _fadedIn = false;
-                }
-
-                _nextFadeTime = CMain.Time + FadeDelay;
             }
         }
 
@@ -837,58 +620,12 @@ namespace Client.MirScenes.Dialogs
         {
             _buffCount = _buffList.Count;
 
-            var baseImage = 20;
-            var heightOffset = 36;
-
-            if (_buffCount > 0 && Settings.ExpandedBuffWindow)
-            {
-                var oldWidth = Size.Width;
-
-                if (_buffCount <= 10)
-                    Index = baseImage + _buffCount - 1;
-                else if (_buffCount > 10)
-                    Index = baseImage + 10;
-                else if (_buffCount > 20)
-                    Index = baseImage + 11;
-                else if (_buffCount > 30)
-                    Index = baseImage + 12;
-                else if (_buffCount > 40)
-                    Index = baseImage + 13;
-
-                var newX = Location.X - Size.Width + oldWidth;
-                var newY = heightOffset;
-                Location = new Point(newX, newY);
-
-                _buffCountLabel.Visible = false;
-
-                _expandCollapseButton.Location = new Point(Size.Width - 15, 0);
-                Size = new Size((_buffCount > 10 ? 10 : _buffCount) * 23, 24 + (_buffCount / 10) * 24);
-            }
-            else if (_buffCount > 0 && !Settings.ExpandedBuffWindow)
-            {
-                var oldWidth = Size.Width;
-
-                Index = 20;
-
-                var newX = Location.X - Size.Width + oldWidth;
-                var newY = heightOffset;
-                Location = new Point(newX, newY);
-
-                _buffCountLabel.Visible = true;
-                _buffCountLabel.Text = $"{_buffCount}";
-                _buffCountLabel.Location = new Point(Size.Width / 2 - _buffCountLabel.Size.Width / 2, Size.Height / 2 - 10);
-                _buffCountLabel.BringToFront();
-
-                _expandCollapseButton.Location = new Point(Size.Width - 15, 0);
-                Size = new Size(44, 34);
-            }
-        }
-
-        private string CombinedBuffText()
-        {
-            string text = LanguageMgr.Get("ActivePoisons");
-
-            return text;
+            // 原始传奇 buffGro：容器只按数量铺 35×35 网格，无底板、无收起态、无数量标签。
+            _buffCountLabel.Visible = false;
+            _expandCollapseButton.Visible = false;
+            int columns = _buffCount > 5 ? 5 : _buffCount;
+            int rows = (_buffCount + 4) / 5;
+            Size = new Size(columns * 35, rows * 35);
         }
     }
 

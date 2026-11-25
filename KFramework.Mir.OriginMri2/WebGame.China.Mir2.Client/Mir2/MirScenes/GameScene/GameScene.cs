@@ -410,6 +410,7 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
+                Location = new Point(Settings.ScreenWidth - 175, Settings.ScreenHeight - 140),
                 GetExpandedParameter = () => { return Settings.ExpandedBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedBuffWindow = value; }
             };
@@ -6435,7 +6436,7 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Location = new Point(DXManager.GDevice.Viewport.Width - 170, 80),
+                Location = new Point(Settings.ScreenWidth - 355, Settings.ScreenHeight - 140),
                 GetExpandedParameter = () => { return Settings.ExpandedHeroBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedHeroBuffWindow = value; }
             };
