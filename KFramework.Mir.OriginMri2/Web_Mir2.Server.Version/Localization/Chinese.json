@@ -766,5 +766,8 @@
   "IntelligentCreaturesCannotBeSummonedOnMap": "此地图无法召唤仆从。",
   "CannotSummonHeroOnMap": "你无法在此地图中召唤你的英雄。",
   "CannotFollowIntoMapWaitHere": "{0} 无法跟随你进入此地图，将在这里等待。",
-  "HasReturnedToYourSide": "{0} 已回到你身边。"
+  "HasReturnedToYourSide": "{0} 已回到你身边。",
+  "SettingButtonHint": "设置",
+  "AuctionButtonHint": "拍卖",
+  "RebirthButtonHint": "转生"
 }

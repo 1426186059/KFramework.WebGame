@@ -613,6 +613,7 @@ namespace ServerPackets
         public UserItem[] Inventory, Equipment, QuestInventory;
         // 三种货币：金币/元宝/传奇币，均不区分绑定与非绑定（绑定也并入同一字段）
         public uint Gold, Credit, LegendCoin;
+        public uint SExp; // 10倍经验点剩余数量（原始传奇 expMedal.actPoints）
 
         public bool HasExpandedStorage;
         public bool HasStoragePassword;
@@ -687,6 +688,7 @@ namespace ServerPackets
             Gold = reader.ReadUInt32();
             Credit = reader.ReadUInt32();
             LegendCoin = reader.ReadUInt32();
+            SExp = reader.ReadUInt32();
 
             HasExpandedStorage = reader.ReadBoolean();
             HasStoragePassword = reader.ReadBoolean();
@@ -780,6 +782,7 @@ namespace ServerPackets
             writer.Write(Gold);
             writer.Write(Credit);
             writer.Write(LegendCoin);
+            writer.Write(SExp);
 
             writer.Write(HasExpandedStorage);
             writer.Write(HasStoragePassword);
@@ -2830,17 +2833,20 @@ namespace ServerPackets
         public uint Amount;
         // 10倍经验点带来的额外经验（原始传奇 8003 包的 extraExp），追加在包尾不改原有线序。
         public uint ExtraExp;
+        public uint SExp; // 本次结算后的 10倍经验点剩余数量
 
         protected override void ReadPacket(BinaryReader reader)
         {
             Amount = reader.ReadUInt32();
             ExtraExp = reader.ReadUInt32();
+            SExp = reader.ReadUInt32();
         }
 
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(Amount);
             writer.Write(ExtraExp);
+            writer.Write(SExp);
         }
     }
 

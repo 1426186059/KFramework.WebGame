@@ -1,8 +1,10 @@
 using Client.MirControls;
 using Client.MirGraphics;
+using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
+using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -14,10 +16,12 @@ namespace Client.MirScenes.Dialogs
             set { MapObject.User = value; }
         }
 
-        public MirImageControl ExperienceBar, WeightBar, LeftCap, RightCap;
+        public MirProgressBar ExperienceBar, SExpBar;
+        public MirImageControl WeightBar, LeftCap, RightCap;
         public MirButton GameShopButton, MenuButton, InventoryButton, CharacterButton, SkillButton, QuestButton, OptionButton;
+        public MirButton SettingButton, AuctionButton, RebirthButton;
         public MirControl HealthOrb;
-        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel;
+        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, SExpLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel;
         public HeroInfoPanel HeroInfoPanel;
         public HeroBehaviourPanel HeroBehaviourPanel;
 
@@ -285,6 +289,28 @@ namespace Client.MirScenes.Dialogs
                 else GameScene.Scene.GameShopDialog.Hide();
             };
 
+            // 原始传奇主界面右下三键：设置 / 拍卖 / 转生。
+            SettingButton = CreateMainButton(
+                "btn_gongneng_01", "btn_gongneng_02", "word_xitong_16",
+                new Point(this.Size.Width - 100, 190), LanguageMgr.Get("SettingButtonHint"));
+            SettingButton.Click += (o, e) =>
+            {
+                if (!GameScene.Scene.OptionDialog.Visible) GameScene.Scene.OptionDialog.Show();
+                else GameScene.Scene.OptionDialog.Hide();
+            };
+
+            AuctionButton = CreateMainButton(
+                "btn_gongneng_05", "btn_gongneng_06", null,
+                new Point(this.Size.Width - 150, 145), LanguageMgr.Get("AuctionButtonHint"));
+            AuctionButton.Click += (o, e) =>
+            {
+                Network.Enqueue(new C.MarketRefresh());
+            };
+
+            RebirthButton = CreateMainButton(
+                "btn_gongneng_03", "btn_gongneng_04", "word_xitong_09",
+                new Point(this.Size.Width - 150, 190), LanguageMgr.Get("RebirthButtonHint"));
+
             this.RankBtn = this.RankBtnStyle(
                 "word_xitong_03", 
                 0, 
@@ -446,21 +472,78 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
             };
 
-            ExperienceBar = new MirImageControl
+            // 原始传奇主界面 img_exp：图集 y_homeUI-sheet#btn_gongneng_25，宽 70，scaleX=经验比例。
+            // 用 MirProgressBar 的 Fill 拉伸同一帧实现，轨道/左右端盖仍用上面的独立图片。
+            ExperienceBar = new MirProgressBar
             {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_25",
                 Location = new Point(this.Size.Width - 250, 165),
                 Parent = this,
+                AutoSize = false,
+                Size = new Size(70, 11),
                 DrawImage = false,
+                DrawControlTexture = false,
                 NotControl = true,
+                Minimum = 0,
+                Maximum = 100,
             };
-            ExperienceBar.BeforeDraw += ExperienceBar_BeforeDraw;
+            ExperienceBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_25";
+            ExperienceBar.Fill.DrawControlTexture = false;
 
             ExperienceLabel = new MirLabel
             {
                 Parent = this,
                 Location = new Point(this.Size.Width - 250, 165),
+                AutoSize = false,
+                Size = new Size(88, 22),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
+                NotControl = true,
+            };
+
+            // 原始传奇 10倍经验点条：img_expMedal = btn_gongneng_28，宽 90；阈值 cm.global[34201]=40。
+            var sexpBg = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_bg2",
+                Location = new Point(this.Size.Width - 225, 202),
+                Parent = this,
+                NotControl = true,
+            };
+            var sexpLeft = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_27",
+                Location = new Point(this.Size.Width - 250, 199),
+                Parent = this,
+                NotControl = true,
+            };
+            var sexpRight = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_29",
+                Location = new Point(this.Size.Width - 225, 199),
+                Parent = this,
+                NotControl = true,
+            };
+
+            SExpBar = new MirProgressBar
+            {
+                Location = new Point(this.Size.Width - 250, 199),
+                Parent = this,
+                AutoSize = false,
+                Size = new Size(90, 11),
+                DrawImage = false,
+                DrawControlTexture = false,
+                NotControl = true,
+                Minimum = 0,
+                Maximum = 100,
+            };
+            SExpBar.Fill.AtlasNameKey = "y_homeUI-sheet#btn_gongneng_28";
+            SExpBar.Fill.DrawControlTexture = false;
+
+            SExpLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(this.Size.Width - 250, 199),
                 AutoSize = false,
                 Size = new Size(88, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
@@ -577,6 +660,32 @@ namespace Client.MirScenes.Dialogs
             return rankBtn;
         }
 
+        private MirButton CreateMainButton(string frame, string pressedFrame, string labelFrame, Point location, string hint)
+        {
+            MirButton button = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = frame,
+                PressedAtlasFrame = pressedFrame,
+                Size = new Size(45, 45),
+                Location = location,
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                Hint = hint,
+            };
+
+            if (!string.IsNullOrEmpty(labelFrame))
+            {
+                button.LabelImage.AtlasNameKey = "y_homeUI-sheet";
+                button.LabelImage.AtlasFrame = labelFrame;
+                button.LabelImage.Size = new Size(25, 14);
+                button.LabelImage.Location = button.LabelImage.Center;
+                button.LabelImage.Visible = true;
+            }
+
+            return button;
+        }
+
         private void MainDialog_AtlasLoaded(object sender, EventArgs e)
         {
             throw new NotImplementedException();
@@ -639,9 +748,31 @@ namespace Client.MirScenes.Dialogs
                     break;
             }
 
+            UpdateExperienceBar();
+            UpdateSExpBar();
+        }
+
+        private void UpdateExperienceBar()
+        {
             LevelLabel.Text = User.Level.ToString();
-            ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
-            
+
+            double expPercent = User.MaxExperience > 0
+                ? Math.Min(1d, Math.Max(0d, User.Experience / (double)User.MaxExperience))
+                : 0d;
+            int percent = (int)Math.Round(expPercent * 100);
+            ExperienceBar.Value = Math.Min(100, percent);
+            // 原始传奇 getExpPercentText：未满级时最多显示 99%，避免满经验时看起来已经升级。
+            ExperienceLabel.Text = Math.Min(99, percent) + "%";
+        }
+
+        private void UpdateSExpBar()
+        {
+            const uint SExpMaxPoints = 40; // cm.global[34201]
+            int sexpPercent = User.SExp >= SExpMaxPoints
+                ? 100
+                : (int)Math.Round(User.SExp * 100d / SExpMaxPoints);
+            SExpBar.Value = Math.Min(100, sexpPercent);
+            SExpLabel.Text = User.SExp.ToString();
         }
 
         //血液动画
@@ -656,19 +787,6 @@ namespace Client.MirScenes.Dialogs
             this.mMPAni1.Location = new Point(0, (int)(10 + 122 * this.mMPAni.SizeScale.Y * (1 - fMPPercent)));
         }
 
-        //经验条
-        private void ExperienceBar_BeforeDraw(object sender, EventArgs e)
-        {
-            if (ExperienceBar.Library == null) return;
-
-            double percent = MapObject.User.Experience / (double)MapObject.User.MaxExperience;
-            if (percent > 1) percent = 1;
-            if (percent <= 0) return;
-
-            Rectangle section = new Rectangle(0, 0, (int)((ExperienceBar.Size.Width - 3) * percent), ExperienceBar.Size.Height);
-
-            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, CommonColor.White, false);
-        }
     }
 
 }

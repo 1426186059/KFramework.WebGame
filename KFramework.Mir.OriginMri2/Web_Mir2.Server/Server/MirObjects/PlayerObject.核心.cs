@@ -807,7 +807,7 @@ namespace Server.MirObjects
             // 按最终 amount 拆，避免后续加成被错误算进额外经验。读后清零，避免下次非 10 倍来源误带。
             uint baseExp = _tenFoldActive ? amount / 10 : amount;
             uint extraExp = _tenFoldActive ? amount - baseExp : 0;
-            Enqueue(new S.GainExperience { Amount = baseExp, ExtraExp = extraExp });
+            Enqueue(new S.GainExperience { Amount = baseExp, ExtraExp = extraExp, SExp = Info.SExp });
             _tenFoldActive = false;
 
             for (int i = 0; i < Pets.Count; i++)

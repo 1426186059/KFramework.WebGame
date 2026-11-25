@@ -656,6 +656,7 @@ namespace Server.MirObjects
                 Gold = Info.Gold,
                 Credit = Info.Credit,
                 LegendCoin = Info.LegendCoin,
+                SExp = Info.SExp,
                 HasExpandedStorage = Account.ExpandedStorageExpiryDate > Envir.Now ? true : false,
                 HasStoragePassword = Account.HasStoragePassword,
                 RequireStoragePassword = Settings.RequireStoragePassword,

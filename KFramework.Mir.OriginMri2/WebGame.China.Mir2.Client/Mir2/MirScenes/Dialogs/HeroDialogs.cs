@@ -456,7 +456,8 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class HeroInfoPanel : MirImageControl
     {
-        private MirImageControl Avatar, NameContainer, HealthContainer, HealthBar, ManaBar, ExperienceBar, DangerAvatar, DeadAvatar;
+        private MirImageControl Avatar, NameContainer, HealthContainer, HealthBar, ManaBar, DangerAvatar, DeadAvatar;
+        private MirProgressBar ExperienceBar;
         private MirLabel NameLabel, LevelLabel, Hplabel, Mplabel, ExLabel;
         private DateTime NextAvatarChange;
         private HeroAutoPotPreview HPItem, MPItem;
@@ -580,17 +581,21 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.UpperLeft),
                 Parent = this,
             };
-            ExperienceBar = new MirImageControl
+            ExperienceBar = new MirProgressBar
             {
-                Index = 1953,
-                Library = Libraries.Prguse,
                 Location = new Point(18, 32),
                 Parent = HealthContainer,
-                Visible = true,
+                AutoSize = false,
+                Size = new Size(70, 8),
                 DrawImage = false,
-                NotControl = true
+                DrawControlTexture = false,
+                NotControl = true,
+                Minimum = 0,
+                Maximum = 100,
             };
-            ExperienceBar.BeforeDraw += ExperienceBar_BeforeDraw;
+            ExperienceBar.Fill.Texture = KFramework.MonoGameExtend.KDefaultRes.DefaultTexture2D;
+            ExperienceBar.Fill.ForeColour = CommonColor.LimeGreen;
+            ExperienceBar.Fill.DrawControlTexture = false;
             ExLabel = new MirLabel
             {
                 AutoSize = false,
@@ -620,6 +625,13 @@ namespace Client.MirScenes.Dialogs
             DangerAvatar.Index = Avatar.Index + 350;
             NameLabel.Text = Name;
             LevelLabel.Text = Level.ToString();
+
+            double expPercent = MaxExperience > 0
+                ? Math.Min(1d, Math.Max(0d, Experience / (double)MaxExperience))
+                : 0d;
+            int percent = (int)Math.Round(expPercent * 100);
+            ExperienceBar.Value = Math.Min(100, percent);
+            ExLabel.Text = Math.Min(99, percent) + "%";
         }
 
         private void Avatar_BeforeDraw(object sender, EventArgs e)
@@ -634,21 +646,6 @@ namespace Client.MirScenes.Dialogs
 
             NextAvatarChange = CMain.Now.AddMilliseconds(400);
             DangerAvatar.Visible = !DangerAvatar.Visible;
-        }
-
-        private void ExperienceBar_BeforeDraw(object sender, EventArgs e)
-        {
-            if (ExperienceBar.Library == null) return;
-
-            //cast MaxExperience to double to force division to 2 decimal place
-            double percent = Experience / (double)MaxExperience * 100;
-
-            int sectionWidth = (int)(ExperienceBar.Size.Width * (percent / 100));
-
-            Rectangle section = new Rectangle(0, 0, sectionWidth, ExperienceBar.Size.Height);
-
-            ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, CommonColor.White, false);
-            ExLabel.Text = string.Format("{0:F2}%", percent);
         }
 
         private void HealthBar_BeforeDraw(object sender, EventArgs e)

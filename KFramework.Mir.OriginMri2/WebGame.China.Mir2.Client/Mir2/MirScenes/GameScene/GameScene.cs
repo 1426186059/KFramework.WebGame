@@ -4001,6 +4001,7 @@ namespace Client.MirScenes
                 : $"<color=lime>获得</color> 经验 x{p.Amount}";
             OutputMessage(text);
             MapObject.User.Experience += p.Amount + p.ExtraExp;
+            MapObject.User.SExp = p.SExp;
         }
 
         private void GainHeroExperience(S.GainHeroExperience p)

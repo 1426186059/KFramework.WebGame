@@ -20,6 +20,7 @@ namespace Client.MirObjects
                       CurrentBagWeight;
 
         public long Experience, MaxExperience;
+        public uint SExp; // 10倍经验点剩余数量
 
         public bool TradeLocked;
         public uint TradeGoldAmount;
@@ -99,6 +100,7 @@ namespace Client.MirObjects
 
             Experience = info.Experience;
             MaxExperience = info.MaxExperience;
+            SExp = info.SExp;
 
             LevelEffects = info.LevelEffects;
 
