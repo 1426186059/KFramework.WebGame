@@ -428,7 +428,6 @@ namespace Client.MirScenes.Dialogs
 
     public sealed class OptionDialog : MirImageControl
     {
-        public MirButton SkillModeOn, SkillModeOff;
         public MirButton SkillBarOn, SkillBarOff;
         public MirButton EffectOn, EffectOff;
         public MirButton DropViewOn, DropViewOff;
@@ -464,36 +463,6 @@ namespace Client.MirScenes.Dialogs
                 PressedIndex = 362,
             };
             CloseButton.Click += (o, e) => Hide();
-
-            //tilde option
-            SkillModeOn = new MirButton
-            {
-                Library = Libraries.Prguse2,
-                Location = new Point(159, 68),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Size = new Size(36, 17),
-                PressedIndex = 451,
-            };
-            SkillModeOn.Click += (o, e) =>
-            {
-                GameScene.Scene.ChangeSkillMode(false);
-            };
-
-            //ctrl option
-            SkillModeOff = new MirButton
-            {
-                Library = Libraries.Prguse2,
-                Location = new Point(201, 68),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Size = new Size(36, 17),
-                PressedIndex = 454
-            };
-            SkillModeOff.Click += (o, e) =>
-            {
-                GameScene.Scene.ChangeSkillMode(true);
-            };
 
             SkillBarOn = new MirButton
             {
@@ -718,20 +687,6 @@ namespace Client.MirScenes.Dialogs
             });
         }
 
-        public void ToggleSkillButtons(bool Ctrl)
-        {
-            foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
-            {
-                if (KeyCheck.Key == Keys.None)
-                    continue;
-                if ((KeyCheck.function < KeybindOptions.Bar1Skill1) || (KeyCheck.function > KeybindOptions.Bar2Skill8)) continue;
-                //need to test this 
-                if ((KeyCheck.RequireCtrl != 1) && (KeyCheck.RequireTilde != 1)) continue;
-                KeyCheck.RequireCtrl = (byte)(Ctrl ? 1 : 0);
-                KeyCheck.RequireTilde = (byte)(Ctrl ? 0 : 1);
-            }
-        }
-
         private void SoundBar_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left || SoundBar != ActiveControl) return;
@@ -810,17 +765,6 @@ namespace Client.MirScenes.Dialogs
 
         private void OptionPanel_BeforeDraw(object sender, EventArgs e)
         {
-            if (Settings.SkillMode)
-            {
-                SkillModeOn.Index = 452;
-                SkillModeOff.Index = 453;
-            }
-            else
-            {
-                SkillModeOn.Index = 450;
-                SkillModeOff.Index = 455;
-            }
-
             if (Settings.SkillBar)
             {
                 SkillBarOn.Index = 458;

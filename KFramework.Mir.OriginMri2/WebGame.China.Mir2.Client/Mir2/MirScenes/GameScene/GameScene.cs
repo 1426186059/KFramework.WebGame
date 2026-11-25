@@ -933,22 +933,6 @@ namespace Client.MirScenes
             }
         }
 
-        public void ChangeSkillMode(bool? ctrl)
-        {
-            if (Settings.SkillMode || ctrl == true)
-            {
-                Settings.SkillMode = false;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillModeCtrl), ChatType.System);
-                GameScene.Scene.OptionDialog.ToggleSkillButtons(true);
-            }
-            else if (!Settings.SkillMode || ctrl == false)
-            {
-                Settings.SkillMode = true;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillModeTilde), ChatType.System);
-                GameScene.Scene.OptionDialog.ToggleSkillButtons(false);
-            }
-        }
-
         public void ChangePetMode()
         {
             if (CMain.Time > ChangePModeTime)

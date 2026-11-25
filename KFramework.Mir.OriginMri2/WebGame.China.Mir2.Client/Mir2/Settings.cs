@@ -173,7 +173,6 @@ namespace Client
                              Password = "";
 
         public static bool
-            SkillMode = false,
             SkillBar = true,
             SkillBarTwoRows = true,   // 技能栏是否显示第二列（副键 F1..F8）
             //SkillSet = true,
@@ -265,7 +264,6 @@ namespace Client
             AccountID = Reader.ReadString("Game", "AccountID", AccountID);
             Password = Reader.ReadString("Game", "Password", Password);
 
-            SkillMode = Reader.ReadBoolean("Game", "SkillMode", SkillMode);
             SkillBar = Reader.ReadBoolean("Game", "SkillBar", SkillBar);
             SkillBarTwoRows = Reader.ReadBoolean("Game", "SkillBarTwoRows", SkillBarTwoRows);
             //SkillSet = Reader.ReadBoolean("Game", "SkillSet", SkillSet);
@@ -354,7 +352,6 @@ namespace Client
             //Game
             Reader.Write("Game", "AccountID", AccountID);
             Reader.Write("Game", "Password", Password);
-            Reader.Write("Game", "SkillMode", SkillMode);
             Reader.Write("Game", "SkillBar", SkillBar);
             Reader.Write("Game", "SkillBarTwoRows", SkillBarTwoRows);
             //Reader.Write("Game", "SkillSet", SkillSet);

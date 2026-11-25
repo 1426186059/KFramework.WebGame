@@ -17,7 +17,7 @@ namespace Client.MirScenes.Dialogs
         public MirImageControl ExperienceBar, WeightBar, LeftCap, RightCap;
         public MirButton GameShopButton, MenuButton, InventoryButton, CharacterButton, SkillButton, QuestButton, OptionButton;
         public MirControl HealthOrb;
-        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel, SModeLabel;
+        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel;
         public HeroInfoPanel HeroInfoPanel;
         public HeroBehaviourPanel HeroBehaviourPanel;
 
@@ -496,16 +496,6 @@ namespace Client.MirScenes.Dialogs
                 Visible = Settings.ModeView
             };
 
-            SModeLabel = new MirLabel
-            {
-                AutoSize = true,
-                ForeColour = CommonColor.LimeGreen,
-                OutLineColour = CommonColor.Black,
-                Parent = this,
-                Location = new Point(899, -463),
-                Visible = Settings.ModeView
-            };
-
             // 原始传奇主界面自动状态序列帧：位置 x=屏宽/2-110、y=屏高-290（PC）。
             // MainDialog 底部居中(1151×237)，故相对坐标 x≈465、y=-53（血条上方）。
             // 直接设 AtlasNameKey 让控件自动异步加载图集（同血条动画），无需手动 GetSheetAsync。
@@ -651,28 +641,12 @@ namespace Client.MirScenes.Dialogs
                     break;
             }
 
-            switch (Settings.SkillMode)
-            {
-                case true:
-                    SModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillModeTilde);
-                    break;
-                case false:
-                    SModeLabel.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SkillModeCtrl);
-                    break;
-            }
-
             LevelLabel.Text = User.Level.ToString();
             ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
             
         }
 
-        private void Label_SizeChanged(object sender, EventArgs e)
-        {
-            if (!(sender is MirLabel l)) return;
-
-            l.Location = new Point(50 - (l.Size.Width / 2), l.Location.Y);
-        }
-
+        //血液动画
         private void HealthOrb_BeforeDraw(object sender, EventArgs e)
         {
             float fHPPercent = User.HP / (float)User.Stats[Stat.HP];
@@ -684,6 +658,7 @@ namespace Client.MirScenes.Dialogs
             this.mMPAni1.Location = new Point(0, (int)(10 + 122 * this.mMPAni.SizeScale.Y * (1 - fMPPercent)));
         }
 
+        //经验条
         private void ExperienceBar_BeforeDraw(object sender, EventArgs e)
         {
             if (ExperienceBar.Library == null) return;
@@ -696,41 +671,6 @@ namespace Client.MirScenes.Dialogs
 
             ExperienceBar.Library.Draw(ExperienceBar.Index, section, ExperienceBar.DisplayLocation, CommonColor.White, false);
         }
-
-        private void WeightBar_BeforeDraw(object sender, EventArgs e)
-        {
-            if (WeightBar.Library == null) return;
-            double percent = MapObject.User.CurrentBagWeight / (double)MapObject.User.Stats[Stat.BagWeight];
-            if (percent > 1) percent = 1;
-            if (percent <= 0) return;
-
-            // Weight bar art based on fill
-            if (percent <= 0.50)
-            {
-                WeightBar.Library = Libraries.Prguse;
-                WeightBar.Index = 76;
-            }
-            else if (percent <= 0.75)
-            {
-                WeightBar.Library = Libraries.UI_32bit;
-                WeightBar.Index = 473;
-            }
-            else
-            {
-                WeightBar.Library = Libraries.UI_32bit;
-                WeightBar.Index = 472;
-            }
-
-            Rectangle section = new Rectangle(0, 0, (int)((WeightBar.Size.Width - 2) * percent), WeightBar.Size.Height);
-
-            WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, CommonColor.White, false);
-        }
     }
-
-
-
-
-
-
 
 }
