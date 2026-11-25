@@ -96,11 +96,72 @@ public class SkillEffectTable
     public int param { get; set; }
 }
 
+/// <summary>5config.damage 单条记录（原始传奇战斗飘血）。
+/// 原始表里 startarr/stoparr/endarr 是 List&lt;List&lt;string&gt;&gt;（如 [["0","-20","600"]]），
+/// offsetX/offsetY 也是字符串数字，这里按原始类型映射，查询时再转 int。</summary>
+public class DamageTable
+{
+    [JsonPropertyName("id")]
+    public int id { get; set; }
+
+    [JsonPropertyName("side")]
+    public int side { get; set; }
+
+    [JsonPropertyName("number")]
+    public int number { get; set; } = -1;
+
+    [JsonPropertyName("title")]
+    public int title { get; set; } = -1;
+
+    [JsonPropertyName("offsetX")]
+    public string offsetX { get; set; } = "";
+
+    [JsonPropertyName("offsetY")]
+    public string offsetY { get; set; } = "";
+
+    [JsonPropertyName("scaling")]
+    public int scaling { get; set; } = 100;
+
+    [JsonPropertyName("hierarchy")]
+    public int hierarchy { get; set; }
+
+    [JsonPropertyName("performance")]
+    public int performance { get; set; }
+
+    [JsonPropertyName("opportunity")]
+    public int opportunity { get; set; }
+
+    [JsonPropertyName("random_x_min")]
+    public int random_x_min { get; set; }
+
+    [JsonPropertyName("random_x_max")]
+    public int random_x_max { get; set; }
+
+    [JsonPropertyName("random_y_min")]
+    public int random_y_min { get; set; }
+
+    [JsonPropertyName("random_y_max")]
+    public int random_y_max { get; set; }
+
+    [JsonPropertyName("startarr")]
+    public List<List<string>> startarr { get; set; } = new();
+
+    [JsonPropertyName("stoparr")]
+    public List<List<string>> stoparr { get; set; } = new();
+
+    [JsonPropertyName("endarr")]
+    public List<List<string>> endarr { get; set; } = new();
+}
+
 /// <summary>整个 5config 分片 JSON 的 DTO。effect 键为数字字符串，System.Text.Json 自动转 int 字典键。</summary>
 public class OriginMir2Config5
 {
     [JsonPropertyName("effect")]
     public Dictionary<int, EffectTable> effect { get; set; } = new();
+
+    // damage：战斗飘血配置（原始 BloodMovie.showBloodEffect 的数据源）
+    [JsonPropertyName("damage")]
+    public Dictionary<string, DamageTable> damage { get; set; } = new();
 
     // skillEffects：技能特效权威时序（键 = skillId 或 skillId*100+等级）。
     [JsonPropertyName("skillEffects")]

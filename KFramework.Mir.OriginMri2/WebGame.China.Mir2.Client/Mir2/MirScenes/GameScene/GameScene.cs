@@ -3656,18 +3656,18 @@ namespace Client.MirScenes
 
                     switch (p.Type)
                     {
-                        case DamageType.Hit: // 原始传奇 BloodFont 飘血：怪物 hurt10、玩家受击 hurt12
+                        case DamageType.Hit: // 原始传奇 damage id=1（number=1，hurt1_* 白色普通伤害）
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
-                                obj.Race == ObjectType.Player ? 12 : 10));
+                                OriginMir2Damage.DefaultHitDamageId));
                             break;
                         case DamageType.Miss: // 文字类无对应数字帧，走回退 Label
                             obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Miss"), 1200,
                                 obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 0));
                             break;
-                        case DamageType.Critical: // 暴击 hurt11，更明显的弹出
+                        case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大）
                             obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Crit"), 1000,
-                                CommonColor.DarkRed, 11, startScale: 1.6f) { Offset = 15 });
+                                CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId) { Offset = 15 });
                             break;
                     }
                 }
