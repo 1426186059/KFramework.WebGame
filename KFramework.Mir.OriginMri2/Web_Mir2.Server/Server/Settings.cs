@@ -660,7 +660,7 @@ namespace Server
                 Directory.CreateDirectory(languageDirectory);
             }
             string settingLanguageFile = Path.Combine(languageDirectory, Language + ".json");
-            GameLanguage.LoadServerLanguage(settingLanguageFile);
+            LanguageMgr.LoadServerLanguage(settingLanguageFile);
 
         }
 

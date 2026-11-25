@@ -12,7 +12,6 @@ using System.Text.Json.Serialization;
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     ReadCommentHandling = JsonCommentHandling.Skip,
     AllowTrailingCommas = true)]
-[JsonSerializable(typeof(TextMap))]
 [JsonSerializable(typeof(Dictionary<string, string>), TypeInfoPropertyName = "LanguageTextDictionary")]
 [JsonSerializable(typeof(MapTable))]
 [JsonSerializable(typeof(ModelInfoTable))]

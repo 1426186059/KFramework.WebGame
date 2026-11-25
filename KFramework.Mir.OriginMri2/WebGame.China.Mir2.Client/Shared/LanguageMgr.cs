@@ -1,23 +1,12 @@
 using KFramework.MonoGame;
-using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Text;
 
 /// <summary>
-/// 字符串键语言管理器：直接用 LanguageMgr.Get("Key") 取文本，不再经过枚举。
-/// JSON 配置表直接反序列化为 Dictionary&lt;string, string&gt;：{ "Key": "文本" }。
+/// 字符串键语言管理器：直接从 JSON 加载扁平字典，LanguageMgr.Get("Key") 取文本。
 /// </summary>
 public static class LanguageMgr
 {
     private static Dictionary<string, string> Texts = new Dictionary<string, string>(StringComparer.Ordinal);
-
-    static LanguageMgr()
-    {
-        foreach (KeyValuePair<string, string> pair in GameLanguage.ClientTextMap.Text)
-        {
-            Texts[pair.Key] = pair.Value;
-        }
-    }
 
     public static string Get(string key)
     {
@@ -28,7 +17,7 @@ public static class LanguageMgr
 
         if (Texts.TryGetValue(key, out string value))
         {
-            return value;
+            return value ?? string.Empty;
         }
 
         return key;
@@ -56,18 +45,16 @@ public static class LanguageMgr
             ?? new Dictionary<string, string>(StringComparer.Ordinal);
     }
 
-    public static void Load(Dictionary<string, string> language)
+    public static async Task LoadLanguageAsync(string languageJsonPath)
     {
-        Texts = language ?? new Dictionary<string, string>(StringComparer.Ordinal);
+        byte[] data = await BrowserResource.GetBytesAsync(RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
+        LoadFromJson(Encoding.UTF8.GetString(data));
     }
 
-    public static void Load(string path)
+    public static string ToLocalizedString(this Enum @enum)
     {
-        if (!File.Exists(path))
-        {
-            return;
-        }
-
-        LoadFromJson(File.ReadAllText(path));
+        string key = $"{@enum.GetType().Name}_{@enum}";
+        string text = Get(key);
+        return text == key ? @enum.ToString() : text;
     }
 }
