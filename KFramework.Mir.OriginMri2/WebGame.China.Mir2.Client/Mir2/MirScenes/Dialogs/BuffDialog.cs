@@ -10,6 +10,7 @@ namespace Client.MirScenes.Dialogs
         // 原始传奇 buffGro 图标 35×35，本工程缩小 2 倍；每行 5 个。两个 Buff 窗口共用。
         public const int CellSize = 17;
         public const int Columns = 5;
+        public const int BufferXOffset = 5;
 
         public List<ClientBuff> Buffs = new List<ClientBuff>();
 
@@ -25,7 +26,8 @@ namespace Client.MirScenes.Dialogs
             Size = new Size(BuffDialog.Columns * BuffDialog.CellSize, BuffDialog.CellSize);
             Sort = true;
             Anchor = EAnchorType.BottomRight;
-            AnchorPos = new Point(-8, -8);
+            AnchorPos = new Point(-30, 0);
+            ApplyAnchor();
 
             Opacity = 1f;
 
@@ -86,8 +88,12 @@ namespace Client.MirScenes.Dialogs
                 var buff = Buffs[i];
 
                 // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN，不再依赖旧 .Lib。
-                image.Location = new Point((i % BuffDialog.Columns) * BuffDialog.CellSize, (i / BuffDialog.Columns) * BuffDialog.CellSize);
+                image.Location = new Point(
+                    (i % BuffDialog.Columns) * BuffDialog.CellSize, 
+                    -(i / BuffDialog.Columns) * BuffDialog.CellSize);
+
                 image.Size = new Size(BuffDialog.CellSize, BuffDialog.CellSize);
+                image.AutoSize = false;
                 image.Hint = BuffString(buff);
                 image.ImageUrl = BuffIconUrl(buff.Type);
                 image.Visible = true;
@@ -117,7 +123,6 @@ namespace Client.MirScenes.Dialogs
             int columns = _buffCount > BuffDialog.Columns ? BuffDialog.Columns : _buffCount;
             int rows = (_buffCount + BuffDialog.Columns - 1) / BuffDialog.Columns;
             Size = new Size(columns * BuffDialog.CellSize, rows * BuffDialog.CellSize);
-            ApplyAnchor();
         }
 
         public string BuffString(ClientBuff buff)
