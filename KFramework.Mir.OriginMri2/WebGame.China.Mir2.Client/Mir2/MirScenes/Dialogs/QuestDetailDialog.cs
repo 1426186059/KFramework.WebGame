@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
@@ -73,7 +73,7 @@ namespace Client.MirScenes.Dialogs
 
             Message = new QuestMessage(upButton, downButton, positionBar, 16, true)
             {
-                Font = new Font(Settings.FontName, 9F),
+                Font = FontConst.F9,
                 Parent = this,
                 Size = new Size(280, 320),
                 Location = new Point(10, 35),

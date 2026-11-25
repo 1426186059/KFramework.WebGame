@@ -68,7 +68,7 @@ namespace Client.MirScenes.Dialogs
             GoldLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(35, 123),
                 Parent = this,
                 Size = new Size(90, 15),
@@ -217,7 +217,7 @@ namespace Client.MirScenes.Dialogs
             GuestGoldLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(35, 123),
                 Parent = this,
                 Size = new Size(90, 15),

@@ -76,7 +76,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(208, 37),
                 NotControl = true,
                 Location = new Point(34, 13),
-                Font = new Font(Settings.FontName, 14F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F14Bold,
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Text = "地图",
                 OutLine = true

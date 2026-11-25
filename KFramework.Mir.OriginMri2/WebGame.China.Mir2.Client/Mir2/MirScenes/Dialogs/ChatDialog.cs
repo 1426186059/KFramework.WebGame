@@ -24,7 +24,7 @@ namespace Client.MirScenes.Dialogs
         public MirButton SendChatBtn;
         public MirTextBox ChatTextBox;
         public MirButton ChatInputBtn;
-        public Font ChatFont = new Font(Settings.FontName, 8F);
+        public Font ChatFont = FontConst.F8;
 
         public int StartIndex, LineCount = 7, WindowSize;
         // 私聊目标角色ID:由好友/伴侣等入口设置;非私聊为 0。取代原先把名字塞进消息文本的做法。

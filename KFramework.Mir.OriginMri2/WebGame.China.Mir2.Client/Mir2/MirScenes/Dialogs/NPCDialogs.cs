@@ -31,8 +31,8 @@ namespace Client.MirScenes.Dialogs
 
         public MirLabel NameLabel;
 
-        readonly Font font = new Font(Settings.FontName, 12F);          // 共用字体（底部按钮等）
-        readonly Font contentFont = new Font(Settings.FontName, 12F);   // 正文及叠加其上的内联链接专用
+        readonly Font font = FontConst.F12;          // 共用字体（底部按钮等）
+        readonly Font contentFont = FontConst.F12;   // 正文及叠加其上的内联链接专用
         private const int TextLineHeight = 25; // 与原始传奇 txt_desc 行距一致
         private const int TextStartY = 55;     // 正文起始 Y，与 17 号标题拉开距离
 
@@ -84,7 +84,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 13F),
+                Font = FontConst.F13,
                 ForeColour = CommonColor.Yellow,
                 OutLine = true,
                 Location = new Point(24, 21), // 原始传奇 txt_name x=24 y=21 size=17
@@ -1901,7 +1901,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 Location = new Point(22, 5),
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F10Bold,
                 ForeColour = CommonColor.BurlyWood,
                 Visible = true,
                 NotControl = true
@@ -1913,7 +1913,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = CommonColor.White,
                 Parent = this,
                 Location = new Point(10, 135),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Visible = true,
                 NotControl = true
             };
@@ -1924,7 +1924,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = CommonColor.White,
                 Parent = this,
                 Location = new Point(30, 190),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Visible = true,
                 NotControl = true
             };
@@ -3137,7 +3137,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(237, 20),
                 DrawFormat = new TextStyle(TextAnchor.UpperCenter),
                 ForeColour = CommonColor.Black,
-                Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
+                Font = ScaleFont(FontConst.F12Bold)
             };
 
             _label = new MirLabel
@@ -3148,7 +3148,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(237, 20),
                 DrawFormat = new TextStyle(TextAnchor.UpperCenter),                
-                Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
+                Font = ScaleFont(FontConst.F12Bold)
             };
         }
 

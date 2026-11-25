@@ -493,7 +493,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ForeColour = CommonColor.White,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(15, 30),
                 Size = new Size(165, 100),
             };

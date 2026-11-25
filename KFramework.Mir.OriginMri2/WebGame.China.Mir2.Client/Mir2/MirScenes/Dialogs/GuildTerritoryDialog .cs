@@ -201,7 +201,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 ForeColour = CommonColor.Goldenrod,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
                 Text = "GT #"
@@ -213,7 +213,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 ForeColour = CommonColor.Goldenrod,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
                 Text = LanguageMgr.Get("OwningGuild")};
@@ -224,7 +224,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 ForeColour = CommonColor.Goldenrod,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
                 Text = LanguageMgr.Get("GuildLeaders")};
@@ -235,7 +235,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 ForeColour = CommonColor.Goldenrod,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
                 Text = LanguageMgr.Get("GTStatus")};
@@ -246,7 +246,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 ForeColour = CommonColor.Goldenrod,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 NotControl = true,
                 BackColour = CommonColor.Transparent,
                 Text = LanguageMgr.Get("GTPrice")};

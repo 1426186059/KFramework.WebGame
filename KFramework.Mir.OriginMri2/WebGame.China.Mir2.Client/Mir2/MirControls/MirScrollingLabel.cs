@@ -15,7 +15,7 @@ namespace Client.MirControls
 
         public int Index;
 
-        public Font Font = new Font(Settings.FontName, 8F);
+        public Font Font = FontConst.F8;
         public List<string> CurrentLines = new List<string>();
         public int VisibleLines = 8;
 

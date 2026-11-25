@@ -195,7 +195,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F10Bold,
                 ForeColour = CommonColor.BurlyWood,
                 Location = new Point(229, 36),
                 Size = new Size(82, 22),

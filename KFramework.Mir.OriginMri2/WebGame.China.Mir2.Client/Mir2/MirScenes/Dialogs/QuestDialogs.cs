@@ -56,7 +56,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(PanelIndent, 10),
-                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F12Bold,
                 ForeColour = CommonColor.Yellow,
             };
 
@@ -581,7 +581,7 @@ namespace Client.MirScenes.Dialogs
 
         public int PosX, PosMinY, PosMaxY;
 
-        public Font Font = new Font(Settings.FontName, 8F);
+        public Font Font = FontConst.F8;
         public List<string> CurrentLines = new List<string>();
 
         private readonly string TaskTitle = LanguageMgr.Get("Tasks"), ProgressTitle = LanguageMgr.Get("Progress"), ReturnTitle = LanguageMgr.Get("QuestReturn"), TimeLimitTitle = LanguageMgr.Get("TimeLimit");
@@ -796,7 +796,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (i == 0 || lines[i] == TaskTitle || lines[i] == ProgressTitle || lines[i] == ReturnTitle || lines[i] == TimeLimitTitle)
                 {
-                    font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold);
+                    font = FontConst.F10Bold;
                     title = true;
 
                     if (i == 0)
@@ -983,7 +983,7 @@ namespace Client.MirScenes.Dialogs
                         Text = raw.Trim(),
                         ForeColour = CommonColor.White,
                         NotControl = false,
-                        Font = new Font(Settings.FontName, 12F),
+                        Font = FontConst.F12,
                     };
                     _labels.Add(label);
                     y += label.Size.Height + 2;
@@ -1024,7 +1024,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = CommonColor.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
-                Font = new Font(Settings.FontName, 12F),
+                Font = FontConst.F12,
             };
             _labels.Add(wordLbl);
             x += wordLbl.Size.Width;
@@ -1038,7 +1038,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = CommonColor.White,
                 UnderLine = false,
                 NotControl = false,
-                Font = new Font(Settings.FontName, 12F),
+                Font = FontConst.F12,
             };
             _labels.Add(valLbl);
             x += valLbl.Size.Width;
@@ -1058,7 +1058,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = CommonColor.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
-                Font = new Font(Settings.FontName, 12F),
+                Font = FontConst.F12,
             };
 
             _labels.Add(nameLabel);
@@ -1097,7 +1097,7 @@ namespace Client.MirScenes.Dialogs
                     ForeColour = CommonColor.White,
                     UnderLine = false,
                     NotControl = false,
-                    Font = new Font(Settings.FontName, 12F),
+                    Font = FontConst.F12,
                 };
 
                 _labels.Add(countLabel);
@@ -1290,7 +1290,7 @@ namespace Client.MirScenes.Dialogs
                 Text = Group,
                 AutoSize = true,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.LimeGreen,
                 Location = new Point(18, 0),
                 Visible = true,
@@ -1413,7 +1413,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = string.Format("{0,-4} {1}", level, name),
                 AutoSize = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = lowLevelQuest ? CommonColor.Gray : quest.New ? CommonColor.Yellow : CommonColor.White,
                 Parent = this,
                 Location = new Point(0, 0),
@@ -1440,7 +1440,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = string.Format("{0}", state),
                 AutoSize = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = lowLevelQuest ? CommonColor.Gray : quest.New ? CommonColor.Yellow : CommonColor.White,
                 Parent = this,
                 Location = new Point(185, 0),

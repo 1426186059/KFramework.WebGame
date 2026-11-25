@@ -46,7 +46,7 @@ public sealed class FPSDialog : MirControl
         ForeColour = CommonColor.White;
         NotControl = true;
         Opacity = 1F;
-        _font = ScaleFont(new Font(Settings.FontName, 8F));
+        _font = ScaleFont(FontConst.F8);
     }
 
     private void OnTextChanged()

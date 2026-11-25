@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
@@ -104,7 +104,7 @@ namespace Client.MirControls
                 Location = new Point(0, 0),
                 ForeColour = ForeColour,
                 BackColour = BackColour,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Visible = true,
             };
             _label.Click += (o, e) =>
@@ -200,7 +200,7 @@ namespace Client.MirControls
                     Size = new Size(Size.Width - 16, 16),
                     ForeColour = ForeColour,
                     BackColour = CommonColor.FromArgb(255, 20, 20, 20),
-                    Font = new Font(Settings.FontName, 8F)
+                    Font = FontConst.F8
                 };
                 lbl.MouseEnter += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 140, 70, 0);
                 lbl.MouseLeave += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);

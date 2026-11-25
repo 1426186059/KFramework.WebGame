@@ -162,7 +162,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             LoverDateLabel = new MirLabel
@@ -174,7 +174,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             LoverLengthLabel = new MirLabel
@@ -186,7 +186,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             LoverOnlineLabel = new MirLabel
@@ -198,7 +198,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
         }
 

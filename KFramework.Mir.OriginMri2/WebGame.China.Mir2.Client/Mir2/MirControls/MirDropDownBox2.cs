@@ -253,7 +253,7 @@ namespace Client.MirControls
                     Size = new Size(Math.Max(0, btnW), RowHeight),
                     ForeColour = ForeColour,
                     BackColour = CommonColor.FromArgb(255, 20, 20, 20),
-                    Font = new Font(Settings.FontName, 8F)
+                    Font = FontConst.F8
                 };
                 lbl.MouseEnter += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 140, 70, 0);
                 lbl.MouseLeave += (o, e) => lbl.BackColour = CommonColor.FromArgb(255, 20, 20, 20);

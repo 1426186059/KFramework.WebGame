@@ -312,7 +312,7 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            Font font = TextBox.Font ?? new Font(Settings.FontName, 8F);
+            Font font = TextBox.Font ?? FontConst.F8;
             Color fore = TextBox.ForeColor != CommonColor.Empty ? TextBox.ForeColor : CommonColor.White;
             Color back = (TextBox.BackColor != CommonColor.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor : CommonColor.Empty;
             string drawText = TextBox.Text ?? "";

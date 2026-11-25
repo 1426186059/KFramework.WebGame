@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -431,7 +431,7 @@ namespace Client.MirScenes
                 {
                     AutoSize = true,
                     BackColour = CommonColor.Transparent,
-                    Font = new Font(Settings.FontName, 12F),
+                    Font = FontConst.F12,
                     ForeColour = CommonColor.White,
                     Location = new Point(20, 250 + i * 21),
                     OutLine = true,

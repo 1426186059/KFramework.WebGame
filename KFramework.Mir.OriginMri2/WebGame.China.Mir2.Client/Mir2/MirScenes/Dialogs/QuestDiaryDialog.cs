@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 
@@ -33,7 +33,7 @@ namespace Client.MirScenes.Dialogs
 
             _takenQuestsLabel = new MirLabel
             {
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(210, 7)

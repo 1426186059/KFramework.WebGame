@@ -23,7 +23,7 @@ namespace Client.MirScenes.Dialogs
             TextLabel1 = new MirLabel
             {
                 Text = "",
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
@@ -36,7 +36,7 @@ namespace Client.MirScenes.Dialogs
             TextLabel2 = new MirLabel
             {
                 Text = "",
-                Font = new Font(Settings.FontName, 15F),
+                Font = FontConst.F15,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,

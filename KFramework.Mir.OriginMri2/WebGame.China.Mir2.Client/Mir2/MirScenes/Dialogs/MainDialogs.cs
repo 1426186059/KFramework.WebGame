@@ -360,7 +360,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 OutLine = true,
-                Font = new Font(Settings.FontName, 9F)
+                Font = FontConst.F9
             };
 
             // 原始传奇主界面 img_exp：图集 y_homeUI-sheet#btn_gongneng_25，宽 70，scaleX=经验比例。
@@ -406,7 +406,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(60, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
-                Font = new Font(Settings.FontName, 9F)
+                Font = FontConst.F9
             };
 
             // 原始传奇 10倍经验点条：img_expMedal = btn_gongneng_28，宽 90；阈值 cm.global[34201]=40。
@@ -452,7 +452,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(70, 22),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
-                Font = new Font(Settings.FontName, 9F)
+                Font = FontConst.F9
             };
 
 

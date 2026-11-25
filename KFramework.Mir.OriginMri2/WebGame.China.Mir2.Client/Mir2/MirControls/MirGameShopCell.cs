@@ -39,7 +39,7 @@ namespace Client.MirControls
                 Location = new Point(0, 13),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
             };
 
             goldLabel = new MirLabel
@@ -49,7 +49,7 @@ namespace Client.MirControls
                 Location = new Point(2, 102),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F)
+                Font = FontConst.F8
             };
 
             gpLabel = new MirLabel
@@ -59,7 +59,7 @@ namespace Client.MirControls
                 Location = new Point(2, 81),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F)
+                Font = FontConst.F8
             };
 
             StockLabel = new MirLabel
@@ -69,7 +69,7 @@ namespace Client.MirControls
                 Parent = this,
                 NotControl = true,
                 ForeColour = CommonColor.Gray,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 Text = "STOCK:"
             };
 
@@ -80,7 +80,7 @@ namespace Client.MirControls
                 Location = new Point(93, 37),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
             };
 
             countLabel = new MirLabel
@@ -90,7 +90,7 @@ namespace Client.MirControls
                 Location = new Point(16, 60),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
             };
 
 
@@ -180,7 +180,7 @@ namespace Client.MirControls
                 Location = new Point(74, 56),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
             };
 
 

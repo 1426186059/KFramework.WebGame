@@ -85,7 +85,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(123, 449),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
             };
             totalCredits = new MirLabel
             {
@@ -94,7 +94,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(5, 449),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F)
+                Font = FontConst.F8
             };
 
             UpButton = new MirButton
@@ -174,7 +174,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(140, 16),
                 Location = new Point(540, 69),
-                Font = new Font(Settings.FontName, 9F),
+                Font = FontConst.F9,
                 MaxLength = 23,
                 CanLoseFocus = true,
             };
@@ -384,7 +384,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(83, 17),
                 Location = new Point(597, 446),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
             };
 
             PreviousButton = new MirButton
@@ -433,7 +433,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(15, 103 + (15 * i)),
                     Text = "Testing - " + i.ToString(),
                     ForeColour = CommonColor.Gray,
-                    Font = new Font(Settings.FontName, 7F),
+                    Font = FontConst.F7,
                 };
                 Filters[i].Click += (o, e) =>
                 {

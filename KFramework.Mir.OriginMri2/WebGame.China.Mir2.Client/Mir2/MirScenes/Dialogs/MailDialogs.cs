@@ -46,7 +46,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Type"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(37, 19),
                 Location = new Point(8, 34)
@@ -56,7 +56,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Sender"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(132, 19),
                 Location = new Point(47, 34)
@@ -66,7 +66,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Message"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(122, 19),
                 Location = new Point(181, 34)
@@ -619,7 +619,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
@@ -630,7 +630,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ForeColour = CommonColor.White,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(15, 92),
                 Size = new Size(202, 165),
             };
@@ -724,7 +724,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
@@ -735,7 +735,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ForeColour = CommonColor.White,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(15, 98),
                 Size = new Size(202, 165),
             };
@@ -784,7 +784,7 @@ namespace Client.MirScenes.Dialogs
             ParcelCostLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(63, 269),
                 Parent = this,
                 Size = new Size(143, 15),
@@ -793,7 +793,7 @@ namespace Client.MirScenes.Dialogs
             GoldSendLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(63, 290),
                 Parent = this,
                 Size = new Size(143, 15),
@@ -1002,7 +1002,7 @@ namespace Client.MirScenes.Dialogs
             SenderNameLabel = new MirLabel
             {
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
@@ -1012,7 +1012,7 @@ namespace Client.MirScenes.Dialogs
             DateSentLabel = new MirLabel
             {
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 56),
                 Size = new Size(150, 15),
@@ -1023,7 +1023,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ForeColour = CommonColor.White,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(15, 92),
                 Size = new Size(202, 165),
             };
@@ -1133,7 +1133,7 @@ namespace Client.MirScenes.Dialogs
             SenderNameLabel = new MirLabel
             {
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 35),
                 Size = new Size(150, 15),
@@ -1143,7 +1143,7 @@ namespace Client.MirScenes.Dialogs
             DateSentLabel = new MirLabel
             {
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 ForeColour = CommonColor.White,
                 Location = new Point(70, 56),
                 Size = new Size(150, 15),
@@ -1154,7 +1154,7 @@ namespace Client.MirScenes.Dialogs
             {
                 ForeColour = CommonColor.White,
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(15, 98),
                 Size = new Size(202, 165),
             };
@@ -1162,7 +1162,7 @@ namespace Client.MirScenes.Dialogs
             GoldSendLabel = new MirLabel
             {
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Location = new Point(63, 290),
                 Parent = this,
                 Size = new Size(143, 15),

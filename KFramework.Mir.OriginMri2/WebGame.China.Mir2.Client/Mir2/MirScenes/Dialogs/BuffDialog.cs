@@ -36,7 +36,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 AutoSize = true,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F10Bold,
                 NotControl = true,
                 Sort = true,
                 Visible = false,

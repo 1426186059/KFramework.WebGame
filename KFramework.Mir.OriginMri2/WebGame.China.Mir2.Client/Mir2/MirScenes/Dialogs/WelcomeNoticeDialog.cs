@@ -30,7 +30,7 @@ namespace Client.MirScenes.Dialogs
         private const int PanelW = 370, PanelH = 519;
         private const int ChatX = 81, ChatY = 164, ChatW = 240, LineH = 22;
 
-        Font font = new Font(Settings.FontName, 11F);
+        Font font = FontConst.F11;
 
         public List<string> CurrentLines = new List<string>();
         private int _index = 0;
@@ -49,7 +49,7 @@ namespace Client.MirScenes.Dialogs
             AnchorPos = new Point(0, -100);
             ApplyAnchor();
 
-            Font bigFont = new Font(Settings.FontName, 14F);
+            Font bigFont = FontConst.F14;
 
             // 顶部“玛法2001纪元”（原版 txt_date x80,y118）—— 无标题栏，直接画在面板上。
             new MirLabel

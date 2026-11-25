@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
 using KFramework.MonoGameExtend;
@@ -63,7 +63,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(318, 30),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = CommonColor.White,
-                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F12Bold,
                 NotControl = true
             };
             
@@ -354,7 +354,7 @@ namespace Client.MirScenes.Dialogs
                 CdTexts[row] = new MirLabel
                 {
                     Text = "",
-                    Font = new Font(Settings.FontName, 12F),
+                    Font = FontConst.F12,
                     ForeColour = CommonColor.White,
                     OutLine = true,
                     OutLineColour = CommonColor.Black,
@@ -369,7 +369,7 @@ namespace Client.MirScenes.Dialogs
                 KeyNameLabels[row] = new MirLabel
                 {
                     Text = keyOffset == 0 ? (row + 1).ToString() : ("F" + (row + 1)),
-                    Font = new Font(Settings.FontName, 10F),
+                    Font = FontConst.F10,
                     ForeColour = CommonColor.White,
                     Parent = this,
                     Location = new Point(CellOffset, y + CellOffset),

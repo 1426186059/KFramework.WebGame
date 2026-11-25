@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirObjects;
 using KFramework.MonoGameExtend;
 using Client.MirNetwork;
@@ -16,7 +16,7 @@ namespace Client.MirScenes.Dialogs
         public List<int> TrackedQuestsIds = new List<int>();
         public List<MirLabel> TaskLines = new List<MirLabel>();
 
-        public static Font QuestFont = new Font(Settings.FontName, 12F);
+        public static Font QuestFont = FontConst.F12;
 
         private MirImageControl m_ShowNode;
         private MirButton m_HideNode;

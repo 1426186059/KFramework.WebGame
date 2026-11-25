@@ -79,7 +79,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 ForeColour = CommonColor.White,
                 OutLineColour = CommonColor.Black,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             LocationLabel = new MirLabel
@@ -91,7 +91,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 ForeColour = CommonColor.White,
                 OutLineColour = CommonColor.Black,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
                 RichText = true,
             };
 
@@ -201,7 +201,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         AutoSize = true,
                         Parent = this,
-                        Font = new Font(Settings.FontName, 9f, KFramework.MonoGame.FontStyle.Bold),
+                        Font = FontConst.F9Bold,
                         DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                         Text = text,
                         ForeColour = color,

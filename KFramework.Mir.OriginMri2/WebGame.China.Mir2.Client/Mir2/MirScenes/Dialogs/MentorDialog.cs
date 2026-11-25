@@ -145,7 +145,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             MentorLevelLabel = new MirLabel
@@ -157,7 +157,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             MentorOnlineLabel = new MirLabel
@@ -169,7 +169,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 Visible = false,
                 Text = LanguageMgr.Get("ONLINE"),
             };
@@ -183,7 +183,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             StudentLevelLabel = new MirLabel
@@ -195,7 +195,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
             };
 
             StudentOnlineLabel = new MirLabel
@@ -207,7 +207,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 Visible = false,
                 Text = LanguageMgr.Get("ONLINE"),
             };
@@ -221,7 +221,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 Text = LanguageMgr.Get("MENTOR"),
             };
 
@@ -234,7 +234,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 Text = LanguageMgr.Get("MENTEE"),
             };
 
@@ -247,7 +247,7 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
             };
 
 

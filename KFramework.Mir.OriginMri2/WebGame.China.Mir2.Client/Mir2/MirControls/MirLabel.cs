@@ -262,7 +262,7 @@ namespace Client.MirControls
             DrawControlTexture = true;
             _drawFormat = new KFramework.MonoGame.TextStyle(KFramework.MonoGame.TextAnchor.UpperLeft, KFramework.MonoGame.HorizontalWrapMode.Wrap);
 
-            _font = ScaleFont(new Font(Settings.FontName, 12F));
+            _font = ScaleFont(FontConst.F12);
             _outLine = true;
             _outLineColour = CommonColor.Black; 
             _text = string.Empty;

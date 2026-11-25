@@ -75,7 +75,7 @@ namespace Client.MirScenes.Dialogs
             PageLabel = new MirLabel
             {
                 Text = "",
-                Font = new Font(Settings.FontName, 9F),
+                Font = FontConst.F9,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 NotControl = true,
@@ -311,7 +311,7 @@ namespace Client.MirScenes.Dialogs
                 Text = LanguageMgr.Get("Shortcuts"),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = CommonColor.White,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(13, 75),
@@ -323,7 +323,7 @@ namespace Client.MirScenes.Dialogs
                 Text = LanguageMgr.Get("Information"),
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 ForeColour = CommonColor.White,
-                Font = new Font(Settings.FontName, 10F),
+                Font = FontConst.F10,
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(114, 75),
@@ -342,7 +342,7 @@ namespace Client.MirScenes.Dialogs
                     Text = Shortcuts[i].Shortcut,
                     ForeColour = CommonColor.Yellow,
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
-                    Font = new Font(Settings.FontName, 9F),
+                    Font = FontConst.F9,
                     Parent = this,
                     AutoSize = true,
                     Location = new Point(18, 107 + (20 * i)),
@@ -354,7 +354,7 @@ namespace Client.MirScenes.Dialogs
                     Text = Shortcuts[i].Information,
                     DrawFormat = new TextStyle(TextAnchor.MiddleLeft),
                     ForeColour = CommonColor.White,
-                    Font = new Font(Settings.FontName, 9F),
+                    Font = FontConst.F9,
                     Parent = this,
                     AutoSize = true,
                     Location = new Point(119, 107 + (20 * i)),
@@ -386,7 +386,7 @@ namespace Client.MirScenes.Dialogs
             PageTitleLabel = new MirLabel
             {
                 Text = Title,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F10Bold,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Parent = this,
                 Size = new Size(242, 30),

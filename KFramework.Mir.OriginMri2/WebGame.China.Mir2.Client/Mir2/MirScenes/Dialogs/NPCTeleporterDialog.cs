@@ -90,7 +90,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(16, 15),
                 AutoSize = true,
                 ForeColour = CommonColor.BurlyWood,
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Font = FontConst.F10Bold,
             };
 
             // 分隔线（标题下方一条横线；线上用 z_com_line1，本工程用 com_line_h）

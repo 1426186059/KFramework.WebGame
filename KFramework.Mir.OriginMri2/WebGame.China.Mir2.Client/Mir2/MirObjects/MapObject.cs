@@ -9,7 +9,7 @@ namespace Client.MirObjects
 {
     public abstract class MapObject
     {
-        public static Font ChatFont = new Font(Settings.FontName, 10F);
+        public static Font ChatFont = FontConst.F10;
         public static List<MirLabel> LabelList = new List<MirLabel>();
 
         public static UserObject User;
@@ -681,7 +681,7 @@ namespace Client.MirObjects
             {
                 _bloodLabel = new MirLabel
                 {
-                    Font = new Font(Settings.FontName, 9F),
+                    Font = FontConst.F9,
                     AutoSize = true,
                     BackColour = CommonColor.Transparent,
                     ForeColour = CommonColor.White,

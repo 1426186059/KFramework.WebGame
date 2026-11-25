@@ -173,7 +173,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(115, 205),
                 Location = new Point(8, 237),
-                Font = new Font(Settings.FontName, 8F - 1),
+                Font = FontConst.F7,
                 ForeColour = CommonColor.White,
                 Visible = false
             };
@@ -526,7 +526,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(6, 451),
                 Parent = this,
                 NotControl = true,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Visible = false
             };
 
@@ -597,7 +597,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("SalePrice"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(100, 21),
                 Location = new Point(15, 142)
@@ -607,7 +607,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("SellItem"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(110, 21),
                 Location = new Point(10, 60)
@@ -617,7 +617,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Item"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(166, 21),
                 Location = new Point(127, 60)
@@ -627,7 +627,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Price"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(88, 21),
                 Location = new Point(295, 60)
@@ -648,7 +648,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = LanguageMgr.Get("Expiry"),
                 Parent = this,
-                Font = new Font(Settings.FontName, 8F - 1, KFramework.MonoGame.FontStyle.Italic),
+                Font = FontConst.F7Italic,
                 DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 Size = new Size(98, 21),
                 Location = new Point(384, 60)

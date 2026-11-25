@@ -199,7 +199,7 @@ namespace Client.MirScenes.Dialogs
             Notice = new MirTextBox()
             {
                 ForeColour = CommonColor.White,
-                Font = new Font(Settings.FontName, 8F),
+                Font = FontConst.F8,
                 Enabled = false,
                 Visible = true,
                 Parent = NoticePage,
@@ -339,7 +339,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(125, 30 + (i * 15)),
                     Visible = false,
                     Enabled = false,
-                    Font = new Font(Settings.FontName, 7F)
+                    Font = FontConst.F7
 
                 };
                 MembersName[i].MouseWheel += MembersPanel_MouseWheel;
@@ -355,7 +355,7 @@ namespace Client.MirScenes.Dialogs
                     Location = new Point(225, 30 + (i * 15)),
                     Visible = false,
                     Enabled = false,
-                    Font = new Font(Settings.FontName, 7F)
+                    Font = FontConst.F7
                 };
                 MembersStatus[i].MouseWheel += MembersPanel_MouseWheel;
             }
@@ -452,7 +452,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(245, 309),
                 Parent = MembersPage,
                 Size = new Size(150, 12),
-                Font = new Font(Settings.FontName, 7F),
+                Font = FontConst.F7,
                 ForeColour = CommonColor.White
             };
             MembersPage.KeyDown += MembersPanel_KeyDown;

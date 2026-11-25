@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
@@ -37,7 +37,7 @@ namespace Client.MirObjects
                     OutLine = true,
                     OutLineColour = CommonColor.Black,
                     Text = Text,
-                    Font = new Font(Settings.FontName, 8F, KFramework.MonoGame.FontStyle.Bold)
+                    Font = FontConst.F8Bold
                 };
             }
 
