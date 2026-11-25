@@ -218,6 +218,32 @@ namespace Client.MirScenes.Dialogs
                 GameScene.Scene.CharacterSkillDialog.Toggle();
             };
 
+
+            //设置
+            SettingButton = CreateMainButton(
+                "btn_gongneng_13", "btn_gongneng_14", "word_xitong_13",
+                new Point(this.Size.Width - 115, 80), LanguageMgr.Get("SettingButtonHint"));
+            SettingButton.Click += (o, e) =>
+            {
+                if (!GameScene.Scene.OptionDialog.Visible) GameScene.Scene.OptionDialog.Show();
+                else GameScene.Scene.OptionDialog.Hide();
+            };
+
+            //拍卖
+            AuctionButton = CreateMainButton(
+                "btn_gongneng_15", "btn_gongneng_16", "word_xitong_12",
+                new Point(this.Size.Width - 110, 130), LanguageMgr.Get("AuctionButtonHint"));
+            AuctionButton.Click += (o, e) =>
+            {
+                Network.Enqueue(new C.MarketRefresh());
+            };
+
+            //转生。
+            RebirthButton = CreateMainButton(
+                "btn_gongneng_17", "btn_gongneng_18", "word_xitong_11",
+                new Point(this.Size.Width - 120, 180), LanguageMgr.Get("RebirthButtonHint"));
+
+
             GameShopButton = new MirButton
             {
                 AtlasNameKey = "y_homeUI-sheet",
@@ -235,28 +261,6 @@ namespace Client.MirScenes.Dialogs
                 if (!GameScene.Scene.GameShopDialog.Visible) GameScene.Scene.GameShopDialog.Show();
                 else GameScene.Scene.GameShopDialog.Hide();
             };
-
-            // 原始传奇主界面右下三键：设置 / 拍卖 / 转生。
-            SettingButton = CreateMainButton(
-                "btn_gongneng_01", "btn_gongneng_02", "word_xitong_16",
-                new Point(this.Size.Width - 100, 190), LanguageMgr.Get("SettingButtonHint"));
-            SettingButton.Click += (o, e) =>
-            {
-                if (!GameScene.Scene.OptionDialog.Visible) GameScene.Scene.OptionDialog.Show();
-                else GameScene.Scene.OptionDialog.Hide();
-            };
-
-            AuctionButton = CreateMainButton(
-                "btn_gongneng_05", "btn_gongneng_06", null,
-                new Point(this.Size.Width - 150, 145), LanguageMgr.Get("AuctionButtonHint"));
-            AuctionButton.Click += (o, e) =>
-            {
-                Network.Enqueue(new C.MarketRefresh());
-            };
-
-            RebirthButton = CreateMainButton(
-                "btn_gongneng_03", "btn_gongneng_04", "word_xitong_09",
-                new Point(this.Size.Width - 150, 190), LanguageMgr.Get("RebirthButtonHint"));
 
             this.RankBtn = this.RankBtnStyle(
                 "word_xitong_03", 
@@ -600,7 +604,12 @@ namespace Client.MirScenes.Dialogs
             return rankBtn;
         }
 
-        private MirButton CreateMainButton(string frame, string pressedFrame, string labelFrame, Point location, string hint)
+        private MirButton CreateMainButton(
+            string frame, 
+            string pressedFrame, 
+            string labelFrame, 
+            Point location, 
+            string hint)
         {
             MirButton button = new MirButton
             {
@@ -619,8 +628,8 @@ namespace Client.MirScenes.Dialogs
                 button.LabelImage.AtlasNameKey = "y_homeUI-sheet";
                 button.LabelImage.AtlasFrame = labelFrame;
                 button.LabelImage.Size = new Size(25, 14);
-                button.LabelImage.Location = button.LabelImage.Center;
                 button.LabelImage.Visible = true;
+                button.LabelImage.Location = button.LabelImage.Bottom.Add(new Point(0, 0));
             }
 
             return button;
