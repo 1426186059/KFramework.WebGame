@@ -3697,8 +3697,8 @@ namespace Client.MirScenes
                             obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Miss"), 1200,
                                 obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray, 0, side));
                             break;
-                        case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大）
-                            obj.Damages.Add(new OriginMir2Damage(LanguageMgr.Get("Crit"), 1000,
+                        case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大），显示实际伤害数字
+                            obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId, side) { Offset = 15 });
                             break;
                     }

@@ -245,9 +245,32 @@ public static class Mir2AtlasLibrary
     {
         var (key, aliasFrame) = ResolveName(sheetOrFrameName);
         frame = null;
-        if (!_sheets.TryGetValue(key, out var s)) return false;
+        if (!_sheets.TryGetValue(key, out var s))
+        {
+            return false;
+        }
+
         var fn = frameName ?? aliasFrame;
         return fn != null && s.Frames.TryGetValue(fn, out frame);
+    }
+
+    /// <summary>取图集帧的裁剪偏移 offX/offY（Egret 子图在原始画布里的位置）。</summary>
+    public static bool TryGetFrameAnchor(string sheetOrFrameName, string frameName, out Vector2 anchor)
+    {
+        anchor = Vector2.Zero;
+        var (key, aliasFrame) = ResolveName(sheetOrFrameName);
+        if (!_sheets.TryGetValue(key, out var s))
+        {
+            return false;
+        }
+
+        var fn = frameName ?? aliasFrame;
+        if (fn == null || s.Anchors == null)
+        {
+            return false;
+        }
+
+        return s.Anchors.TryGetValue(fn, out anchor);
     }
 
     public static string[] GetGroupResourceNames(string groupName)

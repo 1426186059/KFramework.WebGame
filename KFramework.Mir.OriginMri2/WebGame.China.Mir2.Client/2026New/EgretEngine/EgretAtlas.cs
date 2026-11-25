@@ -32,7 +32,7 @@ public sealed class EgretAtlas
     /// <summary>帧名 → KSpriteInfo：绑定整页贴图后的产物，不是 JSON 数据副本。</summary>
     public Dictionary<string, KSpriteInfo> Frames { get; private set; }
 
-    /// <summary>帧名 → (offX, offY)：模型帧名的运行时索引，值直接取自 JSON。</summary>
+    /// <summary>帧名 → (offX, offY)：裁剪子图在原始画布里的偏移，值直接取自 JSON。</summary>
     public Dictionary<string, Vector2> Anchors { get; private set; }
         = new Dictionary<string, Vector2>(StringComparer.OrdinalIgnoreCase);
 
@@ -132,7 +132,7 @@ public sealed class EgretAtlas
             : new Vector2(r.W, r.H);                              // 模型帧：子图自身尺寸
         frames[name] = new KSpriteInfo(name, Texture, new Rectangle(r.X, r.Y, r.W, r.H),
                                        size, Vector2.Zero, false);
-        anchors[name] = named ? Vector2.Zero : new Vector2(r.OffX ?? 0, r.OffY ?? 0);
+        anchors[name] = new Vector2(r.OffX ?? 0, r.OffY ?? 0);
     }
 
     /// <summary>帧名排序：若全部可解析为整数（模型帧 "0","1"...）则按数值顺序，否则按字典序（UI 图集命名帧）。

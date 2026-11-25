@@ -100,9 +100,9 @@ namespace Client.MirObjects
             return int.TryParse(s, out int v) ? v : 0;
         }
 
-        private static KSpriteInfo GetGlyph(int style, char ch)
+        private static KSpriteInfo GetGlyph(int style, char ch, out string key)
         {
-            string key;
+            key = string.Empty;
             if (ch == '+')
             {
                 key = "hurt" + style + "_+";
@@ -290,35 +290,58 @@ namespace Client.MirObjects
 
             foreach (char ch in Text)
             {
-                KSpriteInfo glyph = GetGlyph(_hurtStyle, ch);
+                KSpriteInfo glyph = GetGlyph(_hurtStyle, ch, out string key);
                 if (glyph == null)
                 {
                     continue; // 0/逗号/空格：原始逻辑不绘制
                 }
 
-                float w = glyph.Size.X * scale;
-                float h = glyph.Size.Y * scale;
-                if (w <= 0 || h <= 0)
+                // 用逻辑宽度推进光标；绘制时用裁剪后的真实矩形 + offX/offY，
+                // 否则 hurt1_- 这种 15x5 的裁剪帧会被拉伸到 15x19，出现黑块/阴影。
+                float advance = glyph.Size.X * scale;
+                if (advance <= 0)
                 {
                     continue;
                 }
 
-                DXManager.Draw(glyph.Texture, glyph.SourceRectangle,
-                    new RectangleF(cursor, y, w, h), tint, MirBlend.Normal.ToBlendState());
-                cursor += (int)Math.Ceiling(w);
+                DrawGlyphFrame(glyph, key, cursor, y, scale, tint);
+                cursor += (int)Math.Ceiling(advance);
                 any = true;
             }
 
             // title 图标（plus_{title}）：原始在数字之前叠加
-            if (_cfg != null && _cfg.title > 0 &&
-                Mir2AtlasLibrary.TryGetFrame("BloodFont_json", "plus_" + _cfg.title, out var titleFrame) && titleFrame?.Texture != null)
+            if (_cfg != null && _cfg.title > 0)
             {
-                int tw = (int)titleFrame.Size.X, th = (int)titleFrame.Size.Y;
-                DXManager.Draw(titleFrame.Texture, titleFrame.SourceRectangle,
-                    new RectangleF(x - tw - 2, y, tw, th), tint, MirBlend.Normal.ToBlendState());
+                string titleKey = "plus_" + _cfg.title;
+                if (Mir2AtlasLibrary.TryGetFrame("BloodFont_json", titleKey, out var titleFrame) && titleFrame?.Texture != null)
+                {
+                    float titleWidth = titleFrame.Size.X * scale;
+                    DrawGlyphFrame(titleFrame, titleKey, x - titleWidth - 2, y, scale, tint);
+                }
             }
 
             return any;
+        }
+
+        /// <summary>按 Egret 裁剪帧的真实尺寸与 offX/offY 绘制，避免把 Trim 后的子图拉伸回虚拟画布。</summary>
+        private static void DrawGlyphFrame(KSpriteInfo glyph, string key, float x, float y, float scale, Color tint)
+        {
+            if (glyph == null || glyph.Texture == null)
+            {
+                return;
+            }
+
+            float w = glyph.SourceRectangle.Width * scale;
+            float h = glyph.SourceRectangle.Height * scale;
+            if (w <= 0 || h <= 0)
+            {
+                return;
+            }
+
+            Mir2AtlasLibrary.TryGetFrameAnchor("BloodFont_json", key, out var anchor);
+            DXManager.Draw(glyph.Texture, glyph.SourceRectangle,
+                new RectangleF(x + anchor.X * scale, y + anchor.Y * scale, w, h),
+                tint, MirBlend.Normal.ToBlendState());
         }
 
         private void DrawFallback(int x, int y, int alpha)
