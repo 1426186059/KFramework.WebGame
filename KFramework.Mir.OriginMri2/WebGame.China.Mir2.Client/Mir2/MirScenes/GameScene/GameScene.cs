@@ -410,7 +410,8 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Location = new Point(Settings.ScreenWidth - 175, Settings.ScreenHeight - 140),
+                Anchor = EAnchorType.BottomRight,
+                AnchorPos = new Point(-8, -8),
                 GetExpandedParameter = () => { return Settings.ExpandedBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedBuffWindow = value; }
             };
@@ -6436,7 +6437,8 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Location = new Point(Settings.ScreenWidth - 355, Settings.ScreenHeight - 140),
+                Anchor = EAnchorType.BottomRight,
+                AnchorPos = new Point(-8 - BuffGrid.CellSize * BuffGrid.Columns - 8, -8),
                 GetExpandedParameter = () => { return Settings.ExpandedHeroBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedHeroBuffWindow = value; }
             };

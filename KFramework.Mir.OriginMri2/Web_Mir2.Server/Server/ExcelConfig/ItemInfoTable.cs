@@ -230,9 +230,7 @@ public class ItemInfoTable
         writer.Write(Light);
         writer.Write(RequiredAmount);
 
-        // 协议固定为 ushort：两端 ItemInfoTable(BinaryReader) 都是 ReadUInt16。
-        // 数据层 Image 扩成 uint 只为容纳原始传奇的 7 位图标 ID，发往客户端必须截断，
-        // 否则多写 2 字节会让后续字段整体错位（ReadString 抛 Format_Bad7BitInt）。
+        // Image/StackSize 两端均为 uint，协议写 4 字节；Durability 为 ushort，不能漏写（漏写会让客户端 ReadUInt16 错位到 StackSize，最终 EOF）。
         writer.Write(Image);
         writer.Write(Durability);
 

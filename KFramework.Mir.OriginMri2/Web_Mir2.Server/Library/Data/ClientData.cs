@@ -529,7 +529,7 @@ public class ClientQuestInfo
         writer.Write(MaxLevelNeeded);
         writer.Write(QuestNeeded);
         writer.Write((byte)ClassNeeded);
-        writer.Write((int)Type);
+        writer.Write((byte)Type);
         writer.Write(TimeLimitInSeconds);
         writer.Write(RewardGold);
         writer.Write(RewardExp);
@@ -695,7 +695,7 @@ public class QuestTaskTarget
     }
     public void Save(BinaryWriter writer)
     {
-        writer.Write((int)Type);
+        writer.Write((byte)Type);
         writer.Write(Name);
         writer.Write(MapIndex);
         writer.Write(X);

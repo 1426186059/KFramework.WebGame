@@ -5,6 +5,13 @@ using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
+    // 原始传奇 buffGro 图标 35×35，本工程缩小 2 倍；每行 5 个。提到文件级供两个 Buff 窗口共用。
+    public static class BuffGrid
+    {
+        public const int CellSize = 17;
+        public const int Columns = 5;
+    }
+
     public class BuffDialog : MirImageControl
     {
         public List<ClientBuff> Buffs = new List<ClientBuff>();
@@ -26,7 +33,7 @@ namespace Client.MirScenes.Dialogs
             // 对齐原始传奇：玩家/怪物 buffGro 无底板，图标 35×35 每行 5 个（main10.25487.1.min.js:
             // BuffRender.x = i%5*35, y = floor(i/5)*35）。原 Prguse2#20 底板与展开按钮都是旧图库白块，去掉。
             Movable = false;
-            Size = new Size(175, 35);
+            Size = new Size(BuffGrid.Columns * BuffGrid.CellSize, BuffGrid.CellSize);
             Sort = true;
 
             Opacity = 1f;
@@ -109,8 +116,8 @@ namespace Client.MirScenes.Dialogs
                 var buff = Buffs[i];
 
                 // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN，不再依赖旧 .Lib。
-                image.Location = new Point((i % 5) * 35, (i / 5) * 35);
-                image.Size = new Size(35, 35);
+                image.Location = new Point((i % BuffGrid.Columns) * BuffGrid.CellSize, (i / BuffGrid.Columns) * BuffGrid.CellSize);
+                image.Size = new Size(BuffGrid.CellSize, BuffGrid.CellSize);
                 image.Hint = BuffString(buff);
                 image.ImageUrl = BuffIconUrl(buff.Type);
                 image.Visible = true;
@@ -135,12 +142,13 @@ namespace Client.MirScenes.Dialogs
         {
             _buffCount = _buffList.Count;
 
-            // 原始传奇 buffGro：容器只按数量铺 35×35 网格，无底板、无收起态、无数量标签。
+            // 原始传奇 buffGro 网格布局（本工程图标缩小 2 倍），无底板、无收起态、无数量标签。
             _buffCountLabel.Visible = false;
             _expandCollapseButton.Visible = false;
-            int columns = _buffCount > 5 ? 5 : _buffCount;
-            int rows = (_buffCount + 4) / 5;
-            Size = new Size(columns * 35, rows * 35);
+            int columns = _buffCount > BuffGrid.Columns ? BuffGrid.Columns : _buffCount;
+            int rows = (_buffCount + BuffGrid.Columns - 1) / BuffGrid.Columns;
+            Size = new Size(columns * BuffGrid.CellSize, rows * BuffGrid.CellSize);
+            ApplyAnchor();
         }
 
         public string BuffString(ClientBuff buff)
@@ -426,7 +434,7 @@ namespace Client.MirScenes.Dialogs
         public PoisonBuffDialog()
         {
             Movable = false;
-            Size = new Size(175, 35);
+            Size = new Size(BuffGrid.Columns * BuffGrid.CellSize, BuffGrid.CellSize);
             Sort = true;
 
             Opacity = 1f;
@@ -594,8 +602,8 @@ namespace Client.MirScenes.Dialogs
                 var buff = Buffs[i];
 
                 // 原始传奇 BuffRender：35×35，每行 5 个，常显。图标走 icon/skills CDN。
-                image.Location = new Point((i % 5) * 35, (i / 5) * 35);
-                image.Size = new Size(35, 35);
+                image.Location = new Point((i % BuffGrid.Columns) * BuffGrid.CellSize, (i / BuffGrid.Columns) * BuffGrid.CellSize);
+                image.Size = new Size(BuffGrid.CellSize, BuffGrid.CellSize);
                 image.Hint = BuffString(buff);
                 image.ImageUrl = PoisonBuffIconUrl(buff.Type);
 
@@ -620,12 +628,13 @@ namespace Client.MirScenes.Dialogs
         {
             _buffCount = _buffList.Count;
 
-            // 原始传奇 buffGro：容器只按数量铺 35×35 网格，无底板、无收起态、无数量标签。
+            // 原始传奇 buffGro 网格布局（本工程图标缩小 2 倍），无底板、无收起态、无数量标签。
             _buffCountLabel.Visible = false;
             _expandCollapseButton.Visible = false;
-            int columns = _buffCount > 5 ? 5 : _buffCount;
-            int rows = (_buffCount + 4) / 5;
-            Size = new Size(columns * 35, rows * 35);
+            int columns = _buffCount > BuffGrid.Columns ? BuffGrid.Columns : _buffCount;
+            int rows = (_buffCount + BuffGrid.Columns - 1) / BuffGrid.Columns;
+            Size = new Size(columns * BuffGrid.CellSize, rows * BuffGrid.CellSize);
+            ApplyAnchor();
         }
     }
 
