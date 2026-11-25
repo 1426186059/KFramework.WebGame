@@ -3688,7 +3688,7 @@ namespace Client.MirScenes
                     int side = obj.LastDamageSide;
                     switch (p.Type)
                     {
-                        case DamageType.Hit: // 原始传奇 damage id=1（number=1，hurt1_* 白色普通伤害）
+                        case DamageType.Hit: // 原始传奇 damage id=27（number=1 且无 title，普通命中只显示数字）
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
                                 OriginMir2Damage.DefaultHitDamageId, side));
@@ -3698,7 +3698,7 @@ namespace Client.MirScenes
                                 obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray,
                                 OriginMir2Damage.DefaultMissDamageId, side));
                             break;
-                        case DamageType.Critical: // 暴击 damage id=12（number=1 + scaling 130 起始放大），显示实际伤害数字
+                        case DamageType.Critical: // 暴击 damage id=1（number=1 + title=31“致命”图标），显示实际伤害数字
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId, side) { Offset = 15 });
                             break;

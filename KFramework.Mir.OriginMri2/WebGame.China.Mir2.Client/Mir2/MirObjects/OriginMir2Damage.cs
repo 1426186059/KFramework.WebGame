@@ -20,8 +20,8 @@ namespace Client.MirObjects
     public sealed class OriginMir2Damage : Damage
     {
         /// <summary>客户端按 DamageType 映射的典型原始 damage id（原版服务端带 id，本工程协议没带）。</summary>
-        public const int DefaultHitDamageId = 1;     // number=1（hurt1_* 白色普通伤害，71 项主流）
-        public const int DefaultCritDamageId = 12;   // number=1 + 起始放大
+        public const int DefaultHitDamageId = 27;    // number=1 且无 title：普通命中只显示数字，不带“致命”图标
+        public const int DefaultCritDamageId = 1;    // number=1 + title=31：BloodFont_json.plus_31（“致命”图标）
         public const int DefaultHealDamageId = 15;   // number=3（JS 取绝对值，回血）
         public const int DefaultMissDamageId = 7;    // 无 number + title=36，即 BloodFont_json.plus_36（闪避图标）
 
