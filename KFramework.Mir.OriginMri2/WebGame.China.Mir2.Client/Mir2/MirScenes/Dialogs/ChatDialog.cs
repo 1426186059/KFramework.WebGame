@@ -21,8 +21,7 @@ namespace Client.MirScenes.Dialogs
         public List<ChatItem> LinkedItems = new List<ChatItem>();
         public List<MirLabel> LinkedItemButtons = new List<MirLabel>();
 
-        public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar, SendChatBtn;
-        public MirImageControl CountBar;
+        public MirButton SendChatBtn;
         public MirTextBox ChatTextBox;
         public MirButton ChatInputBtn;
         public Font ChatFont = new Font(Settings.FontName, 8F);
@@ -207,98 +206,6 @@ namespace Client.MirScenes.Dialogs
 
 
 
-            HomeButton = new MirButton
-            {
-                Index = 2018,
-                HoverIndex = 2019,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 618 : 394, 1),
-                Parent = this,
-                PressedIndex = 2020,
-                Sound = SoundList.ButtonA,
-            };
-            HomeButton.Click += (o, e) =>
-            {
-                if (StartIndex == 0) return;
-                StartIndex = 0;
-                Update();
-            };
-
-
-            UpButton = new MirButton
-            {
-                Index = 2021,
-                HoverIndex = 2022,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 618 : 394, 9),
-                Parent = this,
-                PressedIndex = 2023,
-                Sound = SoundList.ButtonA,
-            };
-            UpButton.Click += (o, e) =>
-            {
-                if (StartIndex == 0) return;
-                StartIndex--;
-                Update();
-            };
-
-
-            EndButton = new MirButton
-            {
-                Index = 2027,
-                HoverIndex = 2028,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 618 : 394, 45),
-                Parent = this,
-                PressedIndex = 2029,
-                Sound = SoundList.ButtonA,
-            };
-            EndButton.Click += (o, e) =>
-            {
-                if (StartIndex == History.Count - 1) return;
-                StartIndex = History.Count - 1;
-                Update();
-            };
-
-            DownButton = new MirButton
-            {
-                Index = 2024,
-                HoverIndex = 2025,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 618 : 394, 39),
-                Parent = this,
-                PressedIndex = 2026,
-                Sound = SoundList.ButtonA,
-            };
-            DownButton.Click += (o, e) =>
-            {
-                if (StartIndex == History.Count - 1) return;
-                StartIndex++;
-                Update();
-            };
-
-
-
-            CountBar = new MirImageControl
-            {
-                Index = 2012,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 622 : 398, 16),
-                Parent = this,
-            };
-
-            PositionBar = new MirButton
-            {
-                Index = 2015,
-                HoverIndex = 2016,
-                Library = Libraries.Prguse,
-                Location = new Point(Settings.Resolution != 800 ? 619 : 395, 16),
-                Parent = this,
-                PressedIndex = 2017,
-                Movable = true,
-                Sound = SoundList.None,
-            };
-            PositionBar.OnMoving += PositionBar_OnMoving;
         }
 
         public void SetChatText(string newText)
@@ -381,25 +288,6 @@ namespace Client.MirScenes.Dialogs
             ChatTextBox.Visible = true;
             ChatTextBox.TextBox.SelectionLength = 0;
             ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
-        }
-
-        void PositionBar_OnMoving(object sender, MouseEventArgs e)
-        {
-            int x = Settings.Resolution != 800 ? 619 : 395;
-            int y = PositionBar.Location.Y;
-            if (y >= 16 + CountBar.Size.Height - PositionBar.Size.Height) y = 16 + CountBar.Size.Height - PositionBar.Size.Height;
-            if (y < 16) y = 16;
-
-            int h = CountBar.Size.Height - PositionBar.Size.Height;
-            h = (int)((y - 16) / (h / (float)(History.Count - 1)));
-
-            if (h != StartIndex)
-            {
-                StartIndex = h;
-                Update();
-            }
-
-            PositionBar.Location = new Point(x, y);
         }
 
         public void ReceiveChat(string text, ChatType type)
@@ -568,13 +456,6 @@ namespace Client.MirScenes.Dialogs
 
             if (StartIndex >= History.Count) StartIndex = History.Count - 1;
             if (StartIndex < 0) StartIndex = 0;
-
-            if (History.Count > 1)
-            {
-                int h = CountBar.Size.Height - PositionBar.Size.Height;
-                h = (int)((h / (float)(History.Count - 1)) * StartIndex);
-                PositionBar.Location = new Point(Settings.Resolution != 800 ? 619 : 395, 16 + h);
-            }
 
             int y = 1;
 
