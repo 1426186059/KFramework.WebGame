@@ -846,7 +846,7 @@ namespace Client.MirScenes
                 case 1: ShowError("尚未登录"); break;
                 case 2: ShowError("角色不存在"); break;
                 case 3: ShowError("未找到有效地图或出生点"); break;
-                case 4: ActiveScene = new GameScene(); Dispose(); break;
+                case 4: Dispose(); ActiveScene = new GameScene(); break;   // 先停选人 BGM 再进游戏
             }
         }
 

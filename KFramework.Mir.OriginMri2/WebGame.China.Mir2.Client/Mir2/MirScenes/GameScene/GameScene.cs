@@ -3293,10 +3293,9 @@ namespace Client.MirScenes
         private void LogOutSuccess(S.LogOutSuccess p)
         {
             User = null;
-            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
-            ActiveScene = new SelectScene(p.Characters);
-
+            // 先 Dispose 旧场景（停掉地图 BGM），再创建新场景（播选人 BGM）；顺序反了会把新场景的音乐停掉。
             Dispose();
+            ActiveScene = new SelectScene(p.Characters);
         }
         private void LogOutFailed(S.LogOutFailed p)
         {
@@ -3306,9 +3305,9 @@ namespace Client.MirScenes
         private void ReturnToLogin(S.ReturnToLogin p)
         {
             User = null;
-            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
-            ActiveScene = new LoginScene();
+            // 先 Dispose 旧场景（停掉地图 BGM），再创建新场景；顺序反了会把新场景的音乐停掉。
             Dispose();
+            ActiveScene = new LoginScene();
             MirMessageBox.Show(LanguageMgr.Get("ObservedPlayerLoggedOff"));
         }
 

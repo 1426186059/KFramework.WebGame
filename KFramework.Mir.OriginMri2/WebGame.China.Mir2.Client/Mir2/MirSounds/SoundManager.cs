@@ -61,6 +61,18 @@ namespace Client.MirSounds
         {
         }
 
+        // 音效节流：进 GameScene 瞬间服务端会一口气下发大量对象包，同一音效（如命中音 6、攻击音 2）
+        // 会在同一帧被触发几十次，全部叠加播放会非常刺耳。这里做两层限流：
+        // 1) 同一 soundId 冷却 100ms；2) 不同音效之间最小间隔 30ms（循环音/BGM 不受限）。
+        private const int SameSoundCooldownMs = 100;
+        private const int GlobalSoundIntervalMs = 30;
+        private static readonly Dictionary<int, long> _lastSoundTime = new Dictionary<int, long>();
+        private static long _lastAnySoundTime;
+        // 同一音效只需解码一次 SoundEffect：Play() 每次会新建实例，JS 侧 onended 自动释放，可安全复用。
+        private static readonly Dictionary<int, SoundEffect> _soundEffects = new Dictionary<int, SoundEffect>();
+        private static readonly Dictionary<int, Task<SoundEffect>> _soundEffectTasks = new Dictionary<int, Task<SoundEffect>>();
+        private static readonly object _sfxLock = new object();
+
         /// <summary>
         /// 播放原始传奇音效（CDN：assets/resource/audio/{soundId}.mp3）。
         /// soundId 来自 5config.skillEffects[].sound（如灵魂火符=20025），与经典 Mir2 的索引体系无关，
@@ -69,16 +81,71 @@ namespace Client.MirSounds
         public static void PlayOriginSound(int soundId, bool loop = false)
         {
             if (soundId <= 0) return;
+
+            // 循环音效不走节流（数量极少，且需要持续播放）
+            if (!loop)
+            {
+                long now = Environment.TickCount64;
+                lock (_sfxLock)
+                {
+                    if (_lastSoundTime.TryGetValue(soundId, out long last) && now - last < SameSoundCooldownMs) return;
+                    if (now - _lastAnySoundTime < GlobalSoundIntervalMs) return;
+                    _lastSoundTime[soundId] = now;
+                    _lastAnySoundTime = now;
+                }
+            }
+
             _ = PlayOriginFileAsync(soundId, loop);
+        }
+
+        private static Task<SoundEffect> GetOrLoadSoundEffectAsync(int soundId)
+        {
+            lock (_sfxLock)
+            {
+                if (_soundEffects.TryGetValue(soundId, out var cached)) return Task.FromResult(cached);
+                if (_soundEffectTasks.TryGetValue(soundId, out var pending)) return pending;
+            }
+
+            Task<SoundEffect> task = LoadAndCacheSoundEffectAsync(soundId);
+            lock (_sfxLock)
+            {
+                if (_soundEffectTasks.TryGetValue(soundId, out var existing)) return existing;
+                _soundEffectTasks[soundId] = task;
+            }
+            return task;
+        }
+
+        private static async Task<SoundEffect> LoadAndCacheSoundEffectAsync(int soundId)
+        {
+            SoundEffect se = await LoadSoundEffectAsync(soundId).ConfigureAwait(false);
+            lock (_sfxLock)
+            {
+                _soundEffectTasks.Remove(soundId);
+                if (se != null) _soundEffects[soundId] = se;
+            }
+            return se;
+        }
+
+        private static async Task<SoundEffect> LoadSoundEffectAsync(int soundId)
+        {
+            try
+            {
+                byte[] bytes = await Mir2OriginResource.GetOriginAudioBytesAsync(soundId).ConfigureAwait(false);
+                if (bytes == null || bytes.Length == 0) return null;
+                return await SoundEffect.LoadAsync(bytes).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (Settings.LogErrors) CMain.SaveError(ex.ToString());
+                return null;
+            }
         }
 
         private static async Task PlayOriginFileAsync(int soundId, bool loop)
         {
             try
             {
-                byte[] bytes = await Mir2OriginResource.GetOriginAudioBytesAsync(soundId).ConfigureAwait(false);
-                if (bytes == null || bytes.Length == 0) return;
-                var se = await SoundEffect.LoadAsync(bytes).ConfigureAwait(false);
+                SoundEffect se = await GetOrLoadSoundEffectAsync(soundId).ConfigureAwait(false);
                 if (se == null) return;
                 if (loop)
                 {
@@ -154,6 +221,14 @@ namespace Client.MirSounds
 
             foreach (LoopProvider sound in _loopingSounds.Values) { sound.Dispose(); }
             _loopingSounds.Clear();
+
+            lock (_sfxLock)
+            {
+                foreach (SoundEffect se in _soundEffects.Values) se.Dispose();
+                _soundEffects.Clear();
+                _soundEffectTasks.Clear();
+                _lastSoundTime.Clear();
+            }
         }
     }
 }
