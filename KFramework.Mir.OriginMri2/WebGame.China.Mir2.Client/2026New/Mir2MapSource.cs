@@ -1,9 +1,4 @@
-using System.IO;
 using System.IO.Compression;
-using System.Text;
-using KFramework.MonoGame;
-using System.Text.Json;
-using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {

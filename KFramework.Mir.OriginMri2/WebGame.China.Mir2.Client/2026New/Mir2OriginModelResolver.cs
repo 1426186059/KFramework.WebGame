@@ -11,15 +11,10 @@ namespace Client.MirObjects
         {
             if (pgItemId <= 0) return fallback;
 
-            // 手工覆盖表优先；否则从本地 ItemInfo.json 的 OriginModel 列读（= 1config.item[col17]，随配置更新，无需重编译）。
-            string s;
-            if (!Mir2OriginModelOverrides.Models.TryGetValue(pgItemId, out s))
-            {
-                if (!ExcelTableMgr.TryGetItem(pgItemId, out var item) || item == null ||
-                    string.IsNullOrEmpty(item.OriginModel)) return fallback;
-                s = item.OriginModel;
-            }
-            if (string.IsNullOrEmpty(s)) return fallback;
+            // 从本地 ItemInfo.json 的 OriginModel 列读（= 1config.item[col17]，随配置更新，无需重编译）。
+            if (!ExcelTableMgr.TryGetItem(pgItemId, out var item) || item == null ||
+                string.IsNullOrEmpty(item.OriginModel)) return fallback;
+            string s = item.OriginModel;
 
             int slash = s.IndexOf('/');
             string pick = slash < 0 ? s : (female ? s.Substring(slash + 1) : s.Substring(0, slash));
