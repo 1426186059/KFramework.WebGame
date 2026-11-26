@@ -513,7 +513,8 @@ namespace Client.MirScenes.Dialogs
             }
 
             ChatHistory h = History[index];
-            string currentLine = h.Text;
+            // 聊天行统一左对齐：折行或服务端文本可能带前导空白，显示时去掉。
+            string currentLine = h.Text?.TrimStart(' ', '\t', '　') ?? string.Empty;
             row.Text.BackColour = h.BackColour;
             row.Text.ForeColour = h.ForeColour;
 

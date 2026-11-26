@@ -496,6 +496,9 @@ namespace Client.MirScenes
 
         public void OutputMessage(string message, OutputMessageType type = OutputMessageType.Normal)
         {
+            // 左侧提示统一左对齐：去掉消息开头可能带入的空格/制表符/全角空格。
+            message = message?.TrimStart(' ', '\t', '　') ?? string.Empty;
+
             OutputMessages.Add(new OutPutMessage { Message = message, ExpireTime = CMain.Time + 5000, Type = type });
             if (OutputMessages.Count > 10)
                 OutputMessages.RemoveAt(0);
