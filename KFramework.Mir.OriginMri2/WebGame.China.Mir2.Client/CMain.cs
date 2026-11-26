@@ -341,7 +341,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
             text += string.Format(", Sent: {0}, Received: {1}", Functions.ConvertByteSize(BytesSent), Functions.ConvertByteSize(BytesReceived));
 
-            text += string.Format(", TLC: {0}", DXManager.TextureList.Count(x => x.TextureValid));
             text += string.Format(", CLC: {0}", DXManager.ControlList.Count(x => !x.IsDisposed));
 
             DebugDialog.Text = text;

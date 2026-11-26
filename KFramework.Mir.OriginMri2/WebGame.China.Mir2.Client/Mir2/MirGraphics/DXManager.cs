@@ -6,7 +6,6 @@ namespace Client.MirGraphics
 {
     class DXManager
     {
-        public static List<MImage> TextureList = new List<MImage>();
         public static List<MirControl> ControlList = new List<MirControl>();
         public static float Opacity = 1F;
         public static KFramework.MonoGame.Matrix4x4? RenderTransform = null;
@@ -537,21 +536,6 @@ void main()
 
         public static void Clean()
         {
-            for (int i = TextureList.Count - 1; i >= 0; i--)
-            {
-                MImage m = TextureList[i];
-                if (m == null) 
-                { 
-                    TextureList.RemoveAt(i); 
-                    continue; 
-                }
-                if (CMain.Time <= m.CleanTime) //自身还有一个清理时间
-                {
-                    continue;
-                }
-                m.DisposeTexture();
-            }
-
             for (int i = ControlList.Count - 1; i >= 0; i--)
             {
                 MirControl c = ControlList[i];

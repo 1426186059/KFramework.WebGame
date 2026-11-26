@@ -1,6 +1,3 @@
-using Client.MirObjects;
-using WebGame.Mir2.MonoGame.Client;
-
 namespace Client.MirGraphics
 {
     /// <summary>
