@@ -427,7 +427,7 @@ namespace Client.MirScenes.Dialogs
             int iconId = (int)_item.Info.Image; // Image 已是完整 uint（协议两端对齐）
             if (iconId <= 0) return;
 
-            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, iconId, priority: Mir2OriginObjectLibrary.PriorityItem);
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, iconId, priority: EResLoadPriority.User);
             Mir2OriginObjectLibrary.DrawItemIconFit(iconId, DisplayLocation.X, DisplayLocation.Y,
                                                     Size.Width, Size.Height, CommonColor.White);
         }

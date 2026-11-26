@@ -43,7 +43,7 @@ namespace Client.MirObjects
         public override void PrefetchBackground()
         {
             if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
         }
 
         public QuestIcon QuestIcon = QuestIcon.None;
@@ -105,7 +105,7 @@ namespace Client.MirObjects
             if (_originModel > 0)
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel,
                                                 Mir2OriginObjectLibrary.ActionStand,
-                                                Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, 0), Mir2OriginObjectLibrary.PriorityVisible);
+                                                Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, 0), EResLoadPriority.Visible);
 
             LoadLibrary();
 
@@ -352,7 +352,7 @@ namespace Client.MirObjects
             int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
             if (_originModel > 0)
             {
-                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir, EResLoadPriority.Visible);
                 drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
                                                                    FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
                 // 回退：当前动作帧未就绪时改画已就绪的待机帧，保证 NPC 始终可见（仍走 origin，非 .Lib）。
@@ -552,7 +552,7 @@ namespace Client.MirObjects
             if (_taskEffectModel > 0)
             {
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _taskEffectModel, _taskEffectAction, _taskEffectDir,
-                                                Mir2OriginObjectLibrary.PriorityVisible);
+                                                EResLoadPriority.Visible);
             }
         }
 

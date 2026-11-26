@@ -44,7 +44,7 @@ namespace Client.MirObjects
             _scale = scale > 0 ? scale : 1f;
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
-                                            Mir2OriginObjectLibrary.PriorityVisible);
+                                            EResLoadPriority.Visible);
         }
 
         public override void Process()
@@ -158,7 +158,7 @@ namespace Client.MirObjects
                 _totalFrames = 1;
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _model, _action, _direction,
-                                            Mir2OriginObjectLibrary.PriorityVisible);
+                                            EResLoadPriority.Visible);
 
             // 基类把 NextFrame 初始化为 Start + Duration(默认500)，而飞行时长通常只有几十~几百毫秒，
             // 导致第一次 Process 就被判定飞完并 Remove，飞行帧从未绘制。这里让它立刻进入推进。

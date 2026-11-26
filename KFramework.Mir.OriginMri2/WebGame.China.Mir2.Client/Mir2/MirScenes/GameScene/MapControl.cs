@@ -1,4 +1,4 @@
-﻿using Client;
+using Client;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
@@ -97,7 +97,7 @@ public sealed class MapControl : MirControl
         // 触发一次图集异步预取（去重由 Mir2OriginObjectLibrary 内部保证）。
         if (!_ringRequested)
         {
-            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, Mir2OriginObjectLibrary.PriorityVisible);
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, EResLoadPriority.Visible);
             _ringRequested = true;
         }
 

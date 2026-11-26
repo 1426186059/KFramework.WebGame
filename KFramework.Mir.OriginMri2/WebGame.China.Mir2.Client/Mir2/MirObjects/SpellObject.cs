@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -61,7 +61,7 @@ namespace Client.MirObjects
             if (step.sound > 0) SoundManager.PlaySound(step.sound);
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, _originAction, _originDir,
-                                            Mir2OriginObjectLibrary.PriorityVisible);
+                                            EResLoadPriority.Visible);
             return true;
         }
 
@@ -92,7 +92,7 @@ namespace Client.MirObjects
                     FrameCount = 8;
                     Blend = true;
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
-                                                    Mir2OriginObjectLibrary.PriorityVisible);
+                                                    EResLoadPriority.Visible);
                     break;
                 case Spell.FireWall: // 火墙
                     BodyLibrary = Libraries.Magic;

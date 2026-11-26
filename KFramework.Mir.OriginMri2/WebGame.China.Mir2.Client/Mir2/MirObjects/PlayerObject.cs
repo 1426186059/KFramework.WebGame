@@ -1,4 +1,4 @@
-﻿using Client.MirGraphics;
+using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
@@ -108,32 +108,32 @@ namespace Client.MirObjects
         private void PreloadSelfModels()
         {
             if (this != User) return;
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHairModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuJianModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuiJiModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWeaponModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMountModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerZhenfaModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerFootModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerPiFengModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerDouLiModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMianShaModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerYuPeiModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXunZhangModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuDunModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXuanGuangModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerTitleModel(), Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWingModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, _originModel, EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHairModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuJianModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuiJiModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWeaponModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMountModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerZhenfaModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerFootModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerPiFengModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerDouLiModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMianShaModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerYuPeiModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXunZhangModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuDunModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXuanGuangModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerTitleModel(), EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWingModel(), EResLoadPriority.User);
             // 裸身兜底模型（身体 CDN 缺失时回落 9001/9002）也预载，避免回退时再等待。
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, Gender == MirGender.Female ? 9002 : 9001, Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, Gender == MirGender.Female ? 9002 : 9001, EResLoadPriority.User);
         }
 
         /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身/换动作不跳帧（低优先级，空闲才下）。</summary>
         public override void PrefetchBackground()
         {
             if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
         }
         // 武器层：优先【幻武 type1】（时装武器，覆盖普通武器）；否则武器槽 cm.item[col17]；无则 0 不绘制。
         private int PlayerWeaponModel()
@@ -3673,7 +3673,7 @@ namespace Client.MirObjects
                 void DrawLayer(int m, int? sx = null, int? sy = null)
                 {
                     if (m <= 0) return;
-                    int pr = (this == User) ? Mir2OriginObjectLibrary.PriorityUser : Mir2OriginObjectLibrary.PriorityVisible;
+                    EResLoadPriority pr = (this == User) ? EResLoadPriority.User : EResLoadPriority.Visible;
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir, pr);
                     Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx, standX: sx, standY: sy);
                 }

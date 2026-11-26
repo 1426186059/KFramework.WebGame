@@ -2542,7 +2542,7 @@ namespace Client.MirControls
             int id = (int)iconId;
             if (id <= 0) return false;
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id,
-                                            priority: Mir2OriginObjectLibrary.PriorityItem);
+                                            priority: EResLoadPriority.User);
             return Mir2OriginObjectLibrary.DrawItemIconFit(id, drawAt.X, drawAt.Y,
                                                            boxSize.Width, boxSize.Height, colour);
         }

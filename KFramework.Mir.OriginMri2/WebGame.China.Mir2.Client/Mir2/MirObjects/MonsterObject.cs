@@ -59,7 +59,7 @@ namespace Client.MirObjects
         public override void PrefetchBackground()
         {
             if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
         }
         private static bool _originImageLogged;
         public byte Effect;
@@ -100,10 +100,10 @@ namespace Client.MirObjects
             // 旧的 .Lib switch（含 Gates/Pets/Siege 等基于旧枚举的分支）整段跳过，避免误命中越界。
             _originModel = (int)info.Image;
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
-                                            Mir2OriginObjectLibrary.ActionStand, 0, Mir2OriginObjectLibrary.PriorityVisible);
+                                            Mir2OriginObjectLibrary.ActionStand, 0, EResLoadPriority.Visible);
 
-            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, Mir2OriginObjectLibrary.PriorityUser);
-            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionAttack, Mir2OriginObjectLibrary.PriorityBackground);
+            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionAttack, EResLoadPriority.Background);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
                 _originImageLogged = true;
@@ -4036,7 +4036,7 @@ namespace Client.MirObjects
                         FrameIndex = corpseFrames - 1;
                 }
 
-                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir, EResLoadPriority.Visible);
                 if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
                                                          FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour, fx))
                 {

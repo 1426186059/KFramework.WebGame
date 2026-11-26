@@ -154,7 +154,7 @@ public static class Mir2AtlasLibrary
     // 大家都 await 同一个 Task<Mir2AtlasSheet>，避免重复 HTTP 拉取（见 _sheetTasks）。
     // 注意：共享任务不使用调用方的 ct —— 一个控件取消不应连累其他共享同一图集的控件；
     // 各控件的「取消是否应用结果」在其自身层（见 MirImageControl.LoadAtlasAsync）处理。
-    public static Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, CancellationToken ct = default, int priority = Mir2OriginObjectLibrary.PriorityUser)
+    public static Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, CancellationToken ct = default, EResLoadPriority priority = EResLoadPriority.Background)
     {
         var (key, _) = ResolveName(nameOrKey);
         if (_sheets.TryGetValue(key, out var existing))
@@ -163,7 +163,7 @@ public static class Mir2AtlasLibrary
     }
 
     // 实际加载（被 GetOrAdd 合并调用，保证同一 key 同时只下载一次）。
-    private static async Task<Mir2AtlasSheet> LoadSheetCoreAsync(string key, int priority = Mir2OriginObjectLibrary.PriorityUser)
+    private static async Task<Mir2AtlasSheet> LoadSheetCoreAsync(string key, EResLoadPriority priority = EResLoadPriority.Background)
     {
         try
         {

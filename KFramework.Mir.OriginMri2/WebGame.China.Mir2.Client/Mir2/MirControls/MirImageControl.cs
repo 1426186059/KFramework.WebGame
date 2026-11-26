@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Client.MirGraphics;
@@ -199,7 +199,7 @@ namespace Client.MirControls
             var (sheetKey, frame) = Mir2AtlasLibrary.ResolveName(key);
             try
             {
-                var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, CancellationToken.None);
+                var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, CancellationToken.None, EResLoadPriority.UI);
                 if (ct.IsCancellationRequested) return;
 
                 if (ct.IsCancellationRequested) return;
@@ -273,7 +273,7 @@ namespace Client.MirControls
 
             try
             {
-                var tex = await Mir2OriginResource.GetTextureAsync(url, ct);
+                var tex = await Mir2OriginResource.GetTextureAsync(url, EResLoadPriority.UI, ct);
                 if (ct.IsCancellationRequested) return;
                 Texture = tex;
                 Redraw();
@@ -310,7 +310,7 @@ namespace Client.MirControls
             {
                 if (Mir2OriginResource.Manifest == null)
                     await Mir2OriginResource.LoadManifestAsync(ct);
-                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct: ct);
+                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, EResLoadPriority.UI, ct: ct);
                 if (ct.IsCancellationRequested) return;
                 Texture = tex;
                 Redraw();

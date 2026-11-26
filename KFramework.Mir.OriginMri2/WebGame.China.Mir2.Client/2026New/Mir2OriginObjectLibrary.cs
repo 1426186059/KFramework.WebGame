@@ -81,17 +81,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>NPC 待机动作在 2config.modelInfo 里是 totaldir=1 → 只有 NONE(=4) 一帧。</summary>
     public const int NPCTotalDir = 1;
 
-    // —— 加载优先级层级（对齐原始 ActionLoader 的 急/懒 双队列：自己=急、他人=懒）——
-    /// <summary>自己（本体+装备）：最高，先于他人出；低于地图瓦片(10)以保地面先出。</summary>
-    public const int PriorityUser = 8;
-    /// <summary>UI 资源（登录界面、加载进度条图集等）：最高优先级，先于玩家模型等加载，确保首屏/加载条立即可见。</summary>
-    public const int PriorityUI = 9;
-    /// <summary>当前在屏、正在绘制的他人/怪物/NPC：次高。</summary>
-    public const int PriorityVisible = 5;
-    /// <summary>后台静默预载（懒队列）：最低，仅在无更急请求时空闲暖缓存。</summary>
-    public const int PriorityBackground = 0;
-    /// <summary>物品图标（背包/地面），同屏可见。</summary>
-    public const int PriorityItem = 5;
+    // —— 加载优先级层级统一用 EResLoadPriority 枚举（对齐原始 ActionLoader 急/懒双队列）——
 
     // —— 版本表（resourceVersion.json：资源名 -> 版本号）——
     private static ResourceVersionJson _versionTable;
@@ -347,7 +337,7 @@ public static class Mir2OriginObjectLibrary
     /// 发起异步预取，不等待结果。绘制路径每帧调用本方法是安全的：命中缓存/在途任务直接返回，
     /// 已确认 404 的资源进 _missing 不再重试（避免每帧 404 风暴）。
     /// </summary>
-    public static void Request(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0, int priority = PriorityBackground)
+    public static void Request(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0, EResLoadPriority priority = EResLoadPriority.Background)
     {
         if (id <= 0) return;
         var key = CacheKey(kind, id, action, direction);
@@ -364,7 +354,7 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>取得（或异步加载）一份模型独立图集。同 key 并发只发一次下载。</summary>
     public static Task<Mir2AtlasSheet> GetSheetAsync(Mir2ObjectKind kind, int id, int action, int direction,
-                                                     int priority = PriorityBackground, CancellationToken ct = default)
+                                                     EResLoadPriority priority = EResLoadPriority.Background, CancellationToken ct = default)
     {
         if (kind == Mir2ObjectKind.Item || id <= 0 || Game.Current.GraphicsDevice == null)
             return Task.FromResult<Mir2AtlasSheet>(null);
@@ -377,7 +367,7 @@ public static class Mir2OriginObjectLibrary
     }
 
     private static async Task<Mir2AtlasSheet> LoadSheetAsync(string key, int model, int action, int direction,
-                                                             int priority = PriorityBackground)
+                                                             EResLoadPriority priority = EResLoadPriority.Background)
     {
         string pngPath = null, jsonPath = null;
         Texture2D tex = null;
@@ -432,7 +422,7 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>取得（或异步加载）一张物品图标纹理。同 iconId 并发只发一次下载。</summary>
     public static Task<Texture2D> GetItemTextureAsync(int iconId,
-                                                      string iconSubDir = "tool", int priority = PriorityItem, CancellationToken ct = default)
+                                                      string iconSubDir = "tool", EResLoadPriority priority = EResLoadPriority.User, CancellationToken ct = default)
     {
         var key = CacheKey(Mir2ObjectKind.Item, iconId, 0, 0);
         if (iconId <= 0 || Game.Current.GraphicsDevice == null) return Task.FromResult<Texture2D>(null);
@@ -440,7 +430,7 @@ public static class Mir2OriginObjectLibrary
         return LoadItemAsync(key, iconId, iconSubDir, priority);
     }
 
-    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, string iconSubDir, int priority = PriorityItem)
+    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, string iconSubDir, EResLoadPriority priority = EResLoadPriority.User)
     {
         try
         {
@@ -490,7 +480,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>预载某模型所有登记动作 × 所需方向（自己=急队列，出场/换装即齐，不等待绘制）。
     /// 方向数按 modelInfo.totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）；模型不在内嵌表时兜底预载常见动作 0..7。
     /// 仅发起异步请求（命中缓存/在途任务直接返回），不阻塞；缺失帧由 _missing 缓存，不会重复请求。</summary>
-    public static void PreloadModel(Mir2ObjectKind kind, int id, int priority = PriorityUser)
+    public static void PreloadModel(Mir2ObjectKind kind, int id, EResLoadPriority priority = EResLoadPriority.User)
     {
         if (id <= 0) return;
         if (ExcelTableMgr.TryGetModelActions(id, out var acts) && acts != null)
@@ -515,7 +505,7 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>预载某模型单个动作的全部方向（后台懒队列用）：对齐原始 ActionLoader，实体转身/切换动作前先把同动作各方向暖好，避免转向跳帧。
     /// 方向数按该动作的 totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）。</summary>
-    public static void PreloadAction(Mir2ObjectKind kind, int id, int action, int priority = PriorityBackground)
+    public static void PreloadAction(Mir2ObjectKind kind, int id, int action, EResLoadPriority priority = EResLoadPriority.Background)
     {
         if (id <= 0) return;
         int td = ExcelTableMgr.TryGetModelInfo(id, action, out var r) ? r!.totaldir : DefaultTotalDir;
@@ -523,13 +513,13 @@ public static class Mir2OriginObjectLibrary
         for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }
 
-    /// <summary>统一后台静默预下载物品/装备图标（iconId）。最低优先级（PriorityBackground），不阻塞、不等待；
+    /// <summary>统一后台静默预下载物品/装备图标（iconId）。最低优先级（EResLoadPriority.Background），不阻塞、不等待；
     /// 内部复用 GetItemTextureAsync 的 Key 加载状态逻辑：已下载完成 / 正在下载都直接复用，未下载才开拉。
     /// 供收到服务器消息协议里的任何人的物品/装备、经 GameScene.Bind / GetItemInfo 解析出 icon 时调用。</summary>
     public static void PreloadItemIcon(int iconId, string iconSubDir = "tool")
     {
         if (iconId <= 0) return;
-        _ = GetItemTextureAsync(iconId, iconSubDir, priority: PriorityBackground);
+        _ = GetItemTextureAsync(iconId, iconSubDir, priority: EResLoadPriority.Background);
     }
 
     /// <summary>该资源当前是否缺失（瞬时缺失在 TTL 内 true；永久缺失永远 true；超时/未缺失 false）。</summary>

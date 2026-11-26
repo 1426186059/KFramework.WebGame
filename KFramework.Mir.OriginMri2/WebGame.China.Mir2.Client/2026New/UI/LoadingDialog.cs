@@ -111,7 +111,7 @@ namespace Client.MirControls
         public static void PreLoadSelfRes()
         {
             _ = Mir2OriginResource.GetTextureAsync(BgImageName);
-            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, Mir2OriginObjectLibrary.PriorityBackground);
+            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, EResLoadPriority.Background);
         }
 
         //加载阻塞等待的资源
@@ -135,7 +135,7 @@ namespace Client.MirControls
                 {
                     string sheet = UiSheetKeys[i];
                     _status = "预加载界面资源 (" + (i + 1) + "/" + _total + ")…";
-                    await Mir2AtlasLibrary.GetSheetAsync(sheet, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
+                    await Mir2AtlasLibrary.GetSheetAsync(sheet, _cts.Token, EResLoadPriority.UI);
                     _loaded = i + 1;
                 }
 
@@ -154,7 +154,7 @@ namespace Client.MirControls
         private async Task PreLoad_NotNeedWaitRes()
         {
             //选择 目标NPC/怪物 的选中特效动画
-            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, 15033, 1, 4, Mir2OriginObjectLibrary.PriorityVisible);
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, 15033, 1, 4, EResLoadPriority.Visible);
         }
 
         // 背景图 / 进度条现已作为子 MirImageControl 实时绘制（见构造函数），无需再手动烘焙 ControlTexture：

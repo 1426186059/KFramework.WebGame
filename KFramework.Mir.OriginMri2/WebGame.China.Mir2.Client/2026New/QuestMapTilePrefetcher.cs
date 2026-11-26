@@ -126,9 +126,9 @@ public static class QuestMapTilePrefetcher
     {
         try
         {
-            // priority=0：后台预载不抢当前地图瓦片（priority=10）的下载带宽。
+            // 后台预载不抢当前地图瓦片（EResLoadPriority.Map）的下载带宽。
             await MapTileLoadGate.RunAsync(() =>
-                Mir2OriginResource.GetTextureAsync(Mir2OriginResource.MapTilePath(img, index), 0)).ConfigureAwait(false);
+                Mir2OriginResource.GetTextureAsync(Mir2OriginResource.MapTilePath(img, index), EResLoadPriority.Background)).ConfigureAwait(false);
         }
         catch (Exception)
         {

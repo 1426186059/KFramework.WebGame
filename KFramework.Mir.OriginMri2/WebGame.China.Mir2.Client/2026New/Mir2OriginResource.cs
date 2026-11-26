@@ -64,15 +64,15 @@ public static class Mir2OriginResource
     // ===================== 通用取文本 =====================
     /// <summary>按相对路径取文本（UTF-8 解码）。直接委托底层 LoadTextAsync（Cache 做 HTTP 级去重/驻留），
     /// 不另设 string 字典缓存——图集/配置/地图等消费方各自已缓存解析结果，首次加载后不会重复取。</summary>
-    public static Task<string> GetTextAsync(string relativePath, int priority = 0, CancellationToken ct = default)
+    public static Task<string> GetTextAsync(string relativePath, EResLoadPriority priority = EResLoadPriority.Background, CancellationToken ct = default)
     {
         string key = Norm(relativePath);
-        return _imageContent.LoadTextAsync(key, Cache, priority, ct);
+        return _imageContent.LoadTextAsync(key, Cache, (int)priority, ct);
     }
     /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
     public static Task<string> GetTextAsync(string relativePath, CancellationToken ct)
     {
-        return GetTextAsync(relativePath, 0, ct);
+        return GetTextAsync(relativePath, EResLoadPriority.Background, ct);
     }
 
     // ===================== 原始传奇音效 =====================
@@ -94,7 +94,7 @@ public static class Mir2OriginResource
         if (_originAudioCache.TryGetValue(soundId, out var cached)) return cached;
         try
         {
-            byte[] bytes = await _dataContent.LoadBytesAsync(OriginAudioPath(soundId), Cache, priority: 0).ConfigureAwait(false);
+            byte[] bytes = await _dataContent.LoadBytesAsync(OriginAudioPath(soundId), Cache, priority: (int)EResLoadPriority.Background).ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0) return null;
             _originAudioCache[soundId] = bytes;
             return bytes;
@@ -108,7 +108,7 @@ public static class Mir2OriginResource
     /// <summary>按相对路径取纹理（浏览器原生解码 jpg/png → RGBA Texture2D）。
     /// 走 _texCache：同一 URL 只在首次下载+解码，之后 GetOrAdd 复用同一份，所有调用方共享；
     /// 引用计数 +1（上层不再需要时调 ReleaseTexture）；超预算且引用归零的纹理由 TrimTextureCache 释放。</summary>
-    public static Task<Texture2D> GetTextureAsync(string relativePath, int priority = 0, CancellationToken ct = default, bool readable = false)
+    public static Task<Texture2D> GetTextureAsync(string relativePath, EResLoadPriority priority = EResLoadPriority.Background, CancellationToken ct = default, bool readable = false)
     {
         // readable=true 会保留 CPU 像素副本（供图集 alpha 命中检测），内存成本更高且 GetData 可用；
         // 用后缀区分缓存键，避免与同一 URL 的普通（不可读）纹理串到同一份。
@@ -121,7 +121,7 @@ public static class Mir2OriginResource
             // 就被永久缓存在 _texCache，之后所有取该图标的地方 await 都抛 OperationCanceledException，
             // 图标再也出不来（日志里 icon/skills/*.png 的 TaskCanceledException 正是此因）。
             // 下载本身不被单个控件取消；ct 只用于“本次等待是否提前返回”，见下方 AwaitWithCancellation。
-            Task = _imageContent.LoadTexture2DAsync(path, Cache, priority, readable: readable),
+            Task = _imageContent.LoadTexture2DAsync(path, Cache, (int)priority, readable: readable),
             LastAccess = Environment.TickCount64,
             RefCount = 0,
         });
@@ -141,7 +141,7 @@ public static class Mir2OriginResource
     /// <summary>便捷重载：直接以 ct 作为第三参数（避免把 ct 误传给 priority）。</summary>
     public static Task<Texture2D> GetTextureAsync(string relativePath, CancellationToken ct)
     {
-        return GetTextureAsync(relativePath, 0, ct);
+        return GetTextureAsync(relativePath, EResLoadPriority.Background, ct);
     }
     /// <summary>同步取出已就绪的纹理（不触发下载）。供绘制路径判断「图下来了没」（物品图标等）。
     /// 只读取 _texCache 的完成态；是否该（重新）拉取由上层（IsMissing 冷却）决定。</summary>
@@ -200,18 +200,18 @@ public static class Mir2OriginResource
     }
 
     /// <summary>逻辑地图数据等：按相对路径取字节流（数据服务器根，非图片 CDN）。</summary>
-    public static Task<byte[]> GetDataBytesAsync(string relativePath, int priority = 10, CancellationToken ct = default)
+    public static Task<byte[]> GetDataBytesAsync(string relativePath, EResLoadPriority priority = EResLoadPriority.Map, CancellationToken ct = default)
     {
-        return _dataContent.LoadBytesAsync(Norm(relativePath), Cache, priority, ct);
+        return _dataContent.LoadBytesAsync(Norm(relativePath), Cache, (int)priority, ct);
     }
     /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
     public static Task<byte[]> GetDataBytesAsync(string relativePath, CancellationToken ct)
     {
-        return GetDataBytesAsync(relativePath, 10, ct);
+        return GetDataBytesAsync(relativePath, EResLoadPriority.Map, ct);
     }
 
     // ===================== ResUrl 映射（与线上 main.min.js 对齐）=====================
-    // 地图资源优先级最高（与 BrowserResource.PriorityMap=10 一致）：进图/传送后第一时间出地面。
+    // 地图资源优先级最高（EResLoadPriority.Map）：进图/传送后第一时间出地面。
 
     /// <summary>真实地图瓦片：assets/resource/zipmap/{img}/{index}.jpg（512×256，index 从 1 开始、无零补零）。</summary>
     public static string MapTilePath(int img, int index)
@@ -220,7 +220,7 @@ public static class Mir2OriginResource
     }
     public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, CancellationToken ct = default)
     {
-        return GetTextureAsync(MapTilePath(img, index), 10, ct);
+        return GetTextureAsync(MapTilePath(img, index), EResLoadPriority.Map, ct);
     }
 
     /// <summary>小地图：assets/resource/minimap/{img}.jpg（优先独立整图；图集帧回退由上层处理）。</summary>
@@ -230,7 +230,7 @@ public static class Mir2OriginResource
     }
     public static Task<Texture2D> GetMinimapTextureAsync(int img, CancellationToken ct = default)
     {
-        return GetTextureAsync(MinimapPath(img), 10, ct);
+        return GetTextureAsync(MinimapPath(img), EResLoadPriority.Map, ct);
     }
 
     /// <summary>大地图（世界地图整图）：assets/resource/bigmap/{img}.jpg。路径按站点资源规律推断，若实际不符请调整此处。</summary>
@@ -240,7 +240,7 @@ public static class Mir2OriginResource
     }
     public static Task<Texture2D> GetBigMapTextureAsync(int img, CancellationToken ct = default)
     {
-        return GetTextureAsync(BigMapPath(img), 10, ct);
+        return GetTextureAsync(BigMapPath(img), EResLoadPriority.Map, ct);
     }
 
     /// <summary>配置分片：{i}config{GameVersion}.json（地图表 map 在 0config 分片）。</summary>
@@ -281,7 +281,7 @@ public static class Mir2OriginResource
         return Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
     }
 
-    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, int priority = Mir2OriginObjectLibrary.PriorityUI, CancellationToken ct = default)
+    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, EResLoadPriority priority = EResLoadPriority.UI, CancellationToken ct = default)
     {
         return GetTextureAsync(ResolveManifestAssetPath(key), priority, ct: ct);
     }

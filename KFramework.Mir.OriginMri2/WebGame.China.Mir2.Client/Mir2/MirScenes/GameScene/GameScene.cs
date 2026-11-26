@@ -1218,7 +1218,7 @@ namespace Client.MirScenes
                         const int box = 48;
                         Point p = CMain.MPoint.Add(-box / 2, -box / 2);
                         Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id,
-                                                        priority: Mir2OriginObjectLibrary.PriorityItem);
+                                                        priority: EResLoadPriority.User);
                         Mir2OriginObjectLibrary.DrawItemIconFit(id, p.X, p.Y, box, box);
                     }
                 }

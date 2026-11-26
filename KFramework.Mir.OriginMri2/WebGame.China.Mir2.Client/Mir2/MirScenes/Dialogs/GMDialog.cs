@@ -447,7 +447,7 @@ namespace Client.MirScenes.Dialogs
             row.Icon.BeforeDraw += (o, e) =>
             {
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, row.IconId,
-                                                priority: Mir2OriginObjectLibrary.PriorityItem);
+                                                priority: EResLoadPriority.User);
                 Mir2OriginObjectLibrary.DrawItemIconFit(row.IconId, row.Icon.DisplayLocation.X, row.Icon.DisplayLocation.Y, 20, 20);
             };
 
