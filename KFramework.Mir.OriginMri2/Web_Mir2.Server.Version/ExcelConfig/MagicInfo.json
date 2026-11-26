@@ -46,7 +46,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       59701
     ],
@@ -99,7 +99,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       59801
     ],
@@ -152,7 +152,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       59901
     ],
@@ -205,7 +205,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       193
     ],
@@ -258,7 +258,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       219
     ],
@@ -311,7 +311,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -362,7 +362,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -413,7 +413,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -464,7 +464,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -515,7 +515,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -566,7 +566,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 26,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -617,7 +617,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 26,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -668,7 +668,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 26,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -719,7 +719,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 26,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -770,7 +770,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 26,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -821,7 +821,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -872,7 +872,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -923,7 +923,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -974,7 +974,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1025,7 +1025,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1076,7 +1076,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1127,7 +1127,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1178,7 +1178,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1229,7 +1229,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1280,7 +1280,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1331,7 +1331,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1382,7 +1382,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1433,7 +1433,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1484,7 +1484,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1535,7 +1535,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1586,7 +1586,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1637,7 +1637,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1688,7 +1688,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1739,7 +1739,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1790,7 +1790,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1841,7 +1841,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1892,7 +1892,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1943,7 +1943,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -1994,7 +1994,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2045,7 +2045,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2096,7 +2096,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2147,7 +2147,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2198,7 +2198,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2249,7 +2249,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2300,7 +2300,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2351,7 +2351,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2402,7 +2402,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2453,7 +2453,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2504,7 +2504,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2555,7 +2555,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2606,7 +2606,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2657,7 +2657,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2708,7 +2708,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2759,7 +2759,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2810,7 +2810,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2861,7 +2861,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2912,7 +2912,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -2963,7 +2963,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3014,7 +3014,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3065,7 +3065,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3116,7 +3116,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3167,7 +3167,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3218,7 +3218,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -3269,7 +3269,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -3320,7 +3320,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       603
     ],
@@ -3373,7 +3373,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       601,
       711,
@@ -3429,7 +3429,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       602,
       710,
@@ -3485,7 +3485,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -3536,7 +3536,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       606,
       712,
@@ -3592,7 +3592,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       604,
       605
@@ -3646,7 +3646,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       607,
       713,
@@ -3702,7 +3702,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -3753,7 +3753,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 10,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -3804,7 +3804,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 11,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -3855,7 +3855,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 12,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       776
     ],
@@ -3908,7 +3908,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       613,
       614,
@@ -3963,7 +3963,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       637
     ],
@@ -4016,7 +4016,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       640,
       641
@@ -4070,7 +4070,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       631,
       632
@@ -4124,7 +4124,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       611,
       612,
@@ -4184,7 +4184,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       627,
       628,
@@ -4239,7 +4239,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       638,
       639
@@ -4293,7 +4293,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       618,
       619
@@ -4347,7 +4347,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       616
     ],
@@ -4400,7 +4400,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 10,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       636,
       724,
@@ -4456,7 +4456,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 11,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       630
     ],
@@ -4509,7 +4509,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 12,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       622,
       772
@@ -4563,7 +4563,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 13,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       620,
       621,
@@ -4623,7 +4623,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 14,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       625,
       626,
@@ -4683,7 +4683,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 15,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       642,
       643,
@@ -4743,7 +4743,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 16,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       779,
       780
@@ -4797,7 +4797,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 17,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       633,
       634,
@@ -4852,7 +4852,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 18,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -4903,7 +4903,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       671,
       672
@@ -4957,7 +4957,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -5008,7 +5008,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       664,
       665
@@ -5062,7 +5062,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       653,
       654,
@@ -5119,7 +5119,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       655
     ],
@@ -5172,7 +5172,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       662
     ],
@@ -5225,7 +5225,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       653,
       657
@@ -5279,7 +5279,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       653,
       663,
@@ -5336,7 +5336,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       653,
       661,
@@ -5393,7 +5393,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 10,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       669,
       670
@@ -5447,7 +5447,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 11,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       656
     ],
@@ -5500,7 +5500,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 12,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       659,
       660
@@ -5554,7 +5554,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 13,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       652,
       759,
@@ -5610,7 +5610,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 14,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       666,
       667,
@@ -5670,7 +5670,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 15,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       668
     ],
@@ -5723,7 +5723,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 16,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       652
     ],
@@ -5776,7 +5776,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 17,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       777,
       778
@@ -5830,7 +5830,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 18,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -5881,7 +5881,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 50,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -5932,7 +5932,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 19,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       10888,
       10889,
@@ -5988,7 +5988,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 22,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6039,7 +6039,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 23,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6090,7 +6090,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 24,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6141,7 +6141,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6192,7 +6192,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6243,7 +6243,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6294,7 +6294,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6345,7 +6345,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6396,7 +6396,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6447,7 +6447,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6498,7 +6498,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6549,7 +6549,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6600,7 +6600,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6651,7 +6651,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6702,7 +6702,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6753,7 +6753,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6804,7 +6804,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6855,7 +6855,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6906,7 +6906,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -6957,7 +6957,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7008,7 +7008,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7059,7 +7059,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7110,7 +7110,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7161,7 +7161,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7212,7 +7212,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7263,7 +7263,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7314,7 +7314,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7365,7 +7365,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7416,7 +7416,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7467,7 +7467,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7518,7 +7518,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7569,7 +7569,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7620,7 +7620,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7671,7 +7671,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7722,7 +7722,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7773,7 +7773,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7824,7 +7824,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7875,7 +7875,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7926,7 +7926,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -7977,7 +7977,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8028,7 +8028,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8079,7 +8079,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8130,7 +8130,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8181,7 +8181,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8232,7 +8232,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8283,7 +8283,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8334,7 +8334,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8385,7 +8385,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8436,7 +8436,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8487,7 +8487,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8538,7 +8538,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8589,7 +8589,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8640,7 +8640,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8691,7 +8691,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8742,7 +8742,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8793,7 +8793,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -8844,7 +8844,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 999,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -8895,7 +8895,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 999,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -8946,7 +8946,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 999,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -8997,7 +8997,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -9048,7 +9048,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       452
     ],
@@ -9101,7 +9101,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -9152,7 +9152,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9203,7 +9203,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9254,7 +9254,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9305,7 +9305,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 21,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9356,7 +9356,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9407,7 +9407,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9458,7 +9458,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9509,7 +9509,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9560,7 +9560,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9611,7 +9611,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9662,7 +9662,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9713,7 +9713,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9764,7 +9764,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9815,7 +9815,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9866,7 +9866,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 10,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9917,7 +9917,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 11,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -9968,7 +9968,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10019,7 +10019,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10070,7 +10070,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10121,7 +10121,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10172,7 +10172,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10223,7 +10223,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 1,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10274,7 +10274,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 2,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10325,7 +10325,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 3,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10376,7 +10376,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 4,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10427,7 +10427,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 5,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10478,7 +10478,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 6,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10529,7 +10529,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 7,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10580,7 +10580,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 8,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10631,7 +10631,7 @@
     "Passive": 0,
     "IsAuto": 1,
     "OriginIndex": 9,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10682,7 +10682,7 @@
     "Passive": 1,
     "IsAuto": 0,
     "OriginIndex": 20,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 1
   },
@@ -10733,7 +10733,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [
       651,
       760,
@@ -10788,7 +10788,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -10839,7 +10839,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -10890,7 +10890,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -10941,7 +10941,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -10992,7 +10992,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -11043,7 +11043,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   },
@@ -11094,7 +11094,7 @@
     "Passive": 0,
     "IsAuto": 0,
     "OriginIndex": 0,
-    "Piaozi": 0,
+    "piaozi": 0,
     "EffectIds": [],
     "NeedBook": 0
   }

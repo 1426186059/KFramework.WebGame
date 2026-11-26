@@ -20,6 +20,9 @@ namespace Server.MirObjects
 
         public readonly uint ObjectID = Envir.ObjectID;
 
+        // 技能伤害结算时由攻击者临时设置，目标 Attacked() 内读取后写进 DamageIndicator 包。
+        public int CurrentDamageId;
+
         public abstract ObjectType Race { get; }
 
         public abstract string Name { get; set; }
@@ -916,9 +919,9 @@ namespace Server.MirObjects
             }
         }
 
-        public void BroadcastDamageIndicator(DamageType type, int damage = 0)
+        public void BroadcastDamageIndicator(DamageType type, int damage = 0, int damageId = 0)
         {
-            Packet p = new S.DamageIndicator { ObjectID = ObjectID, Damage = damage, Type = type };
+            Packet p = new S.DamageIndicator { ObjectID = ObjectID, Damage = damage, Type = type, DamageId = damageId };
 
             if (Race == ObjectType.Player)
             {

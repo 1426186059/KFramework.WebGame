@@ -7010,7 +7010,22 @@ namespace Server.MirObjects
             if (FatalSword)
                 defence = DefenceType.Agility;
 
-            if (target.Attacked(this, damage, defence, damageWeapon) <= 0) return;
+            // 把本次技能的 Piaozi 作为飘血 id 传给目标 Attacked()，结算完立即清掉，避免污染后续普通攻击。
+            CurrentDamageId = runMagic?.Info?.Piaozi ?? 0;
+            int attackedResult;
+            try
+            {
+                attackedResult = target.Attacked(this, damage, defence, damageWeapon);
+            }
+            finally
+            {
+                CurrentDamageId = 0;
+            }
+
+            if (attackedResult <= 0)
+            {
+                return;
+            }
             if (FatalSword)
             {
                 S.ObjectEffect p = new S.ObjectEffect { ObjectID = target.ObjectID, Effect = SpellEffect.FatalSword };
@@ -7410,7 +7425,7 @@ namespace Server.MirObjects
             {
                 CurrentMap.Broadcast(new S.ObjectEffect { ObjectID = ObjectID, Effect = SpellEffect.Critical }, CurrentLocation);
                 damage = Math.Min(int.MaxValue, damage + (int)Math.Floor(damage * (((double)attacker.Stats[Stat.CriticalDamage] / (double)Settings.CriticalDamageWeight) * 10)));
-                BroadcastDamageIndicator(DamageType.Critical, damage);
+                BroadcastDamageIndicator(DamageType.Critical, damage, 1);
             }
 
             if (HasBuff(BuffType.MagicShield, out Buff magicShield))
@@ -7467,7 +7482,7 @@ namespace Server.MirObjects
             Enqueue(new S.Struck { AttackerID = attacker.ObjectID });
             Broadcast(new S.ObjectStruck { ObjectID = ObjectID, AttackerID = attacker.ObjectID, Direction = Direction, Location = CurrentLocation });
 
-            BroadcastDamageIndicator(DamageType.Hit, armour - damage);
+            BroadcastDamageIndicator(DamageType.Hit, armour - damage, attacker.CurrentDamageId);
 
             ChangeHP(armour - damage);
             return damage - armour;
@@ -7561,7 +7576,7 @@ namespace Server.MirObjects
                 StruckTime = Envir.Time + 500;
             }
 
-            BroadcastDamageIndicator(DamageType.Hit, armour - damage);
+            BroadcastDamageIndicator(DamageType.Hit, armour - damage, attacker.CurrentDamageId);
 
             ChangeHP(armour - damage);
             return damage - armour;

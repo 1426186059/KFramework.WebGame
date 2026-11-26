@@ -3686,21 +3686,22 @@ namespace Client.MirScenes
                     }
 
                     int side = obj.LastDamageSide;
+                    int Piaozi_DamageId = p.Piaozi_DamageId;
                     switch (p.Type)
                     {
-                        case DamageType.Hit: // 原始传奇默认 damage id=0（number=2，hurt2_* 数字，无 title）
+                        case DamageType.Hit: // 服务端下发技能 Piaozi_DamageId；0 表示原始传奇默认 damage id=0
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
                                 obj.Race == ObjectType.Player ? CommonColor.Red : CommonColor.White,
-                                OriginMir2Damage.DefaultHitDamageId, side));
+                                Piaozi_DamageId > 0 ? Piaozi_DamageId : OriginMir2Damage.DefaultHitPiaozi_DamageId, side));
                             break;
                         case DamageType.Miss: // 原始传奇 damage id=7：只画 plus_36“闪避”图标，不画小字
                             obj.Damages.Add(new OriginMir2Damage(string.Empty, 1200,
                                 obj.Race == ObjectType.Player ? CommonColor.LightCoral : CommonColor.LightGray,
-                                OriginMir2Damage.DefaultMissDamageId, side));
+                                OriginMir2Damage.DefaultMissPiaozi_DamageId, side));
                             break;
-                        case DamageType.Critical: // 暴击 damage id=1（number=1 + title=31“致命”图标），显示实际伤害数字
+                        case DamageType.Critical: // 服务端固定下发 damage id=1（number=1 + title=31“致命”图标）
                             obj.Damages.Add(new OriginMir2Damage(p.Damage.ToString(), 1000,
-                                CommonColor.DarkRed, OriginMir2Damage.DefaultCritDamageId, side) { Offset = 15 });
+                                CommonColor.DarkRed, Piaozi_DamageId > 0 ? Piaozi_DamageId : OriginMir2Damage.DefaultCritPiaozi_DamageId, side) { Offset = 15 });
                             break;
                     }
                 }

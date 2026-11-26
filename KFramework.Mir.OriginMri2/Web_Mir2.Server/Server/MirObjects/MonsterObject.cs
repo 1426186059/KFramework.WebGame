@@ -2606,7 +2606,7 @@ namespace Server.MirObjects
             {
                 Broadcast(new S.ObjectEffect { ObjectID = ObjectID, Effect = SpellEffect.Critical });
                 damage = Math.Min(int.MaxValue, damage + (int)Math.Floor(damage * (((double)attacker.Stats[Stat.CriticalDamage] / (double)Settings.CriticalDamageWeight) * 10)));
-                BroadcastDamageIndicator(DamageType.Critical, damage);
+                BroadcastDamageIndicator(DamageType.Critical, damage, 1);
             }
 
             if (Target != this && attacker.IsAttackTarget(this))
@@ -2688,7 +2688,7 @@ namespace Server.MirObjects
                 if (IsAttackTarget(ob) && (ob.Target == null)) ob.Target = this;
             }
 
-            BroadcastDamageIndicator(DamageType.Hit, armour - damage);
+            BroadcastDamageIndicator(DamageType.Hit, armour - damage, attacker.CurrentDamageId);
 
             ChangeHP(armour - damage);
             return damage - armour;
@@ -2752,7 +2752,7 @@ namespace Server.MirObjects
 
             Broadcast(new S.ObjectStruck { ObjectID = ObjectID, AttackerID = attacker.ObjectID, Direction = Direction, Location = CurrentLocation });
 
-            BroadcastDamageIndicator(DamageType.Hit, armour - damage);
+            BroadcastDamageIndicator(DamageType.Hit, armour - damage, attacker.CurrentDamageId);
 
             ChangeHP(armour - damage);
             return damage - armour;

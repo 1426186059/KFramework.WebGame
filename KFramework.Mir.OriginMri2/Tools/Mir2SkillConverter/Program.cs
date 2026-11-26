@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Mir2SkillConverter;
 
@@ -22,7 +23,9 @@ public class MagicInfoOut
     public string OriginIcon = "", ConditionText = "", Tips1 = "";
     public int Cls, Career, IsShow, Condition, HandlerType, Aoe, MaxTarget, CanUp;
     public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
-    public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex, Piaozi;
+    public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex;
+    [JsonPropertyName("piaozi")]
+    public int Piaozi;
     public int[] EffectIds = Array.Empty<int>();
     // 1=需技能书激活（skills_condition[id][1].cost 有值）；0=达等级自动学会。
     public int NeedBook;
@@ -220,7 +223,7 @@ public static class Program
         dto.Passive = Int(rec, "passive");
         dto.IsAuto = Int(rec, "isAuto");
         dto.OriginIndex = Int(rec, "index");
-        dto.Piaozi = Int(rec, "piaozi");
+        dto.Piaozi = IntFlexible(rec, "piaozi");
         dto.EffectIds = effectIds;
     }
 
@@ -366,6 +369,27 @@ public static class Program
     private static int Int(JsonElement e, string key, int def = 0)
         => e.ValueKind == JsonValueKind.Object && e.TryGetProperty(key, out var v)
            && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n) ? n : def;
+
+    // 原始 5config.skill 的 piaozi 是字符串数字（如 "26"），Int() 只认 Number 会全部丢成 0。
+    private static int IntFlexible(JsonElement e, string key, int def = 0)
+    {
+        if (e.ValueKind != JsonValueKind.Object || !e.TryGetProperty(key, out JsonElement v))
+        {
+            return def;
+        }
+
+        if (v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int numberValue))
+        {
+            return numberValue;
+        }
+
+        if (v.ValueKind == JsonValueKind.String && int.TryParse(v.GetString(), out int stringValue))
+        {
+            return stringValue;
+        }
+
+        return def;
+    }
 
     private static string Str(JsonElement e, string key, string def = "")
         => e.ValueKind == JsonValueKind.Object && e.TryGetProperty(key, out var v)

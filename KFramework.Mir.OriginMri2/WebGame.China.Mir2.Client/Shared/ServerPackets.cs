@@ -2600,6 +2600,7 @@ namespace ServerPackets
         public int Damage;
         public DamageType Type;
         public uint ObjectID;
+        public int Piaozi_DamageId;
 
         public override short Index
         {
@@ -2611,6 +2612,7 @@ namespace ServerPackets
             Damage = reader.ReadInt32();
             Type = (DamageType)reader.ReadByte();
             ObjectID = reader.ReadUInt32();
+            Piaozi_DamageId = reader.ReadInt32();
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -2618,6 +2620,7 @@ namespace ServerPackets
             writer.Write(Damage);
             writer.Write((byte)Type);
             writer.Write(ObjectID);
+            writer.Write(Piaozi_DamageId);
         }
     }
 

@@ -39,11 +39,11 @@ public static partial class ExcelTableMgr
     }
 
     /// <summary>取战斗飘血配置（5config.damage），原始 BloodMovie.showBloodEffect 的数据源。</summary>
-    public static bool TryGetDamage(int damageId, [NotNullWhen(true)] out DamageTable? damage)
+    public static bool TryGetDamage(int Piaozi_DamageId, [NotNullWhen(true)] out DamageTable? damage)
     {
         damage = null;
         if (_config5?.damage == null) return false;
-        return _config5.damage.TryGetValue(damageId.ToString(), out damage) && damage != null;
+        return _config5.damage.TryGetValue(Piaozi_DamageId.ToString(), out damage) && damage != null;
     }
 
     /// <summary>

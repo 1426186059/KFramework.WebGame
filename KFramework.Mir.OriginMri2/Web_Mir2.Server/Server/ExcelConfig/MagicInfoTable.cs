@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Server.ExcelConfig
 {
@@ -61,6 +62,7 @@ namespace Server.ExcelConfig
         public int Passive { get; set; }
         public int IsAuto { get; set; }
         public int OriginIndex { get; set; }
+        [JsonPropertyName("piaozi")]
         public int Piaozi { get; set; }
         public int[] EffectIds { get; set; } = Array.Empty<int>();
         // 1=需技能书激活（config cost），0=达等级自动学会。

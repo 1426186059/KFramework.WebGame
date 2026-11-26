@@ -8,7 +8,7 @@ namespace Client.MirObjects
     /// <summary>
     /// 原始传奇（Egret 页游）战斗飘血数字，继承 <see cref="Damage"/> 以便直接放入 MapObject.Damages。
     ///
-    /// 数据驱动：按 damageId 从 ExcelTableMgr.TryGetDamage（5config.damage）取配置，
+    /// 数据驱动：按 Piaozi_DamageId 从 ExcelTableMgr.TryGetDamage（5config.damage）取配置，
     /// 忠实还原 BloodMovie.show / EntityInfo.showBloodEffect：
     /// - "hurt" + number 逐字符取 BloodFont_json 的 hurt{style}_{char} 帧横拼，数值 0 不显示；
     /// - title&gt;0 时叠加 plus_{title} 图标；
@@ -20,10 +20,10 @@ namespace Client.MirObjects
     public sealed class OriginMir2Damage : Damage
     {
         /// <summary>客户端按 DamageType 映射的典型原始 damage id（原版服务端带 id，本工程协议没带）。</summary>
-        public const int DefaultHitDamageId = 0;     // 原版默认伤害配置：number=2（hurt2_* 数字），无 title，只显示数字
-        public const int DefaultCritDamageId = 1;    // number=1 + title=31：BloodFont_json.plus_31（“致命”图标）
-        public const int DefaultHealDamageId = 15;   // number=3（JS 取绝对值，回血）
-        public const int DefaultMissDamageId = 7;    // 无 number + title=36，即 BloodFont_json.plus_36（闪避图标）
+        public const int DefaultHitPiaozi_DamageId = 0;     // 原版默认伤害配置：number=2（hurt2_* 数字），无 title，只显示数字
+        public const int DefaultCritPiaozi_DamageId = 1;    // number=1 + title=31：BloodFont_json.plus_31（“致命”图标）
+        public const int DefaultHealPiaozi_DamageId = 15;   // number=3（JS 取绝对值，回血）
+        public const int DefaultMissPiaozi_DamageId = 7;    // 无 number + title=36，即 BloodFont_json.plus_36（闪避图标）
 
         /// <summary>飘血基准高度：相对脚底 DrawLocation 上移像素（75 基础上 +20 上移）。可配置。</summary>
         public static int BaseYOffset = 95;
@@ -45,11 +45,11 @@ namespace Client.MirObjects
         private readonly int _endDx, _endDy, _phaseEnd;
         private MirLabel _fallbackLabel;
 
-        public OriginMir2Damage(string text, int duration, Color colour, int damageId, int side = 0)
+        public OriginMir2Damage(string text, int duration, Color colour, int Piaozi_DamageId, int side = 0)
             : base(text, duration, colour, 50)
         {
             _side = side;
-            ExcelTableMgr.TryGetDamage(damageId, out _cfg);
+            ExcelTableMgr.TryGetDamage(Piaozi_DamageId, out _cfg);
 
             _hurtStyle = _cfg != null && _cfg.number >= 0 ? _cfg.number : 1;
             _offsetX = ParseInt(_cfg?.offsetX);
