@@ -472,9 +472,6 @@ public sealed class MapControl : MirControl
         Objects.Clear();
         ObjectsList.Clear();
         Effects.Clear();
-        Doors.Clear();
-        _mapTileCache.Clear();
-        _mapTileLoading.Clear();
 
         if (User != null)
         {
@@ -484,6 +481,12 @@ public sealed class MapControl : MirControl
 
         if (bResetCell)
         {
+            // 只有真正换图才清门/瓦片缓存。同城回城卷、任务传送等“同 MapIndex 重定位”
+            // 走 ResetMap(false)，必须保留已下载的瓦片，否则地图会从第 0 张重新开始刷新。
+            Doors.Clear();
+            _mapTileCache.Clear();
+            _mapTileLoading.Clear();
+
             M2CellInfo = null;
             Width = 0;
             Height = 0;

@@ -3110,10 +3110,16 @@ namespace Client.MirScenes
             {
                 case QuestState.Add:
                     if (!User.CurrentQuests.Any(q => q.Id == p.Quest.Id))
+                    {
                         User.CurrentQuests.Add(p.Quest);
+                    }
+                    // 后台预载所有任务（待接取 + 进行中）的目标地点地图瓦片。
+                    QuestMapTilePrefetcher.PrefetchAll();
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)
+                    {
                         BindQuest(quest);
+                    }
                     // TrackQuest 由服务器根据角色存档下发，客户端不再本地判断/保存。
                     if (p.TrackQuest)
                     {
@@ -3189,7 +3195,11 @@ namespace Client.MirScenes
                         p.Quest.QuestInfo.StartNpcName = serverStartNpc;
 
                     if (!User.OfferedQuests.Any(q => q.Id == p.Quest.Id))
+                    {
                         User.OfferedQuests.Add(p.Quest);
+                    }
+                    // 后台预载所有任务（待接取 + 进行中）的目标地点地图瓦片。
+                    QuestMapTilePrefetcher.PrefetchAll();
 
                     GameScene.Scene.QuestTrackingDialog.DisplayQuests();
                     break;
