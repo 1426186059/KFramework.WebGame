@@ -1,37 +1,11 @@
-﻿using System.Text;
-
-namespace Client.MirSounds
+﻿namespace Client.MirSounds
 {
+    /// <summary>
+    /// 经典 Mir2 音效索引常量。PlaySound(int) 已停用（空实现，兼容调用点），这些常量仅保留
+    /// 以兼容现存调用处传参，不再对应任何实际加载的 wav 资源。
+    /// </summary>
     public static class SoundList
     {
-        public static Dictionary<int, string> Indexes = new Dictionary<int, string>();
-
-        public static async Task LoadSoundListAsync()
-        {
-            string fileName = Path.Combine(Settings.SoundPath, "SoundList.lst");
-            byte[] bytes = await BrowserResource.GetBytesAsync(fileName).ConfigureAwait(false);
-            if (bytes == null || bytes.Length == 0)
-            {
-                //KFramework.MonoGame.PrintTool.Log("[audio] SoundList.lst 未找到，音效索引表为空: " + fileName);
-                return;
-            }
-
-            string[] lines = Encoding.UTF8.GetString(bytes).Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string[] split = lines[i].Replace(" ", "").Split(':', '\t');
-
-                int index;
-                if (split.Length <= 1 || !int.TryParse(split[0], out index)) continue;
-
-                if (!Indexes.ContainsKey(index))
-                    Indexes.Add(index, split[split.Length - 1]);
-            }
-
-            //KFramework.MonoGame.PrintTool.Log($"[audio] SoundList.lst 已加载，音效索引 {Indexes.Count} 条");
-        }
-
         public static int
             None = 0,
             Music = 0,

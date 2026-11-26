@@ -3292,9 +3292,6 @@ namespace Client.MirScenes
         }
         private void LogOutSuccess(S.LogOutSuccess p)
         {
-            for (int i = 0; i <= 3; i++)//Fix for orbs sound
-                SoundManager.StopSound(20000 + 126 * 10 + 5 + i);
-
             User = null;
             //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             ActiveScene = new SelectScene(p.Characters);
@@ -10248,6 +10245,9 @@ namespace Client.MirScenes
         {
             if (disposing)
             {
+                // 退出 GameScene（回选人/回登录）时停掉地图背景音乐，否则回选人界面还在播上一张地图的 BGM。
+                SoundManager.StopMusic();
+
                 Scene = null;
                 User = null;
 
