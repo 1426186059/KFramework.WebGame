@@ -138,11 +138,7 @@ public static class Mir2OriginResource
     {
         return await task.WaitAsync(ct).ConfigureAwait(false);
     }
-    /// <summary>便捷重载：直接以 ct 作为第三参数（避免把 ct 误传给 priority）。</summary>
-    public static Task<Texture2D> GetTextureAsync(string relativePath, CancellationToken ct)
-    {
-        return GetTextureAsync(relativePath, EResLoadPriority.Background, ct);
-    }
+
     /// <summary>同步取出已就绪的纹理（不触发下载）。供绘制路径判断「图下来了没」（物品图标等）。
     /// 只读取 _texCache 的完成态；是否该（重新）拉取由上层（IsMissing 冷却）决定。</summary>
     public static bool TryGetTexture(string relativePath, out Texture2D tex)

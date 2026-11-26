@@ -108,7 +108,7 @@ public static partial class ExcelTableMgr
         try
         {
             PrintTool.Log("[ExcelTableMgr] 开始加载 ItemInfo.json");
-            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/ItemInfo.json", ct).ConfigureAwait(false);
+            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/ItemInfo.json", EResLoadPriority.User, ct).ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0)
             {
                 PrintTool.Log("[ExcelTableMgr] ItemInfo.json 为空（检查 127.0.0.1:5080/MyRes/ExcelConfig/）");
@@ -140,7 +140,7 @@ public static partial class ExcelTableMgr
         try
         {
             PrintTool.Log("[ExcelTableMgr] 开始加载 MonsterInfo.json");
-            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/MonsterInfo.json", ct).ConfigureAwait(false);
+            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/MonsterInfo.json", EResLoadPriority.User, ct).ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0)
             {
                 PrintTool.Log("[ExcelTableMgr] MonsterInfo.json 为空（检查 127.0.0.1:5080/MyRes/ExcelConfig/）");

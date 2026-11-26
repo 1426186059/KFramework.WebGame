@@ -18,17 +18,6 @@ public class BrowserResource
 
     private static readonly HashSet<string> _missing = new HashSet<string>();
 
-    // 加载优先级（数值越大越优先，见 KFramework.MonoGame.ContentLoadScheduler）：
-    // 地图资源最高 —— 玩家进图 / 传送后第一时间要看到地面；其余（UI、装备、怪物、音效）次之。
-    private const int PriorityMap = 10;
-    private const int PriorityOther = 0;
-
-    // 地图 .map 与地图图片 Lib 都以 "Map/" 开头（Map/0.map、Map/0/WemadeMir2/Tiles.Lib）
-    private static int PriorityOf(string path)
-    {
-        return path.StartsWith("Map/", StringComparison.OrdinalIgnoreCase) ? PriorityMap : PriorityOther;
-    }
-
     /// <summary>某资源是否已被确认「永久缺失」（多次重试仍失败）。绘制路径据此决定是否重试，避免每帧重试风暴。</summary>
     public static bool IsMissing(string url)
     {
@@ -37,23 +26,19 @@ public class BrowserResource
     }
 
     /// <param name="cancellationToken">用于中断本次加载（如切图时不必再等旧地图下载完）。</param>
-    public static async Task<byte[]> GetBytesAsync(string url, CancellationToken cancellationToken = default)
+    public static async Task<byte[]> GetBytesAsync(string url, EResLoadPriority nPriority = EResLoadPriority.User, CancellationToken cancellationToken = default)
     {
         string path = NormalizePath(url);
         if (Content == null) return null;
         if (_missing.Contains(path)) return null;
-
-        // 浏览器端资源走专用本地服务器。AOT 下进图/切图会在极短时间内突发几十个并发请求，
-        // 服务器或浏览器 6 连接上限在尖峰下偶发瞬时失败（连接被拒/超时/fetch 非 2xx）。
-        // 这类失败是「暂时的」——资源其实都在——若一次失败就判缺失会永久拉黑，地板/物件整片变黑。
-        // 因此失败时退避重试数次，尖峰过后通常能成功；只有多次重试仍失败才视为真正缺失。
+        
         const int MaxAttempts = 3;
         for (int attempt = 1; attempt <= MaxAttempts; attempt++)
         {
             try
             {
                 // 直接整文件加载（已无超大 Lib，无需分片下载）；地图资源给最高优先级。
-                byte[] bytes = await Content.LoadBytesAsync(path, mCacheInstance, priority: PriorityOf(path), cancellationToken: cancellationToken)
+                byte[] bytes = await Content.LoadBytesAsync(path, mCacheInstance, (int)nPriority, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
                 if (bytes != null && bytes.Length > 0)
                     return bytes;
