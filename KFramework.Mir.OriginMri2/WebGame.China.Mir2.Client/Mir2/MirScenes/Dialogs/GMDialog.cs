@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using Client.MirControls;
-using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
-using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs

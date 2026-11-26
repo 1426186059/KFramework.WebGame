@@ -16,8 +16,9 @@ public static class Mir2OriginResource
     public static bool LocalMirrorUsesKeyPath { get; set; } = true;
 
     // 原始传奇资源用独立 ContentManager（base 在构造时固定），不污染 .Lib 的 BrowserResource.Content。
-    private static ContentManager _imageContent = new ContentManager("", CdnBase);
-    private static ContentManager _dataContent = new ContentManager("", CdnBase);
+    // 图片/文本/字节流共用同一实例：构造参数一致（root="" + 同一 base），缓存也是同一个 Cache，
+    // 两个 URL 实际始终相等（Configure 全仓从未分开传过），合一个省一个 HttpClient 连接池。
+    private static ContentManager _content = new ContentManager("", CdnBase);
     private static readonly Caching Cache = Caching.Open("Mir2Origin.Cache");
 
     // —— 文本（string）取数：GetTextAsync 直接委托底层 LoadTextAsync（Cache 做 HTTP 级去重/驻留），
@@ -44,15 +45,14 @@ public static class Mir2OriginResource
     private const long TexTrimIntervalMs = 1500;    // 淘汰轮询间隔（对齐原版 CacheManager.update 1500ms）
     private static long _lastTexTrimTick;
 
-    /// <summary>切换取数来源（CDN ↔ 本地镜像）。base 必须是绝对 URL（如 https://host/Mir2Res 或 http://127.0.0.1:5080）。</summary>
+    /// <summary>切换取数来源（CDN ↔ 本地镜像）。base 必须是绝对 URL（如 https://host/Mir2Res 或 http://127.0.0.1:5080）。
+    /// 图片/数据共用同一实例：dataBaseUrl 仅作兼容保留，实际以 imageBaseUrl 为准。</summary>
     public static void Configure(string imageBaseUrl, string dataBaseUrl = null)
     {
         ImageBaseUrl = (imageBaseUrl?.TrimEnd('/') ?? CdnBase);
-        DataBaseUrl = (dataBaseUrl?.TrimEnd('/') ?? ImageBaseUrl);
-        _imageContent?.Dispose();
-        _dataContent?.Dispose();
-        _imageContent = new ContentManager("", ImageBaseUrl);
-        _dataContent = new ContentManager("", DataBaseUrl);
+        DataBaseUrl = ImageBaseUrl;
+        _content?.Dispose();
+        _content = new ContentManager("", ImageBaseUrl);
     }
 
     // 规范化：相对路径统一成 HTTP 友好形式（复用 BrowserResource 的语义）。
@@ -67,7 +67,7 @@ public static class Mir2OriginResource
     public static Task<string> GetTextAsync(string relativePath, EResLoadPriority priority = EResLoadPriority.Background, CancellationToken ct = default)
     {
         string key = Norm(relativePath);
-        return _imageContent.LoadTextAsync(key, Cache, (int)priority, ct);
+        return _content.LoadTextAsync(key, Cache, (int)priority, ct);
     }
     /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
     public static Task<string> GetTextAsync(string relativePath, CancellationToken ct)
@@ -94,7 +94,7 @@ public static class Mir2OriginResource
         if (_originAudioCache.TryGetValue(soundId, out var cached)) return cached;
         try
         {
-            byte[] bytes = await _dataContent.LoadBytesAsync(OriginAudioPath(soundId), Cache, priority: (int)EResLoadPriority.Background).ConfigureAwait(false);
+            byte[] bytes = await _content.LoadBytesAsync(OriginAudioPath(soundId), Cache, priority: (int)EResLoadPriority.Background).ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0) return null;
             _originAudioCache[soundId] = bytes;
             return bytes;
@@ -121,7 +121,7 @@ public static class Mir2OriginResource
             // 就被永久缓存在 _texCache，之后所有取该图标的地方 await 都抛 OperationCanceledException，
             // 图标再也出不来（日志里 icon/skills/*.png 的 TaskCanceledException 正是此因）。
             // 下载本身不被单个控件取消；ct 只用于“本次等待是否提前返回”，见下方 AwaitWithCancellation。
-            Task = _imageContent.LoadTexture2DAsync(path, Cache, (int)priority, readable: readable),
+            Task = _content.LoadTexture2DAsync(path, Cache, (int)priority, readable: readable),
             LastAccess = Environment.TickCount64,
             RefCount = 0,
         });
@@ -198,7 +198,7 @@ public static class Mir2OriginResource
     /// <summary>逻辑地图数据等：按相对路径取字节流（数据服务器根，非图片 CDN）。</summary>
     public static Task<byte[]> GetDataBytesAsync(string relativePath, EResLoadPriority priority = EResLoadPriority.Map, CancellationToken ct = default)
     {
-        return _dataContent.LoadBytesAsync(Norm(relativePath), Cache, (int)priority, ct);
+        return _content.LoadBytesAsync(Norm(relativePath), Cache, (int)priority, ct);
     }
     /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
     public static Task<byte[]> GetDataBytesAsync(string relativePath, CancellationToken ct)
