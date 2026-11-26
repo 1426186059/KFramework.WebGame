@@ -49,11 +49,17 @@ namespace Client.MirSounds.Libraries
                 if (_se != null) return;
 
                 byte[] bytes = await Mir2OriginResource.GetOriginAudioBytesAsync(_originSoundId).ConfigureAwait(false);
-                if (bytes == null || bytes.Length == 0) return;
+                // 异步下载期间若场景切换已 StopMusic/Dispose，绝不能再播放（否则旧 BGM 在切换后才响）。
+                if (_disposed || bytes == null || bytes.Length == 0) return;
 
-                _se = await SoundEffect.LoadAsync(bytes);
-                if (_se == null) return;
+                SoundEffect se = await SoundEffect.LoadAsync(bytes);
+                if (_disposed || se == null)
+                {
+                    se?.Dispose();
+                    return;
+                }
 
+                _se = se;
                 if (_loop)
                 {
                     _inst = _se.CreateInstance();
@@ -64,6 +70,16 @@ namespace Client.MirSounds.Libraries
                 else
                 {
                     _se.Play(_volume / 100f, 1f, 0f);
+                }
+
+                // 加载完成前就已被 Dispose：刚创建的实例要立刻停掉，避免残留一帧声音。
+                if (_disposed)
+                {
+                    _inst?.Stop();
+                    _inst?.Dispose();
+                    _se?.Dispose();
+                    _inst = null;
+                    _se = null;
                 }
             }
             catch (Exception ex)

@@ -73,8 +73,8 @@ namespace Client.MirScenes
 
         public SelectScene(List<SelectInfo> characters)
         {
-            SoundManager.PlayMusic(SoundList.SelectMusic, true);
-            Disposing += (o, e) => SoundManager.StopMusic();
+            // 选人界面 BGM：原始传奇 audio/1003.mp3（Dispose 时统一 StopMusic）。
+            SoundManager.PlayOriginMusic(1003, true);
 
             // EXML 的 bg 是 1920x1080 居中黑色 eui.Rect，容器底部 100px 就是这块黑底。
             BackColour = CommonColor.Black;
@@ -854,6 +854,9 @@ namespace Client.MirScenes
         {
             if (disposing)
             {
+                // 选人场景销毁时停掉自己的 BGM（1003.mp3），避免带进后续场景。
+                SoundManager.StopMusic();
+
                 _root = null;
                 _mainBg = null;
                 _startButton = null;
