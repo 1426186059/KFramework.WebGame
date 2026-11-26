@@ -561,6 +561,10 @@ public sealed class MapControl : MirControl
 
         SetMusic = Music;
         SoundList.Music = Music;
+
+        // 当前地图的 .map 已就绪、瓦片开始按 Map 优先级加载；此时才放行任务目标地图的后台预载，
+        // 避免登录阶段预载先灌满瓦片闸门把当前地图瓦片挤到队尾（延迟 5 秒+）。
+        QuestMapTilePrefetcher.SetMapReady();
     }
 
 
@@ -910,8 +914,7 @@ public sealed class MapControl : MirControl
         var tileT0 = DateTime.Now;
         try
         {
-            var tex = await MapTileLoadGate.RunAsync(() =>
-                Mir2OriginResource.GetMapTileTextureAsync(MapImg, index)).ConfigureAwait(false);
+            var tex = await Mir2OriginResource.GetMapTileTextureAsync(MapImg, index).ConfigureAwait(false);
             if (tex != null) _mapTileCache[index] = tex;
             _tilesReady++;
         }

@@ -20,9 +20,22 @@ public static class QuestMapTilePrefetcher
     private static readonly HashSet<string> _prefetched = new HashSet<string>(StringComparer.Ordinal);
     private static readonly object _lock = new object();
 
-    /// <summary>遍历 CurrentQuests + OfferedQuests 的所有目标，后台批量预载。</summary>
+    // 地图就绪门控：登录阶段任务包到达时地图尚未加载，若此时预载会灌满瓦片闸门、
+    // 把进图后的当前地图瓦片挤到队尾（实测延迟 5 秒+）。故 ready 前只登记、不下载。
+    private static volatile bool _mapReady;
+
+    /// <summary>进图后由 MapControl.LoadMapAsync 完成处置位，触发真正的后台预载。</summary>
+    public static void SetMapReady()
+    {
+        if (_mapReady) return;
+        _mapReady = true;
+        PrefetchAll();
+    }
+
+    /// <summary>遍历 CurrentQuests + OfferedQuests 的所有目标，后台批量预载（地图未就绪时不下载）。</summary>
     public static void PrefetchAll()
     {
+        if (!_mapReady) return;
         _ = Task.Run(async () =>
         {
             try
@@ -126,9 +139,8 @@ public static class QuestMapTilePrefetcher
     {
         try
         {
-            // 后台预载不抢当前地图瓦片（EResLoadPriority.Map）的下载带宽。
-            await MapTileLoadGate.RunAsync(() =>
-                Mir2OriginResource.GetTextureAsync(Mir2OriginResource.MapTilePath(img, index), EResLoadPriority.Background)).ConfigureAwait(false);
+            // 后台预载用 Background 优先级，由 ContentLoadScheduler 统一调度、不抢当前地图瓦片（Map=10）。
+            await Mir2OriginResource.GetTextureAsync(Mir2OriginResource.MapTilePath(img, index), EResLoadPriority.Background).ConfigureAwait(false);
         }
         catch (Exception)
         {
