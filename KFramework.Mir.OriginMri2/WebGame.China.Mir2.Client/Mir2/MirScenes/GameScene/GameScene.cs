@@ -1172,21 +1172,14 @@ namespace Client.MirScenes
         }
         public void LogOut()
         {
-            if (CMain.Time >= LogTime)
+            // 返回选人界面同样直接弹确认框，不受战斗 LogTime 限制。
+            MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("LogOutTip"), MirMessageBoxButtons.YesNo);
+            messageBox.YesButton.Click += (o, e) =>
             {
-                //If Last Combat < 10 CANCEL
-                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("LogOutTip"), MirMessageBoxButtons.YesNo);
-                messageBox.YesButton.Click += (o, e) =>
-                {
-                    Network.Enqueue(new C.LogOut());
-                    Enabled = false;
-                };
-                messageBox.Show();
-            }
-            else
-            {
-                ChatDialog.ReceiveChat(LanguageMgr.Get("CannotLeaveGame", (LogTime - CMain.Time) / 1000), ChatType.System);
-            }
+                Network.Enqueue(new C.LogOut());
+                Enabled = false;
+            };
+            messageBox.Show();
         }
 
         protected internal override void DrawControl()
