@@ -192,6 +192,23 @@ public class DamageTable
     public List<List<string>> endarr { get; set; } = new();
 }
 
+/// <summary>5config.title 单条记录（称号/足迹/幻武/法阵/羽翼等外观）。</summary>
+public class TitleTable
+{
+    [JsonPropertyName("id")]
+    public int id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string name { get; set; } = "";
+
+    [JsonPropertyName("type")]
+    public int type { get; set; }
+
+    /// <summary>外观模型号："男/女" 或单号（与 cm.item[col17] 同规则）。</summary>
+    [JsonPropertyName("model")]
+    public string model { get; set; } = "";
+}
+
 /// <summary>整个 5config 分片 JSON 的 DTO；字典键保持原始 JSON 的字符串形态。</summary>
 public class OriginMir2Config5
 {
@@ -210,4 +227,8 @@ public class OriginMir2Config5
     /// <summary>音效 type → index → 记录；type=3 是地图 BGM。</summary>
     [JsonPropertyName("soundnormal")]
     public Dictionary<string, Dictionary<string, SoundNormalTable>> soundnormal { get; set; } = new();
+
+    /// <summary>称号/足迹/法阵/羽翼等外观 id → 记录；model = 外观模型号（取代硬编码 Mir2OriginTitleModelMap）。</summary>
+    [JsonPropertyName("title")]
+    public Dictionary<int, TitleTable> title { get; set; } = new();
 }

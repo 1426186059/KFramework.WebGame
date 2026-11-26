@@ -25,6 +25,8 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(SoundNormalTable))]
 [JsonSerializable(typeof(Dictionary<string, SoundNormalTable>))]
 [JsonSerializable(typeof(Dictionary<string, Dictionary<string, SoundNormalTable>>))]
+[JsonSerializable(typeof(TitleTable))]
+[JsonSerializable(typeof(Dictionary<int, TitleTable>))]
 [JsonSerializable(typeof(OriginMir2Config5))]
 // 物品表 ItemInfoTable（顶层数组）：GM 面板、origin 渲染查模型号等需要全量物品时直接反序列化整张表。
 // 统一用客户端 ItemInfoTable 类（OriginModel 列也在其中），不再有单独的 ItemTableDTO。
