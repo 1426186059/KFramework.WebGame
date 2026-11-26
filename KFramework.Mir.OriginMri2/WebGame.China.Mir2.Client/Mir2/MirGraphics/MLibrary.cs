@@ -1,41 +1,30 @@
 using Client.MirObjects;
-using WebGame.Mir2.MonoGame.Client;
-using Frame = Client.MirObjects.Frame;
 
 namespace Client.MirGraphics
 {
-    public sealed class MLibrary : IDisposable
+    /// <summary>
+    /// 经典 .Lib 图库占位类。经典 .Lib 资源已从资源包移除，资源全面改用原始传奇 CDN
+    /// （Mir2OriginResource / Mir2AtlasLibrary）。本类不再加载/解析任何 .Lib 字节，
+    /// 所有绘制调用统一走 DrawMissing 品红兜底，便于定位尚未迁移的资源。
+    /// 保留字段和方法签名仅为兼容现存绘制调用点。
+    /// </summary>
+    public sealed class MLibrary
     {
-        public const string Extention = ".Lib";
-        public const int LibVersion = 3;
-
         private readonly string _fileName;
 
-        // 只读暴露库文件名：UI 层归属断言等诊断日志需要它来定位控件取自哪个 .Lib。
-        public string FileName { get { return _fileName; } }
-
-        private MImage[] _images;
-        private FrameSet _frames;
-        private int[] _indexList;
-        private int _count;
-        private bool _initialized;
-        private bool _loading;   // 正在异步拉取字节（幂等，避免重复请求）
-        private bool _loaded;    // 字节已就绪且索引已解析，绘制可用
-        private bool _failed;    // 加载失败（缺资源/404），不再重试，避免每帧 404 风暴
-
-        private BinaryReader _reader;
-        private Stream _stream;
-
-        // 缺资源兜底：.Lib 里找不到图时画 KDefaultRes 默认贴图（品红方块），一眼定位缺失资源。
+        // 缺资源兜底：画 KDefaultRes 默认贴图（品红方块），一眼定位缺失资源。
         private static readonly HashSet<string> _missingLogged = new HashSet<string>();
+
         private void DrawMissing(int index, Point point)
         {
             DrawMissing(index, new RectangleF(point.X, point.Y, 32, 32));
         }
+
         private void DrawMissing(int index, int x, int y)
         {
             DrawMissing(index, new RectangleF(x, y, 32, 32));
         }
+
         private void DrawMissing(int index, RectangleF destRect)
         {
             if (destRect.X >= Settings.ScreenWidth || destRect.Y >= Settings.ScreenHeight ||
@@ -45,530 +34,52 @@ namespace Client.MirGraphics
             DXManager.Draw(KFramework.MonoGameExtend.KDefaultRes.DefaultTexture2D,
                            new Rectangle(0, 0, 1, 1), destRect, magenta);
 
-            string key = FileName + ":" + index;
+            string key = _fileName + ":" + index;
             if (_missingLogged.Add(key))
                 KFramework.MonoGame.PrintTool.LogError("[缺图兜底] " + key + " -> KDefaultRes 默认图（品红块）");
         }
 
-        public FrameSet Frames
-        {
-            get { return _frames; }
-        }
-
         public MLibrary(string filename)
         {
-            // 浏览器 WASM 下 System.IO.Path 不把 '\' 当作目录分隔符，导致 ChangeExtension 把
-            // ".\Data\ChrSel" 误判为“扩展名”，整体替换成 ".Lib"（命中 InitializeAsync 的跳过分支，库永不加载 → 粉屏）。
-            // 统一规范化为正斜杠相对路径并去掉开头的 "./" 前缀，ChangeExtension 即可正确得到 "Data/ChrSel.Lib"。
-            if (!string.IsNullOrEmpty(filename))
-            {
-                filename = filename.Replace('\\', '/');
-                while (filename.StartsWith("./")) filename = filename.Substring(2);
-            }
-            _fileName = Path.ChangeExtension(filename, Extention);
+            _fileName = filename ?? string.Empty;
         }
 
-        /// <summary>
-        /// 已停用：经典 .Lib 图集已从资源包移除，资源全面改用原始传奇 CDN（Mir2OriginResource / Mir2AtlasLibrary）。
-        /// 保留方法签名只为兼容现存调用点；直接标记失败，不再发起任何 .Lib 网络请求。
-        /// 绘制走 DrawMissing 品红兜底（便于定位尚未迁移的资源），GetSize/GetTrueSize 行为与"未加载"一致。
-        /// </summary>
-        public Task InitializeAsync()
-        {
-            _initialized = false;
-            _failed = true;
-            return Task.CompletedTask;
-        }
+        public Task InitializeAsync() => Task.CompletedTask;
 
-        /// <summary>解析 .Lib 头部与索引表（与版本相关的结构）。</summary>
-        private void ParseIndex(byte[] bytes)
-        {
-            _stream = new MemoryStream(bytes);
-            _reader = new BinaryReader(_stream);
-            int currentVersion = _reader.ReadInt32();
-            if (currentVersion < 2)
-            {
-                //KFramework.MonoGame.PrintTool.Log("Wrong lib version: " + _fileName + " expecting " + LibVersion + " found " + currentVersion);
-                return;
-            }
-            _count = _reader.ReadInt32();
+        /// <summary>.Lib 已停用：返回 null，调用方用 ?? FrameSet.DefaultXxx 兜底。</summary>
+        public FrameSet Frames => null;
 
-            int frameSeek = 0;
-            if (currentVersion >= 3)
-            {
-                frameSeek = _reader.ReadInt32();
-            }
+        public MImage CheckImage(int index) => null;
+        public Point GetOffSet(int index) => Point.Zero;
+        public bool IsPending => false;
+        public Size GetSize(int index) => Size.Empty;
+        public Size GetTrueSize(int index) => Size.Empty;
+        public bool VisiblePixel(int index, Point point, bool accuate) => false;
 
-            _images = new MImage[_count];
-            _indexList = new int[_count];
-
-            for (int i = 0; i < _count; i++)
-                _indexList[i] = _reader.ReadInt32();
-
-            if (currentVersion >= 3)
-            {
-                _stream.Seek(frameSeek, SeekOrigin.Begin);
-
-                var frameCount = _reader.ReadInt32();
-
-                if (frameCount > 0)
-                {
-                    _frames = new FrameSet();
-                    for (int i = 0; i < frameCount; i++)
-                    {
-                        _frames.Add((MirAction)_reader.ReadByte(), new Frame(_reader));
-                    }
-                }
-            }
-        }
-
-        private static long _lastMissingLogTime;
-        private static int _missingImageCount;
-
-        // 限频输出"图索引不存在"，用于判断"很多格子画不出来"是资源版本不匹配还是单纯缺图。
-        private void LogMissingImage(int index)
-        {
-            _missingImageCount++;
-            if (CMain.Time <= _lastMissingLogTime) return;
-
-            _lastMissingLogTime = CMain.Time + 3000;
-            //KFramework.MonoGame.PrintTool.Log("[Img] 图不存在(不画): " + _fileName +
-            //    " index=" + index + " 图片数=" + (_images != null ? _images.Length : 0) +
-            //    " 累计=" + _missingImageCount);
-        }
-
-        // 缺失贴图占位（马赛克）统一由 MosaicManager 管理，这里不再各自生成。
-
-        /// <summary>
-        /// 返回可用于绘制的图像：
-        /// - MosaicManager.MosaicImage = 尚未就绪（正在按需异步加载）/ 加载失败 / 索引越界 / 图像损坏，
-        ///   统一画马赛克占位，避免地图格子与物件在资源下载完成前是一大片空洞；
-        ///   库加载完成后 LibraryLoaded 会触发场景重绘，自动替换为真实贴图。
-        /// - 正常 MImage = 已就绪。
-        /// 坚决不在绘制路径做同步网络请求（会冻结主线程/触发心跳超时）。
-        /// </summary>
-        public MImage CheckImage(int index)
-        {
-            if (!_loaded)
-            {
-                // 加载失败：直接不画，避免"加载完还残留马赛克"。
-                if (_failed) return null;
-                if (!_loading) _ = InitializeAsync();
-                // 真正"正在加载"：用马赛克占位，加载完成后自动换成真实贴图。
-                return MosaicManager.MosaicImage;
-            }
-
-            if (_images == null) return null;
-
-            // index < 0（常见为 -1）是 Mir2 里"该层没有图"的正常标记（如 MiddleImage-1），
-            // 不算缺失，直接静默跳过，否则会把正常情况刷成海量日志。
-            if (index < 0) return null;
-
-            if (index >= _images.Length)
-            {
-                // 库已就绪但图号超出范围（资源版本不匹配 / 图缺失）：不画，不留马赛克。
-                LogMissingImage(index);
-                return null;
-            }
-
-            if (_images[index] == null)
-            {
-                if (_indexList[index] + 17 > _stream.Length)
-                {
-                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
-                }
-                _stream.Position = _indexList[index];
-                _images[index] = new MImage(_reader);
-            }
-
-            MImage mi = _images[index];
-            if (!mi.TextureValid)
-            {
-                if (mi.Width == 0 || mi.Height == 0)
-                    return MosaicManager.MosaicImage;
-                _stream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
-                mi.CreateTexture(_reader);
-            }
-
-            return mi;
-        }
-
-        public Point GetOffSet(int index)
-        {
-            if (!_loaded) return Point.Zero;
-
-            if (_images == null || index < 0 || index >= _images.Length)
-                return Point.Zero;
-
-            if (_images[index] == null)
-            {
-                if (_indexList[index] + 17 > _stream.Length)
-                {
-                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
-                }
-                _stream.Seek(_indexList[index], SeekOrigin.Begin);
-                _images[index] = new MImage(_reader);
-            }
-
-            return new Point(_images[index].X, _images[index].Y);
-        }
-        // 是否「还在等资源」= 未加载且未失败。
-        // 烘焙侧需要区分三种情况，而 GetSize 对它们一律返回 Empty，无法分辨：
-        //   加载中 → true（将来会有资源，值得再等/再烘一次）
-        //   已失败 → false（永远不会有资源，不必再等）
-        //   已加载 → false（有资源）
-        public bool IsPending => !_loaded && !_failed;
-
-        public Size GetSize(int index)
-        {
-            if (!_loaded) return Size.Empty;
-            if (_images == null || index < 0 || index >= _images.Length)
-                return Size.Empty;
-
-            if (_images[index] == null)
-            {
-                if (_indexList[index] + 17 > _stream.Length)
-                {
-                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
-                }
-                _stream.Seek(_indexList[index], SeekOrigin.Begin);
-                _images[index] = new MImage(_reader);
-            }
-
-            return new Size(_images[index].Width, _images[index].Height);
-        }
-        public Size GetTrueSize(int index)
-        {
-            if (!_loaded) return Size.Empty;
-
-            if (_images == null || index < 0 || index >= _images.Length)
-                return Size.Empty;
-
-            if (_images[index] == null)
-            {
-                if (_indexList[index] + 17 > _stream.Length)
-                {
-                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
-                }
-                _stream.Position = _indexList[index];
-                _images[index] = new MImage(_reader);
-            }
-            MImage mi = _images[index];
-            if (mi.TrueSize.IsEmpty)
-            {
-                if (!mi.TextureValid)
-                {
-                    if ((mi.Width == 0) || (mi.Height == 0))
-                        return Size.Empty;
-
-                    _stream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
-                    mi.CreateTexture(_reader);
-                }
-                return mi.GetTrueSize();
-            }
-            return mi.TrueSize;
-        }
-
+        // 以下绘制重载全部只做品红兜底，保持与调用方的签名兼容。
         public void Draw(int index, int x, int y)
         {
-            if (x >= Settings.ScreenWidth || y >= Settings.ScreenHeight)
-                return;
-
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, x, y);
-                return;
-            }
-
-            if (x + mi.Width < 0 || y + mi.Height < 0)
-                return;
-
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)x, (float)y, 0.0F), CommonColor.White);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-        public void Draw(int index, Point point, Color colour, bool offSet = false)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
-
-            if (offSet) point.Offset(mi.X, mi.Y);
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
+            if (x >= Settings.ScreenWidth || y >= Settings.ScreenHeight) return;
+            DrawMissing(index, x, y);
         }
 
-        public void Draw(int index, Point point, Color colour, bool offSet, float opacity)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
+        public void Draw(int index, Point point, Color colour, bool offSet = false) => DrawMissing(index, point);
 
-            if (offSet) point.Offset(mi.X, mi.Y);
+        public void Draw(int index, Point point, Color colour, bool offSet, float opacity) => DrawMissing(index, point);
 
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
+        public void DrawBlend(int index, Point point, Color colour, bool offSet = false, float rate = 1) => DrawMissing(index, point);
 
-            DXManager.DrawOpaque(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity); 
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-
-        public void DrawBlend(int index, Point point, Color colour, bool offSet = false, float rate = 1)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
-
-            if (offSet) point.Offset(mi.X, mi.Y);
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            bool oldBlend = DXManager.Blending;
-            DXManager.SetBlend(true, rate);
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour);
-
-            DXManager.SetBlend(oldBlend);
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
         public void DrawBlend(int index, Point point, Size size, Color colour, float rate = 1)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
-                return;
-            }
+            => DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
 
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + size.Width < 0 || point.Y + size.Height < 0) return;
+        public void Draw(int index, Rectangle section, Point point, Color colour, bool offSet) => DrawMissing(index, point);
 
-            bool oldBlend = DXManager.Blending;
-            DXManager.SetBlend(true, rate);
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new RectangleF(point.X, point.Y, size.Width, size.Height), colour);
-            DXManager.SetBlend(oldBlend);
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-        public void Draw(int index, Rectangle section, Point point, Color colour, bool offSet)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
+        public void Draw(int index, Rectangle section, Point point, Color colour, float opacity) => DrawMissing(index, point);
 
-            if (offSet) point.Offset(mi.X, mi.Y);
-
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            if (section.Right > mi.Width)
-                section.Width -= section.Right - mi.Width;
-
-            if (section.Bottom > mi.Height)
-                section.Height -= section.Bottom - mi.Height;
-
-            DXManager.Draw(mi.Image, section, new Vector3((float)point.X, (float)point.Y, 0.0F), colour);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-        public void Draw(int index, Rectangle section, Point point, Color colour, float opacity)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
-
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            if (section.Right > mi.Width)
-                section.Width -= section.Right - mi.Width;
-
-            if (section.Bottom > mi.Height)
-                section.Height -= section.Bottom - mi.Height;
-
-            DXManager.DrawOpaque(mi.Image, section, new Vector3((float)point.X, (float)point.Y, 0.0F), colour, opacity); 
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
         public void Draw(int index, Point point, Size size, Color colour)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
-                return;
-            }
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + size.Width < 0 || point.Y + size.Height < 0)
-                return;
-
-            float scaleX = (float)size.Width / mi.Width;
-            float scaleY = (float)size.Height / mi.Height;
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new RectangleF(point.X, point.Y, size.Width, size.Height), colour);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
+            => DrawMissing(index, new RectangleF(point.X, point.Y, size.Width, size.Height));
 
         public void Draw(int index, Rectangle section, RectangleF destRect, Color colour, float opacity = 1f)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, destRect);
-                return;
-            }
-
-            if (destRect.X >= Settings.ScreenWidth || destRect.Y >= Settings.ScreenHeight || destRect.X + destRect.Width < 0 || destRect.Y + destRect.Height < 0) return;
-
-            Color c = colour;
-            if (opacity < 1f)
-                c = CommonColor.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
-
-            DXManager.Draw(mi.Image, section, destRect, c);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-
-        public void DrawTinted(int index, Point point, Color colour, Color Tint, bool offSet = false)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point);
-                return;
-            }
-
-            if (offSet) point.Offset(mi.X, mi.Y);
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), colour);
-
-            if (mi.HasMask)
-            {
-                DXManager.Draw(mi.MaskImage, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), Tint);
-            }
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-
-        public void DrawUp(int index, int x, int y)
-        {
-            if (x >= Settings.ScreenWidth)
-                return;
-
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, x, y - 32);
-                return;
-            }
-            y -= mi.Height;
-            if (y >= Settings.ScreenHeight)
-                return;
-            if (x + mi.Width < 0 || y + mi.Height < 0)
-                return;
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3(x, y, 0.0F), CommonColor.White);
-
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-        public void DrawUpBlend(int index, Point point)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null)
-            {
-                DrawMissing(index, point.X, point.Y - 32);
-                return;
-            }
-
-            point.Y -= mi.Height;
-
-
-            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + mi.Width < 0 || point.Y + mi.Height < 0)
-                return;
-
-            bool oldBlend = DXManager.Blending;
-            DXManager.SetBlend(true, 1);
-
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new Vector3((float)point.X, (float)point.Y, 0.0F), CommonColor.White);
-
-            DXManager.SetBlend(oldBlend);
-            mi.CleanTime = CMain.Time + Settings.CleanDelay;
-        }
-
-        public bool VisiblePixel(int index, Point point, bool accuate)
-        {
-            MImage mi = CheckImage(index);
-            if (mi == null || mi.Image == null || !mi.TextureValid || mi.Data == null)
-                return false;
-
-            if (accuate)
-                return mi.VisiblePixel(point);
-
-            int accuracy = 2;
-
-            for (int x = -accuracy; x <= accuracy; x++)
-                for (int y = -accuracy; y <= accuracy; y++)
-                    if (mi.VisiblePixel(new Point(point.X + x, point.Y + y)))
-                        return true;
-
-            return false;
-        }
-
-        /// <summary>是否正在异步加载（绘制路径外用于判断能否安全 Dispose）。</summary>
-        public bool IsLoading => _loading;
-
-        /// <summary>
-        /// 释放本库持有的全部贴图（MImage）与解析用的字节流/读取器，复位加载状态，
-        /// 以便切换地图后本库能被重新 InitializeAsync 拉取属于新地图的那份 Lib。
-        /// 仅释放、不销毁库对象本身（_fileName 保留，供按需重载）。幂等。
-        /// </summary>
-        public void Dispose()
-        {
-            if (_images != null)
-            {
-                for (int i = 0; i < _images.Length; i++)
-                    _images[i]?.Dispose();
-            }
-            _images = null;
-            _indexList = null;
-            _frames = null;
-
-            if (_reader != null) { _reader.Dispose(); _reader = null; }
-            if (_stream != null) { _stream.Dispose(); _stream = null; }
-
-            _loaded = false;
-            _initialized = false;
-            _loading = false;
-            _failed = false;
-        }
-
+            => DrawMissing(index, destRect);
     }
 }

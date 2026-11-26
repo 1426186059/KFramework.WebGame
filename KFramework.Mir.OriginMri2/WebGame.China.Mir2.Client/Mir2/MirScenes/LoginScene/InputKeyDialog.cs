@@ -100,10 +100,8 @@ namespace Client.MirScenes
                 Anchor = EAnchorType.MiddleCenter;
                 AnchorPos = new Point(285, 150);
                 ApplyAnchor();
-                Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             private void DisposeKeys()
             {
@@ -203,7 +201,6 @@ namespace Client.MirScenes
 
             protected override void Dispose(bool disposing)
             {
-                Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
 
                 base.Dispose(disposing);
 

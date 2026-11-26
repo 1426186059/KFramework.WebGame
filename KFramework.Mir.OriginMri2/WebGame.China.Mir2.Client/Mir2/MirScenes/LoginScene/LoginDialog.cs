@@ -111,10 +111,8 @@ namespace Client.MirScenes
                 Anchor = EAnchorType.MiddleCenter;
                 AnchorPos = new Point(0, 0);
                 ApplyAnchor();
-                Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             private void AccountIDTextBox_TextChanged(object sender, EventArgs e)
             {
@@ -214,7 +212,6 @@ namespace Client.MirScenes
 
             protected override void Dispose(bool disposing)
             {
-                Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
 
                 if (disposing)
                 {

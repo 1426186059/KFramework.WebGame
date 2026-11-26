@@ -173,10 +173,8 @@ namespace Client.MirScenes
 
                 Anchor = EAnchorType.MiddleCenter;
                 ApplyAnchor();
-                Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             /// <summary>把 8 个输入框与字段说明摆到 FGUI 创建账户界面的对应槽位。</summary>
             private void ApplyLayout()
@@ -422,7 +420,6 @@ namespace Client.MirScenes
 
             protected override void Dispose(bool disposing)
             {
-                Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
 
                 if (disposing)
                 {

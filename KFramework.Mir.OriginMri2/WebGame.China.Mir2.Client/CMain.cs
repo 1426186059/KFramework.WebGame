@@ -153,7 +153,6 @@ namespace WebGame.Mir2.MonoGame.Client
             await Mir2AtlasLibrary.InitializeAsync();
 
             _ = Mir2OriginObjectLibrary.InitializeAsync();
-            _ = Libraries.Loaded;
 
             MirScene.ActiveScene = new LoginScene();
             await SoundManager.CreateAsync().ConfigureAwait(false);
