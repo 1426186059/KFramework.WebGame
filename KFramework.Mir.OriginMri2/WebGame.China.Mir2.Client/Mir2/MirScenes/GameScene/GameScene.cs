@@ -1161,9 +1161,13 @@ namespace Client.MirScenes
         }
         public void QuitGame()
         {
-            // 网页端“退出游戏”只是关闭页面，不需要等战斗保护时间，直接弹确认框。
+            // Quit = 退出到选人界面，不受战斗 LogTime 限制；确认后由服务端 LogOutSuccess 切场景。
             MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("ExitTip"), MirMessageBoxButtons.YesNo);
-            messageBox.YesButton.Click += (o, e) => CMain.Instance.Close();
+            messageBox.YesButton.Click += (o, e) =>
+            {
+                Network.Enqueue(new C.LogOut());
+                Enabled = false;
+            };
             messageBox.Show();
         }
         public void LogOut()

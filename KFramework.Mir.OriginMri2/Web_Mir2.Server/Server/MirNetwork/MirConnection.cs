@@ -1185,12 +1185,7 @@ namespace Server.MirNetwork
         {
             if (Stage == GameStage.Game)
             {
-                if (Envir.Time < Player.LogTime)
-                {
-                    Enqueue(new S.LogOutFailed());
-                    return;
-                }
-
+                // Quit Button 直接退回选人界面，不再受战斗 LogTime 限制。
                 Player.StopGame(23);
 
                 Stage = GameStage.Select;
