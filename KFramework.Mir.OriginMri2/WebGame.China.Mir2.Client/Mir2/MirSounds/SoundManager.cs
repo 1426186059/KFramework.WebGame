@@ -18,13 +18,6 @@ namespace Client.MirSounds
         private static int _vol;
         private static int _musicVol;
 
-        public static readonly List<string> SupportedFileTypes = new List<string>
-        {
-            ".mp3"
-        };
-
-        public static LoopProvider Music => _music;
-
         public static int Vol
         {
             get { return _vol; }
