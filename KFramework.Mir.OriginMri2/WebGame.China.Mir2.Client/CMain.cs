@@ -513,6 +513,13 @@ namespace WebGame.Mir2.MonoGame.Client
         public static void CMain_KeyDown(object sender, MirEngine.KeyEventArgs e)
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
+
+            // 浏览器长按会持续触发 KeyDown；首次按下正常施放，后续交给 Process 按 CD 重复。
+            if (GetSkillHotkeySlot(e.KeyCode, out int heldSkillSlot) && !HeldSkillKeys.TryAdd(e.KeyCode, heldSkillSlot))
+            {
+                return;
+            }
+
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
@@ -535,6 +542,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public static void CMain_KeyUp(object sender, MirEngine.KeyEventArgs e)
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
+            HeldSkillKeys.Remove(e.KeyCode);
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
@@ -557,6 +565,54 @@ namespace WebGame.Mir2.MonoGame.Client
         // 技能快捷键在 KeyDown 已消费时置位，令紧随其后的 KeyPress 不落到聊天输入框。
         // Input_KeyBoard 的 KeyDown/KeyPress 是两条独立事件，KeyDown 的 Handled 无法阻止 KeyPress。
         public static bool SuppressNextKeyPress;
+
+        // 浏览器长按技能键会持续发 KeyDown。这里记录“当前按住的技能键 → 技能栏槽位”，
+        // 首次 KeyDown 正常施放，后续由 GameScene.Process 按 CD 自动重复施放，松开键才停止。
+        private static readonly Dictionary<Keys, int> HeldSkillKeys = new();
+
+        public static IEnumerable<int> HeldSkillSlots
+        {
+            get { return new HashSet<int>(HeldSkillKeys.Values); }
+        }
+
+        private static bool GetSkillHotkeySlot(Keys key, out int slot)
+        {
+            slot = 0;
+            if (InputKeys == null || InputKeys.Keylist == null)
+            {
+                return false;
+            }
+
+            foreach (KeyBind bind in InputKeys.Keylist)
+            {
+                if (bind.Key != key)
+                {
+                    continue;
+                }
+
+                if (bind.function >= KeybindOptions.Bar1Skill1 && bind.function <= KeybindOptions.Bar1Skill8)
+                {
+                    slot = (int)(bind.function - KeybindOptions.Bar1Skill1) + 1;
+                    return true;
+                }
+
+                if (bind.function >= KeybindOptions.Bar2Skill1 && bind.function <= KeybindOptions.Bar2Skill8)
+                {
+                    slot = (int)(bind.function - KeybindOptions.Bar2Skill1) + 9;
+                    return true;
+                }
+
+                if (bind.function >= KeybindOptions.HeroSkill1 && bind.function <= KeybindOptions.HeroSkill8)
+                {
+                    slot = (int)(bind.function - KeybindOptions.HeroSkill1) + 17;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
 
         public static void CMain_KeyPress(object sender, KeyPressEventArgs e)
         {

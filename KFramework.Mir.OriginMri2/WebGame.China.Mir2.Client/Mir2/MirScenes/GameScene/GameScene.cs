@@ -268,6 +268,7 @@ namespace Client.MirScenes
 
         public long ToggleTime;
         public static long SpellTime;
+        private readonly long[] _holdSkillNextTry = new long[25];
 
         public MirLabel[] OutputLines = new MirLabel[10];
         public List<OutPutMessage> OutputMessages = new List<OutPutMessage>();
@@ -978,8 +979,13 @@ namespace Client.MirScenes
             }
         }
 
-        public void UseSpell(int key)
+        public void UseSpell(int key, bool fromHold = false)
         {
+            if (key > 0 && key < _holdSkillNextTry.Length)
+            {
+                _holdSkillNextTry[key] = CMain.Time + 100;
+            }
+
             UserObject actor = User;
             if (key > 16)
             {
@@ -1046,7 +1052,9 @@ namespace Client.MirScenes
                     return;
                 case Spell.Thrusting: // 刺杀剑术
                     if (CMain.Time < ToggleTime) return;
-                    actor.Thrusting = !actor.Thrusting;
+                    bool wasThrusting = actor.Thrusting;
+                    actor.Thrusting = fromHold ? true : !actor.Thrusting;
+                    if (actor.Thrusting == wasThrusting) return;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.Thrusting ? LanguageMgr.Get("UseThrusting"): LanguageMgr.Get("DoNotUseThrusting")),
                         ChatType.System);
@@ -1055,7 +1063,9 @@ namespace Client.MirScenes
                     break;
                 case Spell.HalfMoon: // 半月弯刀
                     if (CMain.Time < ToggleTime) return;
-                    actor.HalfMoon = !actor.HalfMoon;
+                    bool wasHalfMoon = actor.HalfMoon;
+                    actor.HalfMoon = fromHold ? true : !actor.HalfMoon;
+                    if (actor.HalfMoon == wasHalfMoon) return;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.HalfMoon ? LanguageMgr.Get("UseHalfMoon"): LanguageMgr.Get("DoNotUseHalfMoon")),
                         ChatType.System);
@@ -1064,7 +1074,9 @@ namespace Client.MirScenes
                     break;
                 case Spell.CrossHalfMoon: // 半月弯刀（双）
                     if (CMain.Time < ToggleTime) return;
-                    actor.CrossHalfMoon = !actor.CrossHalfMoon;
+                    bool wasCrossHalfMoon = actor.CrossHalfMoon;
+                    actor.CrossHalfMoon = fromHold ? true : !actor.CrossHalfMoon;
+                    if (actor.CrossHalfMoon == wasCrossHalfMoon) return;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.CrossHalfMoon ? LanguageMgr.Get("UseCrossHalfMoon"): LanguageMgr.Get("DoNotUseCrossHalfMoon")),
                         ChatType.System);
@@ -1073,7 +1085,9 @@ namespace Client.MirScenes
                     break;
                 case Spell.DoubleSlash: // 双斩
                     if (CMain.Time < ToggleTime) return;
-                    actor.DoubleSlash = !actor.DoubleSlash;
+                    bool wasDoubleSlash = actor.DoubleSlash;
+                    actor.DoubleSlash = fromHold ? true : !actor.DoubleSlash;
+                    if (actor.DoubleSlash == wasDoubleSlash) return;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.DoubleSlash ? LanguageMgr.Get("UseDoubleSlash"): LanguageMgr.Get("DoNotUseDoubleSlash")),
                         ChatType.System);
@@ -1144,17 +1158,10 @@ namespace Client.MirScenes
         }
         public void QuitGame()
         {
-            if (CMain.Time >= LogTime)
-            {
-                //If Last Combat < 10 CANCEL
-                MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("ExitTip"), MirMessageBoxButtons.YesNo);
-                messageBox.YesButton.Click += (o, e) => CMain.Instance.Close();
-                messageBox.Show();
-            }
-            else
-            {
-                ChatDialog.ReceiveChat(LanguageMgr.Get("CannotLeaveGame", (LogTime - CMain.Time) / 1000), ChatType.System);
-            }
+            // 网页端“退出游戏”只是关闭页面，不需要等战斗保护时间，直接弹确认框。
+            MirMessageBox messageBox = new MirMessageBox(LanguageMgr.Get("ExitTip"), MirMessageBoxButtons.YesNo);
+            messageBox.YesButton.Click += (o, e) => CMain.Instance.Close();
+            messageBox.Show();
         }
         public void LogOut()
         {
@@ -1226,6 +1233,23 @@ namespace Client.MirScenes
             if (MapControl == null || User == null)
             {
                 return;
+            }
+
+            // 技能键按住不放：按 100ms 节流持续尝试，真正的 CD 判断仍在 UseSpell 内部。
+            foreach (int slot in CMain.HeldSkillSlots)
+            {
+                if (slot <= 0 || slot >= _holdSkillNextTry.Length)
+                {
+                    continue;
+                }
+
+                if (CMain.Time < _holdSkillNextTry[slot])
+                {
+                    continue;
+                }
+
+                _holdSkillNextTry[slot] = CMain.Time + 100;
+                UseSpell(slot, true);
             }
 
             if (CMain.Time >= MoveTime)
