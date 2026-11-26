@@ -288,16 +288,12 @@ public sealed class MapControl : MirControl
     // 让点空地（不论是否真正起寻路）都有落点反馈。
     public void ShowClickEffect(Point target)
     {
-        if (M2CellInfo == null) return;
-        // 越界格子 ToMouseLocation 会算出屏幕外的坐标，特效画出去看不见，且毫无意义。
-        if (target.X < 0 || target.Y < 0 || target.X >= Width || target.Y >= Height) return;
-        // Magic3 是"绘制时按需异步加载"的库：未就绪时 CheckImage 会画马赛克占位（首次点击常见），
-        // 加载完成后再点即为真实特效。库对象本身恒不为 null，这里的判断只是兜底防 NRE。
-        if (Libraries.Magic3 == null) return;
-
-        var offset = MouseLocation.Subtract(ToMouseLocation(target));
-        // 原版落点环（Magic3#500），保留默认发光，不做改动。
-        Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
+        // 鼠标点击地面的落点特效暂时关闭（保留方法签名与调用点，需要时恢复下面逻辑即可）。
+        //if (M2CellInfo == null) return;
+        //if (target.X < 0 || target.Y < 0 || target.X >= Width || target.Y >= Height) return;
+        //if (Libraries.Magic3 == null) return;
+        //var offset = MouseLocation.Subtract(ToMouseLocation(target));
+        //Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
     }
 
     public PathFinder PathFinder;
