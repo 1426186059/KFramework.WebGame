@@ -69,70 +69,15 @@ namespace Client.MirGraphics
         }
 
         /// <summary>
-        /// 异步加载：经 HTTP 拉取字节并解析索引表。幂等（加载中或已加载会直接返回）。
-        /// 浏览器端资源在远程 HTTP 服务上，本地文件系统为空，因此不再用 File.Exists 判断存在性。
+        /// 已停用：经典 .Lib 图集已从资源包移除，资源全面改用原始传奇 CDN（Mir2OriginResource / Mir2AtlasLibrary）。
+        /// 保留方法签名只为兼容现存调用点；直接标记失败，不再发起任何 .Lib 网络请求。
+        /// 绘制走 DrawMissing 品红兜底（便于定位尚未迁移的资源），GetSize/GetTrueSize 行为与"未加载"一致。
         /// </summary>
-        public async Task InitializeAsync()
+        public Task InitializeAsync()
         {
-            // 已加载/已失败则幂等返回（加载成功后永久缓存；默认 lib 通道为统一资源，不按地图区分，无需换图重载）。
-            if (_loaded || _failed) return;
-            if (_loading) return;
-            _loading = true;
-            try
-            {
-                // 空文件名 / 仅扩展名的占位库（如 MapLibs 里未配置的空槽 new MLibrary("")，
-                // 其 _fileName 为 ".Lib"）不发起请求，否则会每帧向资源服务器请求 "/.Lib" 造成 404 风暴。
-                if (string.IsNullOrWhiteSpace(_fileName) || _fileName == Extention)
-                {
-                    _initialized = false;
-                    _failed = true;
-                    return;
-                }
-
-                //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] load {_fileName}");
-                byte[] bytes = await BrowserResource.GetBytesAsync(_fileName);
-                if (bytes == null || bytes.Length == 0)
-                {
-                    //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] empty: {_fileName}");
-                    _initialized = false;
-                    // 仅当资源确属缺失（BrowserResource 多次重试后仍失败）才永久失败；
-                    // 瞬时失败在 GetBytesAsync 内已重试自愈，不会走这里，故不标记 _failed，
-                    // 下次 CheckImage 会重新触发加载，避免 AOT 突发并发下整片黑地板。
-                    _failed = BrowserResource.IsMissing(_fileName);
-                    return;
-                }
-
-                ParseIndex(bytes);
-                _loaded = true;
-                _initialized = true;
-
-                // 输出图数与首图尺寸：用于确认地砖规格（Tiles 为 96x96 时底图按 2x2 绘制，
-                // 48x48 时每格一张），排查"地板不显示"时非常关键。
-                string sizeInfo = string.Empty;
-                try
-                {
-                    if (_images != null && _images.Length > 0)
-                    {
-                        Size s0 = GetSize(0);
-                        sizeInfo = $"，图数={_images.Length}，首图={s0.Width}x{s0.Height}";
-                    }
-                }
-                catch { }
-
-                //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
-                Libraries.OnLibraryLoaded();
-            }
-            catch (Exception ex)
-            {
-                _initialized = false;
-                // 同上：仅确属缺失才永久失败；瞬时异常（连接尖峰下的偶发失败）不拉黑，留待重试。
-                _failed = BrowserResource.IsMissing(_fileName);
-                //KFramework.MonoGame.PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
-            }
-            finally
-            {
-                _loading = false;
-            }
+            _initialized = false;
+            _failed = true;
+            return Task.CompletedTask;
         }
 
         /// <summary>解析 .Lib 头部与索引表（与版本相关的结构）。</summary>
