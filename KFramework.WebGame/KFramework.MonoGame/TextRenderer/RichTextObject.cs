@@ -235,11 +235,18 @@ namespace KFramework.MonoGame
         private List<RichTextRun> LayoutRich(RectangleF bounds, TextAnchor anchor,
                                              HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
         {
+            // 高度只有两种情况参与排版：垂直居中/下对齐会平移 startY（连带 run 的 BaselineY
+            // 与 lineTops），Truncate 会用 bounds.Height 决定裁到第几行。
+            // UpperLeft + Overflow 时高度不参与任何计算，绝不能进缓存 key：
+            // Measure() 传 float.MaxValue 高，Draw()/GetLineTops() 传实际框高，
+            // 每帧交替调用会把缓存反复踢掉，触发两三次完整重排（逐字符测量 + BuildTextInfo）。
+            int row = (int)anchor / 3;
+            float layoutHeightKey = (row != 0 || vWrap == VerticalWrapMode.Truncate) ? bounds.Height : 0f;
             if (_layoutRuns != null && 
                 ReferenceEquals(_layoutText, _text) && 
                 _layoutFont == _font &&
                 _layoutWidth == bounds.Width && 
-                _layoutHeight == bounds.Height &&
+                _layoutHeight == layoutHeightKey &&
                 _layoutAnchor == anchor && 
                 _layoutHWrap == hWrap && 
                 _layoutVWrap == vWrap)
@@ -286,7 +293,6 @@ namespace KFramework.MonoGame
             spans.Add((lineStart, textLen, lineW, lineMaxScale));
 
             // 2) 对齐：每行行高 = 基础行高 * 该行最大缩放，累加得到总高
-            int row = (int)anchor / 3;
             int col = (int)anchor % 3;
             float totalH = 0f;
             float maxLineW = 0f;
@@ -372,7 +378,7 @@ namespace KFramework.MonoGame
             _layoutText = _text;
             _layoutFont = _font;
             _layoutWidth = bounds.Width;
-            _layoutHeight = bounds.Height;
+            _layoutHeight = layoutHeightKey;
             _layoutAnchor = anchor;
             _layoutHWrap = hWrap;
             _layoutVWrap = vWrap;
