@@ -21,6 +21,11 @@ namespace KFramework.MonoGame
         private readonly List<RichLineInfo> _lines = new List<RichLineInfo>();
         private readonly List<RichLinkInfo> _links = new List<RichLinkInfo>();
 
+        public RichTextInfo()
+        {
+
+        }
+
         internal void Clear()
         {
             _characters.Clear();

@@ -10,6 +10,8 @@ namespace KFramework.MonoGame
         private string _text = string.Empty;
         private IFont _font;
         private readonly RichTextDocument _doc = new RichTextDocument();  // 复用实例，Text 变化才重解析
+        private readonly RichTextInfo _textInfo = new RichTextInfo();
+
         private Texture2D _whitePixel;   // 下划线用的 1x1 白纹（按需创建）
         private string _layoutText;
         private IFont _layoutFont;
@@ -22,7 +24,6 @@ namespace KFramework.MonoGame
         private List<float> _layoutLineTops = null;
         private float _layoutMeasuredWidth;   // LayoutRich 算出的最宽行，Measure 复用
         private float _layoutMeasuredHeight;  // LayoutRich 算出的总高（含 Scale 撑开）
-        private RichTextInfo _textInfo; 
         private Color _lastForeColor = Color.White;
 
         public RichTextInfo TextInfo
@@ -119,7 +120,6 @@ namespace KFramework.MonoGame
 
             _layoutRuns = null;
             _layoutLineTops = null;
-            _textInfo = null;
         }
 
         public void SetFont(IFont font)
@@ -131,7 +131,6 @@ namespace KFramework.MonoGame
             _font = font;
             _layoutRuns = null;   // 字体变了：字宽/行高变了，排版失效
             _layoutLineTops = null;
-            _textInfo = null;
         }
 
         /// <summary>富文本度量：直接复用 LayoutRich 的排版结果（逐字符 Scale 宽度 + 每行最大 Scale 撑高），
@@ -386,7 +385,6 @@ namespace KFramework.MonoGame
         /// <summary>把 run 列表展开成逐字符信息（对标 TMP 的 characterInfo），并汇总行/链接。</summary>
         private void BuildTextInfo(RectangleF bounds, List<RichTextRun> runs, List<float> lineTops)
         {
-            _textInfo = _textInfo ?? new RichTextInfo();
             RichTextInfo info = _textInfo;
             info.Clear();
             info.Bounds = bounds;
