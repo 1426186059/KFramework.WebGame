@@ -1,30 +1,5 @@
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// 通用文本渲染底层库。字体参数统一为 <see cref="IFont"/>（已光栅化的字形资源抽象）。
-    /// <para>
-    /// <b>本类不持有、也不创建 SpriteBatch</b>：所有绘制入口都要求调用方传入自己的
-    /// <see cref="SpriteBatch"/>（外部批），由调用方决定何时 <c>Begin</c> / <c>End</c>。
-    /// 这样批的材质 / 变换 / 生命周期完全归调用方掌控，也不会冒出一个"隐式共享批"与外部批抢状态。
-    /// <c>MeasureText</c> 与批无关，直接量即可。
-    /// </para>
-    /// <para>
-    /// <b>排版风格用 Unity 的三元组</b>：<see cref="TextAnchor"/>（对齐）+
-    /// <see cref="HorizontalWrapMode"/>（水平折行）+ <see cref="VerticalWrapMode"/>（垂直截断）。
-    /// 引擎不认识 WinForms 的 TextFormatFlags —— 需要的调用方（如传奇客户端）
-    /// 自行提供 GDI 标志到三元组的折算即可。
-    /// </para>
-    /// <para>
-    ///   MeasureText(string text, IFont font[, Size proposedSize[, HorizontalWrapMode hWrap]])
-    ///   DrawText(SpriteBatch batch, string text, IFont font, Rectangle bounds, Color foreColor
-    ///            [, Color backColor][, TextAnchor anchor[, HorizontalWrapMode hWrap[, VerticalWrapMode vWrap]]])
-    /// </para>
-    /// <see cref="IFont"/> 的实现可以是 SpriteFont（系统字体）、BitmapFont（BMFont 图集）、KFont，
-    /// 也可以是 <see cref="Font"/>——它是 System.Drawing.Font 风格的"描述符"（族名/字号/样式/单位，设备无关），
-    /// 同时实现 IFont，度量与绘制时按设备解析（缓存）成 SpriteFont。
-    ///
-    /// 清屏不属于本类职责（原版由控件自身 OnPaint 清屏），调用方请用 GraphicsDevice.Clear。
-    /// </summary>
     public static class TextRenderer
     {
         // backColor 铺底用的 1x1 白纹（按需创建；只此一项共享资源，与批无关）。
