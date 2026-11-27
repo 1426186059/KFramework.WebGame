@@ -118,17 +118,160 @@ namespace Client.MirScenes.Dialogs
 
         public void RefreshUI()
         {
-            var list = GameScene.User == null ? null : GameScene.User.Magics;
-            int count = list == null ? 0 : list.Count;
+            List<ClientMagic> source = GameScene.User == null ? null : GameScene.User.Magics;
+            List<ClientMagic> list = source == null ? new List<ClientMagic>() : GetSortedMagics(source);
+            int count = list.Count;
 
             if (_rows.Count != count)
+            {
                 Rebuild(count);
+            }
 
             for (int i = 0; i < _rows.Count; i++)
             {
-                bool has = list != null && i < list.Count;
+                bool has = i < list.Count;
                 _rows[i].Visible = has;
-                if (has) _rows[i].Update(list[i]);
+                if (has)
+                {
+                    _rows[i].Update(list[i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 原始传奇 RolePop_jn.setSkillList 排序：普通攻击置顶，已学技能在前，
+        /// 其余按 cm.skill.index（本工程 OriginIndex）升序；相同项保持服务器下发顺序。
+        /// </summary>
+        private static List<ClientMagic> GetSortedMagics(List<ClientMagic> source)
+        {
+            List<ClientMagic> visible = GetVisibleMagics(source);
+            var entries = new List<SkillSortEntry>(visible.Count);
+            for (int i = 0; i < visible.Count; i++)
+            {
+                entries.Add(new SkillSortEntry(visible[i], i));
+            }
+
+            entries.Sort(CompareSkillSortEntry);
+
+            var result = new List<ClientMagic>(visible.Count);
+            for (int i = 0; i < entries.Count; i++)
+            {
+                result.Add(entries[i].Magic);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 原始传奇 RolePop_jn.setSkillList：倚天四式 30301~30304 是互斥技能组。
+        /// 原版 findMaxLevelCount 统计组内已学数量 r，只保留组内第 r 个；r=-1 时四式全部隐藏。
+        /// </summary>
+        private static List<ClientMagic> GetVisibleMagics(List<ClientMagic> source)
+        {
+            int learnedFourFormCount = 0;
+            for (int i = 0; i < source.Count; i++)
+            {
+                if (GetFourFormPosition(source[i]) >= 0 && source[i].IsLearned())
+                {
+                    learnedFourFormCount++;
+                }
+            }
+
+            int allowedFourFormPosition = learnedFourFormCount - 1;
+            var result = new List<ClientMagic>(source.Count);
+            for (int i = 0; i < source.Count; i++)
+            {
+                int position = GetFourFormPosition(source[i]);
+                if (position >= 0 && position != allowedFourFormPosition)
+                {
+                    continue;
+                }
+
+                result.Add(source[i]);
+            }
+
+            return result;
+        }
+
+        private static int GetFourFormPosition(ClientMagic magic)
+        {
+            int id = (int)magic.Spell;
+            if (id == 30301)
+            {
+                return 0;
+            }
+
+            if (id == 30302)
+            {
+                return 1;
+            }
+
+            if (id == 30303)
+            {
+                return 2;
+            }
+
+            if (id == 30304)
+            {
+                return 3;
+            }
+
+            return -1;
+        }
+
+        private static int CompareSkillSortEntry(SkillSortEntry a, SkillSortEntry b)
+        {
+            int rankA = GetSkillSortRank(a.Magic);
+            int rankB = GetSkillSortRank(b.Magic);
+            if (rankA != rankB)
+            {
+                return rankA.CompareTo(rankB);
+            }
+
+            int indexA = GetSkillSortIndex(a.Magic);
+            int indexB = GetSkillSortIndex(b.Magic);
+            if (indexA != indexB)
+            {
+                return indexA.CompareTo(indexB);
+            }
+
+            return a.OriginalIndex.CompareTo(b.OriginalIndex);
+        }
+
+        private static int GetSkillSortRank(ClientMagic magic)
+        {
+            if ((int)magic.Spell == 10101)
+            {
+                return 0;
+            }
+
+            if (magic.IsLearned())
+            {
+                return 1;
+            }
+
+            return 2;
+        }
+
+        private static int GetSkillSortIndex(ClientMagic magic)
+        {
+            if (magic.OriginIndex > 0)
+            {
+                return magic.OriginIndex;
+            }
+
+            return int.MaxValue;
+        }
+
+        private struct SkillSortEntry
+        {
+            public ClientMagic Magic;
+            public int OriginalIndex;
+
+            public SkillSortEntry(ClientMagic magic, int originalIndex)
+            {
+                Magic = magic;
+                OriginalIndex = originalIndex;
             }
         }
 

@@ -118,6 +118,7 @@ namespace Server.ExcelConfig
                 Range = Info.Range,
                 CastTime = CastTime - Envir.Time,
                 OriginIcon = Info.OriginIcon,
+                OriginIndex = Info.OriginIndex,
                 TargetType = (byte)Info.TargetType,
                 // 需目标由 releaseType==1 决定；targetType 对召唤/火符都是1，不能用作判据。
                 NeedTarget = Info.ReleaseType == 1,

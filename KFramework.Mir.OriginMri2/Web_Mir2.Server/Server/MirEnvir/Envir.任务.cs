@@ -37,12 +37,23 @@ namespace Server.MirEnvir
             return result;
         }
 
-        /// <summary>技能学习等级：Condition - 10000（如 10007 → 7），钳制到 [1,255]。</summary>
+        /// <summary>
+        /// 技能学习等级：只有 Condition=10000+N 是等级条件。
+        /// 倚天四式的 Condition=260004~260007 是装备触发条件，不能当作 255 级自动学会。
+        /// </summary>
         public static int GetLearnLevel(MagicInfoTable info)
         {
-            if (info == null) return 0;
-            int level = info.Condition >= 10000 ? info.Condition - 10000 : info.Condition;
-            return Math.Max(1, Math.Min(byte.MaxValue, level));
+            if (info == null)
+            {
+                return int.MaxValue;
+            }
+
+            if (info.Condition < 10001 || info.Condition > 10255)
+            {
+                return int.MaxValue;
+            }
+
+            return info.Condition - 10000;
         }
         public QuestInfoRunItem GetQuestInfo(int index)
         {
