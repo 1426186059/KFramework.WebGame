@@ -56,12 +56,25 @@ namespace KFramework.MonoGame
                    VerticalWrap == other.VerticalWrap;
         }
 
-        public override bool Equals(object obj) => obj is TextStyle other && Equals(other);
+        public override bool Equals(object? obj)
+        {
+            return obj is TextStyle other && Equals(other);
+        }
 
-        public override int GetHashCode() => HashCode.Combine(Anchor, HorizontalWrap, VerticalWrap);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Anchor, HorizontalWrap, VerticalWrap);
+        }
 
-        public static bool operator ==(TextStyle a, TextStyle b) => a.Equals(b);
+        public static bool operator ==(TextStyle a, TextStyle b)
+        {
+            return a.Equals(b);
+        }
 
-        public static bool operator !=(TextStyle a, TextStyle b) => !a.Equals(b);
+        public static bool operator !=(TextStyle a, TextStyle b)
+        {
+            return !a.Equals(b);
+        }
+
     }
 }
