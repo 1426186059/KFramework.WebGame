@@ -499,6 +499,15 @@ namespace KFramework.Test.Common.Tests.RichTextTest
                 int ly = richRect.Y + (int)lineTops[i];
                 DrawRect(batch, new Rectangle(richRect.X, ly, richRect.Width, 1), new Color(45, 60, 90));
             }
+            if (lineCount > 0)
+            {
+                float lastTop = lineTops[lineCount - 1];
+                float lastRowH = lineCount > 1
+                    ? lineTops[lineCount - 1] - lineTops[lineCount - 2]
+                    : _wrapRich.RichObject.TextInfo?.Lines[0].Height ?? Font.LineSpacing;
+                int bottomY = richRect.Y + (int)(lastTop + lastRowH);
+                DrawRect(batch, new Rectangle(richRect.X, bottomY, richRect.Width, 1), new Color(45, 60, 90));
+            }
             y = boxY + boxH + 14f;
 
             // 链接跨行命中：鼠标悬停到右侧富文本的链接上，只查当前位置一点。
