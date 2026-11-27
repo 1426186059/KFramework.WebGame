@@ -74,7 +74,7 @@ namespace Server.MirObjects.Monsters
             {
                 SpellObject ob = new SpellObject
                 {
-                    Spell = Spell.DigOutZombie,
+                    Spell = Spell.挖地僵尸,
                     Value = 1,
                     ExpireTime = Envir.Time + (5 * 60 * 1000),
                     TickSpeed = 2000,

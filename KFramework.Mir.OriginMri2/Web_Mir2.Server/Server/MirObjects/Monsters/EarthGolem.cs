@@ -103,7 +103,7 @@ namespace Server.MirObjects.Monsters
 
                         SpellObject ob = new SpellObject
                         {
-                            Spell = Spell.EarthGolemPile,
+                            Spell = Spell.土巨人堆,
                             Value = damage,
                             ExpireTime = Envir.Time + 1200 + start,
                             TickSpeed = 1000,

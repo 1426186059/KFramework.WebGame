@@ -241,7 +241,7 @@ namespace Client.MirScenes.Dialogs
                         BlendingRate = 1F
                     };
                     animEffect.AfterAnimation += (o, e) => animEffect.Dispose();
-                    SoundManager.PlaySound(20000 + (ushort)Spell.MagicShield * 10);
+                    SoundManager.PlaySound(20000 + (ushort)Spell.魔法盾 * 10);
                     break;
             }
         }

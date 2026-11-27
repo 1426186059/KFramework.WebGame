@@ -10,8 +10,9 @@ namespace Server.MirEnvir
     {
         /// <summary>
         /// 原始传奇技能移植：玩家可见技能（IsShow=1）按职业（Cls：1战/2法/3道）在学习等级自动学会。
-        /// Condition = 10000 + 学习等级（如 10007 = 7 级）。普通攻击(Condition=10001,Spell=10101)不纳入，
-        /// 普攻走引擎 Spell.None=0，不需要作为技能学习。
+        /// Cls=23 是通用技能（普通攻击 10101 等），对所有职业开放；Condition=10001（1级可学）同样纳入，
+        /// 保证每个角色创建时即自动激活普通攻击技能。
+        /// Condition = 10000 + 学习等级（如 10007 = 7 级）。
         /// </summary>
         public List<MagicInfoTable> GetLearnableSkills(MirClass playerClass)
         {
@@ -28,9 +29,9 @@ namespace Server.MirEnvir
             for (int i = 0; i < MagicInfoList.Count; i++)
             {
                 MagicInfoTable info = MagicInfoList[i];
-                if (info == null || info.IsShow != 1 || info.Cls != cls) continue;
-                // condition 10001 = 普通攻击等 1 级无门槛技能，跳过（普攻不占技能栏）。
-                if (info.Condition <= 10001) continue;
+                if (info == null || info.IsShow != 1) continue;
+                // Cls=23 = 全职业通用（普通攻击），其余按职业匹配。
+                if (info.Cls != 23 && info.Cls != cls) continue;
                 result.Add(info);
             }
             return result;

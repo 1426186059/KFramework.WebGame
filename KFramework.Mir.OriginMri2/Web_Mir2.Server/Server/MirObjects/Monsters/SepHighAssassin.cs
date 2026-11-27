@@ -188,7 +188,7 @@ namespace Server.MirObjects.Monsters
 
             if (Envir.Random.Next(5) == 0)
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrescentSlash, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.新月斩, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 MirDirection backDir = Functions.ReverseDirection(Direction);
                 MirDirection preBackDir = Functions.PreviousDir(backDir);
                 MirDirection nextBackDir = Functions.NextDir(backDir);
@@ -234,7 +234,7 @@ namespace Server.MirObjects.Monsters
                 return;
             }
 
-            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleSlash });
+            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双斩 });
             Target.Attacked(this, damage);
             action = new DelayedAction(DelayedType.Damage, Envir.Time + 500, Target, (int)(damage * 0.8f), DefenceType.ACAgility, false);
             ActionList.Add(action);
@@ -257,7 +257,7 @@ namespace Server.MirObjects.Monsters
 
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.HeavenlySword, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.开天斩, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
             LineAttack(damage, AttackRange);
 
         }

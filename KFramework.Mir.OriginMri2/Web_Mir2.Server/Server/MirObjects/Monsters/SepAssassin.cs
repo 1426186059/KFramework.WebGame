@@ -188,7 +188,7 @@ namespace Server.MirObjects.Monsters
 
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
 
-            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleSlash });
+            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双斩 });
             Target.Attacked(this, damage);
             ProjectileAttack(damage);
         }
@@ -212,7 +212,7 @@ namespace Server.MirObjects.Monsters
 
 
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.HeavenlySword, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.开天斩, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
             LineAttack(damage, AttackRange);
         }
 

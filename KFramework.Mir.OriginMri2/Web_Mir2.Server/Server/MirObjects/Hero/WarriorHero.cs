@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 
 namespace Server.MirObjects
@@ -28,14 +28,14 @@ namespace Server.MirObjects
 
             if (Target != null)
             {
-                MagicInfoRunItem magic = GetMagic(Spell.Rage);
+                MagicInfoRunItem magic = GetMagic(Spell.无极真气);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.Rage))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
                     return;
                 }
 
-                magic = GetMagic(Spell.ProtectionField);
+                magic = GetMagic(Spell.护体神盾);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.ProtectionField))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -48,8 +48,8 @@ namespace Server.MirObjects
             if (Target == null || Target.Dead) return;
             TargetDistance = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation);
 
-            if (HasMagic(Spell.FlamingSword) && Envir.Time > FlamingSwordTime)
-                SpellToggle(Spell.FlamingSword, SpellToggleState.True);
+            if (HasMagic(Spell.烈火剑法) && Envir.Time > FlamingSwordTime)
+                SpellToggle(Spell.烈火剑法, SpellToggleState.True);
         }
         protected override void Attack()
         {
@@ -68,29 +68,29 @@ namespace Server.MirObjects
 
                 if (thrustCell.Objects != null && thrustCell.Objects.Count != 0) ThrustObject = true;
 
-                Spell spell = Spell.None;
+                Spell spell = Spell.无;
 
                 if (Info.Thrusting && ((TargetDistance == 2) || (TargetDistance == 1 && ThrustObject == true)))
                 {
-                    spell = Spell.Thrusting;
+                    spell = Spell.刺杀剑术;
                 }
 
-                if (spell == Spell.None && Slaying)
-                    spell = Spell.Slaying;
+                if (spell == Spell.无 && Slaying)
+                    spell = Spell.攻杀剑术;
 
-                if (spell == Spell.None)
+                if (spell == Spell.无)
                 {
                     if (Info.HalfMoon)
-                        spell = Spell.HalfMoon;
+                        spell = Spell.半月弯刀;
 
                     if (Info.CrossHalfMoon)
-                        spell = Spell.CrossHalfMoon;
+                        spell = Spell.双半月;
 
                     if (TwinDrakeBlade)
-                        spell = Spell.TwinDrakeBlade;
+                        spell = Spell.双烈火剑;
 
                     if (FlamingSword)
-                        spell = Spell.FlamingSword;
+                        spell = Spell.烈火剑法;
                 }
 
                 Attack(Direction, spell);

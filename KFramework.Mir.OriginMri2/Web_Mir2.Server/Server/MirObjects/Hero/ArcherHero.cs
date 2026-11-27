@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirEnvir;
 using System.Buffers;
 using System.Drawing;
@@ -56,7 +56,7 @@ namespace Server.MirObjects
             {
                 if (!HasBuff(BuffType.Concentration))
                 {
-                    MagicInfoRunItem magic = GetMagic(Spell.Concentration);
+                    MagicInfoRunItem magic = GetMagic(Spell.集中);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -76,7 +76,7 @@ namespace Server.MirObjects
 
             if (InAttackRange())
             {
-                magic = GetMagic(Spell.PoisonShot);
+                magic = GetMagic(Spell.毒箭);
                 if (CanUseMagic(magic))
                 {
                     if (!Target.PoisonList.Any(p => p.PType == PoisonType.Green))
@@ -91,7 +91,7 @@ namespace Server.MirObjects
 
                 if (GetElementalOrbCount() < 1 || GetElementalOrbCount() > 3)
                 {
-                    magic = GetMagic(Spell.ElementalShot);
+                    magic = GetMagic(Spell.元素射击);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);
@@ -99,20 +99,20 @@ namespace Server.MirObjects
                     }
                 }
 
-                magic = GetMagic(Spell.StraightShot);
+                magic = GetMagic(Spell.直射击);
                 if (CanUseMagic(magic))
                 {
                     BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);
                     return;
                 }
 
-                magic = GetMagic(Spell.None);
+                magic = GetMagic(Spell.无);
                 {
                     return;
                 }
             }
 
-            magic = GetMagic(Spell.None);
+            magic = GetMagic(Spell.无);
             {
                 return;
             }
@@ -130,10 +130,10 @@ namespace Server.MirObjects
 
             if (Target == null || !CanAttack) return;
 
-            if (HasClassWeapon && CanCast && NextMagicSpell != Spell.None)
+            if (HasClassWeapon && CanCast && NextMagicSpell != Spell.无)
             {
                 Magic(NextMagicSpell, NextMagicDirection, NextMagicTargetID, NextMagicLocation);
-                NextMagicSpell = Spell.None;
+                NextMagicSpell = Spell.无;
             }
 
             if (CanMove && !CanAttack && (TargetDistance < 3 && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && distanceToPlayer < 6))
@@ -148,7 +148,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            if ((CanAttack && Target != null && HasClassWeapon && (NextMagicSpell == Spell.None || !HasRangedSpell || !CanCast)))
+            if ((CanAttack && Target != null && HasClassWeapon && (NextMagicSpell == Spell.无 || !HasRangedSpell || !CanCast)))
             {
                 Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
                 RangeAttack(Direction, Target.CurrentLocation, Target.ObjectID);

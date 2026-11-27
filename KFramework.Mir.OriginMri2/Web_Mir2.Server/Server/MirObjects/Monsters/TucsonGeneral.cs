@@ -67,7 +67,7 @@ namespace Server.MirObjects.Monsters
 
                     var spellObj = new SpellObject
                     {
-                        Spell = Spell.TucsonGeneralRock,
+                        Spell = Spell.图森将军石,
                         Value = value,
                         ExpireTime = Envir.Time + 2000 + start,
                         TickSpeed = 1000,

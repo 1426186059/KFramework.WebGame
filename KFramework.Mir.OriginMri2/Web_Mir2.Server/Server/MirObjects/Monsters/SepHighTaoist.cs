@@ -47,7 +47,7 @@ namespace Server.MirObjects.Monsters
 
             if (!Target.PoisonList.Any(x => x.PType == PoisonType.Green) && !Target.PoisonList.Any(x => x.PType == PoisonType.Red))
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.施毒术, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 int power = GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]);
                 Target.ApplyPoison(new Poison
                 {
@@ -62,7 +62,7 @@ namespace Server.MirObjects.Monsters
 
             else if (Target.PoisonList.Any(x => x.PType == PoisonType.Green) && !Target.PoisonList.Any(x => x.PType == PoisonType.Red))
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.施毒术, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 int power = GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]);
                 Target.ApplyPoison(new Poison
                 {
@@ -76,7 +76,7 @@ namespace Server.MirObjects.Monsters
 
             else if (!Target.PoisonList.Any(x => x.PType == PoisonType.Green) && Target.PoisonList.Any(x => x.PType == PoisonType.Red))
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.施毒术, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 int power = GetAttackPower(Stats[Stat.MinSC], Stats[Stat.MaxSC]);
                 Target.ApplyPoison(new Poison
                 {
@@ -91,14 +91,14 @@ namespace Server.MirObjects.Monsters
 
             if (!Target.Buffs.Any(e => e.Type == BuffType.Curse) && Envir.Random.Next(8) == 0)
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Curse, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.诅咒, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 PoisonTarget(Target, 1, 5, PoisonType.Slow, 1000);
                 return;
             }
 
             if (PercentHealth <= 90 && Envir.Random.Next(8) == 0)
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.MassHealing, TargetID = ObjectID, Target = CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.群体治愈术, TargetID = ObjectID, Target = CurrentLocation, Cast = true, Level = 3 });
                 TriangleAttack(damage, 2, 1, 800);
                 return;
             }
@@ -120,7 +120,7 @@ namespace Server.MirObjects.Monsters
                 monster.Target = Target;
                 Pets.Add(monster);
 
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.SummonShinsu, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.召唤神兽, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
 
                 action = new DelayedAction(DelayedType.Spawn, Envir.Time + 1000, monster, Front);
 
@@ -128,7 +128,7 @@ namespace Server.MirObjects.Monsters
                 return;
             }
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.SoulFireBall, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.灵魂火符, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
 
             HalfmoonAttack(damage);
 

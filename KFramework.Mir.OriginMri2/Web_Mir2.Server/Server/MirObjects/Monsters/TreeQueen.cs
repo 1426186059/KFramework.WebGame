@@ -165,7 +165,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject spellObj = new SpellObject
                     {
-                        Spell = Spell.TreeQueenRoot,
+                        Spell = Spell.树后根,
                         Value = Envir.Random.Next(Envir.Random.Next(Stats[Stat.MinMC], Stats[Stat.MaxMC])),
                         ExpireTime = Envir.Time + 1500 + start,
                         TickSpeed = 2000,
@@ -222,7 +222,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject ob = new SpellObject
                     {
-                        Spell = Spell.TreeQueenMassRoots,
+                        Spell = Spell.树后群根,
                         Value = damage,
                         ExpireTime = Envir.Time + 1500 + start,
                         TickSpeed = 1000,
@@ -270,7 +270,7 @@ namespace Server.MirObjects.Monsters
 
                         SpellObject ob = new SpellObject
                         {
-                            Spell = Spell.TreeQueenGroundRoots,
+                            Spell = Spell.树后地根,
                             Value = damage,
                             ExpireTime = Envir.Time + 900 + start,
                             TickSpeed = 1000,

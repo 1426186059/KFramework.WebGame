@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirNetwork;
@@ -826,10 +826,10 @@ namespace Server.MirObjects
 
         protected void ProcessAI() 
         {           
-            if (NextMagicSpell != Spell.None) return;            
+            if (NextMagicSpell != Spell.无) return;            
             ProcessFriend();
 
-            if (NextMagicSpell != Spell.None) return;
+            if (NextMagicSpell != Spell.无) return;
             ProcessAttack();
         }
 
@@ -897,10 +897,10 @@ namespace Server.MirObjects
         protected virtual void ProcessAttack() { }
         protected virtual void ProcessTarget()
         {
-            if (CanCast && NextMagicSpell != Spell.None)
+            if (CanCast && NextMagicSpell != Spell.无)
             {
                 Magic(NextMagicSpell, NextMagicDirection, NextMagicTargetID, NextMagicLocation);
-                NextMagicSpell = Spell.None;
+                NextMagicSpell = Spell.无;
             }
 
             if (Target == null || !CanAttack) return;
@@ -931,7 +931,7 @@ namespace Server.MirObjects
             }
 
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
-            Attack(Direction, Spell.None);
+            Attack(Direction, Spell.无);
         }
 
         protected virtual bool InAttackRange()

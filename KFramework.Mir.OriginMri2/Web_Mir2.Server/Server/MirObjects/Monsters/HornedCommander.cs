@@ -397,7 +397,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject ob = new SpellObject
                     {
-                        Spell = Spell.HornedCommanderRockFall,
+                        Spell = Spell.角指挥官落石,
                         Value = damage,
                         ExpireTime = Envir.Time + duration + start,
                         TickSpeed = 2000,
@@ -504,7 +504,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject ob = new SpellObject
                     {
-                        Spell = Spell.HornedCommanderRockSpike,
+                        Spell = Spell.角指挥官石刺,
                         Value = damage,
                         ExpireTime = Envir.Time + start + (Settings.Minute * 10),
                         TickSpeed = 1000,

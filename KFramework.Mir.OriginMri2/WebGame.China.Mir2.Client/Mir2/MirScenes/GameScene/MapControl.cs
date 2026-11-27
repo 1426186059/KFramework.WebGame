@@ -2023,18 +2023,18 @@ public sealed class MapControl : MirControl
 
         switch (magic.Spell)
         {
-            case Spell.FireBall: // 火球术
-            case Spell.GreatFireBall: // 大火球
-            case Spell.ElectricShock: // 电击
-            case Spell.Poisoning: // 施毒术
-            case Spell.ThunderBolt: // 雷电术
-            case Spell.FlameDisruptor: // 灭天火
-            case Spell.SoulFireBall: // 灵魂火符
-            case Spell.TurnUndead: // 驱尸术（复活死尸）
-            case Spell.FrostCrunch: // 寒冰掌
-            case Spell.Vampirism: // 噬血术
-            case Spell.FireBounce: // 火焰弹
-            case Spell.MeteorShower: // 流星雨
+            case Spell.火球术: // 火球术
+            case Spell.大火球: // 大火球
+            case Spell.电击: // 电击
+            case Spell.施毒术: // 施毒术
+            case Spell.雷电术: // 雷电术
+            case Spell.灭天火: // 灭天火
+            case Spell.灵魂火符: // 灵魂火符
+            case Spell.驱魔: // 驱尸术（复活死尸）
+            case Spell.寒冰掌: // 寒冰掌
+            case Spell.噬血术: // 噬血术
+            case Spell.火弹跳: // 火焰弹
+            case Spell.流星雨: // 流星雨
                 return true;
             default:
                 return false;
@@ -2064,7 +2064,7 @@ public sealed class MapControl : MirControl
 
         int cost = magic.Level * magic.LevelCost + magic.BaseCost;
 
-        if (magic.Spell == Spell.Teleport || magic.Spell == Spell.Blink || magic.Spell == Spell.StormEscape)
+        if (magic.Spell == Spell.瞬间移动 || magic.Spell == Spell.瞬移 || magic.Spell == Spell.风暴逃脱)
         {
             if (actor.Stats[Stat.TeleportManaPenaltyPercent] > 0)
             {
@@ -2095,39 +2095,39 @@ public sealed class MapControl : MirControl
         //Targeting
         switch (magic.Spell)
         {
-            case Spell.FireBall: // 火球术
-            case Spell.GreatFireBall: // 大火球
-            case Spell.ElectricShock: // 电击
-            case Spell.Poisoning: // 施毒术
-            case Spell.ThunderBolt: // 雷电术
-            case Spell.FlameDisruptor: // 灭天火
-            case Spell.SoulFireBall: // 灵魂火符
-            case Spell.TurnUndead: // 驱尸术（复活死尸）
-            case Spell.FrostCrunch: // 寒冰掌
-            case Spell.Vampirism: // 噬血术
-            case Spell.Revelation: // 心灵启示
-            case Spell.Entrapment: // 困魔咒
-            case Spell.Hallucination: // 幻象术
-            case Spell.DarkBody: // 暗影术
-            case Spell.FireBounce: // 火焰弹
-            case Spell.MeteorShower: // 流星雨
+            case Spell.火球术: // 火球术
+            case Spell.大火球: // 大火球
+            case Spell.电击: // 电击
+            case Spell.施毒术: // 施毒术
+            case Spell.雷电术: // 雷电术
+            case Spell.灭天火: // 灭天火
+            case Spell.灵魂火符: // 灵魂火符
+            case Spell.驱魔: // 驱尸术（复活死尸）
+            case Spell.寒冰掌: // 寒冰掌
+            case Spell.噬血术: // 噬血术
+            case Spell.心灵启示: // 心灵启示
+            case Spell.困魔咒: // 困魔咒
+            case Spell.心灵启示_76: // 幻象术
+            case Spell.暗黑化身: // 暗影术
+            case Spell.火弹跳: // 火焰弹
+            case Spell.流星雨: // 流星雨
                 // 统一取"可攻击对象"：点怪物后持续保持，不受鼠标移到技能栏影响。
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.StraightShot: // 直射击
-            case Spell.DoubleShot: // 双重射击
-            case Spell.ElementalShot: // 元素箭
-            case Spell.DelayedExplosion: // 延迟爆炸
-            case Spell.BindingShot: // 束缚箭
-            case Spell.VampireShot: // 吸血箭
-            case Spell.PoisonShot: // 毒箭
-            case Spell.CrippleShot: // 残废箭
-            case Spell.NapalmShot: // 燃烧箭
-            case Spell.SummonVampire: // 召唤吸血鬼
-            case Spell.SummonToad: // 召唤蟾蜍
-            case Spell.SummonSnakes: // 召唤蛇
+            case Spell.直射击: // 直射击
+            case Spell.双箭: // 双重射击
+            case Spell.元素射击: // 元素箭
+            case Spell.延迟爆炸: // 延迟爆炸
+            case Spell.束缚射击: // 束缚箭
+            case Spell.吸血箭: // 吸血箭
+            case Spell.毒箭: // 毒箭
+            case Spell.残废射击: // 残废箭
+            case Spell.凝固汽油弹: // 燃烧箭
+            case Spell.召唤吸血鬼: // 召唤吸血鬼
+            case Spell.召唤蟾蜍: // 召唤蟾蜍
+            case Spell.召唤蛇: // 召唤蛇
                 if (!actor.HasClassWeapon)
                 {
                     GameScene.Scene.OutputMessage(LanguageMgr.Get("MustWearBowForSkill"));
@@ -2138,7 +2138,7 @@ public sealed class MapControl : MirControl
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Stonetrap: // 石陷阱
+            case Spell.石陷阱: // 石陷阱
                 if (!User.HasClassWeapon)
                 {
                     GameScene.Scene.OutputMessage(LanguageMgr.Get("MustWearBowForSkill"));
@@ -2149,26 +2149,26 @@ public sealed class MapControl : MirControl
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
 
-                //if(magic.Spell == Spell.ElementalShot)
+                //if(magic.Spell == Spell.元素射击)
                 //{
                 //    isTargetSpell = User.HasElements;
                 //}
 
                 //switch(magic.Spell)
                 //{
-                //    case Spell.SummonVampire:
-                //    case Spell.SummonToad:
-                //    case Spell.SummonSnakes:
+                //    case Spell.召唤吸血鬼:
+                //    case Spell.召唤蟾蜍:
+                //    case Spell.召唤蛇:
                 //        isTargetSpell = false;
                 //        break;
                 //}
 
                 break;
-            case Spell.Purification: // 净化术
-            case Spell.Healing: // 治愈术
-            case Spell.UltimateEnhancer: // 强化术
-            case Spell.EnergyShield: // 能量护盾
-            case Spell.PetEnhancer: // 宠物强化
+            case Spell.净化: // 净化术
+            case Spell.治愈术: // 治愈术
+            case Spell.终极强化: // 强化术
+            case Spell.能量护盾: // 能量护盾
+            case Spell.宠物强化: // 宠物强化
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant &&
                     !(MapObject.CanAttackTargetObject is MonsterObject monster && monster.MasterObjectId == 0))
@@ -2176,28 +2176,28 @@ public sealed class MapControl : MirControl
 
                 if (target == null) target = User;
                 break;
-            case Spell.FireBang: // 爆裂火焰
-            case Spell.MassHiding: // 集体隐身术
-            case Spell.FireWall: // 火墙
-            case Spell.TrapHexagon: // 困魔咒
-            case Spell.HealingCircle: // 治愈术（范围）
-            case Spell.CatTongue: // 猫舌
+            case Spell.爆裂火焰: // 爆裂火焰
+            case Spell.集体隐身术: // 集体隐身术
+            case Spell.火墙: // 火墙
+            case Spell.困魔咒_13111: // 困魔咒
+            case Spell.治疗圈: // 治愈术（范围）
+            case Spell.cat舌: // 猫舌
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.PoisonCloud: // 毒云术
+            case Spell.毒云: // 毒云术
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Blizzard: // 暴风雪
-            case Spell.MeteorStrike: // 流星火雨
+            case Spell.冰风暴: // 暴风雪
+            case Spell.流星火雨: // 流星火雨
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.Reincarnation: // 重生术
+            case Spell.重生: // 重生术
                 // 复活是唯一的例外：目标是死亡玩家，无法被点击选中（选中排除 Dead），
                 // 只能取鼠标悬停的尸体。这里用 MouseObject 是复活专用，不是攻击目标。
                 {
@@ -2206,13 +2206,13 @@ public sealed class MapControl : MirControl
                         target = reviveTarget;
                 }
                 break;
-            case Spell.Trap: // 陷阱
+            case Spell.玄冰刃: // 陷阱
                 if (MapObject.CanAttackTargetObject != null && !MapObject.CanAttackTargetObject.Dead &&
                     MapObject.CanAttackTargetObject.Race != ObjectType.Item && MapObject.CanAttackTargetObject.Race != ObjectType.Merchant)
                     target = MapObject.CanAttackTargetObject;
                 break;
-            case Spell.FlashDash: // 十步一杀
-                if (actor.GetMagic(Spell.FlashDash).Level <= 1 && actor.IsDashAttack() == false)
+            case Spell.十步一杀: // 十步一杀
+                if (actor.GetMagic(Spell.十步一杀).Level <= 1 && actor.IsDashAttack() == false)
                 {
                     actor.ClearMagic();
                     return;
@@ -2241,7 +2241,7 @@ public sealed class MapControl : MirControl
 
         uint targetID = target != null ? target.ObjectID : 0;
 
-        if (magic.Spell == Spell.FlashDash)
+        if (magic.Spell == Spell.十步一杀)
             dir = actor.Direction;
 
         if ((magic.Range != 0) && (!Functions.InRange(actor.CurrentLocation, location, magic.Range)))

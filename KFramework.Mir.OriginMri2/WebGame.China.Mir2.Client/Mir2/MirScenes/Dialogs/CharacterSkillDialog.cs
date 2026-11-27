@@ -1031,21 +1031,21 @@ namespace Client.MirScenes.Dialogs
         public static bool IsPassive(ClientMagic magic)
         {
             Spell spell = EffectSpellOf(magic);
-            if (spell == Spell.None) spell = magic.Spell;
+            if (spell == Spell.无) spell = magic.Spell;
             return IsPassive(spell);
         }
         public static bool IsPassive(Spell spell)
         {
             switch (spell)
             {
-                case Spell.Fencing: // 基本剑术
-                case Spell.FatalSword: // 致命剑
-                case Spell.MPEater: // 吸魔
-                case Spell.Hemorrhage: // 出血
-                case Spell.SpiritSword: // 精神力战法
-                case Spell.Slaying: // 攻杀剑术
-                case Spell.Focus: // 专注
-                case Spell.Meditation: // 冥想
+                case Spell.基本剑术: // 基本剑术
+                case Spell.致命剑: // 致命剑
+                case Spell.吸魔: // 吸魔
+                case Spell.出血: // 出血
+                case Spell.精神力战法: // 精神力战法
+                case Spell.攻杀剑术: // 攻杀剑术
+                case Spell.专注: // 专注
+                case Spell.冥想: // 冥想
                     return true;
                 default:
                     return false;
@@ -1056,56 +1056,56 @@ namespace Client.MirScenes.Dialogs
         /// 214 条技能全部用原始 id 后，技能说明文案按此表路由到已有的经典文案。</summary>
         public static Spell EffectSpellOf(ClientMagic magic)
         {
-            if (magic == null) return Spell.None;
+            if (magic == null) return Spell.无;
             int id = (int)magic.Spell;
             if (id <= 218) return magic.Spell;
             switch (id)
             {
-                case 11011: return Spell.Fencing;
-                case 11021: return Spell.Slaying;
-                case 11031: return Spell.Thrusting;
-                case 11041: return Spell.HalfMoon;
-                case 11051: return Spell.ShoulderDash;
-                case 11061: return Spell.FlamingSword;
-                case 11071: return Spell.HeavenlySword;
-                case 11081: return Spell.SlashingBurst;
-                case 11101: return Spell.LionRoar;
-                case 11201: return Spell.FlashDash;
-                case 12011: return Spell.FireBall;
-                case 12021: return Spell.Repulsion;
-                case 12041: return Spell.HellFire;
-                case 12051: return Spell.ThunderBolt;
-                case 12061: return Spell.GreatFireBall;
-                case 12071: return Spell.Teleport;
-                case 12081: return Spell.FireBang;
-                case 12091: return Spell.FireWall;
-                case 12101: return Spell.Lightning;
-                case 12111: return Spell.ThunderStorm;
-                case 12121: return Spell.MagicShield;
-                case 12131: return Spell.IceStorm;
-                case 12141: return Spell.FlameDisruptor;
-                case 12151: return Spell.MeteorStrike;
-                case 12161: return Spell.FlameField;
-                case 12181: return Spell.Mirroring;
-                case 13011: return Spell.Healing;
-                case 13021: return Spell.SpiritSword;
-                case 13031: return Spell.Poisoning;
-                case 13041: return Spell.SoulFireBall;
-                case 13051: return Spell.SummonSkeleton;
-                case 13061: return Spell.Hiding;
-                case 13071: return Spell.MassHiding;
-                case 13081: return Spell.SoulShield;
-                case 13091: return Spell.BlessedArmour;
-                case 13101: return Spell.Revelation;
-                case 13111: return Spell.TrapHexagon;
-                case 13121: return Spell.MassHealing;
-                case 13131: return Spell.SummonShinsu;
-                case 13141: return Spell.Vampirism;
-                case 13151: return Spell.Rage;
-                case 13181: return Spell.SummonHolyDeva;
-                case 14011: return Spell.ProtectionField;
-                case 308000: return Spell.EnergyRepulsor;
-                default: return Spell.None;
+                case 11011: return Spell.基本剑术;
+                case 11021: return Spell.攻杀剑术;
+                case 11031: return Spell.刺杀剑术;
+                case 11041: return Spell.半月弯刀;
+                case 11051: return Spell.野蛮冲撞;
+                case 11061: return Spell.烈火剑法;
+                case 11071: return Spell.开天斩;
+                case 11081: return Spell.逐日剑法;
+                case 11101: return Spell.狮子吼;
+                case 11201: return Spell.十步一杀;
+                case 12011: return Spell.火球术;
+                case 12021: return Spell.抗拒火环;
+                case 12041: return Spell.地狱火;
+                case 12051: return Spell.雷电术;
+                case 12061: return Spell.大火球;
+                case 12071: return Spell.瞬间移动;
+                case 12081: return Spell.爆裂火焰;
+                case 12091: return Spell.火墙;
+                case 12101: return Spell.疾光电影;
+                case 12111: return Spell.地狱雷光;
+                case 12121: return Spell.魔法盾;
+                case 12131: return Spell.冰咆哮;
+                case 12141: return Spell.灭天火;
+                case 12151: return Spell.流星火雨;
+                case 12161: return Spell.狂雷紫电;
+                case 12181: return Spell.分身术;
+                case 13011: return Spell.治愈术;
+                case 13021: return Spell.精神力战法;
+                case 13031: return Spell.施毒术;
+                case 13041: return Spell.灵魂火符;
+                case 13051: return Spell.召唤骷髅;
+                case 13061: return Spell.隐身术;
+                case 13071: return Spell.集体隐身术;
+                case 13081: return Spell.幽灵盾;
+                case 13091: return Spell.神圣战甲术;
+                case 13101: return Spell.心灵启示;
+                case 13111: return Spell.困魔咒_13111;
+                case 13121: return Spell.群体治愈术;
+                case 13131: return Spell.召唤神兽;
+                case 13141: return Spell.噬血术;
+                case 13151: return Spell.无极真气;
+                case 13181: return Spell.召唤骨龙;
+                case 14011: return Spell.护体神盾;
+                case 308000: return Spell.气功波;
+                default: return Spell.无;
             }
         }
 
@@ -1113,219 +1113,219 @@ namespace Client.MirScenes.Dialogs
         {
                 switch (EffectSpellOf(magic))
                 {  //Warrior
-                    case Spell.Fencing: // 基本剑术
+                    case Spell.基本剑术: // 基本剑术
                         return LanguageMgr.Get("FencingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
-                    case Spell.Slaying: // 攻杀剑术
+                    case Spell.攻杀剑术: // 攻杀剑术
                         return LanguageMgr.Get("SlayingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
-                    case Spell.Thrusting: // 刺杀剑术
+                    case Spell.刺杀剑术: // 刺杀剑术
                         return LanguageMgr.Get("ThrustingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0);
-                    case Spell.Rage: // 无极真气
+                    case Spell.无极真气: // 无极真气
                         return LanguageMgr.Get("RageSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ProtectionField: // 护体神盾
+                    case Spell.护体神盾: // 护体神盾
                         return LanguageMgr.Get("ProtectionFieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.HalfMoon: // 半月弯刀
+                    case Spell.半月弯刀: // 半月弯刀
                         return LanguageMgr.Get("HalfMoonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FlamingSword: // 烈火剑法
+                    case Spell.烈火剑法: // 烈火剑法
                         return LanguageMgr.Get("FlamingSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ShoulderDash: // 野蛮冲撞
+                    case Spell.野蛮冲撞: // 野蛮冲撞
                         return LanguageMgr.Get("ShoulderDashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.CrossHalfMoon: // 半月弯刀（双）
+                    case Spell.双半月: // 半月弯刀（双）
                         return LanguageMgr.Get("CrossHalfMoonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.TwinDrakeBlade: // 双烈火剑
+                    case Spell.双烈火剑: // 双烈火剑
                         return LanguageMgr.Get("TwinDrakeBladeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Entrapment: // 困魔咒
+                    case Spell.困魔咒: // 困魔咒
                         return LanguageMgr.Get("EntrapmentSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.LionRoar: // 狮子吼
+                    case Spell.狮子吼: // 狮子吼
                         return LanguageMgr.Get("LionRoarSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.CounterAttack: // 反击
+                    case Spell.反击: // 反击
                         return LanguageMgr.Get("CounterAttackSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ImmortalSkin: // 金刚护体
+                    case Spell.金刚不坏: // 金刚护体
                         return LanguageMgr.Get("ImmortalSkinSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Fury: // 狂暴
+                    case Spell.狂暴: // 狂暴
                         return LanguageMgr.Get("FurySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SlashingBurst: // 逐日剑法
+                    case Spell.逐日剑法: // 逐日剑法
                         return LanguageMgr.Get("SlashingBurstSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.BladeAvalanche: // 剑刃风暴
+                    case Spell.剑雨: // 剑刃风暴
                         return LanguageMgr.Get("BladeAvalancheSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Wizard
-                    case Spell.FireBall: // 火球术
+                    case Spell.火球术: // 火球术
                         return LanguageMgr.Get("FireballSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ThunderBolt: // 雷电术
+                    case Spell.雷电术: // 雷电术
                         return LanguageMgr.Get("ThunderboltSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.GreatFireBall: // 大火球
+                    case Spell.大火球: // 大火球
                         return LanguageMgr.Get("GreatFireballSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Repulsion: // 抗拒火环
+                    case Spell.抗拒火环: // 抗拒火环
                         return LanguageMgr.Get("RepulsionSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.HellFire: // 地狱火
+                    case Spell.地狱火: // 地狱火
                         return LanguageMgr.Get("HellfireSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Lightning: // 疾光电影
+                    case Spell.疾光电影: // 疾光电影
                         return LanguageMgr.Get("LightningSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ElectricShock: // 电击
+                    case Spell.电击: // 电击
                         return LanguageMgr.Get("ElectricShockSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Teleport: // 瞬间移动
+                    case Spell.瞬间移动: // 瞬间移动
                         return LanguageMgr.Get("TeleportSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FireWall: // 火墙
+                    case Spell.火墙: // 火墙
                         return LanguageMgr.Get("FireWallSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FireBang: // 爆裂火焰
+                    case Spell.爆裂火焰: // 爆裂火焰
                         return LanguageMgr.Get("FireBangSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ThunderStorm: // 地狱雷光
+                    case Spell.地狱雷光: // 地狱雷光
                         return LanguageMgr.Get("ThunderstormSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MagicShield: // 魔法盾
+                    case Spell.魔法盾: // 魔法盾
                         return LanguageMgr.Get("MagicShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.TurnUndead: // 驱尸术（复活死尸）
+                    case Spell.驱魔: // 驱尸术（复活死尸）
                         return LanguageMgr.Get("TurnUndeadSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.IceStorm: // 冰咆哮
+                    case Spell.冰咆哮: // 冰咆哮
                         return LanguageMgr.Get("IceStormSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FlameDisruptor: // 灭天火
+                    case Spell.灭天火: // 灭天火
                         return LanguageMgr.Get("FlameDisruptorSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FrostCrunch: // 寒冰掌
+                    case Spell.寒冰掌: // 寒冰掌
                         return LanguageMgr.Get("FrostCrunchSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Mirroring: // 分身术
+                    case Spell.分身术: // 分身术
                         return LanguageMgr.Get("MirroringSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FlameField: // 狂雷紫电
+                    case Spell.狂雷紫电: // 狂雷紫电
                         return LanguageMgr.Get("FlameFieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Vampirism: // 噬血术
+                    case Spell.噬血术: // 噬血术
                         return LanguageMgr.Get("VampirismSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Blizzard: // 暴风雪
+                    case Spell.冰风暴: // 暴风雪
                         return LanguageMgr.Get("BlizzardSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MeteorStrike: // 流星火雨
+                    case Spell.流星火雨: // 流星火雨
                         return LanguageMgr.Get("MeteorStrikeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.IceThrust: // 冰刺
+                    case Spell.冰刺: // 冰刺
                         return LanguageMgr.Get("IceThrustSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MagicBooster: // 魔法强化
+                    case Spell.魔力增幅: // 魔法强化
                         return LanguageMgr.Get("MagicBoosterSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FastMove: // 快速移动
+                    case Spell.快速移动: // 快速移动
                         return LanguageMgr.Get("FastMoveSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.StormEscape: // 风暴逃脱
+                    case Spell.风暴逃脱: // 风暴逃脱
                         return LanguageMgr.Get("StormEscapeSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Blink: // 瞬移
+                    case Spell.瞬移: // 瞬移
                         return LanguageMgr.Get("BlinkSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Taoist
-                    case Spell.SpiritSword: // 精神力战法
+                    case Spell.精神力战法: // 精神力战法
                         return LanguageMgr.Get("SpiritSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Healing: // 治愈术
+                    case Spell.治愈术: // 治愈术
                         return LanguageMgr.Get("HealingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Poisoning: // 施毒术
+                    case Spell.施毒术: // 施毒术
                         return LanguageMgr.Get("PoisoningSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SoulFireBall: // 灵魂火符
+                    case Spell.灵魂火符: // 灵魂火符
                         return LanguageMgr.Get("SoulFireBallSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SoulShield: // 幽灵盾
+                    case Spell.幽灵盾: // 幽灵盾
                         return LanguageMgr.Get("SoulShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.BlessedArmour: // 神圣战甲术
+                    case Spell.神圣战甲术: // 神圣战甲术
                         return LanguageMgr.Get("BlessedArmourSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.TrapHexagon: // 困魔咒
+                    case Spell.困魔咒_13111: // 困魔咒
                         return LanguageMgr.Get("TrapHexagonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonSkeleton: // 召唤骷髅
+                    case Spell.召唤骷髅: // 召唤骷髅
                         return LanguageMgr.Get("SummonSkeletonSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Hiding: // 隐身术
+                    case Spell.隐身术: // 隐身术
                         return LanguageMgr.Get("HidingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MassHiding: // 集体隐身术
+                    case Spell.集体隐身术: // 集体隐身术
                         return LanguageMgr.Get("MassHidingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Revelation: // 心灵启示
+                    case Spell.心灵启示: // 心灵启示
                         return LanguageMgr.Get("RevelationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MassHealing: // 群体治愈术
+                    case Spell.群体治愈术: // 群体治愈术
                         return LanguageMgr.Get("MassHealingSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonShinsu: // 召唤神兽
+                    case Spell.召唤神兽: // 召唤神兽
                         return LanguageMgr.Get("SummonShinsuSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.UltimateEnhancer: // 强化术
+                    case Spell.终极强化: // 强化术
                         return LanguageMgr.Get("UltimateEnhancerSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.EnergyRepulsor: // 气功波
+                    case Spell.气功波: // 气功波
                         return LanguageMgr.Get("EnergyRepulsorSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Purification: // 净化术
+                    case Spell.净化: // 净化术
                         return LanguageMgr.Get("PurificationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonHolyDeva: // 召唤骨龙
+                    case Spell.召唤骨龙: // 召唤骨龙
                         return LanguageMgr.Get("SummonHolyDevaSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Curse: // 诅咒术
+                    case Spell.诅咒: // 诅咒术
                         return LanguageMgr.Get("CurseSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Hallucination: // 幻象术
+                    case Spell.心灵启示_76: // 幻象术
                         return LanguageMgr.Get("HallucinationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Reincarnation: // 重生术
+                    case Spell.重生: // 重生术
                         return LanguageMgr.Get("ReincarnationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.PoisonCloud: // 毒云术
+                    case Spell.毒云: // 毒云术
                         return LanguageMgr.Get("PoisonCloudSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.EnergyShield: // 能量护盾
+                    case Spell.能量护盾: // 能量护盾
                         return LanguageMgr.Get("EnergyShieldSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Plague: // 瘟疫术
+                    case Spell.瘟疫: // 瘟疫术
                         return LanguageMgr.Get("PlagueSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.HealingCircle: // 治愈术（范围）
+                    case Spell.治疗圈: // 治愈术（范围）
                         return LanguageMgr.Get("HealingCircleSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.PetEnhancer: // 宠物强化
+                    case Spell.宠物强化: // 宠物强化
                         return LanguageMgr.Get("PetEnhancerSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Assassin
-                    case Spell.FatalSword: // 致命剑
+                    case Spell.致命剑: // 致命剑
                         return LanguageMgr.Get("FatalSwordPassiveSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.DoubleSlash: // 双斩
+                    case Spell.双斩: // 双斩
                         return LanguageMgr.Get("DoubleSlashToggleSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Haste: // 疾速
+                    case Spell.加速: // 疾速
                         return LanguageMgr.Get("HasteBuffSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FlashDash: // 十步一杀
+                    case Spell.十步一杀: // 十步一杀
                         return LanguageMgr.Get("FlashDashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.HeavenlySword: // 开天斩
+                    case Spell.开天斩: // 开天斩
                         return LanguageMgr.Get("HeavenlySwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.FireBurst: // 爆炎斩
+                    case Spell.赤龙斩: // 爆炎斩
                         return LanguageMgr.Get("FireBurstSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Trap: // 陷阱
+                    case Spell.玄冰刃: // 陷阱
                         return LanguageMgr.Get("TrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MoonLight: // 月光斩
+                    case Spell.月光: // 月光斩
                         return LanguageMgr.Get("MoonlightSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MPEater: // 吸魔
+                    case Spell.吸魔: // 吸魔
                         return LanguageMgr.Get("MPEaterSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SwiftFeet: // 疾风步
+                    case Spell.疾风步: // 疾风步
                         return LanguageMgr.Get("SwiftFeetSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.LightBody: // 轻身术
+                    case Spell.轻身术: // 轻身术
                         return LanguageMgr.Get("LightBodySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.PoisonSword: // 毒剑
+                    case Spell.噬魂毒: // 毒剑
                         return LanguageMgr.Get("PoisonSwordSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.DarkBody: // 暗影术
+                    case Spell.暗黑化身: // 暗影术
                         return LanguageMgr.Get("DarkBodySkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.CrescentSlash: // 新月斩
+                    case Spell.新月斩: // 新月斩
                         return LanguageMgr.Get("CrescentSlashSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Hemorrhage: // 出血
+                    case Spell.出血: // 出血
                         return LanguageMgr.Get("HemorrhageSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.MoonMist: // 月雾
+                    case Spell.月雾: // 月雾
                         return LanguageMgr.Get("MoonMistSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
                     //Archer
-                    case Spell.Focus: // 专注
+                    case Spell.专注: // 专注
                         return LanguageMgr.Get("FocusSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.StraightShot: // 直射击
+                    case Spell.直射击: // 直射击
                         return LanguageMgr.Get("StraightShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.DoubleShot: // 双重射击
+                    case Spell.双箭: // 双重射击
                         return LanguageMgr.Get("DoubleShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ExplosiveTrap: // 爆炸陷阱
+                    case Spell.爆炸陷阱: // 爆炸陷阱
                         return LanguageMgr.Get("ExplosiveTrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.DelayedExplosion: // 延迟爆炸
+                    case Spell.延迟爆炸: // 延迟爆炸
                         return LanguageMgr.Get("DelayedExplosionSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Meditation: // 冥想
+                    case Spell.冥想: // 冥想
                         return LanguageMgr.Get("MeditationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.BackStep: // 后跃
+                    case Spell.后退: // 后跃
                         return LanguageMgr.Get("BackStepSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ElementalShot: // 元素箭
+                    case Spell.元素射击: // 元素箭
                         return LanguageMgr.Get("ElementalShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Concentration: // 集中
+                    case Spell.集中: // 集中
                         return LanguageMgr.Get("ConcentrationSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.Stonetrap: // 石陷阱
+                    case Spell.石陷阱: // 石陷阱
                         return LanguageMgr.Get("StoneTrapSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.ElementalBarrier: // 元素屏障
+                    case Spell.元素屏障: // 元素屏障
                         return LanguageMgr.Get("ElementalBarrierSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonVampire: // 召唤吸血鬼
+                    case Spell.召唤吸血鬼: // 召唤吸血鬼
                         return LanguageMgr.Get("SummonVampireSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.VampireShot: // 吸血箭
+                    case Spell.吸血箭: // 吸血箭
                         return LanguageMgr.Get("VampireShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonToad: // 召唤蟾蜍
+                    case Spell.召唤蟾蜍: // 召唤蟾蜍
                         return LanguageMgr.Get("SummonToadSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.PoisonShot: // 毒箭
+                    case Spell.毒箭: // 毒箭
                         return LanguageMgr.Get("PoisonShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.CrippleShot: // 残废箭
+                    case Spell.残废射击: // 残废箭
                         return LanguageMgr.Get("CrippleShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.SummonSnakes: // 召唤蛇
+                    case Spell.召唤蛇: // 召唤蛇
                         return LanguageMgr.Get("SummonSnakesSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.NapalmShot: // 燃烧箭
+                    case Spell.凝固汽油弹: // 燃烧箭
                         return LanguageMgr.Get("NapalmShotSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
-                    case Spell.OneWithNature: // 天人合一
+                    case Spell.天人合一: // 天人合一
                         return LanguageMgr.Get("OneWithNatureSkillDescription", magic.Level, magic.Level == 0 ? magic.Level1 : magic.Level == 1 ? magic.Level2 : magic.Level == 2 ? magic.Level3 : 0, magic.BaseCost);
 
 

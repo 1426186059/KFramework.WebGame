@@ -43,7 +43,7 @@ namespace Server.MirObjects.Monsters
 
             if (Envir.Random.Next(3) == 0 && Functions.InRange(CurrentLocation, Target.CurrentLocation, 2))
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BackStep, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.后退, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 int travel = 0;
                 bool blocked = false;
                 int jumpDistance = 3;
@@ -87,14 +87,14 @@ namespace Server.MirObjects.Monsters
 
             if (Envir.Random.Next(5) > 0)
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双箭, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
 
                 ProjectileAttack(damage);
                 ProjectileAttack(damage);
                 return;
             }
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.StraightShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.直射击, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
             ProjectileAttack(damage);
 
             if (Target.Dead)

@@ -80,7 +80,7 @@ namespace Server.MirObjects.Monsters
 
                         SpellObject ob = new SpellObject
                         {
-                            Spell = Spell.StoneGolemQuake,
+                            Spell = Spell.石巨人地震,
                             Value = damage,
                             ExpireTime = Envir.Time + 800 + start,
                             TickSpeed = 1000,

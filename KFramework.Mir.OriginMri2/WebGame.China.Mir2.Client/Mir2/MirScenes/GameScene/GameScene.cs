@@ -1019,7 +1019,7 @@ namespace Client.MirScenes
 
             switch (magic.Spell)
             {
-                case Spell.CounterAttack: // 反击
+                case Spell.反击: // 反击
                     if ((CMain.Time < magic.CastTime + magic.Delay))
                     {
                         if (CMain.Time >= OutputDelay)
@@ -1039,19 +1039,19 @@ namespace Client.MirScenes
             string prefix = actor == Hero ? LanguageMgr.Get("Hero"): string.Empty;
             // 214 条技能全部用原始 id：按效果 Spell 路由到已有的被动/开关分支。
             Spell effectSpell = SkillDescriptionHelper.EffectSpellOf(magic);
-            if (effectSpell == Spell.None) effectSpell = magic.Spell;
+            if (effectSpell == Spell.无) effectSpell = magic.Spell;
             switch (effectSpell)
             {
-                case Spell.Fencing: // 基本剑术
-                case Spell.FatalSword: // 致命剑
-                case Spell.MPEater: // 吸魔
-                case Spell.Hemorrhage: // 出血
-                case Spell.SpiritSword: // 精神力战法
-                case Spell.Slaying: // 攻杀剑术
-                case Spell.Focus: // 专注
-                case Spell.Meditation: // 冥想
+                case Spell.基本剑术: // 基本剑术
+                case Spell.致命剑: // 致命剑
+                case Spell.吸魔: // 吸魔
+                case Spell.出血: // 出血
+                case Spell.精神力战法: // 精神力战法
+                case Spell.攻杀剑术: // 攻杀剑术
+                case Spell.专注: // 专注
+                case Spell.冥想: // 冥想
                     return;
-                case Spell.Thrusting: // 刺杀剑术
+                case Spell.刺杀剑术: // 刺杀剑术
                     if (CMain.Time < ToggleTime) return;
                     bool wasThrusting = actor.Thrusting;
                     actor.Thrusting = fromHold ? true : !actor.Thrusting;
@@ -1062,7 +1062,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.Thrusting);
                     break;
-                case Spell.HalfMoon: // 半月弯刀
+                case Spell.半月弯刀: // 半月弯刀
                     if (CMain.Time < ToggleTime) return;
                     bool wasHalfMoon = actor.HalfMoon;
                     actor.HalfMoon = fromHold ? true : !actor.HalfMoon;
@@ -1073,7 +1073,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.HalfMoon);
                     break;
-                case Spell.CrossHalfMoon: // 半月弯刀（双）
+                case Spell.双半月: // 半月弯刀（双）
                     if (CMain.Time < ToggleTime) return;
                     bool wasCrossHalfMoon = actor.CrossHalfMoon;
                     actor.CrossHalfMoon = fromHold ? true : !actor.CrossHalfMoon;
@@ -1084,7 +1084,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.CrossHalfMoon);
                     break;
-                case Spell.DoubleSlash: // 双斩
+                case Spell.双斩: // 双斩
                     if (CMain.Time < ToggleTime) return;
                     bool wasDoubleSlash = actor.DoubleSlash;
                     actor.DoubleSlash = fromHold ? true : !actor.DoubleSlash;
@@ -1095,7 +1095,7 @@ namespace Client.MirScenes
                     ToggleTime = CMain.Time + 1000;
                     SendSpellToggle(actor, magic.Spell, actor.DoubleSlash);
                     break;
-                case Spell.TwinDrakeBlade: // 双烈火剑
+                case Spell.双烈火剑: // 双烈火剑
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
 
@@ -1112,7 +1112,7 @@ namespace Client.MirScenes
                     else
                         actor.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, actor));
                     break;
-                case Spell.FlamingSword: // 烈火剑法
+                case Spell.烈火剑法: // 烈火剑法
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
 
@@ -1124,7 +1124,7 @@ namespace Client.MirScenes
                     }
                     SendSpellToggle(actor, magic.Spell, true);
                     break;
-                case Spell.CounterAttack: // 反击
+                case Spell.反击: // 反击
                     cost = magic.Level * magic.LevelCost + magic.BaseCost;
                     if (cost > actor.MP)
                     {
@@ -1132,10 +1132,10 @@ namespace Client.MirScenes
                         return;
                     }
 
-                    SoundManager.PlaySound(20000 + (ushort)Spell.CounterAttack * 10);
+                    SoundManager.PlaySound(20000 + (ushort)Spell.反击 * 10);
                     SendSpellToggle(actor, magic.Spell, true);
                     break;
-                case Spell.MentalState: // 精神状态
+                case Spell.精神状态: // 精神状态
                     if (CMain.Time < ToggleTime) return;
                     ToggleTime = CMain.Time + 500;
                     SendSpellToggle(actor, magic.Spell, true);
@@ -3579,7 +3579,7 @@ namespace Client.MirScenes
                         effect.Remove();
 
                         User.Effects.Add(effect = new BuffEffect(Libraries.Magic2, 1890, 6, 600, User, true, BuffType.EnergyShield) { Repeat = false });
-                        SoundManager.PlaySound(20000 + (ushort)Spell.EnergyShield * 10 + 1);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.能量护盾 * 10 + 1);
 
                         effect.Complete += (o, e) =>
                         {
@@ -3688,7 +3688,7 @@ namespace Client.MirScenes
                             effect.Remove();
 
                             ob.Effects.Add(effect = new BuffEffect(Libraries.Magic2, 1890, 6, 600, ob, true, BuffType.EnergyShield) { Repeat = false });
-                            SoundManager.PlaySound(20000 + (ushort)Spell.EnergyShield * 10 + 1);
+                            SoundManager.PlaySound(20000 + (ushort)Spell.能量护盾 * 10 + 1);
 
                             effect.Complete += (o, e) =>
                             {
@@ -4006,7 +4006,7 @@ namespace Client.MirScenes
                         ob.Remove();
                         break;
                     case 2:
-                        SoundManager.PlaySound(20000 + (ushort)Spell.DarkBody * 10 + 1);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.暗黑化身 * 10 + 1);
                         MapControl.Effects.Add(new Effect(Libraries.Magic2, 2600, 10, 1200, ob.CurrentLocation));
                         ob.Remove();
                         break;
@@ -5003,9 +5003,9 @@ namespace Client.MirScenes
 
             switch (p.Spell)
             {
-                case Spell.FireBounce: // 火焰弹
+                case Spell.火弹跳: // 火焰弹
                     {
-                        SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 1);
 
                         Missile missile = source.CreateProjectile(410, Libraries.Magic, true, 6, 30, 4, targetID: p.Destination);
 
@@ -5017,7 +5017,7 @@ namespace Client.MirScenes
 
                                 if (sender.Target.CurrentAction == MirAction.Dead) return;
                                 sender.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, sender.Target));
-                                SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 2);
                             };
                         }
                     }
@@ -5035,11 +5035,11 @@ namespace Client.MirScenes
                 {
                     case SpellEffect.FurbolgWarriorCritical:
                         ob.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FurbolgWarrior], 400, 6, 600, ob));
-                        SoundManager.PlaySound(20000 + (ushort)Spell.FatalSword * 10);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.致命剑 * 10);
                         break;
                     case SpellEffect.FatalSword:
                         ob.Effects.Add(new Effect(Libraries.Magic2, 1940, 4, 400, ob));
-                        SoundManager.PlaySound(20000 + (ushort)Spell.FatalSword * 10);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.致命剑 * 10);
                         break;
                     case SpellEffect.StormEscape:
                         ob.Effects.Add(new Effect(Libraries.Magic3, 610, 10, 600, ob));
@@ -5050,7 +5050,7 @@ namespace Client.MirScenes
                         SoundManager.PlaySound(SoundList.Teleport);
                         break;
                     case SpellEffect.Healing:
-                        SoundManager.PlaySound(20000 + (ushort)Spell.Healing * 10 + 1);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.治愈术 * 10 + 1);
                         ob.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, ob));
                         break;
                     case SpellEffect.RedMoonEvil:
@@ -5064,13 +5064,13 @@ namespace Client.MirScenes
                             ob2.Effects.Add(new Effect(Libraries.Magic2, 2411, 19, 1900, ob2));
 
                         ob.Effects.Add(new Effect(Libraries.Magic2, 2400, 9, 900, ob));
-                        SoundManager.PlaySound(20000 + (ushort)Spell.FatalSword * 10);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.致命剑 * 10);
                         break;
                     case SpellEffect.Bleeding:
                         ob.Effects.Add(new Effect(Libraries.Magic3, 60, 3, 400, ob));
                         break;
                     case SpellEffect.Hemorrhage:
-                        SoundManager.PlaySound(20000 + (ushort)Spell.Hemorrhage * 10);
+                        SoundManager.PlaySound(20000 + (ushort)Spell.出血 * 10);
                         ob.Effects.Add(new Effect(Libraries.Magic3, 0, 4, 400, ob));
                         ob.Effects.Add(new Effect(Libraries.Magic3, 28, 6, 600, ob));
                         ob.Effects.Add(new Effect(Libraries.Magic3, 46, 8, 800, ob));
@@ -5188,7 +5188,7 @@ namespace Client.MirScenes
                     case SpellEffect.TurtleKing:
                         {
                             Effect ef = new Effect(Libraries.Monsters[(ushort)Monster.TurtleKing], CMain.Random.Next(2) == 0 ? 922 : 934, 12, 1200, ob);
-                            ef.Played += (o, e) => SoundManager.PlaySound(20000 + (ushort)Spell.HellFire * 10 + 1);
+                            ef.Played += (o, e) => SoundManager.PlaySound(20000 + (ushort)Spell.地狱火 * 10 + 1);
                             ob.Effects.Add(ef);
                         }
                         break;
@@ -5374,34 +5374,34 @@ namespace Client.MirScenes
             switch (p.Spell)
             {
                 //Warrior
-                case Spell.Slaying: // 攻杀剑术
+                case Spell.攻杀剑术: // 攻杀剑术
                     actor.Slaying = p.CanUse;
                     break;
-                case Spell.Thrusting: // 刺杀剑术
+                case Spell.刺杀剑术: // 刺杀剑术
                     actor.Thrusting = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.Thrusting ? LanguageMgr.Get("UseThrusting"): LanguageMgr.Get("DoNotUseThrusting")),
                         ChatType.System);
                     break;
-                case Spell.HalfMoon: // 半月弯刀
+                case Spell.半月弯刀: // 半月弯刀
                     actor.HalfMoon = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.HalfMoon ? LanguageMgr.Get("UseHalfMoon"): LanguageMgr.Get("DoNotUseHalfMoon")),
                         ChatType.System);
                     break;
-                case Spell.CrossHalfMoon: // 半月弯刀（双）
+                case Spell.双半月: // 半月弯刀（双）
                     actor.CrossHalfMoon = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.CrossHalfMoon ? LanguageMgr.Get("UseCrossHalfMoon"): LanguageMgr.Get("DoNotUseCrossHalfMoon")),
                         ChatType.System);
                     break;
-                case Spell.DoubleSlash: // 双斩
+                case Spell.双斩: // 双斩
                     actor.DoubleSlash = p.CanUse;
                     ChatDialog.ReceiveChat(
                         prefix + (actor.DoubleSlash ? LanguageMgr.Get("UseDoubleSlash"): LanguageMgr.Get("DoNotUseDoubleSlash")),
                         ChatType.System);
                     break;
-                case Spell.FlamingSword: // 烈火剑法
+                case Spell.烈火剑法: // 烈火剑法
                     actor.FlamingSword = p.CanUse;
                     if (actor.FlamingSword)
                         ChatDialog.ReceiveChat(prefix + LanguageMgr.Get("WeaponSpiritFire"), ChatType.System);

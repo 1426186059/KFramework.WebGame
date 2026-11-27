@@ -23,7 +23,7 @@ namespace Server.MirObjects.Monsters
             {
                 SpellObject ob = new SpellObject
                 {
-                    Spell = Spell.DigOutArmadillo,
+                    Spell = Spell.挖地穿山甲,
                     Value = 1,
                     ExpireTime = Envir.Time + (5 * 60 * 1000),
                     TickSpeed = 2000,

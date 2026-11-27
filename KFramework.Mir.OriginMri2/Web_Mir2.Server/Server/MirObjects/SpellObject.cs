@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 ﻿using Server.MirEnvir;
 using S = ServerPackets;
 
@@ -54,22 +54,22 @@ namespace Server.MirObjects
 
             if (Caster != null && Caster.Node == null) Caster = null;
 
-            if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))
+            if (Envir.Time > ExpireTime || ((Spell == Spell.火墙 || Spell == Spell.传送门 || Spell == Spell.爆炸陷阱 || Spell == Spell.重生 || Spell == Spell.治疗圈) && Caster == null) || (Spell == Spell.困魔咒_13111 && Target != null) || (Spell == Spell.玄冰刃 && Target != null))
             {
-                if (Spell == Spell.TrapHexagon && Target != null || Spell == Spell.Trap && Target != null)
+                if (Spell == Spell.困魔咒_13111 && Target != null || Spell == Spell.玄冰刃 && Target != null)
                 {
                     MonsterObject ob = (MonsterObject)Target;
 
                     if (Envir.Time < ExpireTime && ob.ShockTime != 0) return;
                 }
 
-                if (Spell == Spell.Reincarnation && Caster != null)
+                if (Spell == Spell.重生 && Caster != null)
                 {
                     ((HumanObject)Caster).ReincarnationReady = true;
                     ((HumanObject)Caster).ReincarnationExpireTime = Envir.Time + 6000;
                 }
 
-                if ((Spell == Spell.Blizzard || Spell == Spell.MeteorStrike) &&  Caster != null)
+                if ((Spell == Spell.冰风暴 || Spell == Spell.流星火雨) &&  Caster != null)
                 {
                     ((HumanObject)Caster).ActiveBlizzard = false;
                 }
@@ -79,7 +79,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (Spell == Spell.FireWall)
+            if (Spell == Spell.火墙)
             {
                 if (CurrentMap != Caster?.CurrentMap)
                 {
@@ -89,20 +89,20 @@ namespace Server.MirObjects
                 }
             }
 
-            if (Spell == Spell.Reincarnation && !((HumanObject)Caster).ActiveReincarnation)
+            if (Spell == Spell.重生 && !((HumanObject)Caster).ActiveReincarnation)
             {
                 CurrentMap.RemoveObject(this);
                 Despawn();
                 return;
             }
 
-            if (Spell == Spell.ExplosiveTrap && Caster != null && !Functions.InRange(CurrentLocation, Caster.CurrentLocation, 15))
+            if (Spell == Spell.爆炸陷阱 && Caster != null && !Functions.InRange(CurrentLocation, Caster.CurrentLocation, 15))
             {
                 CurrentMap.RemoveObject(this);
                 Despawn();
                 return;
             }
-            if (Caster != null && Spell == Spell.HealingCircle && FindObject(Caster.ObjectID, 20) == null)
+            if (Caster != null && Spell == Spell.治疗圈 && FindObject(Caster.ObjectID, 20) == null)
             {
                 CurrentMap.RemoveObject(this);
                 Despawn();
@@ -118,14 +118,14 @@ namespace Server.MirObjects
                     ProcessSpell(cell.Objects[i]);
                 }
 
-            if ((Spell == Spell.MapLava) || (Spell == Spell.MapLightning)) Value = 0;
+            if ((Spell == Spell.地图岩浆) || (Spell == Spell.地图闪电)) Value = 0;
         }
         public void ProcessSpell(MapObject ob)
         {
             if (Envir.Time < StartTime) return;
             switch (Spell)
             {
-                case Spell.FireWall: // 火墙
+                case Spell.火墙: // 火墙
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -134,7 +134,7 @@ namespace Server.MirObjects
                         ob.Attacked(((HumanObject)Caster), Value, DefenceType.MAC, false);
                     }
                     break;
-                case Spell.Healing: //SafeZone
+                case Spell.治愈术: //SafeZone
                     {
                         if (ob.Master == null) return;
                         if (ob.Dead || ob.HealAmount != 0 || ob.PercentHealth == 100) return;
@@ -147,7 +147,7 @@ namespace Server.MirObjects
 
                     }
                     break;
-                case Spell.PoisonCloud: // 毒云术
+                case Spell.毒云: // 毒云术
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -165,7 +165,7 @@ namespace Server.MirObjects
                             }, Caster, false, false);
                     }
                     break;
-                case Spell.Blizzard: // 暴风雪
+                case Spell.冰风暴: // 暴风雪
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -182,7 +182,7 @@ namespace Server.MirObjects
                             }, Caster);
                     }
                     break;
-                case Spell.MeteorStrike: // 流星火雨
+                case Spell.流星火雨: // 流星火雨
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -191,7 +191,7 @@ namespace Server.MirObjects
                         ob.Attacked(((HumanObject)Caster), Value, DefenceType.MAC, false);
                     }
                     break;
-                case Spell.ExplosiveTrap: // 爆炸陷阱
+                case Spell.爆炸陷阱: // 爆炸陷阱
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -201,8 +201,8 @@ namespace Server.MirObjects
                         ob.Attacked(((HumanObject)Caster), Value, DefenceType.MAC, false);
                     }
                     break;
-                case Spell.MapLava: // 地图事件·熔岩
-                case Spell.MapLightning: // 地图事件·闪电
+                case Spell.地图岩浆: // 地图事件·熔岩
+                case Spell.地图闪电: // 地图事件·闪电
                     {
                         if (ob is PlayerObject player)
                         {
@@ -211,8 +211,8 @@ namespace Server.MirObjects
                         }                 
                     }
                     break;
-                case Spell.MapQuake1: // 地图事件·地震一
-                case Spell.MapQuake2: // 地图事件·地震二
+                case Spell.地图地震1: // 地图事件·地震一
+                case Spell.地图地震2: // 地图事件·地震二
                     {
                         if (Value == 0) return;
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
@@ -220,18 +220,7 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.MAC);
                     }
                     break;
-                case Spell.GeneralMeowMeowThunder: // 地图事件·喵喵将军雷击
-                    {
-                        if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
-                        if (ob.Dead) return;
-                        if (ob == Caster) return;
-                        if (!ob.IsAttackTarget(Caster)) return;
-
-                        if (Value == 0) return;
-                        ob.Struck(Value, DefenceType.MAC);
-                    }
-                    break;
-                case Spell.TreeQueenRoot: // 地图事件·树王根须
+                case Spell.将军喵喵雷: // 地图事件·喵喵将军雷击
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -242,7 +231,7 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.MAC);
                     }
                     break;
-                case Spell.TreeQueenMassRoots: // 地图事件·树王群根
+                case Spell.树后根: // 地图事件·树王根须
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -253,7 +242,18 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.MAC);
                     }
                     break;
-                case Spell.TreeQueenGroundRoots: // 地图事件·树王地根
+                case Spell.树后群根: // 地图事件·树王群根
+                    {
+                        if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
+                        if (ob.Dead) return;
+                        if (ob == Caster) return;
+                        if (!ob.IsAttackTarget(Caster)) return;
+
+                        if (Value == 0) return;
+                        ob.Struck(Value, DefenceType.MAC);
+                    }
+                    break;
+                case Spell.树后地根: // 地图事件·树王地根
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -268,7 +268,7 @@ namespace Server.MirObjects
                         }
                     }
                     break;
-                case Spell.StoneGolemQuake: // 地图事件·石巨人地震
+                case Spell.石巨人地震: // 地图事件·石巨人地震
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -279,7 +279,7 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.AC);
                     }
                     break;
-                case Spell.EarthGolemPile: // 地图事件·土巨石堆
+                case Spell.土巨人堆: // 地图事件·土巨石堆
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -290,7 +290,7 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.AC);
                     }
                     break;
-                case Spell.TucsonGeneralRock: // 地图事件·石像将军落石
+                case Spell.图森将军石: // 地图事件·石像将军落石
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -301,13 +301,13 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.AC);
                     }
                     break;
-                case Spell.Portal: // 传送门
+                case Spell.传送门: // 传送门
                     {
                         if (ob.Race != ObjectType.Player) return;
                         if (Caster != ob && (Caster == null || (Caster.GroupMembers == null) || (!Caster.GroupMembers.Contains((HumanObject)ob)))) return;
 
                         var portal = Envir.Spells.SingleOrDefault(ob => ob != this && ob.Node != null
-                            && ob.Spell == Spell.Portal
+                            && ob.Spell == Spell.传送门
                             && ob.Caster == Caster);
 
                         if (portal != null)
@@ -327,7 +327,7 @@ namespace Server.MirObjects
                         }
                     }
                     break;
-                case Spell.FlyingStatueIceTornado: // 地图事件·飞像冰龙卷
+                case Spell.飞雕像冰旋风: // 地图事件·飞像冰龙卷
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -342,7 +342,7 @@ namespace Server.MirObjects
                         }
                     }
                     break;
-                case Spell.DarkOmaKingNuke: // 地图事件·暗黑奥玛王核爆
+                case Spell.暗黑沃玛王怒: // 地图事件·暗黑奥玛王核爆
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -353,7 +353,7 @@ namespace Server.MirObjects
                         ob.ApplyPoison(new Poison { PType = PoisonType.Dazed, Duration = 5, TickSpeed = 1000 }, this);
                     }
                     break;
-                case Spell.HornedSorcererDustTornado: // 地图事件·角巫师沙暴
+                case Spell.角术士尘旋风: // 地图事件·角巫师沙暴
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -364,8 +364,8 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.AC);
                     }
                     break;
-                case Spell.HornedCommanderRockFall: // 地图事件·角统帅落石
-                case Spell.HornedCommanderRockSpike: // 地图事件·角统帅石刺
+                case Spell.角指挥官落石: // 地图事件·角统帅落石
+                case Spell.角指挥官石刺: // 地图事件·角统帅石刺
                     {
                         if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
                         if (ob.Dead) return;
@@ -376,7 +376,7 @@ namespace Server.MirObjects
                         ob.Struck(Value, DefenceType.AC);
                     }
                     break;
-                case Spell.HealingCircle: // 治愈术（范围）
+                case Spell.治疗圈: // 治愈术（范围）
                     if (ob.Race != ObjectType.Player && ob.Race != ObjectType.Monster) return;
 
                     if (Caster == ob || (Caster.GroupMembers != null && Caster.GroupMembers.Contains(ob)) || (ob.Master != null && Caster.GroupMembers != null && Caster.GroupMembers.Contains(ob.Master)))
@@ -504,21 +504,21 @@ namespace Server.MirObjects
         {
             switch (Spell)
             {
-                case Spell.Healing: // 治愈术
+                case Spell.治愈术: // 治愈术
                     return null;
-                case Spell.PoisonCloud: // 毒云术
-                case Spell.Blizzard: // 暴风雪
-                case Spell.MeteorStrike: // 流星火雨
-                case Spell.StoneGolemQuake: // 地图事件·石巨人地震
-                case Spell.EarthGolemPile: // 地图事件·土巨石堆
-                case Spell.TreeQueenMassRoots: // 地图事件·树王群根
-                case Spell.TreeQueenGroundRoots: // 地图事件·树王地根
-                case Spell.FlyingStatueIceTornado: // 地图事件·飞像冰龙卷
-                case Spell.DarkOmaKingNuke: // 地图事件·暗黑奥玛王核爆
-                case Spell.HornedSorcererDustTornado: // 地图事件·角巫师沙暴
-                case Spell.HornedCommanderRockFall: // 地图事件·角统帅落石
-                case Spell.HornedCommanderRockSpike: // 地图事件·角统帅石刺
-                case Spell.HealingCircle: // 治愈术（范围）
+                case Spell.毒云: // 毒云术
+                case Spell.冰风暴: // 暴风雪
+                case Spell.流星火雨: // 流星火雨
+                case Spell.石巨人地震: // 地图事件·石巨人地震
+                case Spell.土巨人堆: // 地图事件·土巨石堆
+                case Spell.树后群根: // 地图事件·树王群根
+                case Spell.树后地根: // 地图事件·树王地根
+                case Spell.飞雕像冰旋风: // 地图事件·飞像冰龙卷
+                case Spell.暗黑沃玛王怒: // 地图事件·暗黑奥玛王核爆
+                case Spell.角术士尘旋风: // 地图事件·角巫师沙暴
+                case Spell.角指挥官落石: // 地图事件·角统帅落石
+                case Spell.角指挥官石刺: // 地图事件·角统帅石刺
+                case Spell.治疗圈: // 治愈术（范围）
                     if (!Show)
                         return null;
 
@@ -529,7 +529,7 @@ namespace Server.MirObjects
                         Spell = Spell,
                         Direction = Direction
                     };
-                case Spell.ExplosiveTrap: // 爆炸陷阱
+                case Spell.爆炸陷阱: // 爆炸陷阱
                     return new S.ObjectSpell
                     {
                         ObjectID = ObjectID,
@@ -580,15 +580,15 @@ namespace Server.MirObjects
 
             Envir.Spells.Remove(this);
 
-            if (Spell == Spell.Reincarnation && Caster != null && Caster.Node != null)
+            if (Spell == Spell.重生 && Caster != null && Caster.Node != null)
             {
                 ((HumanObject)Caster).ActiveReincarnation = false;
                 ((HumanObject)Caster).Enqueue(new S.CancelReincarnation { });
             }
 
-            if (Spell == Spell.ExplosiveTrap && Caster != null)
+            if (Spell == Spell.爆炸陷阱 && Caster != null)
             {
-                var linkedTraps = CurrentMap.GetSpellObjects(Spell.ExplosiveTrap, Owner).Where(x => x.ExplosiveTrapID == ExplosiveTrapID);
+                var linkedTraps = CurrentMap.GetSpellObjects(Spell.爆炸陷阱, Owner).Where(x => x.ExplosiveTrapID == ExplosiveTrapID);
 
                 foreach (var trap in linkedTraps)
                 {
@@ -596,10 +596,10 @@ namespace Server.MirObjects
                 }
             }
 
-            if (Spell == Spell.Portal && Caster != null)
+            if (Spell == Spell.传送门 && Caster != null)
             {
                 var portal = Envir.Spells.SingleOrDefault(ob => ob.Node != null && ob != this
-                    && ob.Spell == Spell.Portal    
+                    && ob.Spell == Spell.传送门    
                     && ob.Caster == Caster);
 
                 if (portal != null)
@@ -612,7 +612,7 @@ namespace Server.MirObjects
 
         public override void BroadcastInfo()
         {
-            if ((Spell != Spell.ExplosiveTrap) || (Caster == null))
+            if ((Spell != Spell.爆炸陷阱) || (Caster == null))
                 base.BroadcastInfo();
 
             Packet p;

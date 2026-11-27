@@ -907,7 +907,7 @@ namespace Client.MirObjects
             if (!TryGetOriginSteps(spell, level, out var steps)) return false;
 
             // 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，不在此重复。
-            if (spell == Spell.SoulFireBall) return false;
+            if (spell == Spell.灵魂火符) return false;
 
             var fly = steps.FirstOrDefault(s => s.type == 2 && s.effect > 0);
             var hits = steps.Where(s => s.type == 1 && s.effect > 0).ToList();
@@ -1296,13 +1296,13 @@ namespace Client.MirObjects
                         break;
                     case MirAction.Attack4:
                         Spell = (Spell)action.Params[0];
-                        Frames.TryGetValue(Spell == Spell.TwinDrakeBlade || Spell == Spell.FlamingSword ? MirAction.Attack1 : CurrentAction, out Frame);
+                        Frames.TryGetValue(Spell == Spell.双烈火剑 || Spell == Spell.烈火剑法 ? MirAction.Attack1 : CurrentAction, out Frame);
                         break;
                     case MirAction.Spell:
                         Spell = (Spell)action.Params[0];
                         switch (Spell)
                         {
-                            case Spell.ShoulderDash: // 野蛮冲撞
+                            case Spell.野蛮冲撞: // 野蛮冲撞
                                 Frames.TryGetValue(MirAction.Running, out Frame);
                                 CurrentAction = MirAction.DashL;
                                 Direction = olddirection;
@@ -1315,7 +1315,7 @@ namespace Client.MirObjects
                                     Network.Enqueue(new C.Magic { ObjectID = GameScene.User.ObjectID, Spell = Spell, Direction = Direction, });
                                 }
                                 break;
-                            case Spell.BladeAvalanche: // 剑刃风暴
+                            case Spell.剑雨: // 剑刃风暴
                                 Frames.TryGetValue(MirAction.Attack3, out Frame);
                                 if (this == User)
                                 {
@@ -1324,7 +1324,7 @@ namespace Client.MirObjects
                                     MapControl.InputDelay = CMain.Time + 1000;
                                 }
                                 break;
-                            case Spell.SlashingBurst: // 逐日剑法
+                            case Spell.逐日剑法: // 逐日剑法
                                  Frames.TryGetValue(MirAction.Attack1, out Frame);
                                 if (this == User)
                                 {
@@ -1332,7 +1332,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.CounterAttack: // 反击
+                            case Spell.反击: // 反击
                                 Frames.TryGetValue(MirAction.Attack1, out Frame);
                                 if (this == User)
                                 {
@@ -1341,7 +1341,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 100; //Spell Delay
                                 }
                                 break;
-                            case Spell.PoisonSword: // 毒剑
+                            case Spell.噬魂毒: // 毒剑
                                 Frames.TryGetValue(MirAction.Attack1, out Frame);
                                 if (this == User)
                                 {
@@ -1349,7 +1349,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.HeavenlySword: // 开天斩
+                            case Spell.开天斩: // 开天斩
                                 Frames.TryGetValue(MirAction.Attack2, out Frame);
                                 if (this == User)
                                 {
@@ -1357,7 +1357,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1200; //Spell Delay
                                 }
                                 break;
-                            case Spell.CrescentSlash: // 新月斩
+                            case Spell.新月斩: // 新月斩
                                 Frames.TryGetValue(MirAction.Attack3, out Frame);
                                 if (this == User)
                                 {
@@ -1365,7 +1365,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.FlashDash: // 十步一杀
+                            case Spell.十步一杀: // 十步一杀
                                 {
                                     int sLevel = (byte)action.Params[3];
 
@@ -1390,7 +1390,7 @@ namespace Client.MirObjects
                                     }
                                 }
                                 break;
-                            case Spell.StraightShot: // 直射击
+                            case Spell.直射击: // 直射击
                                 Frames.TryGetValue(MirAction.AttackRange2, out Frame);
                                 CurrentAction = MirAction.AttackRange2;
                                 if (this == User)
@@ -1399,7 +1399,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.DoubleShot: // 双重射击
+                            case Spell.双箭: // 双重射击
                                 Frames.TryGetValue(MirAction.AttackRange2, out Frame);
                                 CurrentAction = MirAction.AttackRange2;
                                 if (this == User)
@@ -1408,7 +1408,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 500; //Spell Delay
                                 }
                                 break;
-                            case Spell.ExplosiveTrap: // 爆炸陷阱
+                            case Spell.爆炸陷阱: // 爆炸陷阱
                                 Frames.TryGetValue(MirAction.Harvest, out Frame);
                                 CurrentAction = MirAction.Harvest;
                                 ArcherLayTrap = true;
@@ -1421,7 +1421,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.DelayedExplosion: // 延迟爆炸
+                            case Spell.延迟爆炸: // 延迟爆炸
                                 Frames.TryGetValue(MirAction.AttackRange2, out Frame);
                                 CurrentAction = MirAction.AttackRange2;
                                 if (this == User)
@@ -1430,7 +1430,7 @@ namespace Client.MirObjects
                                     GameScene.SpellTime = CMain.Time + 1500; //Spell Delay
                                 }
                                 break;
-                            case Spell.BackStep: // 后跃
+                            case Spell.后退: // 后跃
                                 {
                                     int sLevel = (byte)action.Params[3];
                                     GetBackStepDistance(sLevel);
@@ -1445,7 +1445,7 @@ namespace Client.MirObjects
                                     }
                                     break;
                                 }
-                            case Spell.ElementalShot: // 元素箭
+                            case Spell.元素射击: // 元素箭
                                 if (HasElements && !ElementCasted)
                                 {
                                     Frames.TryGetValue(MirAction.AttackRange2, out Frame);
@@ -1459,15 +1459,15 @@ namespace Client.MirObjects
                                 else Frames.TryGetValue(CurrentAction, out Frame);
                                 if (ElementCasted) ElementCasted = false;
                                 break;
-                            case Spell.BindingShot: // 束缚箭
-                            case Spell.VampireShot: // 吸血箭
-                            case Spell.PoisonShot: // 毒箭
-                            case Spell.CrippleShot: // 残废箭
-                            case Spell.NapalmShot: // 燃烧箭
-                            case Spell.SummonVampire: // 召唤吸血鬼
-                            case Spell.SummonToad: // 召唤蟾蜍
-                            case Spell.SummonSnakes: // 召唤蛇
-                            case Spell.Stonetrap: // 石陷阱
+                            case Spell.束缚射击: // 束缚箭
+                            case Spell.吸血箭: // 吸血箭
+                            case Spell.毒箭: // 毒箭
+                            case Spell.残废射击: // 残废箭
+                            case Spell.凝固汽油弹: // 燃烧箭
+                            case Spell.召唤吸血鬼: // 召唤吸血鬼
+                            case Spell.召唤蟾蜍: // 召唤蟾蜍
+                            case Spell.召唤蛇: // 召唤蛇
+                            case Spell.石陷阱: // 石陷阱
                                 Frames.TryGetValue(MirAction.AttackRange2, out Frame);
                                 CurrentAction = MirAction.AttackRange2;
                                 if (this == User)
@@ -1512,7 +1512,7 @@ namespace Client.MirObjects
 
                 FrameIndex = 0;
                 EffectFrameIndex = 0;
-                Spell = Spell.None;
+                Spell = Spell.无;
                 SpellLevel = 0;
                 //NextMagic = null;
 
@@ -1573,7 +1573,7 @@ namespace Client.MirObjects
                             //CanSetAction = false;
                             break;
                         case MirAction.Mine:
-                            Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell.None });
+                            Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell.无 });
                             GameScene.AttackTime = CMain.Time + (1400 - Math.Min(370, (User.Level * 14)));
                             MapControl.NextAction = CMain.Time + 2500;
                             break;
@@ -1583,18 +1583,18 @@ namespace Client.MirObjects
                             if (!RidingMount)
                             {
                                 if (GameScene.User.Slaying && (TargetObject != null || GameScene.Observing))
-                                    Spell = Spell.Slaying;
+                                    Spell = Spell.攻杀剑术;
 
                                 if (GameScene.User.Thrusting && GameScene.Scene.MapControl.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
-                                    Spell = Spell.Thrusting;
+                                    Spell = Spell.刺杀剑术;
 
                                 if (GameScene.User.HalfMoon)
                                 {
                                     if (TargetObject != null || GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, Direction))
                                     {
-                                        magic = User.GetMagic(Spell.HalfMoon);
+                                        magic = User.GetMagic(Spell.半月弯刀);
                                         if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                            Spell = Spell.HalfMoon;
+                                            Spell = Spell.半月弯刀;
                                     }
                                 }
 
@@ -1602,35 +1602,35 @@ namespace Client.MirObjects
                                 {
                                     if (TargetObject != null || GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation))
                                     {
-                                        magic = User.GetMagic(Spell.CrossHalfMoon);
+                                        magic = User.GetMagic(Spell.双半月);
                                         if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                            Spell = Spell.CrossHalfMoon;
+                                            Spell = Spell.双半月;
                                     }
                                 }
 
                                 if (GameScene.User.DoubleSlash)
                                 {
-                                    magic = User.GetMagic(Spell.DoubleSlash);
+                                    magic = User.GetMagic(Spell.双斩);
                                     if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                        Spell = Spell.DoubleSlash;
+                                        Spell = Spell.双斩;
                                 }
 
 
                                 if (GameScene.User.TwinDrakeBlade && (TargetObject != null || GameScene.Observing))
                                 {
-                                    magic = User.GetMagic(Spell.TwinDrakeBlade);
+                                    magic = User.GetMagic(Spell.双烈火剑);
                                     if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                        Spell = Spell.TwinDrakeBlade;
+                                        Spell = Spell.双烈火剑;
                                 }
 
                                 if (GameScene.User.FlamingSword)
                                 {
                                     if (TargetObject != null)
                                     {
-                                        magic = User.GetMagic(Spell.FlamingSword);
+                                        magic = User.GetMagic(Spell.烈火剑法);
                                         if (magic != null)
                                         {
-                                            Spell = Spell.FlamingSword;
+                                            Spell = Spell.烈火剑法;
                                             magic.CastTime = CMain.Time;
                                         }
                                     }
@@ -1639,16 +1639,26 @@ namespace Client.MirObjects
 
                             Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell });
 
-                            if (Spell == Spell.Slaying)
+                            if (Spell == Spell.攻杀剑术)
                                 GameScene.User.Slaying = false;
-                            if (Spell == Spell.TwinDrakeBlade)
+                            if (Spell == Spell.双烈火剑)
                                 GameScene.User.TwinDrakeBlade = false;
-                            if (Spell == Spell.FlamingSword)
+                            if (Spell == Spell.烈火剑法)
                                 GameScene.User.FlamingSword = false;
 
                             magic = User.GetMagic(Spell);
 
                             if (magic != null) SpellLevel = magic.Level;
+
+                            // 攻杀/刺杀是挂在普通攻击上的开关技能，不发 S.Magic、服务端也不会回 Cast=true，
+                            // 所以 CD 与特效必须在这里（本地攻击动作）驱动：
+                            // 按 5config.skillEffects 的 1102101/1103101 播 effect 603/601（add 混合刀光）+ 挥刀音，
+                            // 并记 CastTime 让技能栏 CD 走起来。PlayOriginCastEffects 查不到数据时返回 false，不影响普通攻击。
+                            if (Spell == Spell.攻杀剑术 || Spell == Spell.刺杀剑术)
+                            {
+                                PlayOriginCastEffects(Spell, SpellLevel);
+                                if (magic != null) magic.CastTime = CMain.Time;
+                            }
 
                             GameScene.AttackTime = CMain.Time + User.AttackSpeed;
                             MapControl.NextAction = CMain.Time + 2500;
@@ -1683,14 +1693,14 @@ namespace Client.MirObjects
 
                                 Network.Enqueue(new C.Magic { ObjectID = GameScene.User.ObjectID, Spell = Spell, Direction = Direction, TargetID = targetID, Location = location });
 
-                                if (Spell == Spell.FlashDash)
+                                if (Spell == Spell.十步一杀)
                                 {
                                     GameScene.SpellTime = CMain.Time + 250;
                                     MapControl.NextAction = CMain.Time;
                                 }
                                 else
                                 {
-                                    GameScene.SpellTime = Spell == Spell.FlameField ? CMain.Time + 2500 : CMain.Time + 1800;
+                                    GameScene.SpellTime = Spell == Spell.狂雷紫电 ? CMain.Time + 2500 : CMain.Time + 1800;
                                     MapControl.NextAction = CMain.Time + 2500;
                                 }
                             }
@@ -1745,7 +1755,7 @@ namespace Client.MirObjects
                         if (IsDashAttack())
                         {
                             action = new QueuedAction { Action = MirAction.Attack4, Direction = Direction, Location = CurrentLocation, Params = new List<object>() };
-                            action.Params.Add(Spell.FlashDash);
+                            action.Params.Add(Spell.十步一杀);
                             ActionFeed.Insert(0, action);
                         }
                         break;
@@ -1758,10 +1768,10 @@ namespace Client.MirObjects
 
                         switch (Spell)
                         {
-                            case Spell.Slaying: // 攻杀剑术
+                            case Spell.攻杀剑术: // 攻杀剑术
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
                                 break;
-                            case Spell.DoubleSlash: // 双斩
+                            case Spell.双斩: // 双斩
                                 FrameInterval = (int)(FrameInterval * 0.46f); //46% Animation Speed
                                 EffectFrameInterval = (int)(EffectFrameInterval * 0.46f);
 
@@ -1771,14 +1781,14 @@ namespace Client.MirObjects
 
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
-                            case Spell.Thrusting: // 刺杀剑术
+                            case Spell.刺杀剑术: // 刺杀剑术
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
-                            case Spell.HalfMoon: // 半月弯刀
+                            case Spell.半月弯刀: // 半月弯刀
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            case Spell.TwinDrakeBlade: // 双烈火剑
+                            case Spell.双烈火剑: // 双烈火剑
                                 //FrameInterval = FrameInterval * 9 / 10; //70% Faster Animation
                                 //EffectFrameInterval = EffectFrameInterval * 9 / 10;
                                 //action = new QueuedAction { Action = MirAction.Attack4, Direction = Direction, Location = CurrentLocation, Params = new List<object>() };
@@ -1787,11 +1797,11 @@ namespace Client.MirObjects
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            case Spell.CrossHalfMoon: // 半月弯刀（双）
+                            case Spell.双半月: // 半月弯刀（双）
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            case Spell.FlamingSword: // 烈火剑法
+                            case Spell.烈火剑法: // 烈火剑法
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                 break;
 
@@ -1802,17 +1812,17 @@ namespace Client.MirObjects
                         Spell = (Spell)action.Params[0];
                         switch (Spell)
                         {
-                            case Spell.DoubleSlash: // 双斩
+                            case Spell.双斩: // 双斩
                                 FrameInterval = (int)(FrameInterval * 0.46f); //46% Animation Speed
                                 EffectFrameInterval = (int)(EffectFrameInterval * 0.46f);
 
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                 break;
-                            case Spell.TwinDrakeBlade: // 双烈火剑
+                            case Spell.双烈火剑: // 双烈火剑
                                 FrameInterval = FrameInterval * 9 / 10; //80% Animation Speed
                                 EffectFrameInterval = EffectFrameInterval * 9 / 10;
                                 break;
-                            case Spell.FlashDash: // 十步一杀
+                            case Spell.十步一杀: // 十步一杀
                                 int attackDelay = (User.AttackSpeed - 120) <= 300 ? 300 : (User.AttackSpeed - 120);
 
                                 float attackRate = (float)(attackDelay / 300F * 10F);
@@ -1871,69 +1881,69 @@ namespace Client.MirObjects
                         switch (Spell)
                         {
 
-                            case Spell.FireBall: // 火球术
+                            case Spell.火球术: // 火球术
                                 Effects.Add(new Effect(Libraries.Magic, 0, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Healing: // 治愈术
+                            case Spell.治愈术: // 治愈术
                                 Effects.Add(new Effect(Libraries.Magic, 200, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Repulsion: // 抗拒火环
+                            case Spell.抗拒火环: // 抗拒火环
                                 Effects.Add(new Effect(Libraries.Magic, 900, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.ElectricShock: // 电击
+                            case Spell.电击: // 电击
                                 Effects.Add(new Effect(Libraries.Magic, 1560, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Poisoning: // 施毒术
+                            case Spell.施毒术: // 施毒术
                                 Effects.Add(new Effect(Libraries.Magic, 600, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.GreatFireBall: // 大火球
+                            case Spell.大火球: // 大火球
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.HellFire: // 地狱火
+                            case Spell.地狱火: // 地狱火
                                 Effects.Add(new Effect(Libraries.Magic, 920, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.ThunderBolt: // 雷电术
+                            case Spell.雷电术: // 雷电术
                                 Effects.Add(new Effect(Libraries.Magic2, 20, 3, 300, this));
                                 break;
 
 
 
-                            case Spell.SoulFireBall: // 灵魂火符
+                            case Spell.灵魂火符: // 灵魂火符
                                 // 起手帧静默：原始传奇 5config.skillEffects[1304101] 只有 type=2 子弹带 sound=20025，
                                 // 起手/命中帧都无独立音效。该音效统一在下方符纸飞出帧播放，避免同一技能响两遍。
                                 break;
 
 
 
-                            case Spell.SummonSkeleton: // 召唤骷髅
+                            case Spell.召唤骷髅: // 召唤骷髅
                                 // 起手特效改走原始传奇 CDN（5config：召唤骷髅 skill 13051 → effect 655/model13005），
                                 // 替代已移除的经典 .Lib（Libraries.Magic/1500）。
                                 Effects.Add(new OriginEffect(655, this));
@@ -1941,40 +1951,40 @@ namespace Client.MirObjects
                                 SoundManager.PlayOriginSound(200171);
                                 break;
 
-                            case Spell.StormEscape: // 风暴逃脱
+                            case Spell.风暴逃脱: // 风暴逃脱
                                 Effects.Add(new Effect(Libraries.Magic3, 590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            case Spell.Teleport: // 瞬间移动
+                            case Spell.瞬间移动: // 瞬间移动
                                 Effects.Add(new Effect(Libraries.Magic, 1590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Blink: // 瞬移
+                            case Spell.瞬移: // 瞬移
                                 Effects.Add(new Effect(Libraries.Magic, 1590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Hiding: // 隐身术
+                            case Spell.隐身术: // 隐身术
                                 Effects.Add(new Effect(Libraries.Magic, 1520, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Haste: // 疾速
+                            case Spell.加速: // 疾速
                                 Effects.Add(new Effect(Libraries.Magic2, 2140 + (int)Direction * 10, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Fury: // 狂暴
+                            case Spell.狂暴: // 狂暴
                                 Effects.Add(new Effect(Libraries.Magic3, 200, 8, 8 * FrameInterval, this));
                                 Effects.Add(new Effect(Libraries.Magic3, 187, 10, 10 * FrameInterval, this));
                                 //i don't know sound
@@ -1982,69 +1992,69 @@ namespace Client.MirObjects
                                 break;
 
 
-                            case Spell.ImmortalSkin: // 金刚护体
+                            case Spell.金刚不坏: // 金刚护体
                                 Effects.Add(new Effect(Libraries.Magic3, 550, 17, Frame.Count * FrameInterval * 4, this));
                                 Effects.Add(new Effect(Libraries.Magic3, 570, 5, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
-                            case Spell.FireBang: // 爆裂火焰
+                            case Spell.爆裂火焰: // 爆裂火焰
                                 Effects.Add(new Effect(Libraries.Magic, 1650, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.FireWall: // 火墙
+                            case Spell.火墙: // 火墙
                                 Effects.Add(new Effect(Libraries.Magic, 1620, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.HealingCircle: // 治愈术（范围）
+                            case Spell.治疗圈: // 治愈术（范围）
                                 Effects.Add(new Effect(Libraries.Magic3, 620, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.MoonMist: // 月雾
+                            case Spell.月雾: // 月雾
                                 MapControl.Effects.Add(new Effect(Libraries.Magic3, 680, 25, 1800, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.TrapHexagon: // 困魔咒
+                            case Spell.困魔咒_13111: // 困魔咒
                                 Effects.Add(new Effect(Libraries.Magic, 1380, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.EnergyRepulsor: // 气功波
+                            case Spell.气功波: // 气功波
                                 Effects.Add(new Effect(Libraries.Magic2, 190, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.FireBurst: // 爆炎斩
+                            case Spell.赤龙斩: // 爆炎斩
                                 Effects.Add(new Effect(Libraries.Magic2, 2320, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.FlameDisruptor: // 灭天火
+                            case Spell.灭天火: // 灭天火
                                 Effects.Add(new Effect(Libraries.Magic2, 130, 6, Frame.Count * FrameInterval, this));
                                 break;
 
 
 
-                            case Spell.SummonShinsu: // 召唤神兽
+                            case Spell.召唤神兽: // 召唤神兽
                                 // 起手特效改走原始传奇 CDN（5config：召唤神兽 skill 13131 → Lv1 effect652/model13002、Lv5 759、Lv6 765、Lv7 771），
                                 // 替代已移除的经典 .Lib（Libraries.Magic2/0）。
                                 {
@@ -2057,56 +2067,56 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.UltimateEnhancer: // 强化术
+                            case Spell.终极强化: // 强化术
                                 Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.FrostCrunch: // 寒冰掌
+                            case Spell.寒冰掌: // 寒冰掌
                                 Effects.Add(new Effect(Libraries.Magic2, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Purification: // 净化术
+                            case Spell.净化: // 净化术
                                 Effects.Add(new Effect(Libraries.Magic2, 600, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.FlameField: // 狂雷紫电
+                            case Spell.狂雷紫电: // 狂雷紫电
                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 910, 23, 1800, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Trap: // 陷阱
+                            case Spell.玄冰刃: // 陷阱
                                 Effects.Add(new Effect(Libraries.Magic2, 2340, 11, 11 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.MoonLight: // 月光斩
+                            case Spell.月光: // 月光斩
                                 Effects.Add(new Effect(Libraries.Magic2, 2380, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.SwiftFeet: // 疾风步
+                            case Spell.疾风步: // 疾风步
                                 Effects.Add(new Effect(Libraries.Magic2, 2440, 16, 16 * EffectFrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.LightBody: // 轻身术
+                            case Spell.轻身术: // 轻身术
                                 Effects.Add(new Effect(Libraries.Magic2, 2470, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
@@ -2114,84 +2124,84 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.PoisonSword: // 毒剑
+                            case Spell.噬魂毒: // 毒剑
                                 Effects.Add(new Effect(Libraries.Magic2, 2490 + ((int)Direction * 10), 10, Frame.Count * FrameInterval + 500, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.DarkBody: // 暗影术
+                            case Spell.暗黑化身: // 暗影术
                                 Effects.Add(new Effect(Libraries.Magic2, 2580, 10, 10 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.ThunderStorm: // 地狱雷光
+                            case Spell.地狱雷光: // 地狱雷光
                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1680, 10, Frame.Count * FrameInterval, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.MassHealing: // 群体治愈术
+                            case Spell.群体治愈术: // 群体治愈术
                                 Effects.Add(new Effect(Libraries.Magic, 1790, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.IceStorm: // 冰咆哮
+                            case Spell.冰咆哮: // 冰咆哮
                                 Effects.Add(new Effect(Libraries.Magic, 3840, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.MagicShield: // 魔法盾
+                            case Spell.魔法盾: // 魔法盾
                                 Effects.Add(new Effect(Libraries.Magic, 3880, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.TurnUndead: // 驱尸术（复活死尸）
+                            case Spell.驱魔: // 驱尸术（复活死尸）
                                 Effects.Add(new Effect(Libraries.Magic, 3920, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.MagicBooster: // 魔法强化
+                            case Spell.魔力增幅: // 魔法强化
                                 Effects.Add(new Effect(Libraries.Magic3, 80, 9, 9 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.PetEnhancer: // 宠物强化
+                            case Spell.宠物强化: // 宠物强化
                                 Effects.Add(new Effect(Libraries.Magic3, 200, 8, 8 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Revelation: // 心灵启示
+                            case Spell.心灵启示: // 心灵启示
                                 Effects.Add(new Effect(Libraries.Magic, 3960, 20, 1200, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.ProtectionField: // 护体神盾
+                            case Spell.护体神盾: // 护体神盾
                                 Effects.Add(new Effect(Libraries.Magic2, 1520, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Rage: // 无极真气
+                            case Spell.无极真气: // 无极真气
                                 Effects.Add(new Effect(Libraries.Magic2, 1510, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
@@ -2199,43 +2209,43 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.Vampirism: // 噬血术
+                            case Spell.噬血术: // 噬血术
                                 Effects.Add(new Effect(Libraries.Magic2, 1040, 7, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.LionRoar: // 狮子吼
-                            case Spell.BattleCry: // 战吼
+                            case Spell.狮子吼: // 狮子吼
+                            case Spell.战吼: // 战吼
                                 Effects.Add(new Effect(Libraries.Magic2, 710, 20, 1200, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
                                 break;
 
 
 
-                            case Spell.TwinDrakeBlade: // 双烈火剑
+                            case Spell.双烈火剑: // 双烈火剑
                                 Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Entrapment: // 困魔咒
+                            case Spell.困魔咒: // 困魔咒
                                 Effects.Add(new Effect(Libraries.Magic2, 990, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.BladeAvalanche: // 剑刃风暴
+                            case Spell.剑雨: // 剑刃风暴
                                 Effects.Add(new Effect(Libraries.Magic2, 740 + (int)Direction * 20, 15, 15 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.SlashingBurst: // 逐日剑法
+                            case Spell.逐日剑法: // 逐日剑法
                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 1700 + (int)Direction * 10, 9, 9 * FrameInterval, CurrentLocation, CMain.Time + 300));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 SlashingBurstTime = CMain.Time + 2000;
@@ -2243,7 +2253,7 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.CounterAttack: // 反击
+                            case Spell.反击: // 反击
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 5);
                                 Effects.Add(new Effect(Libraries.Magic, 3480 + (int)Direction * 10, 10, 10 * FrameInterval, this));
                                 Effects.Add(new Effect(Libraries.Magic3, 140, 2, 2 * FrameInterval, this));
@@ -2251,7 +2261,7 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.CrescentSlash: // 新月斩
+                            case Spell.新月斩: // 新月斩
                                 Effects.Add(new Effect(Libraries.Magic2, 2620 + (int)Direction * 20, 20, 20 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
 
@@ -2260,7 +2270,7 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.FlashDash: // 十步一杀
+                            case Spell.十步一杀: // 十步一杀
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
                                 int attackDelay = (User.AttackSpeed - 120) <= 300 ? 300 : (User.AttackSpeed - 120);
 
@@ -2270,14 +2280,14 @@ namespace Client.MirObjects
                                 break;
 
 
-                            case Spell.Mirroring: // 分身术
+                            case Spell.分身术: // 分身术
                                 Effects.Add(new Effect(Libraries.Magic2, 650, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.Blizzard: // 暴风雪
+                            case Spell.冰风暴: // 暴风雪
                                 Effects.Add(new Effect(Libraries.Magic2, 1540, 8, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 BlizzardStopTime = CMain.Time + 3000;
@@ -2285,7 +2295,7 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.MeteorStrike: // 流星火雨
+                            case Spell.流星火雨: // 流星火雨
                                 Effects.Add(new Effect(Libraries.Magic2, 1590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 BlizzardStopTime = CMain.Time + 3000;
@@ -2293,20 +2303,20 @@ namespace Client.MirObjects
 
 
 
-                            case Spell.Reincarnation: // 重生术
+                            case Spell.重生: // 重生术
                                 ReincarnationStopTime = CMain.Time + 6000;
                                 break;
 
 
 
-                            case Spell.HeavenlySword: // 开天斩
+                            case Spell.开天斩: // 开天斩
                                 Effects.Add(new Effect(Libraries.Magic2, 2230 + ((int)Direction * 10), 8, 800, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
 
 
-                            case Spell.ElementalBarrier: // 元素屏障
+                            case Spell.元素屏障: // 元素屏障
                                 if (HasElements && !ElementalBarrier)
                                 {
                                     Effects.Add(new Effect(Libraries.Magic3, 1880, 8, Frame.Count * FrameInterval, this));
@@ -2315,27 +2325,27 @@ namespace Client.MirObjects
                                 break;
 
 
-                            case Spell.PoisonShot: // 毒箭
+                            case Spell.毒箭: // 毒箭
                                 Effects.Add(new Effect(Libraries.Magic3, 2300, 8, 1000, this));
                                 break;
 
-                            case Spell.OneWithNature: // 天人合一
+                            case Spell.天人合一: // 天人合一
                                 MapControl.Effects.Add(new Effect(Libraries.Magic3, 2710, 8, 1200, CurrentLocation));
                                 SoundManager.PlaySound(20000 + 139 * 10);
                                 break;
 
 
 
-                            case Spell.FireBounce: // 火焰弹
+                            case Spell.火弹跳: // 火焰弹
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
-                                SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10);
+                                SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10);
                                 break;
 
 
 
-                            case Spell.MeteorShower: // 流星雨
+                            case Spell.流星雨: // 流星雨
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
-                                SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10);
+                                SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10);
                                 break;
 
 
@@ -2647,7 +2657,7 @@ namespace Client.MirObjects
                                 case 6:
                                     switch (Spell)
                                     {
-                                        case Spell.Focus: // 专注
+                                        case Spell.专注: // 专注
                                             Effects.Add(new Effect(Libraries.Magic3, 2730, 10, Frame.Count * FrameInterval, this));
                                             SoundManager.PlaySound(20000 + 121 * 10 + 5);
                                             break;
@@ -2691,7 +2701,7 @@ namespace Client.MirObjects
                                 Missile missile;
                                 switch (Spell)
                                 {
-                                    case Spell.StraightShot: // 直射击
+                                    case Spell.直射击: // 直射击
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 0);
                                         missile = CreateProjectile(1210, Libraries.Magic3, true, 5, 30, 5);
 
@@ -2701,7 +2711,7 @@ namespace Client.MirObjects
                                             {
                                                 if (missile.Target.CurrentAction == MirAction.Dead) return;
                                                 missile.Target.Effects.Add(new Effect(Libraries.Magic3, 1370, 7, 600, missile.Target));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.StraightShot * 10 + 2);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.直射击 * 10 + 2);
                                             };
                                         }
                                         break;
@@ -2724,7 +2734,7 @@ namespace Client.MirObjects
 
                             switch (Spell)
                             {
-                                case Spell.DoubleShot: // 双重射击
+                                case Spell.双箭: // 双重射击
                                     switch (FrameIndex)
                                     {
                                         case 7:
@@ -2742,7 +2752,7 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                case Spell.ElementalShot: // 元素箭
+                                case Spell.元素射击: // 元素箭
                                     if (HasElements && !ElementCasted)
                                         switch (FrameIndex)
                                         {
@@ -2763,10 +2773,10 @@ namespace Client.MirObjects
                                                 break;
                                         }
                                     break;
-                                case Spell.BindingShot: // 束缚箭
-                                case Spell.SummonVampire: // 召唤吸血鬼
-                                case Spell.SummonToad: // 召唤蟾蜍
-                                case Spell.SummonSnakes: // 召唤蛇
+                                case Spell.束缚射击: // 束缚箭
+                                case Spell.召唤吸血鬼: // 召唤吸血鬼
+                                case Spell.召唤蟾蜍: // 召唤蟾蜍
+                                case Spell.召唤蛇: // 召唤蛇
                                     switch (FrameIndex)
                                     {
                                         case 7:
@@ -2783,7 +2793,7 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                case Spell.Stonetrap: // 石陷阱
+                                case Spell.石陷阱: // 石陷阱
                                     switch (FrameIndex)
                                     {
                                         case 7:
@@ -2800,7 +2810,7 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                case Spell.DelayedExplosion: // 延迟爆炸
+                                case Spell.延迟爆炸: // 延迟爆炸
                                     switch (FrameIndex)
                                     {
                                         case 5:
@@ -2817,18 +2827,18 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                case Spell.VampireShot: // 吸血箭
-                                case Spell.PoisonShot: // 毒箭
-                                case Spell.CrippleShot: // 残废箭
+                                case Spell.吸血箭: // 吸血箭
+                                case Spell.毒箭: // 毒箭
+                                case Spell.残废射击: // 残废箭
                                     MapObject ob = MapControl.GetObject(TargetID);
                                     Effect eff;
                                     int exFrameStart = 0;
-                                    if (Spell == Spell.PoisonShot) exFrameStart = 200;
-                                    if (Spell == Spell.CrippleShot) exFrameStart = 400;
+                                    if (Spell == Spell.毒箭) exFrameStart = 200;
+                                    if (Spell == Spell.残废射击) exFrameStart = 400;
                                     switch (FrameIndex)
                                     {
                                         case 7:
-                                            SoundManager.PlaySound(20000 + ((Spell == Spell.CrippleShot) ? 136 : 121) * 10);//M136-0
+                                            SoundManager.PlaySound(20000 + ((Spell == Spell.残废射击) ? 136 : 121) * 10);//M136-0
                                             missile = CreateProjectile(1930 + exFrameStart, Libraries.Magic3, true, 5, 10, 5);
                                             StanceTime = CMain.Time + StanceDelay;
                                             if (missile.Target != null)
@@ -2837,7 +2847,7 @@ namespace Client.MirObjects
                                                 {
                                                     if (ob != null)
                                                     {
-                                                        if (Spell == Spell.CrippleShot)
+                                                        if (Spell == Spell.残废射击)
                                                         {
                                                             int exIdx = 0;
                                                             if (this == User)
@@ -2862,11 +2872,11 @@ namespace Client.MirObjects
                                                                 };
                                                         }
 
-                                                        if (Spell == Spell.VampireShot || Spell == Spell.PoisonShot)
+                                                        if (Spell == Spell.吸血箭 || Spell == Spell.毒箭)
                                                         {
                                                             ob.Effects.Add(eff = new Effect(Libraries.Magic3, 2090 + exFrameStart, 6, 1000, ob));
                                                             SoundManager.PlaySound(20000 + (133 + (exFrameStart / 100)) * 10 + 2);//sound M133-2 or M135-2
-                                                            if (Spell == Spell.VampireShot)
+                                                            if (Spell == Spell.吸血箭)
                                                                 eff.Complete += (o1, e1) =>
                                                                 {
                                                                     SoundManager.PlaySound(20000 + 45 * 10 + 2);//sound M45-2
@@ -2880,7 +2890,7 @@ namespace Client.MirObjects
                                             break;
                                     }
                                     break;
-                                case Spell.NapalmShot: // 燃烧箭
+                                case Spell.凝固汽油弹: // 燃烧箭
                                     switch (FrameIndex)
                                     {
                                         case 7:
@@ -2955,7 +2965,7 @@ namespace Client.MirObjects
                                     switch (Spell)
                                     {
 
-                                        case Spell.FireBall: // 火球术
+                                        case Spell.火球术: // 火球术
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             missile = CreateProjectile(10, Libraries.Magic, true, 6, 30, 4);
 
@@ -2972,7 +2982,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.GreatFireBall: // 大火球
+                                        case Spell.大火球: // 大火球
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
 
@@ -2982,14 +2992,14 @@ namespace Client.MirObjects
                                                 {
                                                     if (missile.Target.CurrentAction == MirAction.Dead) return;
                                                     missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
-                                                    SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 2);
                                                 };
                                             }
                                             break;
 
 
 
-                                        case Spell.Healing: // 治愈术
+                                        case Spell.治愈术: // 治愈术
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             if (ob == null)
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, TargetPoint));
@@ -2999,7 +3009,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.ElectricShock: // 电击
+                                        case Spell.电击: // 电击
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             if (ob == null)
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, TargetPoint));
@@ -3008,14 +3018,14 @@ namespace Client.MirObjects
                                             break;
 
 
-                                        case Spell.Poisoning: // 施毒术
+                                        case Spell.施毒术: // 施毒术
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             if (ob != null)
                                                 ob.Effects.Add(new Effect(Libraries.Magic, 770, 10, 1000, ob));
                                             break;
 
 
-                                        case Spell.HellFire: // 地狱火
+                                        case Spell.地狱火: // 地狱火
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
 
 
@@ -3060,7 +3070,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.ThunderBolt: // 雷电术
+                                        case Spell.雷电术: // 雷电术
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
 
@@ -3072,7 +3082,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.SoulFireBall: // 灵魂火符
+                                        case Spell.灵魂火符: // 灵魂火符
                                                                  // 符纸飞出瞬间播原始传奇音效：5config.skillEffects[1304101].sound=20025
                                             SoundManager.PlayOriginSound(20025);
                                             // 原始传奇 5config.effect 核对过 CDN 实际画面：
@@ -3106,7 +3116,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.EnergyShield: // 能量护盾
+                                        case Spell.能量护盾: // 能量护盾
 
                                             //Effects.Add(new Effect(Libraries.Magic2, 1880, 9, Frame.Count * FrameInterval, this));
                                             //SoundManager.PlaySound(20000 + (ushort)Spell * 9);
@@ -3114,7 +3124,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.FireBang: // 爆裂火焰
+                                        case Spell.爆裂火焰: // 爆裂火焰
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             MapControl.Effects.Add(new Effect(Libraries.Magic, 1660, 10, 1000, TargetPoint));
@@ -3122,7 +3132,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.MassHiding: // 集体隐身术
+                                        case Spell.集体隐身术: // 集体隐身术
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
@@ -3130,13 +3140,13 @@ namespace Client.MirObjects
                                             missile.Complete += (o, e) =>
                                             {
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1540, 10, 800, TargetPoint));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.MassHiding * 10 + 1);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.集体隐身术 * 10 + 1);
                                             };
                                             break;
 
 
 
-                                        case Spell.SoulShield: // 幽灵盾
+                                        case Spell.幽灵盾: // 幽灵盾
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
@@ -3144,13 +3154,13 @@ namespace Client.MirObjects
                                             missile.Complete += (o, e) =>
                                             {
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1320, 15, 1200, TargetPoint));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10 + 1);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.幽灵盾 * 10 + 1);
                                             };
                                             break;
 
 
 
-                                        case Spell.BlessedArmour: // 神圣战甲术
+                                        case Spell.神圣战甲术: // 神圣战甲术
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
@@ -3158,27 +3168,27 @@ namespace Client.MirObjects
                                             missile.Complete += (o, e) =>
                                             {
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1340, 15, 1200, TargetPoint));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.BlessedArmour * 10 + 1);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.神圣战甲术 * 10 + 1);
                                             };
                                             break;
 
 
 
-                                        case Spell.FireWall: // 火墙
+                                        case Spell.火墙: // 火墙
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             break;
 
 
 
 
-                                        case Spell.HealingCircle: // 治愈术（范围）
+                                        case Spell.治疗圈: // 治愈术（范围）
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             MapControl.Effects.Add(new Effect(Libraries.Magic3, 620, 10, 1200, TargetPoint));
                                             break;
 
 
 
-                                        case Spell.MassHealing: // 群体治愈术
+                                        case Spell.群体治愈术: // 群体治愈术
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             MapControl.Effects.Add(new Effect(Libraries.Magic, 1800, 10, 1000, TargetPoint));
@@ -3186,7 +3196,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.IceStorm: // 冰咆哮
+                                        case Spell.冰咆哮: // 冰咆哮
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             MapControl.Effects.Add(new Effect(Libraries.Magic, 3850, 20, 1300, TargetPoint));
@@ -3194,7 +3204,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.TurnUndead: // 驱尸术（复活死尸）
+                                        case Spell.驱魔: // 驱尸术（复活死尸）
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             if (ob == null)
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, TargetPoint));
@@ -3203,7 +3213,7 @@ namespace Client.MirObjects
                                             break;
 
 
-                                        case Spell.IceThrust: // 冰刺
+                                        case Spell.冰刺: // 冰刺
 
                                             Point location = Functions.PointMove(CurrentLocation, Direction, 1);
 
@@ -3213,7 +3223,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.Revelation: // 心灵启示
+                                        case Spell.心灵启示: // 心灵启示
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             if (ob == null)
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, TargetPoint));
@@ -3222,7 +3232,7 @@ namespace Client.MirObjects
                                             break;
 
 
-                                        case Spell.FlameDisruptor: // 灭天火
+                                        case Spell.灭天火: // 灭天火
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
 
@@ -3233,7 +3243,7 @@ namespace Client.MirObjects
                                             break;
 
 
-                                        case Spell.CatTongue: // 猫舌
+                                        case Spell.cat舌: // 猫舌
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             missile = CreateProjectile(260, Libraries.Magic3, true, 6, 30, 4);
 
@@ -3243,14 +3253,14 @@ namespace Client.MirObjects
                                                 {
                                                     if (missile.Target.CurrentAction == MirAction.Dead) return;
                                                     missile.Target.Effects.Add(new Effect(Libraries.Magic3, 420, 8, 800, missile.Target));
-                                                    SoundManager.PlaySound(20000 + (ushort)Spell.CatTongue * 10 + 1);
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.cat舌 * 10 + 1);
                                                 };
                                             }
                                             break;
 
 
 
-                                        case Spell.FrostCrunch: // 寒冰掌
+                                        case Spell.寒冰掌: // 寒冰掌
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             missile = CreateProjectile(410, Libraries.Magic2, true, 4, 30, 6);
 
@@ -3260,14 +3270,14 @@ namespace Client.MirObjects
                                                 {
                                                     if (missile.Target.CurrentAction == MirAction.Dead) return;
                                                     missile.Target.Effects.Add(new Effect(Libraries.Magic2, 570, 8, 600, missile.Target));
-                                                    SoundManager.PlaySound(20000 + (ushort)Spell.FrostCrunch * 10 + 2);
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.寒冰掌 * 10 + 2);
                                                 };
                                             }
                                             break;
 
 
 
-                                        case Spell.Purification: // 净化术
+                                        case Spell.净化: // 净化术
                                             if (ob == null)
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, TargetPoint));
                                             else
@@ -3276,20 +3286,20 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.Curse: // 诅咒术
+                                        case Spell.诅咒: // 诅咒术
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
 
                                             missile.Complete += (o, e) =>
                                             {
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 950, 24, 2000, TargetPoint));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.Curse * 10);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.诅咒 * 10);
                                             };
                                             break;
 
 
 
-                                        case Spell.Hallucination: // 幻象术
+                                        case Spell.心灵启示_76: // 幻象术
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 48, 7);
 
                                             if (missile.Target != null)
@@ -3305,14 +3315,14 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.Lightning: // 疾光电影
+                                        case Spell.疾光电影: // 疾光电影
                                             Effects.Add(new Effect(Libraries.Magic, 970 + (int)Direction * 20, 6, Frame.Count * FrameInterval, this));
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             break;
 
 
 
-                                        case Spell.Vampirism: // 噬血术
+                                        case Spell.噬血术: // 噬血术
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
 
@@ -3323,7 +3333,7 @@ namespace Client.MirObjects
                                                 ob.Effects.Add(effect = new Effect(Libraries.Magic2, 1060, 20, 1000, ob));
                                                 effect.Complete += (o, e) =>
                                                 {
-                                                    SoundManager.PlaySound(20000 + (ushort)Spell.Vampirism * 10 + 2);
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.噬血术 * 10 + 2);
                                                     Effects.Add(new Effect(Libraries.Magic2, 1090, 10, 500, this));
                                                 };
                                             }
@@ -3331,7 +3341,7 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.PoisonCloud: // 毒云术
+                                        case Spell.毒云: // 毒云术
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
 
@@ -3344,14 +3354,14 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.Blizzard: // 暴风雪
+                                        case Spell.冰风暴: // 暴风雪
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             //BlizzardFreezeTime = CMain.Time + 3000;
                                             break;
 
 
 
-                                        case Spell.MeteorStrike: // 流星火雨
+                                        case Spell.流星火雨: // 流星火雨
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
                                             //BlizzardFreezeTime = CMain.Time + 3000;
@@ -3359,61 +3369,61 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.Reincarnation: // 重生术
+                                        case Spell.重生: // 重生术
                                             ReincarnationStopTime = 0;
                                             break;
 
 
 
-                                        case Spell.SummonHolyDeva: // 召唤骨龙
+                                        case Spell.召唤骨龙: // 召唤骨龙
                                             Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                             break;
 
 
 
-                                        case Spell.UltimateEnhancer: // 强化术
+                                        case Spell.终极强化: // 强化术
                                             if (ob != null && ob != User)
                                                 ob.Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, ob));
                                             break;
 
 
 
-                                        case Spell.Plague: // 瘟疫术
-                                                           //SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10);
+                                        case Spell.瘟疫: // 瘟疫术
+                                                           //SoundManager.PlaySound(20000 + (ushort)Spell.幽灵盾 * 10);
                                             missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
                                             missile.Explode = true;
 
                                             missile.Complete += (o, e) =>
                                             {
                                                 MapControl.Effects.Add(new Effect(Libraries.Magic3, 110, 10, 1200, TargetPoint));
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.Plague * 10 + 3);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.瘟疫 * 10 + 3);
                                             };
                                             break;
 
 
 
-                                        case Spell.TrapHexagon: // 困魔咒
+                                        case Spell.困魔咒_13111: // 困魔咒
                                             if (ob != null)
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.TrapHexagon * 10 + 1);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.困魔咒_13111 * 10 + 1);
                                             break;
 
 
 
-                                        case Spell.Trap: // 陷阱
+                                        case Spell.玄冰刃: // 陷阱
                                             if (ob != null)
-                                                SoundManager.PlaySound(20000 + (ushort)Spell.Trap * 10 + 1);
+                                                SoundManager.PlaySound(20000 + (ushort)Spell.玄冰刃 * 10 + 1);
                                             break;
 
 
 
-                                        case Spell.CrescentSlash: // 新月斩
+                                        case Spell.新月斩: // 新月斩
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
                                             break;
 
 
 
-                                        case Spell.NapalmShot: // 燃烧箭
+                                        case Spell.凝固汽油弹: // 燃烧箭
 
                                             SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                             MapControl.Effects.Add(new Effect(Libraries.Magic3, 1660, 10, 1000, TargetPoint));
@@ -3422,8 +3432,8 @@ namespace Client.MirObjects
 
 
 
-                                        case Spell.FireBounce: // 火焰弹
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
+                                        case Spell.火弹跳: // 火焰弹
+                                            SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 1);
 
                                             missile = CreateProjectile(410, Libraries.Magic, true, 6, 30, 4);
 
@@ -3433,16 +3443,16 @@ namespace Client.MirObjects
                                                 {
                                                     if (missile.Target.CurrentAction == MirAction.Dead) return;
                                                     missile.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, missile.Target));
-                                                    SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                                    SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 2);
                                                 };
                                             }
                                             break;
 
 
 
-                                        case Spell.MeteorShower: // 流星雨
+                                        case Spell.流星雨: // 流星雨
 
-                                            SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
+                                            SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 1);
 
                                             var targetIDs = new List<uint> { TargetID };
 
@@ -3463,7 +3473,7 @@ namespace Client.MirObjects
 
                                                         if (sender.Target.CurrentAction == MirAction.Dead) return;
                                                         sender.Target.Effects.Add(new Effect(Libraries.Magic, 570, 10, 600, sender.Target));
-                                                        SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 2);
+                                                        SoundManager.PlaySound(20000 + (ushort)Spell.大火球 * 10 + 2);
                                                     };
                                                 }
                                             }
@@ -3759,25 +3769,25 @@ namespace Client.MirObjects
                 case MirAction.Attack1:
                     switch (Spell)
                     {
-                        case Spell.Slaying: // 攻杀剑术
+                        case Spell.攻杀剑术: // 攻杀剑术
                             Libraries.Magic.DrawBlend(1820 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.DoubleSlash: // 双斩
+                        case Spell.双斩: // 双斩
                             Libraries.Magic2.DrawBlend(1960 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.Thrusting: // 刺杀剑术
+                        case Spell.刺杀剑术: // 刺杀剑术
                             Libraries.Magic.DrawBlend(2190 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.HalfMoon: // 半月弯刀
+                        case Spell.半月弯刀: // 半月弯刀
                             Libraries.Magic.DrawBlend(2560 + ((int)Direction * 10) + SpellLevel * 90 + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.TwinDrakeBlade: // 双烈火剑
+                        case Spell.双烈火剑: // 双烈火剑
                             Libraries.Magic2.DrawBlend(220 + ((int)Direction * 20) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.CrossHalfMoon: // 半月弯刀（双）
+                        case Spell.双半月: // 半月弯刀（双）
                             Libraries.Magic2.DrawBlend(40 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.FlamingSword: // 烈火剑法
+                        case Spell.烈火剑法: // 烈火剑法
                             Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                     }
@@ -3786,13 +3796,13 @@ namespace Client.MirObjects
 
                     switch (Spell)
                     {
-                        case Spell.DoubleSlash: // 双斩
+                        case Spell.双斩: // 双斩
                             Libraries.Magic2.DrawBlend(2050 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.TwinDrakeBlade: // 双烈火剑
+                        case Spell.双烈火剑: // 双烈火剑
                             Libraries.Magic2.DrawBlend(226 + ((int)Direction * 20) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
-                        case Spell.FlamingSword: // 烈火剑法
+                        case Spell.烈火剑法: // 烈火剑法
                             Libraries.Magic.DrawBlend(3480 + ((int)Direction * 10) + FrameIndex, DrawLocation, CommonColor.White, true, 0.7F);
                             break;
                     }

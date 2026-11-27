@@ -118,7 +118,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject ob = new SpellObject
                     {
-                        Spell = Spell.DarkOmaKingNuke,
+                        Spell = Spell.暗黑沃玛王怒,
                         Value = Stats[Stat.MaxDC],
                         ExpireTime = Envir.Time + 900 + start,
                         TickSpeed = 1000,

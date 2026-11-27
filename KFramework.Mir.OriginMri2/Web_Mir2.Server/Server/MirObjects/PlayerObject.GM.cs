@@ -1107,7 +1107,7 @@ namespace Server.MirObjects
                         // 允许原始传奇技能 id（如 1000097，超出 Spell 枚举定义但 Enum.TryParse 数字串可解析）。
                         if (!Enum.TryParse(parts.Length > 3 ? parts[2] : parts[1], true, out skill)) return;
 
-                        if (skill == Spell.None) return;
+                        if (skill == Spell.无) return;
 
                         spellLevel = byte.TryParse(parts.Length > 3 ? parts[3] : parts[2], out spellLevel) ? Math.Min((byte)3, spellLevel) : (byte)0;
 
@@ -2041,7 +2041,7 @@ namespace Server.MirObjects
 
                         if (!Enum.TryParse(parts.Length > 2 ? parts[2] : parts[1], true, out skill1)) return;
 
-                        if (skill1 == Spell.None) return;
+                        if (skill1 == Spell.无) return;
 
                         if (parts.Length > 2)
                         {

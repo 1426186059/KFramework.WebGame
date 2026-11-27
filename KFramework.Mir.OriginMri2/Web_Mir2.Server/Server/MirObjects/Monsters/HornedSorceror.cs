@@ -181,7 +181,7 @@ namespace Server.MirObjects.Monsters
 
                     SpellObject ob = new SpellObject
                     {
-                        Spell = Spell.HornedSorcererDustTornado,
+                        Spell = Spell.角术士尘旋风,
                         Value = damage,
                         ExpireTime = Envir.Time + time + start,
                         TickSpeed = 1000,

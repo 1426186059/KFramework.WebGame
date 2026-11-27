@@ -151,7 +151,7 @@ namespace Server.MirObjects.Monsters
                     {
                         var spellObj = new SpellObject
                         {
-                            Spell = Spell.GeneralMeowMeowThunder,
+                            Spell = Spell.将军喵喵雷,
                             Value = Envir.Random.Next(Stats[Stat.MinMC], Stats[Stat.MaxMC]),
                             ExpireTime = Envir.Time + 1000,
                             TickSpeed = 500,

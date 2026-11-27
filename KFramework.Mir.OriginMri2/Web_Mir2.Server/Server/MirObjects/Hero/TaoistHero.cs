@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 
 namespace Server.MirObjects
 {
@@ -33,7 +33,7 @@ namespace Server.MirObjects
 
                 if (target.Buffs.Any(b => b.Properties.HasFlag(BuffProperty.Debuff)) || target.PoisonList.Count > 0)
                 {
-                    magic = GetMagic(Spell.Purification);
+                    magic = GetMagic(Spell.净化);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
@@ -43,14 +43,14 @@ namespace Server.MirObjects
 
                 if (target.PercentHealth < 90)
                 {
-                    magic = GetMagic(Spell.MassHealing);
+                    magic = GetMagic(Spell.群体治愈术);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
                         return;
                     }
 
-                    magic = GetMagic(Spell.Healing);
+                    magic = GetMagic(Spell.治愈术);
                     if (CanUseMagic(magic))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
@@ -62,21 +62,21 @@ namespace Server.MirObjects
 
                 if (Target != null)
                 {
-                    magic = GetMagic(Spell.SoulShield);
+                    magic = GetMagic(Spell.幽灵盾);
                     if (CanUseMagic(magic) && item != null && !target.HasBuff(BuffType.SoulShield))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
                         return;
                     }
 
-                    magic = GetMagic(Spell.BlessedArmour);
+                    magic = GetMagic(Spell.神圣战甲术);
                     if (CanUseMagic(magic) && item != null && !target.HasBuff(BuffType.BlessedArmour))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
                         return;
                     }
 
-                    magic = GetMagic(Spell.UltimateEnhancer);
+                    magic = GetMagic(Spell.终极强化);
                     if (CanUseMagic(magic) && item != null && !target.HasBuff(BuffType.UltimateEnhancer))
                     {
                         BeginMagic(magic.Spell, direction, target.ObjectID, target.CurrentLocation);
@@ -85,7 +85,7 @@ namespace Server.MirObjects
                 }
             }
 
-            magic = GetMagic(Spell.None);
+            magic = GetMagic(Spell.无);
             {
                 return;
             }
@@ -104,7 +104,7 @@ namespace Server.MirObjects
 
             if (InAttackRange())
             {
-                magic = GetMagic(Spell.Poisoning);
+                magic = GetMagic(Spell.施毒术);
                 if (CanUseMagic(magic) && poisonItem != null)
                 {
                     if ((poisonItem.Info.Shape == 1 && !Target.PoisonList.Any(p => p.PType == PoisonType.Green)) || (poisonItem.Info.Shape == 2 && !Target.PoisonList.Any(p => p.PType == PoisonType.Red)))
@@ -114,7 +114,7 @@ namespace Server.MirObjects
                     }
                 }
 
-                magic = GetMagic(Spell.Curse);
+                magic = GetMagic(Spell.诅咒);
                 if (CanUseMagic(magic) && !Target.HasBuff(BuffType.Curse) && amuletItem != null)
                 {
                     BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);
@@ -123,7 +123,7 @@ namespace Server.MirObjects
 
                 if (Target.AutoRev == false && Envir.Time > Target.RevTime) 
                 {
-                    magic = GetMagic(Spell.Revelation);
+                    magic = GetMagic(Spell.心灵启示);
                     if (CanUseMagic(magic) && amuletItem != null)
                     {
                         BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);
@@ -131,20 +131,20 @@ namespace Server.MirObjects
                     }
                 }
 
-                magic = GetMagic(Spell.SoulFireBall);
+                magic = GetMagic(Spell.灵魂火符);
                 if (CanUseMagic(magic) && amuletItem != null)
                 {
                     BeginMagic(magic.Spell, Direction, Target.ObjectID, Target.CurrentLocation);
                     return;
                 }
 
-                magic = GetMagic(Spell.None);
+                magic = GetMagic(Spell.无);
                 {
                     return;
                 }
             }
 
-            magic = GetMagic(Spell.None);
+            magic = GetMagic(Spell.无);
             {
                 return;
             }
@@ -158,22 +158,22 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (CanMove && ((!CanCast || NextMagicSpell == Spell.None) && Owner.Info.HeroBehaviour == HeroBehaviour.CounterAttack))
+            if (CanMove && ((!CanCast || NextMagicSpell == Spell.无) && Owner.Info.HeroBehaviour == HeroBehaviour.CounterAttack))
             {
                 MoveTo(Owner.Back);
                 return;
             }
 
-            if (CanCast && NextMagicSpell != Spell.None)
+            if (CanCast && NextMagicSpell != Spell.无)
             {
                 if (Target != Owner && !CanAttack) return;
                 Magic(NextMagicSpell, NextMagicDirection, NextMagicTargetID, NextMagicLocation);
-                NextMagicSpell = Spell.None;
+                NextMagicSpell = Spell.无;
             }
 
             if (Target == null || !CanAttack) return;
 
-            if (CanAttack && (!HasRangedSpell && InAttackRange() || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance == 1))
+            if (CanAttack && (!HasRangedSpell && InAttackRange() || NextMagicSpell == Spell.无 && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance == 1))
             {
                 Attack();
 
@@ -185,7 +185,7 @@ namespace Server.MirObjects
                 return;
             }
 
-            if (CanMove && (!HasRangedSpell || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance > 1))
+            if (CanMove && (!HasRangedSpell || NextMagicSpell == Spell.无 && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance > 1))
                 MoveTo(Target.CurrentLocation);
         }
 

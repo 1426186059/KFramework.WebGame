@@ -192,10 +192,10 @@ namespace Server.MirObjects
             Enqueue(new S.GuildBuffList() { GuildBuffs = Settings.Guild_BuffList });
             RequestedGuildBuffInfo = true;
 
-            if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Thrusting, CanUse = true });
-            if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.HalfMoon, CanUse = true });
-            if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.CrossHalfMoon, CanUse = true });
-            if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.DoubleSlash, CanUse = true });
+            if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.刺杀剑术, CanUse = true });
+            if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.半月弯刀, CanUse = true });
+            if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.双半月, CanUse = true });
+            if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.双斩, CanUse = true });
 
             // --- Re-spawn saved pets ---
             for (int i = 0; i < Info.Pets.Count; i++)
@@ -582,12 +582,12 @@ namespace Server.MirObjects
             GetUserInfo(observer);
             GetObjectsPassive(observer);
 
-            if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Thrusting, CanUse = true }, observer);
-            if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.HalfMoon, CanUse = true }, observer);
-            if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.CrossHalfMoon, CanUse = true }, observer);
-            if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.DoubleSlash, CanUse = true }, observer);
-            if (Slaying) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Slaying, CanUse = true }, observer);
-            if (FlamingSword) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.FlamingSword, CanUse = true }, observer);
+            if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.刺杀剑术, CanUse = true }, observer);
+            if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.半月弯刀, CanUse = true }, observer);
+            if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.双半月, CanUse = true }, observer);
+            if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.双斩, CanUse = true }, observer);
+            if (Slaying) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.攻杀剑术, CanUse = true }, observer);
+            if (FlamingSword) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.烈火剑法, CanUse = true }, observer);
 
             if (observer.Player != null)
                 observer.Player.StopGame(24);
@@ -777,7 +777,7 @@ namespace Server.MirObjects
                         {
                             SpellObject obSpell = (SpellObject)ob;
 
-                            if ((obSpell.Spell != Spell.ExplosiveTrap) || (obSpell.Caster != null && IsFriendlyTarget(obSpell.Caster)))
+                            if ((obSpell.Spell != Spell.爆炸陷阱) || (obSpell.Caster != null && IsFriendlyTarget(obSpell.Caster)))
                                 Enqueue(ob.GetInfo(), c);
                         }
                         else if (ob.Race == ObjectType.Merchant)

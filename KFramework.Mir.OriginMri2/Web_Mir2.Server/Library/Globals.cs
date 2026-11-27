@@ -1,4 +1,4 @@
-﻿public static class Globals
+public static class Globals
 {
     public const string ProductCodename = "Crystal";
 
@@ -52,19 +52,19 @@
     // 原始传奇技能全部用原始 id 作为 Spell 键。远程技能按 5config.skill 的 releaseDis/Aoe 归入。
     public static Spell[] RangedSpells = new Spell[]
     {
-        Spell.FireBall,
-        Spell.ThunderBolt,
-        Spell.FireBang,
-        Spell.FireWall,
-        Spell.FrostCrunch,
-        Spell.Vampirism,
-        Spell.FlameDisruptor,
-        Spell.IceStorm,
-        Spell.MeteorStrike,
-        Spell.Blizzard,
-        Spell.SoulFireBall,
-        Spell.StraightShot,
-        Spell.ElementalShot,
-        Spell.PoisonShot
+        Spell.火球术,
+        Spell.雷电术,
+        Spell.爆裂火焰,
+        Spell.火墙,
+        Spell.寒冰掌,
+        Spell.噬血术,
+        Spell.灭天火,
+        Spell.冰咆哮,
+        Spell.流星火雨,
+        Spell.冰风暴,
+        Spell.灵魂火符,
+        Spell.直射击,
+        Spell.元素射击,
+        Spell.毒箭
     };
 }

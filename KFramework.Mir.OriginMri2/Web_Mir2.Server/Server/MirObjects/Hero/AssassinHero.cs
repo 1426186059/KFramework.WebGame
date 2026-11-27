@@ -1,4 +1,4 @@
-﻿using Server.MirDatabase;
+using Server.MirDatabase;
 using Server.MirNetwork;
 
 namespace Server.MirObjects
@@ -11,7 +11,7 @@ namespace Server.MirObjects
         {
             base.Load(info, connection);
 
-            if (HasMagic(Spell.DoubleSlash))
+            if (HasMagic(Spell.双斩))
                 Info.DoubleSlash = true;
         }
         protected override bool InAttackRange()
@@ -36,14 +36,14 @@ namespace Server.MirObjects
 
             if (Target != null)
             {
-                MagicInfoRunItem magic = GetMagic(Spell.Haste);
+                MagicInfoRunItem magic = GetMagic(Spell.加速);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.Haste))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
                     return;
                 }
 
-                magic = GetMagic(Spell.LightBody);
+                magic = GetMagic(Spell.轻身术);
                 if (CanUseMagic(magic) && !HasBuff(BuffType.LightBody))
                 {
                     BeginMagic(magic.Spell, Direction, ObjectID, CurrentLocation);
@@ -57,7 +57,7 @@ namespace Server.MirObjects
             TargetDistance = Functions.MaxDistance(CurrentLocation, Target.CurrentLocation);
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
 
-            MagicInfoRunItem magic = GetMagic(Spell.HeavenlySword);
+            MagicInfoRunItem magic = GetMagic(Spell.开天斩);
             HasHeavenlySword = CanCast && CanUseMagic(magic);
             if (HasHeavenlySword && TargetDistance == 2)
             {
@@ -75,10 +75,10 @@ namespace Server.MirObjects
 
             if (Target != null && CanAttack)
             {
-                Spell spell = Spell.None;
+                Spell spell = Spell.无;
 
                 if (Info.DoubleSlash)
-                    spell = Spell.DoubleSlash;
+                    spell = Spell.双斩;
 
                 Attack(Direction, spell);
             }

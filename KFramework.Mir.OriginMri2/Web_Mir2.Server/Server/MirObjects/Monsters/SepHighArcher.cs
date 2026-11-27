@@ -50,7 +50,7 @@ namespace Server.MirObjects.Monsters
 
             if (Envir.Random.Next(3) == 0 && Functions.InRange(CurrentLocation, Target.CurrentLocation, 2))
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BackStep, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.后退, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
                 int travel = 0;
                 bool blocked = false;
                 int jumpDistance = 3;
@@ -97,7 +97,7 @@ namespace Server.MirObjects.Monsters
 
             if (hasPoisonBuff && Envir.Random.Next(2) == 0)
             {
-                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrippleShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+                Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.残废射击, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
 
                 PoisonTarget(Target, 5, 8, PoisonType.Green, 2000);
 
@@ -140,7 +140,7 @@ namespace Server.MirObjects.Monsters
             }
 
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.PoisonShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.毒箭, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
             if (Envir.Random.Next(10) <= 4)
             {
                 if (!hasPoisonBuff)

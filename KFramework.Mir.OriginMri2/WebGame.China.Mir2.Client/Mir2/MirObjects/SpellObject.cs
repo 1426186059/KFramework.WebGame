@@ -24,7 +24,7 @@ namespace Client.MirObjects
         public bool Repeat, Ended;
 
         // 安全区边沿光柱：原始传奇 initSafeZone 对 safeArea 每格 addEffect(261)=model 11081。
-        // 服务端 SafeZoneBorder 已把这些边框格下发为 Spell.TrapHexagon 装饰，但经典 .Lib(1390) 已废弃；
+        // 服务端 SafeZoneBorder 已把这些边框格下发为 Spell.困魔咒_13111 装饰，但经典 .Lib(1390) 已废弃；
         // 这里改走 CDN model 11081 的精灵帧，让现成的安全区边框逻辑重新可见。
         private int _originModel;          // >0 表示用 CDN 精灵绘制
         private int _originAction = 1;
@@ -78,14 +78,14 @@ namespace Client.MirObjects
             // 原始传奇数据驱动：地面持续技能（火墙/毒云/暴风雪/流星火雨等）用 skillEffects type=0 的
             // effect→model 走 CDN 精灵循环渲染，替代已移除的 Libraries.Magic* 旧帧。
             // TrapHexagon 是安全区光柱(effect261)，已有专用的 model 11081 + 枢轴，跳过通用逻辑。
-            if (Spell != Spell.TrapHexagon && TryLoadOriginGroundEffect())
+            if (Spell != Spell.困魔咒_13111 && TryLoadOriginGroundEffect())
             {
                 return;
             }
 
             switch (Spell)
             {
-                case Spell.TrapHexagon: // 困魔咒
+                case Spell.困魔咒_13111: // 困魔咒
                     // 安全区边沿光柱：用原始传奇 CDN model 11081（effect 261），不再用废弃的 Libraries.Magic 1390。
                     _originModel = 11081;
                     FrameInterval = OriginIntval;
@@ -94,7 +94,7 @@ namespace Client.MirObjects
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, 1, OriginDir,
                                                     EResLoadPriority.Visible);
                     break;
-                case Spell.FireWall: // 火墙
+                case Spell.火墙: // 火墙
                     BodyLibrary = Libraries.Magic;
                     DrawFrame = 1630;
                     FrameInterval = 120;
@@ -102,7 +102,7 @@ namespace Client.MirObjects
                     Light = 3;
                     Blend = true;
                     break;
-                case Spell.PoisonCloud: // 毒云术
+                case Spell.毒云: // 毒云术
                     BodyLibrary = Libraries.Magic2;
                     DrawFrame = 1650;
                     FrameInterval = 120;
@@ -110,13 +110,13 @@ namespace Client.MirObjects
                     Light = 3;
                     Blend = true;
                     break;
-                case Spell.DigOutZombie: // 地图事件·掘墓僵尸
+                case Spell.挖地僵尸: // 地图事件·掘墓僵尸
                     BodyLibrary = (ushort)Monster.DigOutZombie < Libraries.Monsters.Count() ? Libraries.Monsters[(ushort)Monster.DigOutZombie] : Libraries.Magic;
                     DrawFrame = 304 + (byte) Direction;
                     FrameCount = 0;
                     Blend = false;
                     break;
-                case Spell.Blizzard: // 暴风雪
+                case Spell.冰风暴: // 暴风雪
                     AnimationOffset = new Point(0, -20);
                     BodyLibrary = Libraries.Magic2;
                     DrawFrame = 1550;
@@ -126,7 +126,7 @@ namespace Client.MirObjects
                     Blend = true;
                     Repeat = false;
                     break;
-                case Spell.MeteorStrike: // 流星火雨
+                case Spell.流星火雨: // 流星火雨
                     AnimationOffset = new Point(0, -20);
                     MapControl.Effects.Add(new Effect(Libraries.Magic2, 1600, 10, 800, CurrentLocation) { Repeat = true, RepeatUntil = CMain.Time + 3000 });
                     BodyLibrary = Libraries.Magic2;
@@ -137,7 +137,7 @@ namespace Client.MirObjects
                     Blend = true;
                     Repeat = false;
                     break;
-                case Spell.Rubble: // 地图事件·落石
+                case Spell.碎石: // 地图事件·落石
                     if (Direction == 0)
                         BodyLibrary = null;
                     else
@@ -148,7 +148,7 @@ namespace Client.MirObjects
                         FrameInterval = 10000;
                     }
                     break;
-                case Spell.Reincarnation: // 重生术
+                case Spell.重生: // 重生术
                     BodyLibrary = Libraries.Magic2;
                     DrawFrame = 1680;
                     FrameInterval = 100;
@@ -157,7 +157,7 @@ namespace Client.MirObjects
                     Blend = true;
                     Repeat = true;
                     break;
-                case Spell.ExplosiveTrap: // 爆炸陷阱
+                case Spell.爆炸陷阱: // 爆炸陷阱
                     BodyLibrary = Libraries.Magic3;
                     if (info.Param)
                     {
@@ -177,41 +177,41 @@ namespace Client.MirObjects
                     //Light = 1;
                     Blend = true;
                     break;
-                case Spell.Trap: // 陷阱
+                case Spell.玄冰刃: // 陷阱
                     BodyLibrary = Libraries.Magic2;
                     DrawFrame = 2360;
                     FrameInterval = 100;
                     FrameCount = 8;
                     Blend = true;
                     break;
-                case Spell.MapLightning: // 地图事件·闪电
+                case Spell.地图闪电: // 地图事件·闪电
                     MapControl.Effects.Add(new Effect(Libraries.Dragon, 400 + (CMain.Random.Next(3) * 10), 5, 600, CurrentLocation));
                     SoundManager.PlaySound(8301);
                     break;
-                case Spell.MapLava: // 地图事件·熔岩
+                case Spell.地图岩浆: // 地图事件·熔岩
                     MapControl.Effects.Add(new Effect(Libraries.Dragon, 440, 20, 1600, CurrentLocation) { Blend = false });
                     MapControl.Effects.Add(new Effect(Libraries.Dragon, 470, 10, 800, CurrentLocation));
                     SoundManager.PlaySound(8302);
                     break;
-                case Spell.MapQuake1: // 地图事件·地震一
+                case Spell.地图地震1: // 地图事件·地震一
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.HellLord], 27, 12, 1200, CurrentLocation) { Blend = false });
                     SoundManager.PlaySound(8304);
                     break;
-                case Spell.MapQuake2: // 地图事件·地震二
+                case Spell.地图地震2: // 地图事件·地震二
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.HellLord], 39, 13, 1300, CurrentLocation) { Blend = false });
                     SoundManager.PlaySound(8304);
                     break;
-                case Spell.DigOutArmadillo: // 地图事件·掘地犰狳
+                case Spell.挖地穿山甲: // 地图事件·掘地犰狳
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.Armadillo];
                     DrawFrame = 472 + (byte)Direction;
                     FrameCount = 0;
                     Blend = false;
                     break;
-                case Spell.GeneralMeowMeowThunder: // 地图事件·喵喵将军雷击
+                case Spell.将军喵喵雷: // 地图事件·喵喵将军雷击
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.GeneralMeowMeow], 522, 7, 700, CurrentLocation) { Blend = true });
                     SoundManager.PlaySound(8321);
                     break;
-                case Spell.StoneGolemQuake: // 地图事件·石巨人地震
+                case Spell.石巨人地震: // 地图事件·石巨人地震
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.StoneGolem];
                     DrawFrame = 368 + (int)Direction * 8;
                     FrameInterval = 100;
@@ -221,7 +221,7 @@ namespace Client.MirObjects
                     Repeat = false;
                     SoundManager.PlaySound(8304);
                     break;
-                case Spell.EarthGolemPile: // 地图事件·土巨石堆
+                case Spell.土巨人堆: // 地图事件·土巨石堆
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.EarthGolem];
                     DrawFrame = 441;
                     FrameInterval = 100;
@@ -231,7 +231,7 @@ namespace Client.MirObjects
                     Repeat = false;
                     SoundManager.PlaySound(8331);
                     break;
-                case Spell.TreeQueenMassRoots: // 地图事件·树王群根
+                case Spell.树后群根: // 地图事件·树王群根
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.TreeQueen];
                     DrawFrame = 82;
                     FrameInterval = 100;
@@ -241,7 +241,7 @@ namespace Client.MirObjects
                     SoundManager.PlaySound(8341);
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.TreeQueen], 97, 14, 1400, CurrentLocation) { Blend = true });
                     break;
-                case Spell.TreeQueenGroundRoots: // 地图事件·树王地根
+                case Spell.树后地根: // 地图事件·树王地根
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.TreeQueen];
                     DrawFrame = 48;
                     FrameInterval = 100;
@@ -251,7 +251,7 @@ namespace Client.MirObjects
                     SoundManager.PlaySound(8342);
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.TreeQueen], 57, 9, 900, CurrentLocation) { Blend = true });
                     break;
-                case Spell.TreeQueenRoot: // 地图事件·树王根须
+                case Spell.树后根: // 地图事件·树王根须
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.TreeQueen];
                     DrawFrame = 111;
                     FrameInterval = 100;
@@ -260,7 +260,7 @@ namespace Client.MirObjects
                     Repeat = false;
                     SoundManager.PlaySound(8343);
                     break;
-                case Spell.TucsonGeneralRock: // 地图事件·石像将军落石
+                case Spell.图森将军石: // 地图事件·石像将军落石
                     MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.TucsonGeneral], 552, 20, 2000, CurrentLocation) { Repeat = false, Blend = false });
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.TucsonGeneral];
                     DrawFrame = 572;
@@ -270,14 +270,14 @@ namespace Client.MirObjects
                     Blend = true;
                     Repeat = false;
                     break;
-                case Spell.Portal: // 传送门
+                case Spell.传送门: // 传送门
                     BodyLibrary = Libraries.Magic2;
                     DrawFrame = 2360;
                     FrameInterval = 100;
                     FrameCount = 8;
                     Blend = true;
                     break;
-                case Spell.HealingCircle: // 治愈术（范围）
+                case Spell.治疗圈: // 治愈术（范围）
                     BodyLibrary = Libraries.Magic3;
                     DrawFrame = 630;
                     FrameInterval = 80;
@@ -285,7 +285,7 @@ namespace Client.MirObjects
                     Light = 3;
                     Blend = true;
                     break;
-                case Spell.FlyingStatueIceTornado: // 地图事件·飞像冰龙卷
+                case Spell.飞雕像冰旋风: // 地图事件·飞像冰龙卷
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.FlyingStatue];
                     DrawFrame = 314;
                     FrameInterval = 100;
@@ -294,7 +294,7 @@ namespace Client.MirObjects
                     Repeat = false;
                     SoundManager.PlaySound(8303);
                     break;
-                case Spell.DarkOmaKingNuke: // 地图事件·暗黑奥玛王核爆
+                case Spell.暗黑沃玛王怒: // 地图事件·暗黑奥玛王核爆
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.DarkOmaKing];
                     DrawFrame = 1630 + (int)Direction * 9;
                     FrameInterval = 100;
@@ -303,7 +303,7 @@ namespace Client.MirObjects
                     Repeat = false;
                     SoundManager.PlaySound(((ushort)Monster.DarkOmaKing * 10) + 9);
                     break;
-                case Spell.HornedSorcererDustTornado: // 地图事件·角巫师沙暴
+                case Spell.角术士尘旋风: // 地图事件·角巫师沙暴
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.HornedSorceror];
                     DrawFrame = 634;
                     FrameInterval = 100;
@@ -312,7 +312,7 @@ namespace Client.MirObjects
                     Repeat = true;
                     SoundManager.PlaySound(8306);
                     break;
-                case Spell.HornedCommanderRockFall: // 地图事件·角统帅落石
+                case Spell.角指挥官落石: // 地图事件·角统帅落石
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.HornedCommander];
                     DrawFrame = 1066;
                     FrameInterval = 100;
@@ -321,7 +321,7 @@ namespace Client.MirObjects
                     Repeat = true;
                     SoundManager.PlaySound(8456);
                     break;
-                case Spell.HornedCommanderRockSpike: // 地图事件·角统帅石刺
+                case Spell.角指挥官石刺: // 地图事件·角统帅石刺
                     BodyLibrary = Libraries.Monsters[(ushort)Monster.HornedCommander];
                     DrawFrame = 1190;
                     FrameInterval = 100;
@@ -357,13 +357,13 @@ namespace Client.MirObjects
 
                 switch (Spell)
                 {
-                    case Spell.TucsonGeneralRock: // 地图事件·石像将军落石
+                    case Spell.图森将军石: // 地图事件·石像将军落石
                         if (FrameIndex == 10) SoundManager.PlaySound(8305);
                         break;
-                    case Spell.HornedSorcererDustTornado: // 地图事件·角巫师沙暴
+                    case Spell.角术士尘旋风: // 地图事件·角巫师沙暴
                         if (FrameIndex == 0 && CMain.Random.Next(3) == 0) SoundManager.PlaySound(8306);
                         break;
-                    case Spell.HornedCommanderRockSpike: // 地图事件·角统帅石刺
+                    case Spell.角指挥官石刺: // 地图事件·角统帅石刺
                         if (Ended)
                         {
                             DrawFrame = 1198;

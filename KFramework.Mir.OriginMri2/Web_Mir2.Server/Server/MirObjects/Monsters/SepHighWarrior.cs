@@ -96,7 +96,7 @@ namespace Server.MirObjects.Monsters
             int damage = GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]);
             if (damage == 0) return;
 
-            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.TwinDrakeBlade });
+            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双烈火剑 });
             Target.Attacked(this, (int)(damage * 0.8), DefenceType.AC);
             ProjectileAttack((int)(damage * 0.8), DefenceType.ACAgility);
 
@@ -112,7 +112,7 @@ namespace Server.MirObjects.Monsters
             int damage = GetAttackPower(Stats[Stat.MinDC], Stats[Stat.MaxDC]);
             if (damage == 0) return;
 
-            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrossHalfMoon });
+            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双半月 });
 
             List<MapObject> targets = FindAllTargets(1, CurrentLocation, false);
             if (targets.Count == 0) return;
@@ -131,7 +131,7 @@ namespace Server.MirObjects.Monsters
             if (damage == 0) return;
 
 
-            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BladeAvalanche, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.剑雨, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });
             int col = 3;
             int row = 3;
 

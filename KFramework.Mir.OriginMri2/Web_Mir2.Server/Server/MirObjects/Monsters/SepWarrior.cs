@@ -74,7 +74,7 @@ namespace Server.MirObjects.Monsters
             Direction = Functions.DirectionFromPoint(CurrentLocation, Target.CurrentLocation);
             if (Envir.Random.Next(3) == 0)
             {
-                Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.TwinDrakeBlade });
+                Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.双烈火剑 });
                 Target.Attacked(this, (int)(damage * 0.8), DefenceType.ACAgility);
                 ProjectileAttack((int)(damage * 0.8),DefenceType.ACAgility);
 
