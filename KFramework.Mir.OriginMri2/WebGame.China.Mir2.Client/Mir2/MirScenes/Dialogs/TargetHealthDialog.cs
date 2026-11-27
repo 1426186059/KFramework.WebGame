@@ -1,6 +1,7 @@
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirObjects;
+using KFramework.MonoGame;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -76,6 +77,7 @@ namespace Client.MirScenes.Dialogs
                 Font = FontConst.F12,
                 Size = new Size(139, 16),
                 Location = new Point(40, 3),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 Visible = false
             };
@@ -91,6 +93,7 @@ namespace Client.MirScenes.Dialogs
                 Font = FontConst.F10,
                 Size = new Size(128, 14),
                 Location = new Point(44, 22),
+                DrawFormat = new TextStyle(TextAnchor.MiddleCenter),
                 NotControl = true,
                 Visible = false
             };
