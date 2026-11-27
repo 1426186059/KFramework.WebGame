@@ -37,6 +37,7 @@ namespace Client.MirScenes.Dialogs
             Anchor = EAnchorType.TopCenter;
             AnchorPos = new Point(0, 10);
             ApplyAnchor();
+            Visible = false;
 
             // 头像 / 提示位 killR_wjtx2 (4,0)，帧实际 37×37
             _head = AddImage(Sheet + "#killR_wjtx2", 4, 0, 37, 37);
