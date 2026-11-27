@@ -6,16 +6,8 @@
     /// </summary>
     public class HTML_Window
     {
-        public static HTML_Window Current = null;
-
         /// <summary>设备像素比（window.devicePixelRatio）。由 <see cref="HTML_Canvas.SyncJSInfo"/> 回写，供画布尺寸换算使用。</summary>
         public static float DevicePixelRatio = 1.0f;
-
-        public HTML_Window()
-        {
-            if (Current != null) throw new InvalidOperationException("HTML_Window.Current 已存在，不能重复创建。");
-            Current = this;
-        }
 
         /// <summary>设置页面标题（浏览器标签页文字）。</summary>
         public static void SetTitle(string title) => JSBind_HTML_Window.SetTitle(title);
