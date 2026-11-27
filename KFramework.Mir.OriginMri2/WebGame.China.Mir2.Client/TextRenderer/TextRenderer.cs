@@ -29,7 +29,7 @@ public static class TextRenderer
     {
         EngineText.DrawText(DXManager.Batch, text, font,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-            foreColor, style.Anchor, style.HorizontalWrap, style.VerticalWrap);
+            foreColor, style);
     }
 
     // ---------------- 富文本（交给 EngineRich，由调用方持有实例以复用解析结果）----------------
@@ -46,8 +46,7 @@ public static class TextRenderer
     {
         rich.Draw(DXManager.Batch,
             new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-            foreColor, style.Anchor, style.HorizontalWrap, style.VerticalWrap,
-            outlineMode);
+            foreColor, style, outlineMode);
     }
 
     /// <summary>超链接命中：只传世界坐标，布局已记在 TextInfo（绘制时确定）。命中返回 url，否则 null。</summary>
