@@ -159,7 +159,7 @@ namespace Client.MirControls
             }
         }
         
-        private bool _richText;
+        private bool _richText = true;
         public bool RichText
         {
             get
@@ -173,6 +173,7 @@ namespace Client.MirControls
                     return;
                 }
                 _richText = value;
+                _rich.Rich = value;
                 OnTextChanged(EventArgs.Empty);   // 重新度量与重绘
             }
         }
@@ -180,6 +181,7 @@ namespace Client.MirControls
         private readonly KFramework.MonoGame.RichTextObject _rich = new KFramework.MonoGame.RichTextObject();
         private void SyncRich()
         {
+            _rich.Rich = _richText;
             _rich.SetText(Text);
             _rich.SetFont(Font);
         }

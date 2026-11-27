@@ -391,11 +391,9 @@ namespace WebGame.Mir2.MonoGame.Client
             {
                 HintTextLabel.Text = MirControl.MouseControl.Hint;
             }
-            // AutoSize 的 SizeChanged -> ResizeBaseToText 是异步冒泡的，文本刚换的这一帧
-            // HintBaseLabel.Size 可能还是上一个提示的旧尺寸，用它定位会让提示框跑到屏幕外
-            //（表现为鼠标在部分图标上"看不到提示"）。这里按当前 HintTextLabel 的实际像素宽高重算。
-            ResizeBaseToText(HintBaseLabel, HintTextLabel);
 
+            ResizeBaseToText(HintBaseLabel, HintTextLabel);
+            
             int hx = MPoint.X + 20;
             int hy = MPoint.Y + 20;
 
@@ -559,15 +557,10 @@ namespace WebGame.Mir2.MonoGame.Client
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyUp(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
-
-        // 技能快捷键在 KeyDown 已消费时置位，令紧随其后的 KeyPress 不落到聊天输入框。
-        // Input_KeyBoard 的 KeyDown/KeyPress 是两条独立事件，KeyDown 的 Handled 无法阻止 KeyPress。
+        
         public static bool SuppressNextKeyPress;
-
-        // 浏览器长按技能键会持续发 KeyDown。这里记录“当前按住的技能键 → 技能栏槽位”，
-        // 首次 KeyDown 正常施放，后续由 GameScene.Process 按 CD 自动重复施放，松开键才停止。
         private static readonly Dictionary<Keys, int> HeldSkillKeys = new();
-
+        
         public static IEnumerable<int> HeldSkillSlots
         {
             get { return new HashSet<int>(HeldSkillKeys.Values); }

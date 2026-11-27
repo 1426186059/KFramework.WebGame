@@ -27,7 +27,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         public override string Title => "文本渲染 TextRenderer / KLabel（锚点 9 向 · Wrap 模式）/ 输入框 TextBox";
 
         // ── 页签 ────────────────────────────────────────────────────────────
-        private enum Page { TextRenderer = 0, KLabel = 1, TextBox = 2 }
+        private enum Page { TextRenderer = 0, KLabel = 1, TextBox = 2, BlankLineMeasure = 3 }
         private Page _page = Page.TextRenderer;
 
         // ── 布局缓存（每帧重算；Update 也要用，故不能只在 Draw 里算）────────
@@ -49,6 +49,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         private Rectangle _chatRect;
 
         private IFont _font;
+        private bool _blankLineRich = true;
 
         /// <summary>九个锚点的名字（格内就画它自己，对齐效果一眼可见）。</summary>
         private static readonly string[] AnchorNames =
@@ -74,6 +75,21 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         /// <summary>垂直 Wrap 样本：显式 \n 造 5 行，矮矩形里 Truncate 截断、Overflow 溢出。</summary>
         private const string VWrapSample =
             "第 1 行（VerticalWrapMode）\n第 2 行\n第 3 行\n第 4 行\n第 5 行 —— Truncate 到框底就停，Overflow 会画到框外。";
+
+        /// <summary>
+        /// 空行测量回归样本：复刻技能 Hint 的真实结构（标题 / 两个 \n\n 空行 / 末行「属性：…」）。
+        /// Wrap 模式下 WrapLines 若丢弃空行，MeasureText 就少算一行，而 RichTextObject 仍按空行占位排版，
+        /// 结果末行「属性：…」被裁掉。
+        /// </summary>
+        private const string BlankLineSample =
+            "刺杀剑术\n\nCD时间：0.7秒\n消耗魔法：0点\n\n属性：增加攻击伤害 +2；伤害倍率 100%";
+
+        /// <summary>
+        /// Rich 开关对照样本：开 = 标签被解析成颜色样式、字面不显示；
+        /// 关 = 标签不入解析，&lt;color&gt; 等字符按普通文本原样显示。
+        /// </summary>
+        private const string RichToggleSample =
+            "刺杀剑术\n\n<color=#FF7B7B>CD时间：0.7秒</color>\n消耗魔法：0点\n\n<color=#7BFF9B>属性：增加攻击伤害 +2；伤害倍率 100%</color>";
 
         public override async Task LoadContentAsync()
         {
@@ -142,10 +158,19 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
                         () => _page = Page.KLabel, _page == Page.KLabel);
             AddUiButton("③ TextBox（单机聊天）",
                         () => _page = Page.TextBox, _page == Page.TextBox);
+            AddUiButton("④ 空行测量（回归测试）",
+                        () => _page = Page.BlankLineMeasure, _page == Page.BlankLineMeasure);
 
             if (_page == Page.TextBox)
             {
                 LayoutChat();
+                return;
+            }
+
+            if (_page == Page.BlankLineMeasure)
+            {
+                AddUiButton(_blankLineRich ? "⑤ Rich 开关：开（点击关闭）" : "⑤ Rich 开关：关（点击开启）",
+                            () => _blankLineRich = !_blankLineRich, _blankLineRich);
                 return;
             }
 
@@ -269,6 +294,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             {
                 case Page.TextRenderer: DrawTextRendererPage(batch); break;
                 case Page.KLabel: DrawKLabelPage(batch); break;
+                case Page.BlankLineMeasure: DrawBlankLineMeasurePage(batch); break;
                 default: DrawTextBoxPage(batch); break;
             }
 
@@ -320,6 +346,98 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             DrawBorder(batch, _vOverflowCell, new Color(140, 90, 70));
             TextRenderer.DrawText(batch, VWrapSample, Font, _vOverflowCell, new Color(255, 214, 170),
                                   TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+            }
+
+            // ── 页 ④：空行测量回归（技能 Hint 末行被裁）───────────────────────
+
+            private void DrawBlankLineMeasurePage(SpriteBatch batch)
+            {
+            float x = 28f;
+            float y = ContentTop;
+
+            y += DrawSection(batch,
+            "④ 空行测量回归：技能提示中的空行必须占一行高，否则末行「属性：…」被裁掉",
+            new Vector2(x, y));
+
+            IFont font = Font;
+            float boxW = Math.Clamp((Device.Viewport.Width - x * 2f - 24f) / 2f, 240f, 900f);
+
+            // ① 直接断言 WrapLines：源串 6 行（含 2 个空行）必须逐行保留。
+            int sourceLines = BlankLineSample.Split('\n').Length;
+            List<string> wrapped = TextRenderer.WrapLines(BlankLineSample, font, 0);
+            bool wrapLinesOk = wrapped.Count == sourceLines
+            && wrapped.Count > 1 && wrapped[1].Length == 0
+            && wrapped.Count > 4 && wrapped[4].Length == 0;
+
+            // ② 测量高度：Wrap 模式下 MeasureText 走 WrapLines，必须 >= 行数 × LineSpacing。
+            Size measured = TextRenderer.MeasureText(BlankLineSample, font,
+            new Size((int)boxW, int.MaxValue), HorizontalWrapMode.Wrap);
+            int expectedH = (int)Math.Ceiling(sourceLines * font.LineSpacing);
+            bool heightOk = measured.Height >= expectedH;
+
+            // ③ 富文本排版与 MirLabel 一致：末行 bottom 不能超过 Measure 高度，否则被纹理裁掉。
+            var rich = new RichTextObject();
+            rich.SetText(BlankLineSample);
+            rich.SetFont(font);
+            rich.Layout(new RectangleF(0, 0, boxW, 10000), TextAnchor.UpperLeft,
+                    HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+            var lastLine = rich.TextInfo.Lines[rich.TextInfo.LineCount - 1];
+            float lastBottom = lastLine.Top + lastLine.Height;
+            bool layoutOk = rich.TextInfo.LineCount == sourceLines && measured.Height >= lastBottom;
+
+            bool pass = wrapLinesOk && heightOk && layoutOk;
+
+            DrawLine(batch, font,
+            $"WrapLines 行数 {wrapped.Count}/{sourceLines}（空行保留={wrapLinesOk}）    Measure 高度 {measured.Height} >= 期望 {expectedH}（{heightOk}）",
+            new Vector2(x, y), wrapLinesOk && heightOk ? new Color(170, 230, 170) : new Color(255, 150, 150));
+            y += font.LineSpacing + 4f;
+
+            DrawLine(batch, font,
+            $"富文本排版 {rich.TextInfo.LineCount} 行   末行 bottom={lastBottom:0.0}   Measure 高度 {measured.Height}（未裁切={layoutOk}）",
+            new Vector2(x, y), layoutOk ? new Color(170, 230, 170) : new Color(255, 150, 150));
+            y += font.LineSpacing + 4f;
+
+            DrawLine(batch, font,
+            pass ? "PASS：末行「属性：…」完整可见" : "FAIL：末行「属性：…」会被裁掉",
+            new Vector2(x, y), pass ? new Color(110, 235, 140) : new Color(255, 100, 100));
+            y += font.LineSpacing + 14f;
+
+            // 左框按 MeasureText 高度（模拟 MirLabel.AutoSize + Truncate），右框给足高度作参照。
+            Rectangle autoBox = new Rectangle((int)x, (int)y, (int)boxW, Math.Max(1, measured.Height));
+            Rectangle roomBox = new Rectangle((int)(x + boxW + 24f), (int)y, (int)boxW, expectedH + 8);
+
+            DrawLine(batch, font, $"AutoSize 框（高 {autoBox.Height}）", new Vector2(autoBox.X, y - font.LineSpacing), Color.LightGray);
+            DrawLine(batch, font, $"足高参照（高 {roomBox.Height}）", new Vector2(roomBox.X, y - font.LineSpacing), Color.LightGray);
+
+            DrawRect(batch, autoBox, new Color(18, 23, 36));
+            DrawBorder(batch, autoBox, pass ? new Color(70, 200, 110) : new Color(220, 80, 80));
+            TextRenderer.DrawText(batch, BlankLineSample, font, autoBox, Color.White,
+                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate);
+
+            DrawRect(batch, roomBox, new Color(18, 23, 36));
+            DrawBorder(batch, roomBox, new Color(70, 130, 110));
+            TextRenderer.DrawText(batch, BlankLineSample, font, roomBox, Color.White,
+                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+
+            // ⑤ Rich 开关对照：同一份带标签文本，开=解析成样式、关=标签原样显示。
+            float toggleY = Math.Max(autoBox.Bottom, roomBox.Bottom) + 22f;
+            toggleY += DrawSection(batch,
+                $"⑤ Rich 开关对照：当前 {(_blankLineRich ? "开（解析标签）" : "关（标签原样）")}",
+                new Vector2(x, toggleY));
+
+            var richToggle = new RichTextObject
+            {
+                Rich = _blankLineRich,
+            };
+            richToggle.SetText(RichToggleSample);
+            richToggle.SetFont(font);
+
+            float toggleW = Math.Min(boxW * 2f + 24f, Device.Viewport.Width - x * 2f);
+            Rectangle toggleBox = new Rectangle((int)x, (int)toggleY, (int)toggleW, (int)(6 * font.LineSpacing) + 8);
+            DrawRect(batch, toggleBox, new Color(18, 23, 36));
+            DrawBorder(batch, toggleBox, _blankLineRich ? new Color(70, 200, 110) : new Color(220, 160, 70));
+            richToggle.Draw(batch, toggleBox, Color.White, TextAnchor.UpperLeft,
+                            HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
         }
 
         // ── 页 ②：KLabel（同一套矩形与样本，改走控件）──────────────────────

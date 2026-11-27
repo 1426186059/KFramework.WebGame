@@ -148,7 +148,6 @@ namespace KFramework.MonoGame
             DrawText(batch, text, font, bounds, foreColor, anchor, hWrap, vWrap);
         }
 
-        /// <summary>backColor 非透明时用 1x1 白纹铺底（对齐原版 backColor 语义）。</summary>
         private static void FillBackground(SpriteBatch batch, RectangleF bounds, Color backColor)
         {
             if (backColor.A == 0)
@@ -175,11 +174,23 @@ namespace KFramework.MonoGame
             foreach (string raw in text.Split('\n'))
             {
                 string line = raw.Replace("\r", "");
-                if (maxWidth <= 0) { result.Add(line); continue; }
+                if (line.Length == 0)
+                {
+                    result.Add(string.Empty);
+                    continue;
+                }
 
-                // 记录行首空白，仅贴到本段“第一个产出行”前面作为缩进；续行从 x=0 起（与 GDI 一致）。
+                if (maxWidth <= 0) 
+                { 
+                    result.Add(line); 
+                    continue; 
+                }
+
                 int lead = 0;
-                while (lead < line.Length && line[lead] == ' ') lead++;
+                while (lead < line.Length && line[lead] == ' ')
+                {
+                    lead++;
+                }
                 string leadStr = lead > 0 ? new string(' ', lead) : string.Empty;
 
                 string[] words = line.Split(' ');
@@ -214,11 +225,13 @@ namespace KFramework.MonoGame
                         current.Append(current.Length == 0 ? word : " " + word);
                     }
                 }
+
                 if (current.Length > 0)
+                {
                     result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
+                }
             }
             return result;
         }
-
     }
 }

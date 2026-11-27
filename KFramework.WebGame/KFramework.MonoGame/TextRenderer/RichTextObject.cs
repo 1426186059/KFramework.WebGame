@@ -11,9 +11,6 @@ namespace KFramework.MonoGame
         private IFont _font;
         private RichTextDocument? _doc;   // 解析缓存：Text 变化时才重建
         private Texture2D _whitePixel;   // 下划线用的 1x1 白纹（按需创建）
-
-        // 排版缓存：runs 坐标相对 (0,0)，绘制/命中时按 bounds.X/Y 平移。
-        // 于是同一段文字的 4 次描边 + 1 次前景（仅位置偏移 1px）能复用同一次布局。
         private string _layoutText;
         private IFont _layoutFont;
         private float _layoutWidth;
@@ -21,14 +18,11 @@ namespace KFramework.MonoGame
         private TextAnchor _layoutAnchor;
         private HorizontalWrapMode _layoutHWrap;
         private VerticalWrapMode _layoutVWrap;
-
         private List<RichTextRun> _layoutRuns = null;
-        private List<float> _layoutLineTops = null;   // 各行行顶 Y（相对原点），供画辅助线
-        private RichTextInfo _textInfo;               // 对标 TMP textInfo，排版时构建
-        private Color _lastForeColor = Color.White;   // 最近一次绘制的前景色，用于构建字符最终色
+        private List<float> _layoutLineTops = null;  
+        private RichTextInfo _textInfo; 
+        private Color _lastForeColor = Color.White;
 
-        /// <summary>排版结果（逐字符/逐行/逐链接）。对标 TMP_Text.textInfo。
-        /// 在 Draw / Measure / GetLineTops 触发排版后可读；Text/Font 变化时会重建。</summary>
         public RichTextInfo TextInfo
         {
             get
@@ -71,6 +65,27 @@ namespace KFramework.MonoGame
             }
         }
 
+        private bool _rich = true;
+
+        /// <summary>是否解析富文本标签。默认 true（保持既有行为）；
+        /// 置 false 时不解析，&lt;color&gt; 等标签按普通字符原样绘制，样式 / 链接全部失效。</summary>
+        public bool Rich
+        {
+            get
+            {
+                return _rich;
+            }
+            set
+            {
+                if (_rich == value)
+                {
+                    return;
+                }
+                _rich = value;
+                Reparse();
+            }
+        }
+
         /// <summary>是否有可绘制内容（文本非空且至少有一个可见字符）。</summary>
         public bool HasContent
         {
@@ -87,13 +102,19 @@ namespace KFramework.MonoGame
                 return;
             }
             _text = text ?? string.Empty;
+            Reparse();
+        }
 
-            // 唯一解析入口：无标签直接返回 null，Draw/Measure 走纯文本快路径。
-            _doc = _text.IndexOf('<') < 0
-                   ? null
-                   : RichTextDocument.Parse(_text);
+        /// <summary>重新解析标签并让排版缓存失效。Rich=false 时不解析，
+        /// LayoutRich / Measure 直接用 _text 原文，标签当普通字符显示。</summary>
+        private void Reparse()
+        {
+            // 唯一解析入口：关闭富文本或无标签时 _doc = null，Draw/Measure 走原文。
+            _doc = _rich && _text.IndexOf('<') >= 0
+                   ? RichTextDocument.Parse(_text)
+                   : null;
 
-            _layoutRuns = null;   // 文本变了：解析与排版都失效
+            _layoutRuns = null;
             _layoutLineTops = null;
             _textInfo = null;
         }

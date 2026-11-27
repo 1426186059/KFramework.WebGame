@@ -5,6 +5,7 @@ using KFramework.MonoGameExtend;
 using Client.MirNetwork;
 using Client.MirObjects;
 using SlimDX;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
