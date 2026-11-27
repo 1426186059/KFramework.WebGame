@@ -49,5 +49,19 @@ namespace KFramework.MonoGame
         /// <summary>默认风格：左上对齐、不折行、不截断。</summary>
         public static TextStyle Default => new TextStyle(TextAnchor.UpperLeft);
 
+        public bool Equals(TextStyle other)
+        {
+            return Anchor == other.Anchor &&
+                   HorizontalWrap == other.HorizontalWrap &&
+                   VerticalWrap == other.VerticalWrap;
+        }
+
+        public override bool Equals(object obj) => obj is TextStyle other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(Anchor, HorizontalWrap, VerticalWrap);
+
+        public static bool operator ==(TextStyle a, TextStyle b) => a.Equals(b);
+
+        public static bool operator !=(TextStyle a, TextStyle b) => !a.Equals(b);
     }
 }

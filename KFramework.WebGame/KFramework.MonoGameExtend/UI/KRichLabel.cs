@@ -66,16 +66,16 @@ namespace KFramework.MonoGameExtend
         public override void Draw()
         {
             if (!activeInHierarchy) return;
-            DrawTo(KSceneMgr.SpriteBatch, Bounds, Color, Alignment, HorizontalWrap, VerticalWrap, OutlineMode);
+            DrawTo(KSceneMgr.SpriteBatch, Bounds, Color,
+                   new TextStyle(Alignment, HorizontalWrap, VerticalWrap), OutlineMode);
         }
 
-        /// <summary>立即模式绘制：直接指定矩形/颜色/排版参数，内部复用同一个 RichTextObject。</summary>
+        /// <summary>立即模式绘制：直接指定矩形/颜色/排版风格，内部复用同一个 RichTextObject。</summary>
         public void DrawTo(SpriteBatch batch, RectangleF bounds, Color color,
-                           TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                           bool outlineMode = false)
+                           TextStyle style, bool outlineMode = false)
         {
             EnsureFont();
-            _rich.Draw(batch, bounds, color, anchor, hWrap, vWrap, outlineMode);
+            _rich.Draw(batch, bounds, color, style, outlineMode);
         }
 
         /// <summary>按给定宽度度量富文本（剥离标签后折行）。</summary>
@@ -86,10 +86,10 @@ namespace KFramework.MonoGameExtend
         }
 
         /// <summary>强制排版（对标 TMP_Text.ForceMeshUpdate）；仅未绘制就要命中/取字符信息时调用。</summary>
-        public void Layout(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        public void Layout(RectangleF bounds, TextStyle style)
         {
             EnsureFont();
-            _rich.Layout(bounds, anchor, hWrap, vWrap);
+            _rich.Layout(bounds, style);
         }
 
         /// <summary>超链接命中：只传世界坐标，布局已记在 TextInfo。命中返回 url，否则 null。</summary>
@@ -105,11 +105,10 @@ namespace KFramework.MonoGameExtend
         public RichTextInfo TextInfo => _rich.TextInfo;
 
         /// <summary>各真实行顶 Y（相对绘制矩形），供画行辅助线；放大字行更高，行距不均匀。</summary>
-        public List<float> GetLineTops(RectangleF bounds, TextAnchor anchor,
-                                       HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        public List<float> GetLineTops(RectangleF bounds, TextStyle style)
         {
             EnsureFont();
-            return _rich.GetLineTops(bounds, anchor, hWrap, vWrap);
+            return _rich.GetLineTops(bounds, style);
         }
 
         public int GetWidth() => Measure(new Size(int.MaxValue, int.MaxValue), HorizontalWrap).Width;

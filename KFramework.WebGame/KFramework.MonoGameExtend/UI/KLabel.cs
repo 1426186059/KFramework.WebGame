@@ -90,9 +90,7 @@ namespace KFramework.MonoGameExtend
                 Font,
                 Bounds,
                 Color,
-                Alignment,
-                HorizontalWrap,
-                VerticalWrap);
+                new TextStyle(Alignment, HorizontalWrap, VerticalWrap));
         }
 
         /// <summary>按当前字体量出的文本宽度（与控件矩形无关）。</summary>

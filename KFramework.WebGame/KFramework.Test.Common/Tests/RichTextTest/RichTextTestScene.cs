@@ -166,8 +166,8 @@ namespace KFramework.Test.Common.Tests.RichTextTest
         private string GetLink(string text, Rectangle bounds, float x, float y)
         {
             _queryRich.Text = text;
-            _queryRich.Layout(bounds, TextAnchor.UpperLeft,
-                              HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+            _queryRich.Layout(bounds,
+                              new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow));
             return _queryRich.FindIntersectingLink(new Vector2(x, y));
         }
 
@@ -206,22 +206,22 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle colorRect = new((int)x, (int)y, (int)width, 150);
             DrawRect(batch, colorRect, new Color(18, 23, 36));
             _colorRich.DrawTo(batch, colorRect, Color.White,
-                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                              new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
             y += colorRect.Height + 16f;
 
             y += DrawSection(batch, "② 样式标签 <b> <i> <u> <size=n>（粗/斜体取决于字体是否提供该字形）", new Vector2(x, y));
             Rectangle styleRect = new((int)x, (int)y, (int)width, 110);
             DrawRect(batch, styleRect, new Color(18, 23, 36));
             _styleRich.DrawTo(batch, styleRect, Color.White,
-                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                              new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
             y += styleRect.Height + 16f;
 
             y += DrawSection(batch, "③ 对照：richText = false（标签原样显示成字符）", new Vector2(x, y));
             Rectangle rawRect = new((int)x, (int)y, (int)width, 70);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, "<color=#FF5050>红色</color> <link=\"url\">链接</link> <b>粗体</b>", Font, rawRect,
-                                  new Color(255, 210, 160), TextAnchor.UpperLeft,
-                                  HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                                  new Color(255, 210, 160),
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
         }
 
         // ── 页②：超链接命中 ───────────────────────────────────────────────
@@ -238,7 +238,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
 
             DrawRect(batch, _linkRect, new Color(18, 23, 36));
             _linkRich.DrawTo(batch, _linkRect, Color.White,
-                             TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+                             new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow));
             y = _linkRect.Bottom + 14f;
 
             Vector2 p = Input_Mouse.Position;
@@ -303,7 +303,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle probe = new((int)x, (int)y, (int)MathF.Min(width, 700f), 40);
             DrawRect(batch, probe, new Color(18, 23, 36));
             _probeRich.DrawTo(batch, probe, Color.White,
-                              TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+                              new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow));
             y += probe.Height + 14f;
 
             float wA = Font.MeasureString("甲").X;
@@ -436,7 +436,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle rawRect = new((int)x, (int)y, (int)width, rawH);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, _randomSample, Font, rawRect, new Color(255, 215, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
             y += rawH + 14f;
 
             // 下：富文本渲染结果
@@ -446,7 +446,7 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle richRect = new((int)x, (int)y, (int)width, richH);
             DrawRect(batch, richRect, new Color(18, 23, 36));
             _randomRich.DrawTo(batch, richRect, Color.White,
-                               TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                               new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
         }
 
         // ── 页⑤：自动换行（标签内容被折行拆开）─────────────────────────────
@@ -483,16 +483,15 @@ namespace KFramework.Test.Common.Tests.RichTextTest
             Rectangle rawRect = new((int)x, (int)boxY, (int)colW, boxH);
             DrawRect(batch, rawRect, new Color(36, 28, 20));
             TextRenderer.DrawText(batch, _wrapSample, Font, rawRect, new Color(255, 215, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
 
             // 右：富文本渲染，并画每行高度辅助线（按最大字号行的行高，贴近放大字真实占位）
             Rectangle richRect = new((int)colX2, (int)boxY, (int)colW, boxH);
             _wrapRect = richRect;   // 供 Update 在鼠标位置做命中查询
             DrawRect(batch, richRect, new Color(18, 23, 36));
-            _wrapRich.DrawTo(batch, richRect, Color.White,
-                             TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
-            List<float> lineTops = _wrapRich.GetLineTops(richRect, TextAnchor.UpperLeft,
-                                       HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+            TextStyle wrapStyle = new(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+            _wrapRich.DrawTo(batch, richRect, Color.White, wrapStyle);
+            List<float> lineTops = _wrapRich.GetLineTops(richRect, wrapStyle);
             int lineCount = lineTops.Count;
             for (int i = 1; i < lineCount; i++)
             {

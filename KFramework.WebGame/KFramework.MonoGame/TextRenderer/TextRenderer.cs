@@ -61,20 +61,21 @@ namespace KFramework.MonoGame
         /// <summary>在给定矩形内绘制普通文本；<paramref name="batch"/> 必须处于 Begin / End 之间。
         /// 富文本请用 <see cref="RichTextObject"/>。</summary>
         public static void DrawText(
-            SpriteBatch batch, 
-            string text, 
-            IFont font, 
-            RectangleF bounds, 
+            SpriteBatch batch,
+            string text,
+            IFont font,
+            RectangleF bounds,
             Color foreColor,
-            TextAnchor anchor = TextAnchor.UpperLeft,
-            HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
-            VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
+            TextStyle style)
         {
             if (batch == null || font == null || string.IsNullOrEmpty(text))
             {
                 return;
             }
 
+            TextAnchor anchor = style.Anchor;
+            HorizontalWrapMode hWrap = style.HorizontalWrap;
+            VerticalWrapMode vWrap = style.VerticalWrap;
             int maxWidth = hWrap == HorizontalWrapMode.Wrap ? (int)bounds.Width : 0;
             ListStringBuilder lines = WrapLines(text, font, maxWidth);
 
@@ -128,16 +129,14 @@ namespace KFramework.MonoGame
             RectangleF bounds, 
             Color foreColor, 
             Color backColor,
-            TextAnchor anchor = TextAnchor.UpperLeft,
-            HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
-            VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
+            TextStyle style)
         {
             if (batch == null)
             {
                 return;
             }
             FillBackground(batch, bounds, backColor);
-            DrawText(batch, text, font, bounds, foreColor, anchor, hWrap, vWrap);
+            DrawText(batch, text, font, bounds, foreColor, style);
         }
 
         private static void FillBackground(SpriteBatch batch, RectangleF bounds, Color backColor)

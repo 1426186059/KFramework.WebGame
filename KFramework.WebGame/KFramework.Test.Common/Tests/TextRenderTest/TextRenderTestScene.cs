@@ -306,7 +306,8 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
                 DrawBorder(batch, cell, new Color(58, 74, 108));
 
                 // 默认 hWrap / vWrap 都是 Overflow：短文本不会被折行或截断。
-                TextRenderer.DrawText(batch, AnchorNames[i], Font, cell, AnchorColors[i], (TextAnchor)i);
+                TextRenderer.DrawText(batch, AnchorNames[i], Font, cell, AnchorColors[i],
+                                      new TextStyle((TextAnchor)i));
             }
 
             // ② HorizontalWrapMode：同一个窄矩形，Wrap 折行 / Overflow 画出去。
@@ -316,12 +317,12 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             DrawRect(batch, _hWrapCell, new Color(18, 23, 36));
             DrawBorder(batch, _hWrapCell, new Color(70, 130, 110));
             TextRenderer.DrawText(batch, WrapSample, Font, _hWrapCell, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Wrap);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap));
 
             DrawRect(batch, _hOverflowCell, new Color(18, 23, 36));
             DrawBorder(batch, _hOverflowCell, new Color(140, 90, 70));
             TextRenderer.DrawText(batch, WrapSample, Font, _hOverflowCell, new Color(255, 214, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Overflow);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow));
 
             // ③ VerticalWrapMode：同一个矮矩形 + 5 行文本，Truncate 截断 / Overflow 溢出。
             DrawSection(batch, "③ VerticalWrapMode：同一个矮矩形 + 5 行文本 —— 左 Truncate 截断 / 右 Overflow 溢出",
@@ -330,12 +331,12 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             DrawRect(batch, _vTruncateCell, new Color(18, 23, 36));
             DrawBorder(batch, _vTruncateCell, new Color(70, 130, 110));
             TextRenderer.DrawText(batch, VWrapSample, Font, _vTruncateCell, Color.White,
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Truncate);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Truncate));
 
             DrawRect(batch, _vOverflowCell, new Color(18, 23, 36));
             DrawBorder(batch, _vOverflowCell, new Color(140, 90, 70));
             TextRenderer.DrawText(batch, VWrapSample, Font, _vOverflowCell, new Color(255, 214, 170),
-                                  TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow);
+                                  new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Overflow, VerticalWrapMode.Overflow));
             }
 
             // ── 页 ④：空行测量回归（技能 Hint 末行被裁）───────────────────────
@@ -370,8 +371,8 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             var rich = new RichTextObject();
             rich.SetText(BlankLineSample);
             rich.SetFont(font);
-            rich.Layout(new RectangleF(0, 0, boxW, 10000), TextAnchor.UpperLeft,
-                    HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow);
+            rich.Layout(new RectangleF(0, 0, boxW, 10000),
+                    new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Overflow));
             var richInfo = rich.TextInfo;
             int richLineCount = richInfo != null ? richInfo.LineCount : 0;
             float lastBottom = 0f;
@@ -408,7 +409,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             DrawRect(batch, autoBox, new Color(18, 23, 36));
             DrawBorder(batch, autoBox, pass ? new Color(70, 200, 110) : new Color(220, 80, 80));
             TextRenderer.DrawText(batch, BlankLineSample, font, autoBox, Color.White,
-                              TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate);
+                              new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap, VerticalWrapMode.Truncate));
         }
 
         // ── 页 ②：KLabel（同一套矩形与样本，改走控件）──────────────────────
@@ -498,7 +499,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
                           : msg.StartsWith("系统：") ? new Color(255, 206, 110)
                           : Color.White;
                 TextRenderer.DrawText(batch, msg, _font, new Rectangle((int)x, (int)y, availW, sz.Height), c,
-                                      hWrap: HorizontalWrapMode.Wrap);
+                                      new TextStyle(TextAnchor.UpperLeft, HorizontalWrapMode.Wrap));
             }
         }
 

@@ -13,13 +13,11 @@ namespace KFramework.MonoGame
         private readonly RichTextInfo _textInfo = new RichTextInfo();
 
         private Texture2D _whitePixel;   // 下划线用的 1x1 白纹（按需创建）
-        private string _layoutText;
-        private IFont _layoutFont;
-        private float _layoutWidth;
-        private float _layoutHeight;
-        private TextAnchor _layoutAnchor;
-        private HorizontalWrapMode _layoutHWrap;
-        private VerticalWrapMode _layoutVWrap;
+
+        // 文本 / 字体 / Rich 开关变化时由 setter 标脏；几何参数由 LayoutRich 比对缓存矩形。
+        private bool bLayoutDirty = true;
+        private RectangleF _layoutBounds;  // 上次排版用的矩形（X/Y 不参与比对，只有 Size 有意义）
+        private TextStyle _layoutStyle;
         private List<RichTextRun> _layoutRuns = null;
         private List<float> _layoutLineTops = null;
         private float _layoutMeasuredWidth;   // LayoutRich 算出的最宽行，Measure 复用
@@ -118,8 +116,7 @@ namespace KFramework.MonoGame
                 _doc.Parse(_text);
             }
 
-            _layoutRuns = null;
-            _layoutLineTops = null;
+            bLayoutDirty = true;
         }
 
         public void SetFont(IFont font)
@@ -129,8 +126,7 @@ namespace KFramework.MonoGame
                 return;
             }
             _font = font;
-            _layoutRuns = null;   // 字体变了：字宽/行高变了，排版失效
-            _layoutLineTops = null;
+            bLayoutDirty = true;   // 字体变了：字宽/行高变了，排版失效
         }
 
         /// <summary>富文本度量：直接复用 LayoutRich 的排版结果（逐字符 Scale 宽度 + 每行最大 Scale 撑高），
@@ -150,8 +146,8 @@ namespace KFramework.MonoGame
 
             bool wrap = hWrap == HorizontalWrapMode.Wrap && proposedSize.Width > 0;
             float boundsW = wrap ? proposedSize.Width : float.MaxValue;
-            LayoutRich(new RectangleF(0, 0, boundsW, float.MaxValue), TextAnchor.UpperLeft,
-                       hWrap, VerticalWrapMode.Overflow);
+            LayoutRich(new RectangleF(0, 0, boundsW, float.MaxValue),
+                       new TextStyle(TextAnchor.UpperLeft, hWrap, VerticalWrapMode.Overflow));
             return new Size((int)Math.Ceiling(_layoutMeasuredWidth), (int)Math.Ceiling(_layoutMeasuredHeight));
         }
 
@@ -159,12 +155,10 @@ namespace KFramework.MonoGame
 
         /// <summary>富文本绘制；batch 必须处于 Begin / End 之间。
         /// outlineMode=true 时只画去标签的纯文本、忽略段颜色（供描边用统一色）。</summary>
-        public void Draw(SpriteBatch batch, 
-                         RectangleF bounds, 
+        public void Draw(SpriteBatch batch,
+                         RectangleF bounds,
                          Color foreColor,
-                         TextAnchor anchor, 
-                         HorizontalWrapMode hWrap, 
-                         VerticalWrapMode vWrap,
+                         TextStyle style,
                          bool outlineMode = false)
         {
             if (batch == null || _font == null || string.IsNullOrEmpty(_text))
@@ -176,7 +170,7 @@ namespace KFramework.MonoGame
             // 关闭富文本：直接回退到 TextRenderer 普通文本绘制（无逐字符样式 / 无标签解析）。
             if (!_rich)
             {
-                TextRenderer.DrawText(batch, _text, _font, bounds, foreColor, anchor, hWrap, vWrap);
+                TextRenderer.DrawText(batch, _text, _font, bounds, foreColor, style);
                 return;
             }
 
@@ -184,20 +178,19 @@ namespace KFramework.MonoGame
             {
                 if (_doc.Styles.Count > 0)
                 {
-                    DrawRichCore(batch, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
+                    DrawRichCore(batch, bounds, foreColor, style, outlineMode);
                 }
                 return;   // 全是标签，无可见文本
             }
             // 无标签：仍按富文本路径画（逐字符折行），但样式全默认，等效普通文本。
-            DrawRichCore(batch, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
+            DrawRichCore(batch, bounds, foreColor, style, outlineMode);
         }
 
         /// <summary>返回各行的行顶 Y（相对 bounds 原点），供测试/调试画行辅助线。
         /// 与 Draw 共用排版缓存；放大字所在行行高更大，行顶间距并不均匀。</summary>
-        public List<float> GetLineTops(RectangleF bounds, TextAnchor anchor,
-                                       HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        public List<float> GetLineTops(RectangleF bounds, TextStyle style)
         {
-            LayoutRich(bounds, anchor, hWrap, vWrap);   // 命中缓存 / 触发排版
+            LayoutRich(bounds, style);   // 命中缓存 / 触发排版
             return _layoutLineTops ?? new List<float>();
         }
 
@@ -205,13 +198,13 @@ namespace KFramework.MonoGame
 
         /// <summary>强制按给定矩形排版并生成 TextInfo，对标 TMP_Text.ForceMeshUpdate 的排版部分。
         /// 正常绘制无需调用（Draw 内部已排版）；仅在「未绘制就要命中/取字符信息」时显式调用。</summary>
-        public void Layout(RectangleF bounds, TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        public void Layout(RectangleF bounds, TextStyle style)
         {
             if (_font == null)
             {
                 return;
             }
-            LayoutRich(bounds, anchor, hWrap, vWrap);
+            LayoutRich(bounds, style);
         }
 
         /// <summary>超链接命中便捷版（返回 url，否则 null）。只传鼠标位置——布局与参数 Draw/Layout 时已记在 TextInfo 里。
@@ -232,9 +225,12 @@ namespace KFramework.MonoGame
         /// <summary>富文本排版：逐字符折行 → 对齐 → 逐样式段切分，产出每段的文本、样式与矩形。
         /// 结果以 (0,0) 为原点缓存；Text/Font 或尺寸、对齐、折行方式变化时才重算。
         /// 注意 bounds.X/bounds.Y 只作为绘制/命中的平移量，不进缓存 key——描边偏移 1px 也能命中同一份布局。</summary>
-        private List<RichTextRun> LayoutRich(RectangleF bounds, TextAnchor anchor,
-                                             HorizontalWrapMode hWrap, VerticalWrapMode vWrap)
+        private List<RichTextRun> LayoutRich(RectangleF bounds, TextStyle style)
         {
+            TextAnchor anchor = style.Anchor;
+            HorizontalWrapMode hWrap = style.HorizontalWrap;
+            VerticalWrapMode vWrap = style.VerticalWrap;
+
             // 高度只有两种情况参与排版：垂直居中/下对齐会平移 startY（连带 run 的 BaselineY
             // 与 lineTops），Truncate 会用 bounds.Height 决定裁到第几行。
             // UpperLeft + Overflow 时高度不参与任何计算，绝不能进缓存 key：
@@ -242,17 +238,13 @@ namespace KFramework.MonoGame
             // 每帧交替调用会把缓存反复踢掉，触发两三次完整重排（逐字符测量 + BuildTextInfo）。
             int row = (int)anchor / 3;
             float layoutHeightKey = (row != 0 || vWrap == VerticalWrapMode.Truncate) ? bounds.Height : 0f;
-            if (_layoutRuns != null && 
-                ReferenceEquals(_layoutText, _text) && 
-                _layoutFont == _font &&
-                _layoutWidth == bounds.Width && 
-                _layoutHeight == layoutHeightKey &&
-                _layoutAnchor == anchor && 
-                _layoutHWrap == hWrap && 
-                _layoutVWrap == vWrap)
+            Vector2 layoutSize = new(bounds.Width, layoutHeightKey);
+            if (!bLayoutDirty && _layoutRuns != null &&
+                _layoutBounds.Size == layoutSize && _layoutStyle == style)
             {
                 return _layoutRuns;
             }
+            bLayoutDirty = false;
 
             List<RichTextStyle> docStyles = _doc.bHaveRichText ? _doc.Styles : null;
             int textLen = docStyles != null ? docStyles.Count : _text.Length;
@@ -375,13 +367,9 @@ namespace KFramework.MonoGame
             }
 
             // 命中：只有这些量变化才重算；bounds.X/Y 不进 key（只做平移）。
-            _layoutText = _text;
-            _layoutFont = _font;
-            _layoutWidth = bounds.Width;
-            _layoutHeight = layoutHeightKey;
-            _layoutAnchor = anchor;
-            _layoutHWrap = hWrap;
-            _layoutVWrap = vWrap;
+            _layoutBounds = bounds;
+            _layoutBounds.Height = layoutHeightKey;  // 归一化高度写入缓存矩形
+            _layoutStyle = style;
             _layoutRuns = runs;
             _layoutLineTops = lineTops;
             BuildTextInfo(bounds, runs, lineTops);
@@ -477,10 +465,9 @@ namespace KFramework.MonoGame
 
         /// <summary>用排版结果逐段绘制（颜色/超链接/下划线/字号）。</summary>
         private void DrawRichCore(SpriteBatch batch, RectangleF bounds, Color foreColor,
-                                  TextAnchor anchor, HorizontalWrapMode hWrap, VerticalWrapMode vWrap,
-                                  bool outlineMode)
+                                  TextStyle style, bool outlineMode)
         {
-            List<RichTextRun> runs = LayoutRich(bounds, anchor, hWrap, vWrap);
+            List<RichTextRun> runs = LayoutRich(bounds, style);
             foreach (RichTextRun run in runs)
             {
                 Color segColor = outlineMode ? foreColor : run.Style.EffectiveColor(foreColor);
