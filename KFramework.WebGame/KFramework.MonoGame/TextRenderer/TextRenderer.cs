@@ -98,7 +98,7 @@ namespace KFramework.MonoGame
             float clipBottom = vWrap == VerticalWrapMode.Truncate ? 
                 bounds.Y + bounds.Height : float.MaxValue;
 
-            foreach (System.Text.StringBuilder line in lines)
+            foreach (StringBuilder line in lines)
             {
                 if (startY + lineH > clipBottom)
                 {
@@ -106,13 +106,16 @@ namespace KFramework.MonoGame
                 }
 
                 float lineW = font.MeasureString(line).X;
+                //水平左对齐
                 float tx = bounds.X;
                 if (col == 1)
                 {
+                    //水平居中对齐
                     tx = bounds.X + (bounds.Width - lineW) / 2f;
                 }
                 else if (col == 2)
                 {
+                    //水平右对齐
                     tx = bounds.X + (bounds.Width - lineW);
                 }
                 font.Draw(batch, line, new Vector2(tx, startY), foreColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
