@@ -34,7 +34,7 @@ public static class LanguageMgr
         return string.Format(text, args);
     }
 
-    public static void LoadFromJson(string json)
+    private static void LoadFromJson(string json)
     {
         if (string.IsNullOrWhiteSpace(json))
         {
