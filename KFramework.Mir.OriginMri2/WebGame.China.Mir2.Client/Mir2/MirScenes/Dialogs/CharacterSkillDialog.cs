@@ -568,9 +568,6 @@ namespace Client.MirScenes.Dialogs
                 Cells[row].Index = -1;
                 Cells[row].ImageUrl = null;   // 清掉上一轮 CDN 图标，避免换绑/解绑后残留
 
-                var keybind = (KeybindOptions)((int)KeybindOptions.Bar1Skill1 + (slot - 1));
-                string key = CMain.InputKeys.GetKey(keybind);
-
                 foreach (var m in GameScene.User.Magics)
                 {
                     if (m.Key != slot) continue;
@@ -582,10 +579,8 @@ namespace Client.MirScenes.Dialogs
                     // 原始传奇技能图标：ResUrl.url(icon,9)=icon/skills/{OriginIcon}.png，纯 CDN 无本地回落。
                     Cells[row].ImageUrl = Mir2OriginObjectLibrary.SkillIconPath(magic.OriginIcon);
                     Cells[row].ForeColour = CommonColor.White;
-                    // 技能描述 + 按键/MP/CD 摘要
-                    Cells[row].Hint = SkillDescriptionHelper.Get(magic) + "\n\n" +
-                        LanguageMgr.Get("SkillMpCooldownKey", magic.Name,
-                        (magic.BaseCost + (magic.LevelCost * magic.Level)), Functions.PrintTimeSpanFromMilliSeconds(magic.Delay), key);
+                    // 技能提示统一走 SkillDescriptionHelper.Get，避免技能栏和技能面板出现两套内容。
+                    Cells[row].Hint = SkillDescriptionHelper.Get(magic);
                 }
             }
         }

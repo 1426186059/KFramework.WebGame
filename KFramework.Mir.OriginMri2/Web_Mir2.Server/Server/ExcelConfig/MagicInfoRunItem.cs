@@ -138,7 +138,7 @@ namespace Server.ExcelConfig
 
             int cost = Info.BaseCost + (Info.LevelCost * Level);
             long delay = GetDelay();
-            string text = "CD时间：" + delay + "毫秒\n消耗魔法：" + cost + "点";
+            string text = "CD时间：" + (delay / 1000f).ToString("0.##") + "秒\n消耗魔法：" + cost + "点";
             if (!string.IsNullOrEmpty(Info.TipAttributes))
             {
                 text += "\n属性：" + Info.TipAttributes;
