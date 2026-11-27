@@ -422,8 +422,6 @@ namespace Client.MirScenes
             _targetHealth = new TargetHealthDialog
             {
                 Parent = this,
-                Location = new Point((Settings.ScreenWidth - 320) / 2, 10),
-                Visible = false
             };
 
             for (int i = 0; i < OutputLines.Length; i++)
