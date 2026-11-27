@@ -20,6 +20,12 @@ public class ClientMagic
     // 原始传奇技能面板排序号，对应 5config.skill.index，由服务端 S.NewMagic 下发。
     public int OriginIndex;
 
+    // 原始传奇技能提示正文：skills_condition[id][level].show（Lv1 口径）。
+    public string Show = "";
+
+    // 在原始说明后追加的增强提示：当前等级属性加成 / 消耗魔法 / CD时间。
+    public string TipStats = "";
+
     // 原始传奇技能：目标类型（1=敌方，3=自身/增益）、是否需要指向目标、特效 id 列表，由服务端 S.NewMagic 下发。
     // NeedTarget 由 releaseType==1 计算（原始配置里 targetType 对召唤/火符都是1，区分不了；releaseType 才是释放方式）。
     public byte TargetType;
@@ -54,6 +60,8 @@ public class ClientMagic
 
         OriginIcon = reader.ReadString();
         OriginIndex = reader.ReadInt32();
+        Show = reader.ReadString();
+        TipStats = reader.ReadString();
 
         TargetType = reader.ReadByte();
         NeedTarget = reader.ReadBoolean();
@@ -90,6 +98,8 @@ public class ClientMagic
 
         writer.Write(OriginIcon ?? string.Empty);
         writer.Write(OriginIndex);
+        writer.Write(Show ?? string.Empty);
+        writer.Write(TipStats ?? string.Empty);
 
         writer.Write(TargetType);
         writer.Write(NeedTarget);

@@ -1252,7 +1252,50 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
+        private static string FormatOriginTip(string show)
+        {
+            if (string.IsNullOrWhiteSpace(show))
+            {
+                return string.Empty;
+            }
+
+            string text = show.Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<BR>", "\n").Replace("<br />", "\n");
+            text = Regex.Replace(text, "<[^>]+>", string.Empty);
+            return text.Trim();
+        }
+
         public static string Get(ClientMagic magic)
+        {
+            if (magic == null)
+            {
+                return string.Empty;
+            }
+
+            string originTip = FormatOriginTip(magic.Show);
+            string text = string.IsNullOrEmpty(originTip)
+                ? GetLegacyDescription(magic)
+                : magic.Name + "\n" + originTip;
+
+            string stats = FormatTipStats(magic.TipStats);
+            if (!string.IsNullOrEmpty(stats))
+            {
+                text += "\n" + stats;
+            }
+
+            return text;
+        }
+
+        private static string FormatTipStats(string stats)
+        {
+            if (string.IsNullOrWhiteSpace(stats))
+            {
+                return string.Empty;
+            }
+
+            return stats.Trim();
+        }
+
+        private static string GetLegacyDescription(ClientMagic magic)
         {
                 switch (EffectSpellOf(magic))
                 {  //Warrior

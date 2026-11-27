@@ -119,11 +119,38 @@ namespace Server.ExcelConfig
                 CastTime = CastTime - Envir.Time,
                 OriginIcon = Info.OriginIcon,
                 OriginIndex = Info.OriginIndex,
+                Show = Info.Show,
+                TipStats = BuildTipStats(),
                 TargetType = (byte)Info.TargetType,
                 // 需目标由 releaseType==1 决定；targetType 对召唤/火符都是1，不能用作判据。
                 NeedTarget = Info.ReleaseType == 1,
                 EffectIds = Info.EffectIds ?? new int[0]
             };
+        }
+
+        // 在原始传奇 show 正文之外追加当前等级的伤害/魔法/CD，数值口径与服务端战斗公式一致。
+        private string BuildTipStats()
+        {
+            if (Info == null)
+            {
+                return string.Empty;
+            }
+
+            string bonus = "伤害倍率 " + (GetMultiplier() * 100f).ToString("0") + "%";
+            if (Info.PowerBase > 0)
+            {
+                bonus = "伤害 +" + Info.PowerBase + "，" + bonus;
+            }
+
+            int cost = Info.BaseCost + (Info.LevelCost * Level);
+            long delay = GetDelay();
+            string text = "属性加成：" + bonus + "\n消耗魔法：" + cost + "点";
+            if (delay > 0)
+            {
+                text += "\nCD时间：" + delay + "毫秒";
+            }
+
+            return text;
         }
 
         public int GetDamage(int DamageBase)

@@ -20,7 +20,7 @@ public class MagicInfoOut
     public float MultiplierBase = 1.0f, MultiplierBonus;
     public byte Range = 9;
     public int OriginId;
-    public string OriginIcon = "", ConditionText = "", Tips1 = "";
+    public string OriginIcon = "", ConditionText = "", Tips1 = "", Show = "";
     public int Cls, Career, IsShow, Condition, HandlerType, Aoe, MaxTarget, CanUp;
     public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
     public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex;
@@ -130,6 +130,10 @@ public static class Program
                     // 否则 GainSkillExp 会因 Need=0 立刻把技能刷到满级。
                     dto.Need1 = dto.Need2 = dto.Need3 = ushort.MaxValue;
                     lockedCount++;
+                }
+                if (string.IsNullOrEmpty(dto.Show))
+                {
+                    dto.Show = dto.Tips1;
                 }
                 result.Add(dto);
             }
@@ -260,6 +264,9 @@ public static class Program
             return (false, false, false, false);
         JsonElement Lv(int n) => levels.TryGetValue(n, out var e) ? e : default;
         JsonElement l1 = Lv(1), l2 = Lv(2), l3 = Lv(3);
+
+        // 原始传奇 SkillTips 显示的是 skills_condition[id][level].show，不是 skill.tips1。
+        dto.Show = Str(l1, "show");
 
         // 5config.skill.canup=0 的 120 个技能在等级表里全部只有 1 条记录，即不可升级。
         bool canUp = l2.ValueKind == JsonValueKind.Object;

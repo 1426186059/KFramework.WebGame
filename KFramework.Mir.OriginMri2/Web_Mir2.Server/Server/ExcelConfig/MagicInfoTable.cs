@@ -40,6 +40,8 @@ namespace Server.ExcelConfig
         public string OriginIcon { get; set; } = "";
         public string ConditionText { get; set; } = "";
         public string Tips1 { get; set; } = "";
+        // 原始传奇 SkillTips 的正文：skills_condition[id][level].show（Lv1 口径）。
+        public string Show { get; set; } = "";
         public int Cls { get; set; }
         public int Career { get; set; }
         public int IsShow { get; set; }
