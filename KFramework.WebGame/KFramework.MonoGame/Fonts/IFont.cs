@@ -21,9 +21,19 @@ namespace KFramework.MonoGame
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>
         Vector2 MeasureString(string text);
+        Vector2 MeasureString(ReadOnlySpan<char> text);
+        /// <summary>测量单个字符：富文本逐字符排版用，避免 ch.ToString() 产生临时字符串。</summary>
+        Vector2 MeasureString(char ch);
+
+        /// <summary>测量 StringBuilder：WrapLines 产出的行不再 ToString。</summary>
+        Vector2 MeasureString(System.Text.StringBuilder text);
 
         /// <summary>把文本画进 <paramref name="batch"/>（须在 Begin / End 之间调用）。</summary>
         void Draw(SpriteBatch batch, string text, Vector2 position, Color color,
+                  float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
+
+        /// <summary>Draw 的 StringBuilder 版本：WrapLines 产出的行不再 ToString。</summary>
+        void Draw(SpriteBatch batch, System.Text.StringBuilder text, Vector2 position, Color color,
                   float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
     }
 }

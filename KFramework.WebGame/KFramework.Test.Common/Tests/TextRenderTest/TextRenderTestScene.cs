@@ -364,7 +364,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
 
             // ① 直接断言 WrapLines：源串 6 行（含 2 个空行）必须逐行保留。
             int sourceLines = BlankLineSample.Split('\n').Length;
-            List<string> wrapped = TextRenderer.WrapLines(BlankLineSample, font, 0);
+            TextRenderer.ListStringBuilder wrapped = TextRenderer.WrapLines(BlankLineSample, font, 0);
             bool wrapLinesOk = wrapped.Count == sourceLines
             && wrapped.Count > 1 && wrapped[1].Length == 0
             && wrapped.Count > 4 && wrapped[4].Length == 0;

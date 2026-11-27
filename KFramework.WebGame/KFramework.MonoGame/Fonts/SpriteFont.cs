@@ -156,7 +156,45 @@ namespace KFramework.MonoGame
 
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>
-        public Vector2 MeasureString(string text) => Measure(text);
+        public Vector2 MeasureString(string text)
+        {
+            return Measure(text);
+        }
+
+        public Vector2 MeasureString(char ch)
+        {
+            return new Vector2(GetGlyph(ch).Advance, LineHeight);
+        }
+
+        public Vector2 MeasureString(ReadOnlySpan<char> text)
+        {
+            if (text.IsEmpty) return Vector2.Zero;
+            float width = 0f;
+            float maxWidth = 0f;
+            int lines = 1;
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; continue; }
+                width += GetGlyph(c).Advance;
+            }
+            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
+        }
+
+        public Vector2 MeasureString(System.Text.StringBuilder text)
+        {
+            if (text == null || text.Length == 0) return Vector2.Zero;
+            float width = 0f;
+            float maxWidth = 0f;
+            int lines = 1;
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; continue; }
+                width += GetGlyph(c).Advance;
+            }
+            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
+        }
 
         public Vector2 Measure(string text)
         {
@@ -308,6 +346,55 @@ namespace KFramework.MonoGame
                 cursor.X += glyph.Advance * scale;
             }
 
+        }
+
+        /// <summary>与 string 重载等效，但接受 StringBuilder，避免调用方为拼接文本产生临时 string。</summary>
+        public void Draw(
+            SpriteBatch batch,
+            System.Text.StringBuilder text,
+            Vector2 position,
+            Color color,
+            float rotation,
+            Vector2 origin,
+            float scale,
+            SpriteEffects effects,
+            float layerDepth)
+        {
+            if (text == null || text.Length == 0)
+            {
+                return;
+            }
+
+            Vector2 cursor = position - origin * scale;
+            float startX = cursor.X;
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n')
+                {
+                    cursor.X = startX;
+                    cursor.Y += LineHeight * scale;
+                    continue;
+                }
+
+                Glyph glyph = GetGlyph(c);
+                if (glyph.AtlasIndex >= 0 && glyph.AtlasIndex < _atlases.Count
+                    && glyph.Bounds.Width > 0 && glyph.Bounds.Height > 0)
+                {
+                    Vector2 drawAt = new Vector2(
+                        cursor.X + glyph.DrawOffset.X * scale,
+                        cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
+                    batch.DrawGlyph(
+                        _atlases[glyph.AtlasIndex],
+                        drawAt,
+                        glyph.Bounds,
+                        color,
+                        0f,
+                        Vector2.Zero,
+                        new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                }
+                cursor.X += glyph.Advance * scale;
+            }
         }
 
         public void Dispose()

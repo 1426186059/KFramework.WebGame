@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
     {
         private string _text = string.Empty;
         private IFont _font;
-        private RichTextDocument? _doc;   // 解析缓存：Text 变化时才重建
+        private readonly RichTextDocument _doc = new RichTextDocument();  // 复用实例，Text 变化才重解析
         private Texture2D _whitePixel;   // 下划线用的 1x1 白纹（按需创建）
         private string _layoutText;
         private IFont _layoutFont;
@@ -19,7 +19,9 @@ namespace KFramework.MonoGame
         private HorizontalWrapMode _layoutHWrap;
         private VerticalWrapMode _layoutVWrap;
         private List<RichTextRun> _layoutRuns = null;
-        private List<float> _layoutLineTops = null;  
+        private List<float> _layoutLineTops = null;
+        private float _layoutMeasuredWidth;   // LayoutRich 算出的最宽行，Measure 复用
+        private float _layoutMeasuredHeight;  // LayoutRich 算出的总高（含 Scale 撑开）
         private RichTextInfo _textInfo; 
         private Color _lastForeColor = Color.White;
 
@@ -91,7 +93,7 @@ namespace KFramework.MonoGame
         {
             get
             {
-                return _doc != null && !string.IsNullOrEmpty(_doc.PlainText);
+                return _doc.bHaveRichText && _doc.Styles.Count > 0;
             }
         }
 
@@ -109,10 +111,11 @@ namespace KFramework.MonoGame
         /// LayoutRich / Measure 直接用 _text 原文，标签当普通字符显示。</summary>
         private void Reparse()
         {
-            // 唯一解析入口：关闭富文本或无标签时 _doc = null，Draw/Measure 走原文。
-            _doc = _rich && _text.IndexOf('<') >= 0
-                   ? RichTextDocument.Parse(_text)
-                   : null;
+            // 唯一解析入口：仅开启富文本时才让文档解析；关闭时清空标记走原文。
+            if (_rich)
+            {
+                _doc.Parse(_text);
+            }
 
             _layoutRuns = null;
             _layoutLineTops = null;
@@ -131,9 +134,8 @@ namespace KFramework.MonoGame
             _textInfo = null;
         }
 
-        // ---------------- 度量 ----------------
-
-        /// <summary>富文本度量：剥离标签后按给定宽度折行测量。</summary>
+        /// <summary>富文本度量：直接复用 LayoutRich 的排版结果（逐字符 Scale 宽度 + 每行最大 Scale 撑高），
+        /// 与 Draw 同源，避免「测的」和「画的」不一致。Bold/Italic 当前绘制路径未生效，故不参与测量。</summary>
         public Size Measure(Size proposedSize, HorizontalWrapMode hWrap)
         {
             if (_font == null || string.IsNullOrEmpty(_text))
@@ -141,30 +143,17 @@ namespace KFramework.MonoGame
                 return Size.Empty;
             }
 
-            string plain = _doc != null ? _doc.PlainText : _text;
-            if (string.IsNullOrEmpty(plain))
+            // 关闭富文本：直接回退到 TextRenderer 普通文本度量。
+            if (!_rich)
             {
-                return Size.Empty;
+                return TextRenderer.MeasureText(_text, _font, proposedSize, hWrap);
             }
 
             bool wrap = hWrap == HorizontalWrapMode.Wrap && proposedSize.Width > 0;
-            if (!wrap)
-            {
-                Vector2 v = _font.MeasureString(plain);
-                return new Size((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y));
-            }
-
-            List<string> lines = TextRenderer.WrapLines(plain, _font, proposedSize.Width);
-            int w = 0;
-            foreach (string line in lines)
-            {
-                if (!string.IsNullOrEmpty(line))
-                {
-                    w = Math.Max(w, (int)Math.Ceiling(_font.MeasureString(line).X));
-                }
-            }
-            int h = (int)Math.Ceiling(lines.Count * _font.LineSpacing);
-            return new Size(w, h);
+            float boundsW = wrap ? proposedSize.Width : float.MaxValue;
+            LayoutRich(new RectangleF(0, 0, boundsW, float.MaxValue), TextAnchor.UpperLeft,
+                       hWrap, VerticalWrapMode.Overflow);
+            return new Size((int)Math.Ceiling(_layoutMeasuredWidth), (int)Math.Ceiling(_layoutMeasuredHeight));
         }
 
         // ---------------- 绘制 ----------------
@@ -185,9 +174,16 @@ namespace KFramework.MonoGame
             }
             _lastForeColor = foreColor;
 
-            if (_doc != null)
+            // 关闭富文本：直接回退到 TextRenderer 普通文本绘制（无逐字符样式 / 无标签解析）。
+            if (!_rich)
             {
-                if (!string.IsNullOrEmpty(_doc.PlainText))
+                TextRenderer.DrawText(batch, _text, _font, bounds, foreColor, anchor, hWrap, vWrap);
+                return;
+            }
+
+            if (_doc.bHaveRichText)
+            {
+                if (_doc.Styles.Count > 0)
                 {
                     DrawRichCore(batch, bounds, foreColor, anchor, hWrap, vWrap, outlineMode);
                 }
@@ -233,6 +229,7 @@ namespace KFramework.MonoGame
         }
 
         // ---------------- 内部 ----------------
+
         /// <summary>富文本排版：逐字符折行 → 对齐 → 逐样式段切分，产出每段的文本、样式与矩形。
         /// 结果以 (0,0) 为原点缓存；Text/Font 或尺寸、对齐、折行方式变化时才重算。
         /// 注意 bounds.X/bounds.Y 只作为绘制/命中的平移量，不进缓存 key——描边偏移 1px 也能命中同一份布局。</summary>
@@ -251,8 +248,8 @@ namespace KFramework.MonoGame
                 return _layoutRuns;
             }
 
-            string text = _doc != null ? _doc.PlainText : _text;
-            RichTextStyle[] styles = _doc != null ? _doc.Styles : null;
+            List<RichTextStyle> docStyles =  _doc.Styles;
+            int textLen = docStyles != null ? docStyles.Count : _text.Length;
             bool wrap = hWrap == HorizontalWrapMode.Wrap && bounds.Width > 0;
             float lineH = _font.LineSpacing;
             float fontAscent = _font.Ascent;   // 基准字号（scale=1）的基线到行顶距离
@@ -264,9 +261,9 @@ namespace KFramework.MonoGame
             int lineStart = 0;
             float lineW = 0;
             float lineMaxScale = 1f;
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < textLen; i++)
             {
-                char ch = text[i];
+                char ch = docStyles != null ? docStyles[i].Character : _text[i];
                 if (ch == '\n')
                 {
                     spans.Add((lineStart, i, lineW, lineMaxScale));
@@ -275,8 +272,8 @@ namespace KFramework.MonoGame
                     lineMaxScale = 1f;
                     continue;
                 }
-                float scale = styles != null ? styles[i].Scale : 1f;
-                float cw = _font.MeasureString(ch.ToString()).X * scale;
+                float scale = docStyles != null ? docStyles[i].Scale : 1f;
+                float cw = _font.MeasureString(ch).X * scale;
                 if (wrap && lineW + cw > bounds.Width && i > lineStart)
                 {
                     spans.Add((lineStart, i, lineW, lineMaxScale));
@@ -287,16 +284,20 @@ namespace KFramework.MonoGame
                 lineW += cw;
                 lineMaxScale = Math.Max(lineMaxScale, scale);
             }
-            spans.Add((lineStart, text.Length, lineW, lineMaxScale));
+            spans.Add((lineStart, textLen, lineW, lineMaxScale));
 
             // 2) 对齐：每行行高 = 基础行高 * 该行最大缩放，累加得到总高
             int row = (int)anchor / 3;
             int col = (int)anchor % 3;
             float totalH = 0f;
+            float maxLineW = 0f;
             foreach (var span in spans)
             {
                 totalH += lineH * span.maxScale;
+                maxLineW = Math.Max(maxLineW, span.width);
             }
+            _layoutMeasuredWidth = maxLineW;
+            _layoutMeasuredHeight = totalH;
             float startY = 0f;
             if (row == 1)
             {
@@ -335,19 +336,27 @@ namespace KFramework.MonoGame
                 int i = span.start;
                 while (i < span.end)
                 {
-                    if (text[i] == '\n')
+                    if ((docStyles != null ? docStyles[i].Character : _text[i]) == '\n')
                     {
                         i++;
                         continue;
                     }
-                    RichTextStyle st = styles != null ? styles[i] : RichTextStyle.Default;
+                    RichTextStyle st = docStyles != null ? docStyles[i] : RichTextStyle.Default;
                     int j = i + 1;
-                    while (j < span.end && text[j] != '\n' &&
-                           (styles == null || SameStyle(styles[j], st)))
+                    while (j < span.end && (docStyles != null ? docStyles[j].Character : _text[j]) != '\n' &&
+                           (docStyles == null || SameStyle(docStyles[j], st)))
                     {
                         j++;
                     }
-                    string seg = text.Substring(i, j - i);
+                    string seg = docStyles != null
+                        ? string.Create(j - i, (Styles: docStyles, Start: i), static (dst, state) =>
+                          {
+                              for (int k = 0; k < dst.Length; k++)
+                              {
+                                  dst[k] = state.Styles[state.Start + k].Character;
+                              }
+                          })
+                        : _text.Substring(i, j - i);
                     float segW = _font.MeasureString(seg).X * st.Scale;
                     // 仿 TMP：排版时就把该段按自身字号缩放好的基线/升降部固化进 run，
                     // 后续绘制、命中、下划线只消费 run 自带值，不再回查字体。
@@ -403,7 +412,7 @@ namespace KFramework.MonoGame
                 for (int k = 0; k < run.Text.Length; k++)
                 {
                     char ch = run.Text[k];
-                    float cw = _font.MeasureString(ch.ToString()).X * st.Scale;
+                    float cw = _font.MeasureString(ch).X * st.Scale;
                     // 行号：行顶 <= 该字符基线 - Ascent 的最后一个行
                     int line = 0;
                     float glyphTop = run.BaselineY - run.Ascent;

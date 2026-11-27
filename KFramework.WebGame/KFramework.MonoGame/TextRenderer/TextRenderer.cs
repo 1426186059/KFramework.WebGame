@@ -1,9 +1,15 @@
+using System.Text;
+
 namespace KFramework.MonoGame
 {
-    public static class TextRenderer
+    public static partial class TextRenderer
     {
         // backColor 铺底用的 1x1 白纹（按需创建；只此一项共享资源，与批无关）。
         private static Texture2D _whitePixel;
+
+        private static readonly char[] WrapSpaces = new string(' ', 64).ToCharArray();
+        private static readonly ListStringBuilder _wrapLinesResult = new ListStringBuilder();
+
 
         // ---------------- MeasureText ----------------
 
@@ -37,11 +43,11 @@ namespace KFramework.MonoGame
                 return new Size((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y));
             }
 
-            List<string> lines = WrapLines(text, font, maxWidth);
+            ListStringBuilder lines = WrapLines(text, font, maxWidth);
             int w = 0;
-            foreach (string line in lines)
+            foreach (System.Text.StringBuilder line in lines)
             {
-                if (!string.IsNullOrEmpty(line))
+                if (line.Length > 0)
                 {
                     w = Math.Max(w, (int)Math.Ceiling(font.MeasureString(line).X));
                 }
@@ -65,7 +71,7 @@ namespace KFramework.MonoGame
             }
 
             int maxWidth = hWrap == HorizontalWrapMode.Wrap ? (int)bounds.Width : 0;
-            List<string> lines = WrapLines(text, font, maxWidth);
+            ListStringBuilder lines = WrapLines(text, font, maxWidth);
 
             float lineH = font.LineSpacing;
             float totalH = lineH * lines.Count;
@@ -86,7 +92,7 @@ namespace KFramework.MonoGame
             float clipBottom = vWrap == VerticalWrapMode.Truncate ? 
                 bounds.Y + bounds.Height : float.MaxValue;
 
-            foreach (string line in lines)
+            foreach (System.Text.StringBuilder line in lines)
             {
                 if (startY + lineH > clipBottom)
                 {
@@ -138,73 +144,125 @@ namespace KFramework.MonoGame
             batch.Draw(_whitePixel, bounds, null, backColor);
         }
 
-        public static List<string> WrapLines(string text, IFont font, int maxWidth)
+        public static ListStringBuilder WrapLines(ReadOnlySpan<char> text, IFont font, int maxWidth)
         {
-            List<string> result = new List<string>();
-            if (string.IsNullOrEmpty(text) || font == null)
+            ListStringBuilder result = _wrapLinesResult;
+            result.Reset();
+            if (text.IsEmpty || font == null)
             {
                 return result;
             }
 
-            foreach (string raw in text.Split('\n'))
+            int lineStart = 0;
+            while (lineStart <= text.Length)
             {
-                string line = raw.Replace("\r", "");
-                if (line.Length == 0)
+                int relNl = text.Slice(lineStart).IndexOf('\n');
+                ReadOnlySpan<char> raw = relNl < 0 ? text.Slice(lineStart) : text.Slice(lineStart, relNl);
+
+                // 去掉行尾 \r（原 raw.Replace("\r", "") 只处理行尾这一个）
+                if (raw.Length > 0 && raw[raw.Length - 1] == '\r')
                 {
-                    result.Add(string.Empty);
-                    continue;
+                    raw = raw.Slice(0, raw.Length - 1);
                 }
 
-                if (maxWidth <= 0) 
-                { 
-                    result.Add(line); 
-                    continue; 
-                }
-
-                int lead = 0;
-                while (lead < line.Length && line[lead] == ' ')
+                if (raw.IsEmpty)
                 {
-                    lead++;
+                    result.AddLine();
                 }
-                string leadStr = lead > 0 ? new string(' ', lead) : string.Empty;
-
-                string[] words = line.Split(' ');
-                System.Text.StringBuilder current = new System.Text.StringBuilder();
-                bool firstLine = true;
-                foreach (string word in words)
+                else if (maxWidth <= 0)
                 {
-                    if (current.Length > 0 &&
-                        font.MeasureString(current.ToString() + " " + word).X > maxWidth &&
-                        font.MeasureString(word).X <= maxWidth)
+                    result.AddLine().Append(raw);
+                }
+                else
+                {
+                    int lead = 0;
+                    while (lead < raw.Length && raw[lead] == ' ')
                     {
-                        result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
-                        firstLine = false;
-                        current.Clear();
-                        current.Append(word);
+                        lead++;
                     }
-                    else if (font.MeasureString(word).X > maxWidth)
+
+                    System.Text.StringBuilder current = result.AddLine();
+                    bool firstLine = true;
+                    int wordStart = 0;
+                    while (wordStart <= raw.Length)
                     {
-                        foreach (char ch in word)
+                        int relSp = raw.Slice(wordStart).IndexOf(' ');
+                        ReadOnlySpan<char> word = relSp < 0 ? raw.Slice(wordStart) : raw.Slice(wordStart, relSp);
+                        float wordW = font.MeasureString(word).X;
+                        // 原逻辑：current + " " + word 超宽且 word 自身不超宽 → 换行。用 Append + 长度回退避免 ToString。
+                        if (current.Length > 0 && wordW <= maxWidth)
                         {
-                            if (current.Length > 0 && font.MeasureString(current.ToString() + ch).X > maxWidth)
+                            int saved = current.Length;
+                            current.Append(' ').Append(word);
+                            bool overflow = font.MeasureString(current).X > maxWidth;
+                            current.Length = saved;
+                            if (overflow)
                             {
-                                result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
+                                if (firstLine && lead > 0)
+                                {
+                                    current.Insert(0, WrapSpaces, 0, lead);
+                                }
                                 firstLine = false;
-                                current.Clear();
+                                current = result.AddLine().Append(word);
+                                if (relSp < 0)
+                                {
+                                    break;
+                                }
+                                wordStart += relSp + 1;
+                                continue;
                             }
-                            current.Append(ch);
                         }
+
+                        if (wordW > maxWidth)
+                        {
+                            foreach (char ch in word)
+                            {
+                                if (current.Length > 0)
+                                {
+                                    int saved = current.Length;
+                                    current.Append(ch);
+                                    bool overflow = font.MeasureString(current).X > maxWidth;
+                                    current.Length = saved;
+                                    if (overflow)
+                                    {
+                                        if (firstLine && lead > 0)
+                                        {
+                                            current.Insert(0, WrapSpaces, 0, lead);
+                                        }
+                                        firstLine = false;
+                                        current = result.AddLine();
+                                    }
+                                }
+                                current.Append(ch);
+                            }
+                        }
+                        else
+                        {
+                            if (current.Length > 0)
+                            {
+                                current.Append(' ');
+                            }
+                            current.Append(word);
+                        }
+
+                        if (relSp < 0)
+                        {
+                            break;
+                        }
+                        wordStart += relSp + 1;
                     }
-                    else
+
+                    if (current.Length > 0 && firstLine && lead > 0)
                     {
-                        current.Append(current.Length == 0 ? word : " " + word);
+                        current.Insert(0, WrapSpaces, 0, lead);
                     }
                 }
 
-                if (current.Length > 0)
+                if (relNl < 0)
                 {
-                    result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
+                    break;
                 }
+                lineStart += relNl + 1;
             }
             return result;
         }

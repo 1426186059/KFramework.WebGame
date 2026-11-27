@@ -37,9 +37,19 @@ namespace MirEngine
 
         public Vector2 MeasureString(string text) => Resolved?.MeasureString(text) ?? Vector2.Zero;
 
+        public Vector2 MeasureString(char ch) => Resolved?.MeasureString(ch) ?? Vector2.Zero;
+
+        public Vector2 MeasureString(ReadOnlySpan<char> text) => Resolved?.MeasureString(text) ?? Vector2.Zero;
+
+        public Vector2 MeasureString(System.Text.StringBuilder text) => Resolved?.MeasureString(text) ?? Vector2.Zero;
+
         // 注意：MirEngine 自带 Color，此处必须完全限定为引擎侧 Color 才能匹配 IFont 签名
         // （文件级 using 别名在命名空间成员面前不生效）。
         public void Draw(SpriteBatch batch, string text, Vector2 position, KFramework.MonoGame.Color color,
+                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+            => Resolved?.Draw(batch, text, position, color, rotation, origin, scale, effects, layerDepth);
+
+        public void Draw(SpriteBatch batch, System.Text.StringBuilder text, Vector2 position, KFramework.MonoGame.Color color,
                          float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
             => Resolved?.Draw(batch, text, position, color, rotation, origin, scale, effects, layerDepth);
 

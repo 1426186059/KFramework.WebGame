@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 
 namespace KFramework.MonoGame
 {
@@ -30,65 +29,72 @@ namespace KFramework.MonoGame
         ///   &lt;b&gt;&lt;/b&gt; 粗体、&lt;i&gt;&lt;/i&gt; 斜体、&lt;u&gt;&lt;/u&gt; 下划线
         ///   &lt;size=20&gt;&lt;/size&gt; 字号（按倍数 scale 近似，见 RichTextStyle.Scale）
         ///   &lt;link="url"&gt;文字&lt;/link&gt; 或 &lt;a href="url"&gt;文字&lt;/a&gt; 超链接（蓝色+下划线）
-        /// 未闭合/非法标签一律当普通文本容错处理。Measure/Draw 一律用 <see cref="PlainText"/>（去标签），
-        /// 每个纯文本字符在 <see cref="Styles"/> 里有对应样式，折行后按字符区间取样式逐段绘制。
+        /// 未闭合/非法标签一律当普通文本容错处理。
+        /// <para>GC 优化：解析全程用 ReadOnlySpan 切片，标签名/值不再 Substring/ToLowerInvariant，
+        /// 只在产出 PlainText 时 ToString 一次；Styles 与 PlainText 等长，逐字符存值类型样式，无逐字符堆对象。</para>
         /// </summary>
-        internal sealed class RichTextDocument
+        /// <summary>解析结果：字符已并入每个 <see cref="RichTextStyle"/>，直接缓存 List，不再 ToArray。</summary>
+        internal class RichTextDocument
         {
-            public string PlainText { get; }
-            public RichTextStyle[] Styles { get; }   // 与 PlainText 等长，逐字符样式（引用共享，省内存）
+            public readonly List<RichTextStyle> Styles = new List<RichTextStyle>();
+            private readonly Stack<RichTextStyle> _stack = new Stack<RichTextStyle>();
 
-            private RichTextDocument(string plain, RichTextStyle[] styles)
+            public bool bHaveRichText { get; internal set; }
+
+            public void Reset()
             {
-                PlainText = plain;
-                Styles = styles;
+                Styles.Clear();
+                _stack.Clear();
+                bHaveRichText = false;
             }
 
-            /// <summary>text 不含富文本标签时返回 null（调用方走原快路径，零开销）。</summary>
-            public static RichTextDocument Parse(string text)
+            /// <summary>在当前实例内解析：复用 Styles / Stack，仅 Clear 后重填。
+            /// rich=false / 无标签时复位标记，调用方无需再手动清理。</summary>
+            public void Parse(ReadOnlySpan<char> text)
             {
-                if (string.IsNullOrEmpty(text))
+                Styles.Clear();
+                _stack.Clear();
+                if (text.IsEmpty || text.IndexOf('<') < 0)
                 {
-                    return null;
+                    bHaveRichText = false;
+                    return; // 关闭富文本或无标签，直接当普通文本
                 }
-                if (text.IndexOf('<') < 0)
-                {
-                    return null;   // 快路径：无标签
-                }
+                bHaveRichText = true;
 
-                var plain = new StringBuilder(text.Length);
-                var styles = new List<RichTextStyle>(text.Length);
+                var styles = Styles;
+                var stack = _stack;
                 var cur = RichTextStyle.Default;
-                // 栈保存进入标签前的样式，用于 </color></b> 等恢复
-                var stack = new Stack<RichTextStyle>();
-                // link 的 url 随样式一起走，闭合时由栈恢复
 
                 int i = 0;
                 while (i < text.Length)
                 {
                     if (text[i] != '<')
                     {
-                        Append(plain, styles, text[i], cur);
+                        Append(styles, text[i], cur);
                         i++;
                         continue;
                     }
 
-                    int gt = text.IndexOf('>', i + 1);
-                    if (gt < 0)
+                    int relGt = text.Slice(i + 1).IndexOf('>');
+                    if (relGt < 0)
                     {
-                        Append(plain, styles, text[i], cur);
+                        Append(styles, text[i], cur);
                         i++;
                         continue;   // 无闭合 >，当普通字符
                     }
-                    string tag = text.Substring(i + 1, gt - i - 1).Trim();
-                    bool closing = tag.StartsWith("/");
-                    string name = (closing ? tag.Substring(1) : tag).Trim();
+
+                    int gt = i + 1 + relGt;
+                    ReadOnlySpan<char> tag = text.Slice(i + 1, gt - i - 1).Trim();
+                    bool closing = tag.Length > 0 && tag[0] == '/';
+                    ReadOnlySpan<char> name = (closing ? tag.Slice(1) : tag).Trim();
                     int eq = name.IndexOf('=');
-                    string key = (eq >= 0 ? name.Substring(0, eq) : name).Trim().ToLowerInvariant();
-                    string val = eq >= 0 ? name.Substring(eq + 1).Trim().Trim('"', '\'') : string.Empty;
+                    ReadOnlySpan<char> key = (eq >= 0 ? name.Slice(0, eq) : name).Trim();
+                    ReadOnlySpan<char> val = eq >= 0
+                        ? name.Slice(eq + 1).Trim().Trim("\"'".AsSpan())
+                        : ReadOnlySpan<char>.Empty;
 
                     bool handled = false;
-                    if (key == "color" || key == "colour")
+                    if (Eq(key, "color") || Eq(key, "colour"))
                     {
                         handled = true;
                         if (closing)
@@ -102,40 +108,40 @@ namespace KFramework.MonoGame
                             cur = c.HasValue ? cur.With(color: c) : cur.With(clearColor: true); // <color> 无值=恢复默认
                         }
                     }
-                    else if (key == "b" && !closing)
+                    else if (Eq(key, "b") && !closing)
                     {
                         handled = true;
                         stack.Push(cur);
                         cur = cur.With(bold: true);
                     }
-                    else if (key == "b" && closing)
+                    else if (Eq(key, "b") && closing)
                     {
                         handled = true;
                         cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
                     }
-                    else if (key == "i" && !closing)
+                    else if (Eq(key, "i") && !closing)
                     {
                         handled = true;
                         stack.Push(cur);
                         cur = cur.With(italic: true);
                     }
-                    else if (key == "i" && closing)
+                    else if (Eq(key, "i") && closing)
                     {
                         handled = true;
                         cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
                     }
-                    else if (key == "u" && !closing)
+                    else if (Eq(key, "u") && !closing)
                     {
                         handled = true;
                         stack.Push(cur);
                         cur = cur.With(underline: true);
                     }
-                    else if (key == "u" && closing)
+                    else if (Eq(key, "u") && closing)
                     {
                         handled = true;
                         cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
                     }
-                    else if (key == "size" && !closing)
+                    else if (Eq(key, "size") && !closing)
                     {
                         handled = true;
                         stack.Push(cur);
@@ -146,33 +152,34 @@ namespace KFramework.MonoGame
                         }
                         cur = cur.With(scale: scale);
                     }
-                    else if (key == "size" && closing)
+                    else if (Eq(key, "size") && closing)
                     {
                         handled = true;
                         cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
                     }
-                    else if ((key == "link" || key == "a" || key == "a href") && !closing)
+                    else if ((Eq(key, "link") || Eq(key, "a") || Eq(key, "a href")) && !closing)
                     {
                         handled = true;
                         stack.Push(cur);
-                        string url = val;
-                        if (string.IsNullOrEmpty(url)) // <a href="url">
+                        string url = val.IsEmpty ? null : new string(val);
+                        if (url == null) // <a href="url"> 的 key 是 "a href"，值仍走 val；这里兜底从 tag 取 href
                         {
-                            int href = tag.IndexOf("href", StringComparison.OrdinalIgnoreCase);
+                            int href = IndexOfIgnoreCase(tag, "href");
                             if (href >= 0)
                             {
-                                int hq = tag.IndexOf('"', href);
-                                if (hq < 0)
+                                int relHq = tag.Slice(href).IndexOf('"');
+                                if (relHq < 0)
                                 {
-                                    hq = tag.IndexOf('\'', href);
+                                    relHq = tag.Slice(href).IndexOf('\'');
                                 }
-                                if (hq >= 0)
+                                if (relHq >= 0)
                                 {
+                                    int hq = href + relHq;
                                     char q = tag[hq];
-                                    int end = tag.IndexOf(q, hq + 1);
-                                    if (end > hq)
+                                    int end = tag.Slice(hq + 1).IndexOf(q);
+                                    if (end >= 0)
                                     {
-                                        url = tag.Substring(hq + 1, end - hq - 1);
+                                        url = new string(tag.Slice(hq + 1, end));
                                     }
                                 }
                             }
@@ -181,7 +188,7 @@ namespace KFramework.MonoGame
                         cur = cur.With(link: string.IsNullOrEmpty(url) ? null : url,
                                        color: cur.Color ?? new Color(64, 128, 255), underline: true);
                     }
-                    else if ((key == "link" || key == "a") && closing)
+                    else if ((Eq(key, "link") || Eq(key, "a")) && closing)
                     {
                         handled = true;
                         cur = stack.Count > 0 ? stack.Pop() : RichTextStyle.Default;
@@ -195,30 +202,37 @@ namespace KFramework.MonoGame
                     // 未知标签：整段当普通文本输出（含尖括号）
                     for (int k = i; k <= gt; k++)
                     {
-                        Append(plain, styles, text[k], cur);
+                        Append(styles, text[k], cur);
                     }
                     i = gt + 1;
                 }
-
-                return new RichTextDocument(plain.ToString(), styles.ToArray());
             }
 
-            private static void Append(StringBuilder plain, List<RichTextStyle> styles, char ch, RichTextStyle style)
+            private static void Append(List<RichTextStyle> styles, char ch, RichTextStyle style)
             {
-                plain.Append(ch);
-                styles.Add(style);
+                styles.Add(style.With(character: ch));
             }
 
-            private static Color? ParseColor(string val)
+            private static bool Eq(ReadOnlySpan<char> span, string value)
             {
-                if (string.IsNullOrEmpty(val))
+                return span.Equals(value.AsSpan(), StringComparison.OrdinalIgnoreCase);
+            }
+
+            private static int IndexOfIgnoreCase(ReadOnlySpan<char> span, string value)
+            {
+                return span.IndexOf(value.AsSpan(), StringComparison.OrdinalIgnoreCase);
+            }
+
+            private static Color? ParseColor(ReadOnlySpan<char> val)
+            {
+                if (val.IsEmpty)
                 {
                     return null;
                 }
-                string s = val.Trim().TrimStart('#');
-                if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                ReadOnlySpan<char> s = val.Trim().TrimStart("#".AsSpan());
+                if (s.StartsWith("0x".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 {
-                    s = s.Substring(2);
+                    s = s.Slice(2);
                 }
                 if (uint.TryParse(s, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint argb))
                 {
@@ -232,47 +246,29 @@ namespace KFramework.MonoGame
                 return NamedColor(s);
             }
 
-            private static Color? NamedColor(string name)
+            private static Color? NamedColor(ReadOnlySpan<char> name)
             {
-                switch (name.ToLowerInvariant())
-                {
-                    case "red":
-                        return new Color(255, 0, 0);
-                    case "green":
-                        return new Color(0, 128, 0);
-                    case "lime":
-                        return new Color(0, 255, 0);
-                    case "blue":
-                        return new Color(0, 0, 255);
-                    case "yellow":
-                        return new Color(255, 255, 0);
-                    case "orange":
-                        return new Color(255, 165, 0);
-                    case "white":
-                        return new Color(255, 255, 255);
-                    case "black":
-                        return new Color(0, 0, 0);
-                    case "gray":
-                    case "grey":
-                        return new Color(128, 128, 128);
-                    case "cyan":
-                    case "aqua":
-                        return new Color(0, 255, 255);
-                    case "magenta":
-                        return new Color(255, 0, 255);
-                    case "purple":
-                        return new Color(128, 0, 128);
-                    case "gold":
-                        return new Color(255, 215, 0);
-                    default:
-                        return null;
-                }
+                if (Eq(name, "red")) return new Color(255, 0, 0);
+                if (Eq(name, "green")) return new Color(0, 128, 0);
+                if (Eq(name, "lime")) return new Color(0, 255, 0);
+                if (Eq(name, "blue")) return new Color(0, 0, 255);
+                if (Eq(name, "yellow")) return new Color(255, 255, 0);
+                if (Eq(name, "orange")) return new Color(255, 165, 0);
+                if (Eq(name, "white")) return new Color(255, 255, 255);
+                if (Eq(name, "black")) return new Color(0, 0, 0);
+                if (Eq(name, "gray") || Eq(name, "grey")) return new Color(128, 128, 128);
+                if (Eq(name, "cyan") || Eq(name, "aqua")) return new Color(0, 255, 255);
+                if (Eq(name, "magenta")) return new Color(255, 0, 255);
+                if (Eq(name, "purple")) return new Color(128, 0, 128);
+                if (Eq(name, "gold")) return new Color(255, 215, 0);
+                return null;
             }
         }
 
-        /// <summary>单个字符/连续段的富文本样式。不可变；With 返回新实例，未指定的字段沿用旧值。</summary>
-        internal sealed class RichTextStyle
+        /// <summary>单个字符及其样式。不可变值类型，字符与样式同一份数据；With 返回新实例，无堆分配。</summary>
+        internal readonly struct RichTextStyle
         {
+            public readonly char Character;       // 该位置的可见字符（解析/排版都从这里读，不再依赖并行 string）
             public readonly Color? Color;         // null = 用宿主传入的 foreColor
             public readonly Color BaseColor;      // 调用方的默认前景色（用于 <color> 恢复）
             public readonly string Link;          // null = 非超链接
@@ -281,8 +277,9 @@ namespace KFramework.MonoGame
             public readonly bool Underline;
             public readonly float Scale;
 
-            public RichTextStyle(Color? color, Color baseColor, string link, bool bold, bool italic, bool underline, float scale)
+            public RichTextStyle(char character, Color? color, Color baseColor, string link, bool bold, bool italic, bool underline, float scale)
             {
+                Character = character;
                 Color = color;
                 BaseColor = baseColor;
                 Link = link;
@@ -292,23 +289,18 @@ namespace KFramework.MonoGame
                 Scale = scale;
             }
 
-            public static RichTextStyle Default
-            {
-                get
-                {
-                    return new RichTextStyle(null, default, null, false, false, false, 1f);
-                }
-            }
+            public static readonly RichTextStyle Default = new RichTextStyle('\0', null, default, null, false, false, false, 1f);
 
             public static RichTextStyle ForBase(Color baseColor)
             {
-                return new RichTextStyle(null, baseColor, null, false, false, false, 1f);
+                return new RichTextStyle('\0', null, baseColor, null, false, false, false, 1f);
             }
 
-            public RichTextStyle With(Color? color = null, bool clearColor = false, string link = null, bool clearLink = false,
+            public RichTextStyle With(char? character = null, Color? color = null, bool clearColor = false, string link = null, bool clearLink = false,
                                       bool? bold = null, bool? italic = null, bool? underline = null, float? scale = null)
             {
                 return new RichTextStyle(
+                    character ?? Character,
                     clearColor ? null : (color ?? Color),
                     BaseColor,
                     clearLink ? null : (link ?? Link),

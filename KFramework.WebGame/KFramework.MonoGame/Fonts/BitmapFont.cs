@@ -126,6 +126,42 @@ namespace KFramework.MonoGame
         /// <summary>Measure 的 MonoGame 命名别名。</summary>
         public Vector2 MeasureString(string text) => Measure(text);
 
+        public Vector2 MeasureString(char ch) => new Vector2(GetGlyph(ch).Advance + _data.GetKerning('\0', ch), LineHeight);
+
+        public Vector2 MeasureString(ReadOnlySpan<char> text)
+        {
+            if (text.IsEmpty) return Vector2.Zero;
+            float width = 0f;
+            float maxWidth = 0f;
+            int lines = 1;
+            char prev = '\0';
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; prev = '\0'; continue; }
+                width += GetGlyph(c).Advance + _data.GetKerning(prev, c);
+                prev = c;
+            }
+            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
+        }
+
+        public Vector2 MeasureString(System.Text.StringBuilder text)
+        {
+            if (text == null || text.Length == 0) return Vector2.Zero;
+            float width = 0f;
+            float maxWidth = 0f;
+            int lines = 1;
+            char prev = '\0';
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; prev = '\0'; continue; }
+                width += GetGlyph(c).Advance + _data.GetKerning(prev, c);
+                prev = c;
+            }
+            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
+        }
+
         public Vector2 Measure(string text)
         {
             if (string.IsNullOrEmpty(text)) return Vector2.Zero;
@@ -195,6 +231,37 @@ namespace KFramework.MonoGame
                                     new Vector2(scale, scale), SpriteEffects.None, layerDepth);
                 }
 
+                cursor.X += (glyph.Advance + _data.GetKerning(prev, c)) * scale;
+                prev = c;
+            }
+        }
+
+        public void Draw(SpriteBatch batch, System.Text.StringBuilder text, Vector2 position, Color color,
+                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        {
+            ArgumentNullException.ThrowIfNull(batch);
+            if (text == null || text.Length == 0) return;
+            Vector2 cursor = position - origin * scale;
+            float startX = cursor.X;
+            char prev = '\0';
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n')
+                {
+                    cursor.X = startX;
+                    cursor.Y += LineHeight * scale;
+                    prev = '\0';
+                    continue;
+                }
+                Glyph glyph = GetGlyph(c);
+                if (glyph.Page >= 0 && glyph.Page < _pages.Length && glyph.Rect.Width > 0 && glyph.Rect.Height > 0)
+                {
+                    Vector2 drawAt = new(cursor.X + glyph.Offset.X * scale,
+                                         cursor.Y + (Base + glyph.Offset.Y) * scale);
+                    batch.DrawGlyph(_pages[glyph.Page], drawAt, glyph.Rect, color, 0f, Vector2.Zero,
+                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                }
                 cursor.X += (glyph.Advance + _data.GetKerning(prev, c)) * scale;
                 prev = c;
             }
