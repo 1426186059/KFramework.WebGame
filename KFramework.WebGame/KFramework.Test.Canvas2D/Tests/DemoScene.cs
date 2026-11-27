@@ -65,7 +65,7 @@ namespace KFramework.Test.Canvas2D.Tests
         protected float DrawInline(SpriteBatch batch, IFont font, string text, float x, float y, Color color)
         {
             batch.DrawString(font, text, new Vector2(x, y), color);
-            return x + font.Measure(text).X + 16f;
+            return x + font.MeasureString(text).X + 16f;
         }
 
         /// <summary>程序化生成一张棋盘格纹理（不依赖任何资源文件）。</summary>

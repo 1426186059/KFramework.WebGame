@@ -17,9 +17,6 @@ namespace KFramework.MonoGame
         float Descent { get; }
 
         /// <summary>测量文本占的宽高（多行按换行符分行）。</summary>
-        Vector2 Measure(string text);
-
-        /// <summary>Measure 的 MonoGame 命名别名。</summary>
         Vector2 MeasureString(string text);
         Vector2 MeasureString(ReadOnlySpan<char> text);
         /// <summary>测量单个字符：富文本逐字符排版用，避免 ch.ToString() 产生临时字符串。</summary>

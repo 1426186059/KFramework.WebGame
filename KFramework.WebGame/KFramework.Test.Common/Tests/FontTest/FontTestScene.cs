@@ -363,7 +363,7 @@ namespace KFramework.Test.Common.Tests.FontTest
 
             foreach (char c in text)
             {
-                float charWidth = font.Measure(c.ToString()).X;
+                float charWidth = font.MeasureString(c).X;
                 if (width + charWidth > maxWidth && sb.Length > 0)
                 {
                     _lines.Add(sb.ToString());
@@ -392,7 +392,7 @@ namespace KFramework.Test.Common.Tests.FontTest
             }
             else
             {
-                Vector2 size = font.Measure(text);
+                Vector2 size = font.MeasureString(text);
                 y += DrawLine(batch, Font,
                               $"Measure({text.Length:N0} 字) = {size.X:F0} × {size.Y:F0}    行高 {font.LineSpacing:F1}    折行 {_lines.Count} 行（面板内画 {_drawnLines} 行）",
                               new Vector2(28f, y), Color.LightGray);

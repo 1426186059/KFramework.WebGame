@@ -89,12 +89,12 @@ namespace KFramework.Test.Common.Tests.ImageTest
         /// <summary>把文本截断到 <paramref name="maxW"/> 像素宽（超出加省略号），避免单元格间文字横向重叠。</summary>
         private static string Fit(IFont font, string text, float maxW)
         {
-            if (string.IsNullOrEmpty(text) || font.Measure(text).X <= maxW) return text;
+            if (string.IsNullOrEmpty(text) || font.MeasureString(text).X <= maxW) return text;
             int lo = 0, hi = text.Length;
             while (lo < hi)
             {
                 int mid = (lo + hi + 1) >> 1;
-                if (font.Measure(text.Substring(0, mid) + "…").X <= maxW) lo = mid;
+                if (font.MeasureString(text.Substring(0, mid) + "…").X <= maxW) lo = mid;
                 else hi = mid - 1;
             }
             return text.Substring(0, lo) + "…";

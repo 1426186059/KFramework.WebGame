@@ -35,7 +35,7 @@ namespace KFramework.Test.Common.Tests
         public bool Active { get; }
 
         /// <summary>按文字长度算按钮宽度（文字宽 + 左右内边距）。</summary>
-        public static int MeasureWidth(IFont font, string label) => (int)MathF.Ceiling(font.Measure(label).X) + 28;
+        public static int MeasureWidth(IFont font, string label) => (int)MathF.Ceiling(font.MeasureString(label).X) + 28;
 
         /// <summary>绘制按钮（必须在 SpriteBatch.Begin / End 之间）。</summary>
         public void Draw(SpriteBatch batch, IFont font, Texture2D pixel)

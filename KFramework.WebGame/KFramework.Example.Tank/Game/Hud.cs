@@ -31,7 +31,7 @@ namespace KFramework.Example.Tank
 
             if (status is not null)
             {
-                Vector2 size = _bigFont.Measure(status);
+                Vector2 size = _bigFont.MeasureString(status);
                 batch.DrawString(_bigFont, status,
                     new Vector2(fieldRight * 0.5f - size.X * 0.5f, 120f), Color.Yellow);
             }

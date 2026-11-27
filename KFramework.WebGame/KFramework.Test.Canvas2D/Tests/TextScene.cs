@@ -59,7 +59,7 @@ namespace KFramework.Test.Canvas2D.Tests
             y += DrawGlyphLine(batch, _f32, sample, 28f, y, Color.White);
             y += DrawGlyphLine(batch, _f48, "SpriteFont 48px 中文 你好", 28f, y, Color.White);
 
-            Vector2 size = _f24.Measure(sample);
+            Vector2 size = _f24.MeasureString(sample);
             y = DrawLine(batch, $"Measure(24px) = {size.X:F0} × {size.Y:F0}    行高 {_f24.LineSpacing:F1}", 28f, y, Color.LightGray);
 
             // ② 着色：验证 Canvas2D 的"按颜色缓存着色副本"路径（含随时间变化的颜色）

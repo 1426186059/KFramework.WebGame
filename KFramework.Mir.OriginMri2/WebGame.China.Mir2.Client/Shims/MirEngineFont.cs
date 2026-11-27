@@ -33,8 +33,6 @@ namespace MirEngine
 
         public float Descent => (Resolved as IFont)?.Descent ?? 0f;
 
-        public Vector2 Measure(string text) => Resolved?.Measure(text) ?? Vector2.Zero;
-
         public Vector2 MeasureString(string text) => Resolved?.MeasureString(text) ?? Vector2.Zero;
 
         public Vector2 MeasureString(char ch) => Resolved?.MeasureString(ch) ?? Vector2.Zero;

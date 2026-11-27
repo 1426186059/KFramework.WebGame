@@ -123,8 +123,23 @@ namespace KFramework.MonoGame
         }
 
 
-        /// <summary>Measure 的 MonoGame 命名别名。</summary>
-        public Vector2 MeasureString(string text) => Measure(text);
+        /// <summary>测量文本占的宽高（多行按换行符分行）。</summary>
+        public Vector2 MeasureString(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return Vector2.Zero;
+
+            float width = 0f;
+            float maxWidth = 0f;
+            int lines = 1;
+            char prev = '\0';
+            foreach (char c in text)
+            {
+                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; prev = '\0'; continue; }
+                width += GetGlyph(c).Advance + _data.GetKerning(prev, c);
+                prev = c;
+            }
+            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
+        }
 
         public Vector2 MeasureString(char ch) => new Vector2(GetGlyph(ch).Advance + _data.GetKerning('\0', ch), LineHeight);
 
@@ -155,23 +170,6 @@ namespace KFramework.MonoGame
             for (int i = 0; i < text.Length; i++)
             {
                 char c = text[i];
-                if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; prev = '\0'; continue; }
-                width += GetGlyph(c).Advance + _data.GetKerning(prev, c);
-                prev = c;
-            }
-            return new Vector2(Math.Max(maxWidth, width), LineHeight * lines);
-        }
-
-        public Vector2 Measure(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return Vector2.Zero;
-
-            float width = 0f;
-            float maxWidth = 0f;
-            int lines = 1;
-            char prev = '\0';
-            foreach (char c in text)
-            {
                 if (c == '\n') { maxWidth = Math.Max(maxWidth, width); width = 0f; lines++; prev = '\0'; continue; }
                 width += GetGlyph(c).Advance + _data.GetKerning(prev, c);
                 prev = c;

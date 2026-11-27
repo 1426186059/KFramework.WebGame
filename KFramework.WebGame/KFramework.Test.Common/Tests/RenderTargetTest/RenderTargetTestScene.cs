@@ -139,7 +139,7 @@ namespace KFramework.Test.Common.Tests.RenderTargetTest
 
         private int AddButton(int x, int y, string label, Action click)
         {
-            int width = (int)MathF.Ceiling(Font.Measure(label).X) + 28;
+            int width = (int)MathF.Ceiling(Font.MeasureString(label).X) + 28;
             var rect = new Rectangle(x, y, width, 34);
             _buttons.Add(new Button(rect, label, click));
             return width;

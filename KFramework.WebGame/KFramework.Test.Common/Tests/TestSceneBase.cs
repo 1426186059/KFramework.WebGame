@@ -190,7 +190,7 @@ namespace KFramework.Test.Common.Tests
         {
             if (y < Device.Viewport.Height - 8)
                 batch.DrawString(font, text, new Vector2(x, y), color);
-            return x + font.Measure(text).X + 16f;
+            return x + font.MeasureString(text).X + 16f;
         }
 
         /// <summary>画一个纯色矩形（面板 / 按钮底）。</summary>

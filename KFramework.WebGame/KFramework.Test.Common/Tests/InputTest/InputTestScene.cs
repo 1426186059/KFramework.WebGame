@@ -150,7 +150,7 @@ namespace KFramework.Test.Common.Tests.InputTest
                 KPressState st = Input_KeyBoard.GetKeyState(key);
                 string txt = st == KPressState.None ? label : label + " " + StateText(st);
                 // 按基础标签宽度 + 预留状态文本宽度来推进，按下时整行不抖动
-                float wItem = Font.Measure(label).X * scale + 40f * scale + gap;
+                float wItem = Font.MeasureString(label).X * scale + 40f * scale + gap;
                 if (x + wItem > gridRight && x > origin.X)
                 {
                     x = origin.X;
@@ -238,7 +238,7 @@ namespace KFramework.Test.Common.Tests.InputTest
         {
             Color fill = dragging ? new Color(96, 190, 255) : new Color(60, 120, 200);
             DrawRect(batch, box, fill);
-            float cx = box.X + box.Width / 2f - Font.Measure(label).X / 2f;
+            float cx = box.X + box.Width / 2f - Font.MeasureString(label).X / 2f;
             float cy = box.Y + box.Height / 2f - Font.LineSpacing / 2f;
             batch.DrawString(Font, label, new Vector2(cx, cy), Color.White);
             if (dragging)
