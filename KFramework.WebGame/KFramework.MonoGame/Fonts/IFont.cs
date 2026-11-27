@@ -35,5 +35,9 @@ namespace KFramework.MonoGame
         /// <summary>Draw 的 StringBuilder 版本：WrapLines 产出的行不再 ToString。</summary>
         void Draw(SpriteBatch batch, System.Text.StringBuilder text, Vector2 position, Color color,
                   float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
+
+        /// <summary>Draw 的 span 版本：调用方持有 ReadOnlySpan 时无需分配字符串。</summary>
+        void Draw(SpriteBatch batch, ReadOnlySpan<char> text, Vector2 position, Color color,
+                  float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
     }
 }

@@ -305,6 +305,36 @@ namespace KFramework.MonoGame
             }
         }
 
+        public void Draw(SpriteBatch batch, ReadOnlySpan<char> text, Vector2 position, Color color,
+                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        {
+            if (text.IsEmpty)
+            {
+                return;
+            }
+            Vector2 cursor = position - origin * scale;
+            float startX = cursor.X;
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n')
+                {
+                    cursor.X = startX;
+                    cursor.Y += LineHeight * scale;
+                    continue;
+                }
+                Glyph glyph = GetGlyph(c);
+                if (glyph.Bounds.Width > 0)
+                {
+                    Vector2 drawAt = new(cursor.X + glyph.DrawOffset.X * scale,
+                                         cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
+                    batch.DrawGlyph(_atlas, drawAt, glyph.Bounds, color, 0f, Vector2.Zero,
+                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                }
+                cursor.X += (glyph.Advance + _letterSpacing) * scale;
+            }
+        }
+
         public void Dispose() => _atlas.Dispose();
     }
 }

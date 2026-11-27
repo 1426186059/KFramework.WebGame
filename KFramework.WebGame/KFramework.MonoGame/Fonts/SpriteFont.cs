@@ -300,52 +300,17 @@ namespace KFramework.MonoGame
         }
 
         public void Draw(
-            SpriteBatch batch, 
-            string text, 
-            Vector2 position, 
+            SpriteBatch batch,
+            string text,
+            Vector2 position,
             Color color,
-            float rotation, 
-            Vector2 origin, 
-            float scale, 
-            SpriteEffects effects, 
+            float rotation,
+            Vector2 origin,
+            float scale,
+            SpriteEffects effects,
             float layerDepth)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return;
-            }
-
-            Vector2 cursor = position - origin * scale;
-            float startX = cursor.X;
-            foreach (char c in text)
-            {
-                if (c == '\n')
-                {
-                    cursor.X = startX;
-                    cursor.Y += LineHeight * scale;
-                    continue;
-                }
-
-                Glyph glyph = GetGlyph(c);
-                // 越界保护与 BitmapFont 一致：-1（无贴图）与 Dispose 之后的页号都不画
-                if (glyph.AtlasIndex >= 0 && glyph.AtlasIndex < _atlases.Count
-                    && glyph.Bounds.Width > 0 && glyph.Bounds.Height > 0)
-                {
-                    Vector2 drawAt = new Vector2(
-                        cursor.X + glyph.DrawOffset.X * scale,
-                        cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
-                    batch.DrawGlyph(
-                        _atlases[glyph.AtlasIndex], 
-                        drawAt, 
-                        glyph.Bounds, 
-                        color, 
-                        0f, 
-                        Vector2.Zero,
-                        new Vector2(scale, scale), SpriteEffects.None, layerDepth);
-                }
-                cursor.X += glyph.Advance * scale;
-            }
-
+            Draw(batch, text.AsSpan(), position, color, rotation, origin, scale, effects, layerDepth);
         }
 
         /// <summary>与 string 重载等效，但接受 StringBuilder，避免调用方为拼接文本产生临时 string。</summary>
@@ -360,7 +325,24 @@ namespace KFramework.MonoGame
             SpriteEffects effects,
             float layerDepth)
         {
-            if (text == null || text.Length == 0)
+            foreach(var v in  text.GetChunks())
+            {
+                Draw(batch, v.Span, position, color, rotation, origin, scale, effects, layerDepth);
+            }
+        }
+
+        public void Draw(
+            SpriteBatch batch,
+            ReadOnlySpan<char> text,
+            Vector2 position,
+            Color color,
+            float rotation,
+            Vector2 origin,
+            float scale,
+            SpriteEffects effects,
+            float layerDepth)
+        {
+            if (text.IsEmpty || text.Length == 0)
             {
                 return;
             }

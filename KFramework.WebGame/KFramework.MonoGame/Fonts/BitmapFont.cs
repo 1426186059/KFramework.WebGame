@@ -266,5 +266,39 @@ namespace KFramework.MonoGame
                 prev = c;
             }
         }
+
+        public void Draw(SpriteBatch batch, ReadOnlySpan<char> text, Vector2 position, Color color,
+                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        {
+            ArgumentNullException.ThrowIfNull(batch);
+            if (text.IsEmpty)
+            {
+                return;
+            }
+            Vector2 cursor = position - origin * scale;
+            float startX = cursor.X;
+            char prev = '\0';
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\n')
+                {
+                    cursor.X = startX;
+                    cursor.Y += LineHeight * scale;
+                    prev = '\0';
+                    continue;
+                }
+                Glyph glyph = GetGlyph(c);
+                if (glyph.Page >= 0 && glyph.Page < _pages.Length && glyph.Rect.Width > 0 && glyph.Rect.Height > 0)
+                {
+                    Vector2 drawAt = new(cursor.X + glyph.Offset.X * scale,
+                                         cursor.Y + (Base + glyph.Offset.Y) * scale);
+                    batch.DrawGlyph(_pages[glyph.Page], drawAt, glyph.Rect, color, 0f, Vector2.Zero,
+                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                }
+                cursor.X += (glyph.Advance + _data.GetKerning(prev, c)) * scale;
+                prev = c;
+            }
+        }
     }
 }

@@ -60,10 +60,15 @@ namespace KFramework.MonoGame
 
         /// <summary>在给定矩形内绘制普通文本；<paramref name="batch"/> 必须处于 Begin / End 之间。
         /// 富文本请用 <see cref="RichTextObject"/>。</summary>
-        public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor,
-                                    TextAnchor anchor = TextAnchor.UpperLeft,
-                                    HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
-                                    VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
+        public static void DrawText(
+            SpriteBatch batch, 
+            string text, 
+            IFont font, 
+            RectangleF bounds, 
+            Color foreColor,
+            TextAnchor anchor = TextAnchor.UpperLeft,
+            HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
+            VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
         {
             if (batch == null || font == null || string.IsNullOrEmpty(text))
             {
@@ -116,10 +121,16 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>带背景铺底的重载：<paramref name="backColor"/> 非透明时先用 1x1 白纹把矩形填满，再画文本。</summary>
-        public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor, Color backColor,
-                                    TextAnchor anchor = TextAnchor.UpperLeft,
-                                    HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
-                                    VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
+        public static void DrawText(
+            SpriteBatch batch, 
+            string text, 
+            IFont font, 
+            RectangleF bounds, 
+            Color foreColor, 
+            Color backColor,
+            TextAnchor anchor = TextAnchor.UpperLeft,
+            HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
+            VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
         {
             if (batch == null)
             {

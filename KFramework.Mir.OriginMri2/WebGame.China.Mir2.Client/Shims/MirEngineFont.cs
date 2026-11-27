@@ -53,6 +53,10 @@ namespace MirEngine
                          float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
             => Resolved?.Draw(batch, text, position, color, rotation, origin, scale, effects, layerDepth);
 
+        public void Draw(SpriteBatch batch, ReadOnlySpan<char> text, Vector2 position, KFramework.MonoGame.Color color,
+                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+            => Resolved?.Draw(batch, text, position, color, rotation, origin, scale, effects, layerDepth);
+
         /// <summary>本描述符对应的真实字形资源（缓存）；设备未就绪时为 null。</summary>
         private SpriteFont Resolved => FontFactory.Resolve(this);
 
