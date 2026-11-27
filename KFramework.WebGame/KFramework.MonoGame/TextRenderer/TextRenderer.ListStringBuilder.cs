@@ -35,11 +35,11 @@ namespace KFramework.MonoGame
             {
                 get
                 {
-                    if(_Count >= _lines.Count)
+                    if (_Count > _lines.Count)
                     {
                        _lines.Add(new StringBuilder());
                     }
-                    return _lines[_Count];
+                    return _lines[_Count - 1];
                 }
             }
 
@@ -47,10 +47,10 @@ namespace KFramework.MonoGame
             public void Reset()
             {
                 _Count = 0;
-                Current.Clear();
             }
 
             /// <summary>新增一行：推进有效行数并返回清空后的 StringBuilder 供填充。</summary>
+            /// 先有行，才能在行上写字
             public StringBuilder AddLine()
             {
                 _Count++;

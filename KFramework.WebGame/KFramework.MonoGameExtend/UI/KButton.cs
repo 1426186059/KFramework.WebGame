@@ -61,10 +61,33 @@ namespace KFramework.MonoGameExtend
 
         // ===== 四态配色，对应 Unity 的 ColorBlock =====
 
-        public Color NormalColor { get; set; } = Color.White;
-        public Color HighlightedColor { get; set; } = new Color(245, 245, 245);
-        public Color PressedColor { get; set; } = new Color(200, 200, 200);
-        public Color DisabledColor { get; set; } = new Color(200, 200, 200, 128);
+        private Color _normalColor = Color.White;
+        public Color NormalColor
+        {
+            get { return _normalColor; }
+            set { _normalColor = value; RefreshState(); }
+        }
+
+        private Color _highlightedColor = new Color(245, 245, 245);
+        public Color HighlightedColor
+        {
+            get { return _highlightedColor; }
+            set { _highlightedColor = value; RefreshState(); }
+        }
+
+        private Color _pressedColor = new Color(200, 200, 200);
+        public Color PressedColor
+        {
+            get { return _pressedColor; }
+            set { _pressedColor = value; RefreshState(); }
+        }
+
+        private Color _disabledColor = new Color(200, 200, 200, 128);
+        public Color DisabledColor
+        {
+            get { return _disabledColor; }
+            set { _disabledColor = value; RefreshState(); }
+        }
 
         /// <summary>颜色渐变速度（每秒），对应 Unity 的 Fade Duration</summary>
         public float ColorFadeSpeed { get; set; } = 8f;
