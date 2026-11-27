@@ -248,7 +248,7 @@ namespace KFramework.MonoGame
                 return _layoutRuns;
             }
 
-            List<RichTextStyle> docStyles =  _doc.Styles;
+            List<RichTextStyle> docStyles = _doc.bHaveRichText ? _doc.Styles : null;
             int textLen = docStyles != null ? docStyles.Count : _text.Length;
             bool wrap = hWrap == HorizontalWrapMode.Wrap && bounds.Width > 0;
             float lineH = _font.LineSpacing;
