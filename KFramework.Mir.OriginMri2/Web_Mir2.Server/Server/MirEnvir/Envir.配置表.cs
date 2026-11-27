@@ -135,6 +135,9 @@ namespace Server.MirEnvir
                 var cfg4 = root4 as OriginMir2Config4;
                 var cfg5 = root5 as OriginMir2Config5;
 
+                // 原始传奇技能提示的运行时只读索引；配置表本身不写任何派生字段。
+                SkillTips.Build(cfg0, cfg2, cfg5);
+
                 if (cfg0 != null)
                 {
                     // 0config.conditions → OriginConditions（条件过滤），key "undefined" 等非数字 id 跳过。
@@ -196,7 +199,7 @@ namespace Server.MirEnvir
 
                 MessageQueue.Enqueue($"[{InstanceTag}] 原始传奇配置表: {OriginConfigs.Count}/6 分片 / 未声明表 {OriginConfigs.Sum(kv => kv.Value.ExtraTables.Count)} 张 / " +
                     $"奖励包 {OriginBoxes.Count} / 任务 {OriginTasks.Count} / 目标 {OriginGoals.Count} / 商店 {OriginStores.Count} / " +
-                    $"条件 {OriginConditions.Count} / 文字样式 {OriginTextStyles.Count} / 类型前缀 {OriginTaskTypeNames.Count} / 摆放点 {MapNpcPlacements.Sum(kv => kv.Value.Count)}");
+                    $"条件 {OriginConditions.Count} / 文字样式 {OriginTextStyles.Count} / 类型前缀 {OriginTaskTypeNames.Count} / 摆放点 {MapNpcPlacements.Sum(kv => kv.Value.Count)} / 技能提示 {SkillTips.Count}");
             }
             catch (Exception ex)
             {

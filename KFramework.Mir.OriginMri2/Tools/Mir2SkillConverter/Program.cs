@@ -20,7 +20,7 @@ public class MagicInfoOut
     public float MultiplierBase = 1.0f, MultiplierBonus;
     public byte Range = 9;
     public int OriginId;
-    public string OriginIcon = "", ConditionText = "", Tips1 = "", Show = "", TipAttributes = "";
+    public string OriginIcon = "", ConditionText = "", Tips1 = "", Show = "";
     public int Cls, Career, IsShow, Condition, HandlerType, Aoe, MaxTarget, CanUp;
     public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
     public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex;
@@ -68,13 +68,9 @@ public static class Program
 
             using JsonDocument doc = JsonDocument.Parse(File.ReadAllText(opt.Input));
             using JsonDocument condDoc = JsonDocument.Parse(File.ReadAllText(opt.Condition));
-            string attrPath = Directory.GetFiles(Path.GetDirectoryName(opt.Input) ?? root, "0config*.json").First();
-            using JsonDocument attrDoc = JsonDocument.Parse(File.ReadAllText(attrPath));
             JsonElement skills = doc.RootElement.GetProperty("skill");
             JsonElement effects = doc.RootElement.GetProperty("skillEffects");
-            JsonElement buffs = doc.RootElement.GetProperty("buff");
             Dictionary<int, Dictionary<int, JsonElement>> conditions = BuildConditionIndex(condDoc.RootElement);
-            Dictionary<int, string> attrNames = BuildAttributeNames(attrDoc.RootElement);
 
             var rows = new List<(int Id, JsonElement Raw)>();
             foreach (var kv in skills.EnumerateObject())
@@ -121,7 +117,6 @@ public static class Program
 
                 FillOriginFields(dto, rec, id, icon, effectIds);
                 var combat = FillCombatFields(dto, conditions, id);
-                dto.TipAttributes = BuildTipAttributes(rec, conditions, id, attrNames, buffs);
                 if (combat.Matched)
                 {
                     combatCount++;
@@ -256,148 +251,6 @@ public static class Program
             map[id] = levels;
         }
         return map;
-    }
-
-    // 0config.attribute_score：id -> 装备属性中文名（"免　伤" 等），用于技能属性提示。
-    private static Dictionary<int, string> BuildAttributeNames(JsonElement root)
-    {
-        var map = new Dictionary<int, string>();
-        if (!root.TryGetProperty("attribute_score", out var table) || table.ValueKind != JsonValueKind.Object)
-        {
-            return map;
-        }
-
-        foreach (var kv in table.EnumerateObject())
-        {
-            if (int.TryParse(kv.Name, out int id))
-            {
-                map[id] = Str(kv.Value, "description");
-            }
-        }
-        return map;
-    }
-
-    private static string AttrName(Dictionary<int, string> names, int id, string fallback)
-    {
-        return names.TryGetValue(id, out string? name) ? name.Replace("\u3000", string.Empty).Trim() : fallback;
-    }
-
-    // 按 buff 文本匹配原始装备属性名，优先用 0config.attribute_score 的中文名。
-    private static string BuffAttrName(JsonElement buff, Dictionary<int, string> attrNames)
-    {
-        string txt = Str(buff, "txt");
-        if (string.IsNullOrWhiteSpace(txt))
-        {
-            txt = Str(buff, "txt1");
-        }
-
-        if (txt.Contains("抵挡") || txt.Contains("伤害降低"))
-        {
-            return AttrName(attrNames, 16, "免伤");
-        }
-        if (txt.Contains("魔法防御"))
-        {
-            return AttrName(attrNames, 21, "魔防上限");
-        }
-        if (txt.Contains("物理防御"))
-        {
-            return AttrName(attrNames, 7, "防御上限");
-        }
-        if (txt.Contains("恢复生命"))
-        {
-            return AttrName(attrNames, 3, "生命恢复");
-        }
-        if (txt.Contains("伤害提高") || txt.Contains("伤害加深"))
-        {
-            return AttrName(attrNames, 192, "易伤");
-        }
-        if (txt.Contains("每秒造成"))
-        {
-            return AttrName(attrNames, 55, "增加技能伤害");
-        }
-        if (txt.Contains("无法移动"))
-        {
-            return "定身";
-        }
-        if (txt.Contains("不能进行任何操作"))
-        {
-            return "眩晕";
-        }
-        return string.Empty;
-    }
-
-    // 属性提示优先用 5config.buff.txt（原版 BuffTips 口径），没有 buff 才用 skills_condition 的数值列。
-    private static string BuildTipAttributes(JsonElement rec, Dictionary<int, Dictionary<int, JsonElement>> conditions,
-        int id, Dictionary<int, string> attrNames, JsonElement buffs)
-    {
-        if (!conditions.TryGetValue(id, out var levels) || !levels.TryGetValue(1, out var l1))
-        {
-            return string.Empty;
-        }
-
-        var parts = new List<string>();
-        string buffers = Str(l1, "buffers");
-        foreach (string token in buffers.Split('#'))
-        {
-            if (!int.TryParse(token, out _) || buffs.ValueKind != JsonValueKind.Object
-                || !buffs.TryGetProperty(token, out JsonElement buff))
-            {
-                continue;
-            }
-
-            string txt = Str(buff, "txt");
-            if (string.IsNullOrWhiteSpace(txt))
-            {
-                txt = Str(buff, "txt1");
-            }
-            txt = txt.Replace("<br>", " ").Replace("<br/>", " ").Trim();
-            if (string.IsNullOrEmpty(txt))
-            {
-                continue;
-            }
-
-            string attrName = BuffAttrName(buff, attrNames);
-            string line = string.IsNullOrEmpty(attrName) ? txt : attrName + "：" + txt;
-            if (!parts.Contains(line))
-            {
-                parts.Add(line);
-            }
-        }
-
-        int extra = Num(l1, "extraHurt");
-        int rate = Num(l1, "rate");
-        int monHurtAdd = Num(l1, "monHurtAdd");
-        int monHurtAddFix = Num(l1, "monHurtAddFix");
-        int hurt = Num(l1, "hurt");
-
-        if (extra > 0)
-        {
-            parts.Add(AttrName(attrNames, 15, "增加攻击伤害") + " +" + extra);
-        }
-
-        if (rate > 0 && extra > 0)
-        {
-            parts.Add("伤害倍率 " + (rate / 100f).ToString("0.##") + "%");
-        }
-        else if (rate > 0 && parts.Count == 0)
-        {
-            parts.Add("触发概率 " + (rate / 100f).ToString("0.##") + "%");
-        }
-
-        if (monHurtAdd > 0)
-        {
-            parts.Add(AttrName(attrNames, 30, "对怪增伤") + " +" + (monHurtAdd / 100f).ToString("0.##") + "%");
-        }
-        if (monHurtAddFix > 0)
-        {
-            parts.Add(AttrName(attrNames, 27, "对怪伤害") + " +" + monHurtAddFix);
-        }
-        if (hurt > 0)
-        {
-            parts.Add(AttrName(attrNames, 58, "对人伤害") + " +" + hurt);
-        }
-
-        return string.Join("；", parts);
     }
 
     // 把 Lv1~Lv3 的原始传奇数值映射进服务器现用的战斗字段，C# 战斗代码一行都不改。

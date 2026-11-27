@@ -1,8 +1,9 @@
 using System;
+using Server.ExcelConfig;
 using Server.MirEnvir;
 using S = ServerPackets;
 
-namespace Server.ExcelConfig
+namespace Server.MirDatabase
 {
     // 运行期技能对象：外层持有静态配置 Info，等级/熟练度/存档/发包/战斗计算都保存在本类。
     // 静态列在 MagicInfoTable（MagicInfoTable.cs），不写回 MagicInfo.json。
@@ -139,9 +140,10 @@ namespace Server.ExcelConfig
             int cost = Info.BaseCost + (Info.LevelCost * Level);
             long delay = GetDelay();
             string text = "CD时间：" + (delay / 1000f).ToString("0.##") + "秒\n消耗魔法：" + cost + "点";
-            if (!string.IsNullOrEmpty(Info.TipAttributes))
+            string attributes = Envir.SkillTips.GetAttributes(Info.OriginId, Level);
+            if (!string.IsNullOrEmpty(attributes))
             {
-                text += "\n属性：" + Info.TipAttributes;
+                text += "\n属性：" + attributes;
             }
 
             return text;
