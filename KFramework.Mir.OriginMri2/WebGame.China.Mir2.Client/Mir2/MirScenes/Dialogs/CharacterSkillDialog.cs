@@ -1279,7 +1279,7 @@ namespace Client.MirScenes.Dialogs
             string stats = FormatTipStats(magic.TipStats);
             if (!string.IsNullOrEmpty(stats))
             {
-                text += "\n" + stats;
+                text += "\n\n" + stats;
             }
 
             return text;

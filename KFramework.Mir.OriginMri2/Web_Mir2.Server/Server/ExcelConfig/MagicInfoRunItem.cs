@@ -128,7 +128,7 @@ namespace Server.ExcelConfig
             };
         }
 
-        // 在原始传奇 show 正文之外追加当前等级的伤害/魔法/CD，数值口径与服务端战斗公式一致。
+        // 在原始传奇 show 正文之外追加 CD/魔法/属性，顺序：CD时间 → 消耗魔法 → 属性。
         private string BuildTipStats()
         {
             if (Info == null)
@@ -136,18 +136,12 @@ namespace Server.ExcelConfig
                 return string.Empty;
             }
 
-            string bonus = "伤害倍率 " + (GetMultiplier() * 100f).ToString("0") + "%";
-            if (Info.PowerBase > 0)
-            {
-                bonus = "伤害 +" + Info.PowerBase + "，" + bonus;
-            }
-
             int cost = Info.BaseCost + (Info.LevelCost * Level);
             long delay = GetDelay();
-            string text = "属性加成：" + bonus + "\n消耗魔法：" + cost + "点";
-            if (delay > 0)
+            string text = "CD时间：" + delay + "毫秒\n消耗魔法：" + cost + "点";
+            if (!string.IsNullOrEmpty(Info.TipAttributes))
             {
-                text += "\nCD时间：" + delay + "毫秒";
+                text += "\n属性：" + Info.TipAttributes;
             }
 
             return text;
