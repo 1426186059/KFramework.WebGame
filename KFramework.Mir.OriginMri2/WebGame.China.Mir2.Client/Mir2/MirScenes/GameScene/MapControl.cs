@@ -2342,6 +2342,9 @@ public sealed class MapControl : MirControl
             Network.Enqueue(new C.Magic { ObjectID = actor.ObjectID, Spell = magic.Spell, Direction = dir, TargetID = targetID, Location = location, SpellTargetLock = CMain.SpellTargetLock });
         }
 
+        // 施法已入队/已发包，立即消费掉 NextMagic；否则 CheckInput 会在动作真正执行前
+        // 每帧重复进入 UseMagic 覆盖 QueuedAction，手动技能表现为"按一次卡住/重复施法"。
+        actor.ClearMagic();
     }
 
     public static MirDirection MouseDirection(float ratio = 45F) //22.5 = 16

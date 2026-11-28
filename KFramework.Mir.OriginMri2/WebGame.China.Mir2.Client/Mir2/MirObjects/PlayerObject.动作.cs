@@ -563,6 +563,9 @@ namespace Client.MirObjects
                                 Spell = (Spell)action.Params[0];
                                 uint targetID = (uint)action.Params[1];
                                 Point location = (Point)action.Params[2];
+                                // 自己施法时 SpellLevel 在 SetAction 开头被清零，必须在这里从 QueuedAction 取回，
+                                // 否则 PlayOriginCastEffects/HitEffects 恒按 Lv1 查 skillEffects，高等级技能特效全是 Lv1。
+                                SpellLevel = (byte)action.Params[3];
 
                                 Network.Enqueue(new C.Magic { ObjectID = GameScene.User.ObjectID, Spell = Spell, Direction = Direction, TargetID = targetID, Location = location });
 

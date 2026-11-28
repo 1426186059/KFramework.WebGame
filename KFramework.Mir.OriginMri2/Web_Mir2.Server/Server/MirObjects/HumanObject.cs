@@ -4065,29 +4065,36 @@ namespace Server.MirObjects
                 return true;
 
             Stat minStat, maxStat;
+            DefenceType defence;
             switch (Info == null ? MirClass.Warrior : Info.Class)
             {
                 case MirClass.Wizard:
-                    minStat = Stat.MinMC; maxStat = Stat.MaxMC; break;
+                    minStat = Stat.MinMC; maxStat = Stat.MaxMC; defence = DefenceType.MAC; break;
                 case MirClass.Taoist:
-                    minStat = Stat.MinSC; maxStat = Stat.MaxSC; break;
+                    minStat = Stat.MinSC; maxStat = Stat.MaxSC; defence = DefenceType.MAC; break;
                 default:
-                    minStat = Stat.MinDC; maxStat = Stat.MaxDC; break;
+                    // 战士技能用 DC 计算伤害，必须走物理防御 AC；用 MAC 会被魔防减免，
+                    // 表现为"半月/烈火打怪几乎不掉血"。
+                    minStat = Stat.MinDC; maxStat = Stat.MaxDC; defence = DefenceType.AC; break;
             }
 
             int damage = magic.GetDamage(GetAttackPower(Stats[minStat], Stats[maxStat]));
+            int maxTargets = magic.Info.MaxTarget > 0 ? magic.Info.MaxTarget : (magic.Info.Aoe == 1 ? int.MaxValue : 1);
 
             if (target != null && target.IsAttackTarget(this))
             {
-                // 有目标：按原逻辑结算（单体或 3x3）
+                // 有目标：按 5config 的 Aoe/AreaDis/MaxTarget 结算。
+                // areaDis=0（半月弯刀"身前半圆"）以施法者为中心；areaDis>0 以目标为中心。
                 long delay = Functions.MaxDistance(CurrentLocation, target.CurrentLocation) * 50 + 500;
                 if (magic.Info.Aoe == 1)
                 {
-                    Point center = target.CurrentLocation;
-                    for (int y = center.Y - 1; y <= center.Y + 1; y++)
+                    Point center = magic.Info.AreaDis > 0 ? target.CurrentLocation : CurrentLocation;
+                    int aoeRadius = magic.Info.AreaDis > 0 ? magic.Info.AreaDis : 1;
+                    List<MapObject> aoeTargets = new List<MapObject>();
+                    for (int y = center.Y - aoeRadius; y <= center.Y + aoeRadius; y++)
                     {
                         if (y < 0 || y >= CurrentMap.Height) continue;
-                        for (int x = center.X - 1; x <= center.X + 1; x++)
+                        for (int x = center.X - aoeRadius; x <= center.X + aoeRadius; x++)
                         {
                             if (x < 0 || x >= CurrentMap.Width) continue;
                             Cell cell = CurrentMap.GetCell(x, y);
@@ -4095,14 +4102,16 @@ namespace Server.MirObjects
                             foreach (MapObject ob in cell.Objects.ToArray())
                             {
                                 if (ob == null || !ob.IsAttackTarget(this)) continue;
-                                ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, ob, damage, DefenceType.MAC, false));
+                                if (!aoeTargets.Contains(ob)) aoeTargets.Add(ob);
                             }
                         }
                     }
+                    foreach (MapObject ob in aoeTargets.Take(maxTargets))
+                        ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, ob, damage, defence, false));
                 }
                 else
                 {
-                    ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, target, damage, DefenceType.MAC, false));
+                    ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + delay, target, damage, defence, false));
                 }
 
                 LevelMagic(magic);
@@ -4136,13 +4145,11 @@ namespace Server.MirObjects
             if (candidates.Count == 0)
                 return true;
 
-            int maxTargets = magic.Info.MaxTarget > 0 ? magic.Info.MaxTarget : 1;
-            if (magic.Info.Aoe == 1) maxTargets = int.MaxValue;
             candidates = candidates.OrderBy(o => Functions.MaxDistance(o.CurrentLocation, location)).ToList();
 
             long hitDelay = magic.Info.HurtDelay > 0 ? magic.Info.HurtDelay : 500;
             foreach (MapObject ob in candidates.Take(maxTargets))
-                ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + hitDelay, ob, damage, DefenceType.MAC, false));
+                ActionList.Add(new DelayedAction(DelayedType.Damage, Envir.Time + hitDelay, ob, damage, defence, false));
 
             LevelMagic(magic);
             return true;
