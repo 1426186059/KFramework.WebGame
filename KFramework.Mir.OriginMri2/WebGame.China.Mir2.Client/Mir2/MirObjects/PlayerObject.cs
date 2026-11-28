@@ -127,6 +127,58 @@ namespace Client.MirObjects
             Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWingModel(), EResLoadPriority.User);
             // 裸身兜底模型（身体 CDN 缺失时回落 9001/9002）也预载，避免回退时再等待。
             Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, Gender == MirGender.Female ? 9002 : 9001, EResLoadPriority.User);
+
+            PreloadSelfMagicEffects();
+        }
+
+        /// <summary>后台静默预载自己已学技能的特效帧：skills_condition → effLevelID → skillEffects → effect.model。
+        /// 最低优先级、不阻塞；命中缓存/在途请求由 Mir2OriginObjectLibrary.Request 短路，重复调用无网络开销。</summary>
+        private void PreloadSelfMagicEffects()
+        {
+            UserObject self = this as UserObject;
+            if (self == null || self != User || self.Magics == null) return;
+
+            foreach (ClientMagic magic in self.Magics)
+            {
+                PreloadMagicEffectsCore(magic);
+            }
+        }
+
+        /// <summary>新学技能 / 技能升级时，只预载这一个技能当前等级的特效。</summary>
+        public void PreloadMagicEffects(ClientMagic magic)
+        {
+            if (this != User)
+            {
+                return;
+            }
+            PreloadMagicEffectsCore(magic);
+        }
+
+        private void PreloadMagicEffectsCore(ClientMagic magic)
+        {
+            if (magic == null || magic.MaxLevel <= 0) return;
+            if (!ExcelTableMgr.TryGetSkillEffects((int)magic.Spell, magic.Level, out var steps) || steps == null) return;
+
+            foreach (var step in steps)
+            {
+                if (step.effect <= 0) continue;
+                if (!ExcelTableMgr.TryGetEffect(step.effect, out var effect) || effect == null || effect.model <= 0) continue;
+
+                int action = effect.action > 0 ? effect.action : 1;
+                if (effect.totaldir <= 1)
+                {
+                    // 不区分方向的特效固定用配置的 dir，与 OriginEffect 的 _direction 口径一致。
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, effect.dir, EResLoadPriority.Background);
+                }
+                else
+                {
+                    int maxDir = effect.totaldir == 5 ? 4 : 7;
+                    for (int d = 0; d <= maxDir; d++)
+                    {
+                        Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, d, EResLoadPriority.Background);
+                    }
+                }
+            }
         }
 
         /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身/换动作不跳帧（低优先级，空闲才下）。</summary>
@@ -866,6 +918,8 @@ namespace Client.MirObjects
         private static bool TryGetOriginSteps(Spell spell, int level, out List<SkillEffectTable> steps)
         {
             steps = null;
+            // 原始传奇口径：skills_condition[skill][level].effLevelID → skillEffects[effLevelID]；
+            // 等级 0 在 ExcelTableMgr 内部按 1 级取。
             return ExcelTableMgr.TryGetSkillEffects((int)spell, level, out steps) && steps != null && steps.Count > 0;
         }
 
@@ -893,7 +947,7 @@ namespace Client.MirObjects
                 Effects.Add(new OriginEffect(s.effect, this, starttime: start,
                                              xOffset: xOffset, yOffset: yOffset,
                                              direction: dir, front: followDir ? s.front : 0));
-                if (s.sound > 0) SoundManager.PlaySound(s.sound);
+                if (s.sound > 0) SoundManager.PlayOriginSound(s.sound);
                 any = true;
             }
             return any || steps.Any(x => x.type == 1 || x.type == 2);
@@ -933,7 +987,7 @@ namespace Client.MirObjects
                     owner.Effects.Add(new OriginEffect(s.effect, owner, starttime: start,
                                                        xOffset: s.x, yOffset: -s.y,
                                                        direction: dir, front: followDir ? s.front : 0));
-                    if (s.sound > 0) SoundManager.PlaySound(s.sound);
+                    if (s.sound > 0) SoundManager.PlayOriginSound(s.sound);
                     any = true;
                 }
                 return any || steps.Any(x => x.type == 0);
@@ -943,7 +997,7 @@ namespace Client.MirObjects
             //   · 子弹仅用自己 model 的 stand，不做覆盖（火球子弹 485 / 命中 537 本来不同，灵魂火符 485/530 也不同却正常）
             //   · 终点用目标 CurrentLocation（格子坐标），由 OriginMissile 内部按起点抬 60、终点脚底处理
             //   · 命中特效 new OriginEffect(effect, owner)，yOffset=0（灵魂火符就是这样），不额外抬 60
-            if (fly.sound > 0) SoundManager.PlaySound(fly.sound);
+            if (fly.sound > 0) SoundManager.PlayOriginSound(fly.sound);
             Point dest = target != null ? target.CurrentLocation : targetPoint;
             OriginMissile missile = new OriginMissile(fly.effect, this, target, dest,
                                                       flightDuration: Math.Max(1, fly.delaytime));
@@ -1314,9 +1368,22 @@ namespace Client.MirObjects
                         switch (Spell)
                         {
                             case Spell.野蛮冲撞: // 野蛮冲撞
+                            {
                                 Frames.TryGetValue(MirAction.Running, out Frame);
                                 CurrentAction = MirAction.DashL;
-                                Direction = olddirection;
+
+                                // 有选中目标就朝目标真实位置冲；没有目标才用鼠标/键盘给出的方向。
+                                MapObject dashTarget = MapObject.CanAttackTargetObject ?? MapObject.SelectionTarget;
+                                if (dashTarget != null && !dashTarget.Dead)
+                                {
+                                    Direction = Functions.DirectionFromPoint(CurrentLocation, dashTarget.CurrentLocation);
+                                }
+                                else
+                                {
+                                    Direction = olddirection;
+                                    dashTarget = null;
+                                }
+
                                 CurrentLocation = Functions.PointMove(CurrentLocation, Direction, 1);
 
                                 // SetAction 开头按"目标格 - 1"把 MapLocation 设成了施法起点前一格，
@@ -1337,9 +1404,16 @@ namespace Client.MirObjects
                                     MapControl.NextAction = CMain.Time + 250;
                                     GameScene.SpellTime = CMain.Time + 2500; //Spell Delay
 
-                                    Network.Enqueue(new C.Magic { ObjectID = GameScene.User.ObjectID, Spell = Spell, Direction = Direction, });
+                                    Network.Enqueue(new C.Magic
+                                    {
+                                        ObjectID = GameScene.User.ObjectID,
+                                        Spell = Spell,
+                                        Direction = Direction,
+                                        TargetID = dashTarget != null ? dashTarget.ObjectID : 0,
+                                    });
                                 }
                                 break;
+                            }
                             case Spell.剑雨: // 剑刃风暴
                                 Frames.TryGetValue(MirAction.Attack3, out Frame);
                                 if (this == User)
@@ -1607,58 +1681,51 @@ namespace Client.MirObjects
 
                             if (!RidingMount)
                             {
-                                if (GameScene.User.Slaying && (TargetObject != null || GameScene.Observing))
-                                    Spell = Spell.攻杀剑术;
+                                ClientMagic castMagic;
 
-                                if (GameScene.User.Thrusting && GameScene.Scene.MapControl.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
+                                // 战士开关技能一次攻击只能触发一个。旧实现是顺序覆盖：半月弯刀写在刺杀之后，
+                                // 且只要 TargetObject != null 就命中，把刺杀剑术永久覆盖成半月弯刀，
+                                // 表现为"每次攻击都播半月特效、刺杀永远不出"。按强度/条件严格度取一个。
+                                if (GameScene.User.TwinDrakeBlade && (TargetObject != null || GameScene.Observing) &&
+                                    (castMagic = User.GetMagic(Spell.双烈火剑)) != null &&
+                                    castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
+                                {
+                                    Spell = Spell.双烈火剑;
+                                }
+                                else if (GameScene.User.FlamingSword && TargetObject != null &&
+                                         (castMagic = User.GetMagic(Spell.烈火剑法)) != null)
+                                {
+                                    Spell = Spell.烈火剑法;
+                                    castMagic.CastTime = CMain.Time;
+                                }
+                                else if (GameScene.User.DoubleSlash &&
+                                         (castMagic = User.GetMagic(Spell.双斩)) != null &&
+                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
+                                {
+                                    Spell = Spell.双斩;
+                                }
+                                else if (GameScene.User.CrossHalfMoon &&
+                                         (TargetObject != null || GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation)) &&
+                                         (castMagic = User.GetMagic(Spell.双半月)) != null &&
+                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
+                                {
+                                    Spell = Spell.双半月;
+                                }
+                                else if (GameScene.User.Thrusting &&
+                                         GameScene.Scene.MapControl.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
+                                {
                                     Spell = Spell.刺杀剑术;
-
-                                if (GameScene.User.HalfMoon)
-                                {
-                                    if (TargetObject != null || GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, Direction))
-                                    {
-                                        magic = User.GetMagic(Spell.半月弯刀);
-                                        if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                            Spell = Spell.半月弯刀;
-                                    }
                                 }
-
-                                if (GameScene.User.CrossHalfMoon)
+                                else if (GameScene.User.HalfMoon &&
+                                         GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, Direction) &&
+                                         (castMagic = User.GetMagic(Spell.半月弯刀)) != null &&
+                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
                                 {
-                                    if (TargetObject != null || GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation))
-                                    {
-                                        magic = User.GetMagic(Spell.双半月);
-                                        if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                            Spell = Spell.双半月;
-                                    }
+                                    Spell = Spell.半月弯刀;
                                 }
-
-                                if (GameScene.User.DoubleSlash)
+                                else if (GameScene.User.Slaying && (TargetObject != null || GameScene.Observing))
                                 {
-                                    magic = User.GetMagic(Spell.双斩);
-                                    if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                        Spell = Spell.双斩;
-                                }
-
-
-                                if (GameScene.User.TwinDrakeBlade && (TargetObject != null || GameScene.Observing))
-                                {
-                                    magic = User.GetMagic(Spell.双烈火剑);
-                                    if (magic != null && magic.BaseCost + magic.LevelCost * magic.Level <= User.MP)
-                                        Spell = Spell.双烈火剑;
-                                }
-
-                                if (GameScene.User.FlamingSword)
-                                {
-                                    if (TargetObject != null)
-                                    {
-                                        magic = User.GetMagic(Spell.烈火剑法);
-                                        if (magic != null)
-                                        {
-                                            Spell = Spell.烈火剑法;
-                                            magic.CastTime = CMain.Time;
-                                        }
-                                    }
+                                    Spell = Spell.攻杀剑术;
                                 }
                             }
 
@@ -1979,11 +2046,8 @@ namespace Client.MirObjects
 
 
                             case Spell.召唤骷髅: // 召唤骷髅
-                                // 起手特效改走原始传奇 CDN（5config：召唤骷髅 skill 13051 → effect 655/model13005），
-                                // 替代已移除的经典 .Lib（Libraries.Magic/1500）。
-                                Effects.Add(new OriginEffect(655, this));
-                                // 原始传奇音效：5config.skillEffects[1305101].sound=200171
-                                SoundManager.PlayOriginSound(200171);
+                                // 特效/音效一律由 5config.skillEffects[13051xx] 驱动（见上方 PlayOriginCastEffects），
+                                // 此处不再硬编码 effect 655 / sound 200171。
                                 break;
 
                             case Spell.风暴逃脱: // 风暴逃脱
@@ -2090,14 +2154,8 @@ namespace Client.MirObjects
 
 
                             case Spell.召唤神兽: // 召唤神兽
-                                // 起手特效改走原始传奇 CDN（5config：召唤神兽 skill 13131 → Lv1 effect652/model13002、Lv5 759、Lv6 765、Lv7 771），
-                                // 替代已移除的经典 .Lib（Libraries.Magic2/0）。
-                                {
-                                    int shinsuEffect = SpellLevel >= 7 ? 771 : SpellLevel >= 6 ? 765 : SpellLevel >= 5 ? 759 : 652;
-                                    Effects.Add(new OriginEffect(shinsuEffect, this));
-                                }
-                                // 原始传奇音效：5config.skillEffects[1313101..1313107].sound=20031（全等级同款）
-                                SoundManager.PlayOriginSound(20031);
+                                // 特效/音效一律由 5config.skillEffects[13131xx] 驱动（见上方 PlayOriginCastEffects），
+                                // 此处不再硬编码 effect 652/759/765/771 与 sound 20031。
                                 break;
 
 

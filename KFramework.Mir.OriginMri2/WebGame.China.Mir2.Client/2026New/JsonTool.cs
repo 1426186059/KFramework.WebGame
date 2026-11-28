@@ -16,6 +16,8 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(MapTable))]
 [JsonSerializable(typeof(ModelInfoTable))]
 [JsonSerializable(typeof(OriginMir2Config2))]
+[JsonSerializable(typeof(SkillConditionTable))]
+[JsonSerializable(typeof(Dictionary<int, Dictionary<int, SkillConditionTable>>))]
 [JsonSerializable(typeof(OriginMir2Config0))]
 // 5config 分片（effect 表：施法特效；skillEffects：特效时序；soundnormal 表：地图 BGM）。
 [JsonSerializable(typeof(EffectTable))]

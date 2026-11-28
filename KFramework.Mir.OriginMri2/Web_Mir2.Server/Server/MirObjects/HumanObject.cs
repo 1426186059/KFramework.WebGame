@@ -3631,7 +3631,7 @@ namespace Server.MirObjects
                     MassHealing(magic, spellTargetLock ? (target != null ? target.CurrentLocation : location) : location);
                     break;
                 case Spell.野蛮冲撞: // 野蛮冲撞
-                    ShoulderDash(magic);
+                    ShoulderDash(magic, target);
                     magic.CastTime = Envir.Time;  // 位移技能不走通用尾部，需在此记 CD 起始
                     return;
                 case Spell.地狱雷光: // 地狱雷光
@@ -5199,11 +5199,18 @@ namespace Server.MirObjects
             LevelMagic(magic);
         }
 
-        private void ShoulderDash(MagicInfoRunItem magic)
+        private void ShoulderDash(MagicInfoRunItem magic, MapObject target)
         {
             if (InTrapRock || !CanWalk)
             {
                 return;
+            }
+
+            // 客户端带 TargetID 时以目标真实位置为准，避免只按上报方向冲偏；
+            // 没有目标则沿用 Magic() 已按客户端方向设置好的 Direction（鼠标位置方向）。
+            if (target != null && target != this && !target.Dead)
+            {
+                Direction = Functions.DirectionFromPoint(CurrentLocation, target.CurrentLocation);
             }
 
             Point _nextLocation;

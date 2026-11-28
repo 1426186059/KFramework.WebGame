@@ -10,4 +10,24 @@ public class OriginMir2Config2
     // modelId → actionId → 记录（ModelInfoTable）
     [JsonPropertyName("modelInfo")]
     public Dictionary<int, Dictionary<int, ModelInfoTable>> modelInfo { get; set; } = new();
+
+    /// <summary>
+    /// 技能等级条件表：skillId → level → 记录。原始传奇 JS initEffects() 用
+    /// skills_condition[skillid][level].effLevelID 去 5config.skillEffects 取特效。
+    /// </summary>
+    [JsonPropertyName("skills_condition")]
+    public Dictionary<int, Dictionary<int, SkillConditionTable>> skills_condition { get; set; } = new();
+}
+
+/// <summary>2config.skills_condition 记录；effLevelID 才是 skillEffects 的键。</summary>
+public class SkillConditionTable
+{
+    [JsonPropertyName("skillId")]
+    public int skillId { get; set; }
+
+    [JsonPropertyName("level")]
+    public int level { get; set; }
+
+    [JsonPropertyName("effLevelID")]
+    public int effLevelID { get; set; }
 }

@@ -4864,6 +4864,10 @@ namespace Client.MirScenes
             }
 
             actor.RefreshStats();
+            if (actor == User)
+            {
+                User.PreloadMagicEffects(existing ?? magic);
+            }
             SkillBarDialogs.UpdateUI();
         }
 
@@ -4887,6 +4891,10 @@ namespace Client.MirScenes
                 {
                     magic.Level = p.Level;
                     actor.RefreshStats();
+                    if (actor == User)
+                    {
+                        User.PreloadMagicEffects(magic);
+                    }
                 }
 
                 magic.Experience = p.Experience;
@@ -4965,6 +4973,7 @@ namespace Client.MirScenes
             if (source == User) return;
 
             int originId = (int)p.Spell;
+            // ObjectProjectile 包不带技能等级，只能按 Lv1 取飞行物特效。
             if (originId > 218 && ExcelTableMgr.TryGetSkillEffects(originId, 1, out var steps))
             {
                 SkillEffectTable flyStep = steps.FirstOrDefault(s => s.type == 2 && s.effect > 0);
@@ -4974,7 +4983,7 @@ namespace Client.MirScenes
                 if (flyStep != null)
                 {
                     if (flyStep.sound > 0)
-                        SoundManager.PlaySound(flyStep.sound);
+                        SoundManager.PlayOriginSound(flyStep.sound);
                     Point dest = target != null ? target.CurrentLocation : source.CurrentLocation;
                     // 飞行时长按经典 Missile.Process 口径：距离*50ms（与服务端 Fireball 的 delay 一致）。
                     // 不再读本地 skillEffects.delaytime——时序由经典逻辑决定，原始数据只用来选特效资源。

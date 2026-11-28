@@ -58,7 +58,7 @@ namespace Client.MirObjects
             Blend = effect.blendmode == "add";
             Repeat = true;
             BodyLibrary = null;
-            if (step.sound > 0) SoundManager.PlaySound(step.sound);
+            if (step.sound > 0) SoundManager.PlayOriginSound(step.sound);
 
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, _originAction, _originDir,
                                             EResLoadPriority.Visible);
