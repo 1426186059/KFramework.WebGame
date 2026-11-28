@@ -857,22 +857,17 @@ namespace Client.MirScenes
                 MapControl.NextAction = 0;
                 return;
             }
-            MirAction action = User.CurrentAction == MirAction.DashL ? MirAction.DashR : MirAction.DashL;
-            for (int i = User.ActionFeed.Count - 1; i >= 0; i--)
-            {
-                if (User.ActionFeed[i].Action == MirAction.DashR)
-                {
-                    action = MirAction.DashL;
-                    break;
-                }
-                if (User.ActionFeed[i].Action == MirAction.DashL)
-                {
-                    action = MirAction.DashR;
-                    break;
-                }
-            }
 
-            User.ActionFeed.Add(new QueuedAction { Action = action, Direction = p.Direction, Location = p.Location });
+            // 服务端整段冲撞只回一个终点包：一次 Dash 动作 + 一次 action4 动画走完全程。
+            // Params[0] 存冲撞起点，供 SetAction/Process 按起点→终点距离插值，避免逐格重播动画。
+            Point dashStart = User.CurrentLocation;
+            User.ActionFeed.Add(new QueuedAction
+            {
+                Action = MirAction.DashL,
+                Direction = p.Direction,
+                Location = p.Location,
+                Params = new List<object> { dashStart }
+            });
         }
 
         private void UserDashFail(S.UserDashFail p)
@@ -887,8 +882,15 @@ namespace Client.MirScenes
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
             {
-                var action = ob.ActionFeed.Count > 0 && ob.ActionFeed[^1].Action == MirAction.DashL ? MirAction.DashR : MirAction.DashL;
-                ob.ActionFeed.Add(new QueuedAction { Action = action, Direction = p.Direction, Location = p.Location });
+                // 与 UserDash 一致：整段冲撞一个终点包、一个动作、一次动画。
+                Point dashStart = ob.CurrentLocation;
+                ob.ActionFeed.Add(new QueuedAction
+                {
+                    Action = MirAction.DashL,
+                    Direction = p.Direction,
+                    Location = p.Location,
+                    Params = new List<object> { dashStart }
+                });
             }
 
         }

@@ -124,6 +124,15 @@ namespace Client.MirObjects
                     }
                 }
 
+                // 野蛮冲撞：服务端只回一个终点包，Params[0] 是冲撞起点；算出整段格数，
+                // 让一次 action4 动画覆盖全程（temp 直接回退到起点），不再逐格重播。
+                if (CurrentAction == MirAction.DashL || CurrentAction == MirAction.DashR)
+                {
+                    Point dashStart = action.Params != null && action.Params.Count > 0 && action.Params[0] is Point p
+                        ? p : CurrentLocation;
+                    DashSteps = Math.Max(1, Functions.MaxDistance(dashStart, action.Location));
+                }
+
                 CurrentLocation = action.Location;
                 MirDirection olddirection = Direction;
                 Direction = action.Direction;
@@ -136,8 +145,6 @@ namespace Client.MirObjects
                     case MirAction.MountWalking:
                     case MirAction.MountRunning:
                     case MirAction.Pushed:
-                    case MirAction.DashL:
-                    case MirAction.DashR:
                     case MirAction.Sneek:
                         var steps = 0;
                         if (CurrentAction == MirAction.MountRunning) steps = 3;
@@ -146,6 +153,11 @@ namespace Client.MirObjects
 
                         temp = Functions.PointMove(CurrentLocation, Direction, CurrentAction == MirAction.Pushed ? 0 : -steps);
 
+                        break;
+                    case MirAction.DashL:
+                    case MirAction.DashR:
+                        // 冲撞绘制起点 = 服务端回包里记录的冲撞起点（动画全程一次走完）。
+                        temp = Functions.PointMove(CurrentLocation, Direction, -DashSteps);
                         break;
                     case MirAction.Jump:
                     case MirAction.DashAttack:
@@ -219,8 +231,9 @@ namespace Client.MirObjects
                         {
                             case Spell.野蛮冲撞: // 野蛮冲撞
                             {
+                                // 起手不预测位移、不直接进 DashL：服务端只回一个终点包，
+                                // 冲撞表现全部由那一个包驱动的一次 action4 动画完成，避免播两次。
                                 Frames.TryGetValue(MirAction.Attack1, out Frame);
-                                CurrentAction = MirAction.DashL;
 
                                 // 有选中目标就朝目标真实位置冲；没有目标才用鼠标/键盘给出的方向。
                                 MapObject dashTarget = MapObject.CanAttackTargetObject ?? MapObject.SelectionTarget;
@@ -235,23 +248,9 @@ namespace Client.MirObjects
                                     dashTarget = null;
                                 }
 
-                                CurrentLocation = Functions.PointMove(CurrentLocation, Direction, 1);
-
-                                // SetAction 开头按"目标格 - 1"把 MapLocation 设成了施法起点前一格，
-                                // 预测前移一格后必须把绘制锚点拉回真正的起点，否则角色视觉上停在起点后方。
-                                Point dashStart = Functions.PointMove(CurrentLocation, Direction, -1);
-                                if (MapLocation != dashStart)
-                                {
-                                    GameScene.Scene.MapControl.RemoveObject(this);
-                                    MapLocation = dashStart;
-                                    GameScene.Scene.MapControl.AddObject(this);
-                                }
-
                                 if (this == User)
                                 {
-                                    // 不设置 MapControl.NextAction：服务端逐格回 S.UserDash，
-                                    // 任何节流都会把 Dash 包挡在 ActionFeed 里导致残影丢失/闪回。
-                                    // 冲撞期间靠 CurrentAction=DashL 的动画本身占位，技能冷却由 SpellTime 控制。
+                                    // 不设置 MapControl.NextAction：服务端终点包要能立即入 ActionFeed。
                                     MapControl.NextAction = 0;
                                     GameScene.SpellTime = CMain.Time + 2500; //Spell Delay
 
@@ -476,13 +475,8 @@ namespace Client.MirObjects
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
 
-                // 野蛮冲撞：原始 action4 一轮 6 帧（8905041/9027043 的 json count=6、modelInfo intval=100），
-                // 服务端一次推送最多 4 格 UserDash；若每格都播满 6 帧×100ms 会慢到 2.4 秒，表现为"慢慢走过去"。
-                // 把每格压到约 100ms（6 帧各约 17ms），4 格约 400ms 冲完，贴近原始传奇前冲节奏。
-                if (CurrentAction == MirAction.DashL || CurrentAction == MirAction.DashR)
-                {
-                    FrameInterval = Math.Max(16, FrameInterval / 6);
-                }
+                // 野蛮冲撞：服务端一次回终点包，一次 action4 动画（6 帧）走完整段。
+                // 用 modelInfo 的原始 intval（默认 100ms/帧，全程约 600ms），不再压缩、也不逐格重播。
                 EffectFrameInterval = Frame.EffectInterval;
 
                 if (this == User)
@@ -1359,19 +1353,6 @@ namespace Client.MirObjects
                     UpdateWingEffect();
                     break;
                 case MirAction.DashL:
-                    if (!GameScene.CanMove) return;
-
-                    GameScene.Scene.MapControl.TextureValid = false;
-
-                    if (this == User) GameScene.Scene.MapControl.FloorValid = false;
-                    if (UpdateFrame() >= 3)
-                    {
-                        FrameIndex = 2;
-                        SetAction();
-                    }
-
-                    if (UpdateFrame2() >= 3) EffectFrameIndex = 2;
-                    break;
                 case MirAction.DashR:
                     if (!GameScene.CanMove) return;
 
@@ -1379,13 +1360,14 @@ namespace Client.MirObjects
 
                     if (this == User) GameScene.Scene.MapControl.FloorValid = false;
 
-                    if (UpdateFrame() >= 6)
+                    // 冲撞一次动画走完全程：播满 action4 的全部帧才结束，中途不 SetAction 重播。
+                    if (UpdateFrame() >= Frame.Count)
                     {
-                        FrameIndex = 5;
+                        FrameIndex = Frame.Count - 1;
                         SetAction();
                     }
 
-                    if (UpdateFrame2() >= 6) EffectFrameIndex = 5;
+                    if (UpdateFrame2() >= Frame.EffectCount) EffectFrameIndex = Frame.EffectCount - 1;
                     break;
                 case MirAction.Pushed:
                     if (!GameScene.CanMove) return;

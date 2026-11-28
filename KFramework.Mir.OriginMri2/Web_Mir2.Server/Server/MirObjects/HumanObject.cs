@@ -5321,9 +5321,8 @@ namespace Server.MirObjects
                     CurrentMap.GetCell(CurrentLocation).Remove(this);
                     RemoveObjects(Direction, 1);
 
-                    Enqueue(new S.UserDash { Direction = Direction, Location = _nextLocation });
-                    Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = _nextLocation });
-
+                    // 不逐格发包：整段冲撞只在循环结束后发一个终点包，
+                    // 客户端一次 action4 动画从起点插值走到终点，不会每格重播动画。
                     CurrentMap.GetCell(_nextLocation).Add(this);
                     AddObjects(Direction, 1);
 
@@ -5371,6 +5370,10 @@ namespace Server.MirObjects
             }
             else
             {
+                // 整段冲撞只发一个包：Location 是最终落点，客户端据此一次动画插值走完全程。
+                Enqueue(new S.UserDash { Direction = Direction, Location = CurrentLocation });
+                Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
+
                 // 安全区内只产生撞击位移，不造成伤害（安全区禁止 PK）。
                 if (_target != null &&
                     !(_target.Race == ObjectType.Player && CurrentMap.GetSafeZone(_target.CurrentLocation) != null))
@@ -5378,8 +5381,6 @@ namespace Server.MirObjects
                     _target.Attacked(this, magic.GetDamage(0), DefenceType.None, false);
                 }
                 LevelMagic(magic);
-
-                // Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = Front });
             }
 
             long now = Envir.Time;

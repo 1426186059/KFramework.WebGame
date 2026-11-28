@@ -37,6 +37,9 @@ namespace Client.MirObjects
         private long _originCastTime;
         private Spell _originCastSpell;
 
+        // 野蛮冲撞整段格数：服务端一次回终点包，客户端用它在一次 action4 动画内从起点插值到终点。
+        public int DashSteps;
+
         // 各层【页游 id】（服务端在 ObjectPlayer 下发）。0 = 走裸身/不绘制回退。
         // 身体/武器来自 cm.item[col17]；装扮类(装扮/幻武/足迹/称号/徽记/法阵/旋光)来自 cm.title[id].model。
         protected int _pgArmour, _pgWeapon, _pgWing, _pgMount;
@@ -811,16 +814,16 @@ namespace Client.MirObjects
                     if (CurrentAction == MirAction.Jump) i = -JumpDistance;
                     if (CurrentAction == MirAction.DashAttack) i = JumpDistance;
 
+                    // 野蛮冲撞：一次动画走完整段，Movement 回退 DashSteps 格到冲撞起点。
+                    if (CurrentAction == MirAction.DashL || CurrentAction == MirAction.DashR)
+                    {
+                        i = DashSteps;
+                    }
+
                     Movement = Functions.PointMove(CurrentLocation, Direction, CurrentAction == MirAction.Pushed ? 0 : -i);
 
                     int count = Frame.Count;
                     int index = FrameIndex;
-
-                    if (CurrentAction == MirAction.DashR || CurrentAction == MirAction.DashL)
-                    {
-                        count = 3;
-                        index %= 3;
-                    }
 
                     switch (Direction)
                     {
