@@ -475,6 +475,14 @@ namespace Client.MirObjects
                 // 覆盖帧间隔；无配置（非 origin 玩家/缺失动作）时回落 Frame.Interval。攻击/施法的全局速度倍率仍在其后叠加。
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
+
+                // 野蛮冲撞：原始 action4 一轮 6 帧（8905041/9027043 的 json count=6、modelInfo intval=100），
+                // 服务端一次推送最多 4 格 UserDash；若每格都播满 6 帧×100ms 会慢到 2.4 秒，表现为"慢慢走过去"。
+                // 把每格压到约 100ms（6 帧各约 17ms），4 格约 400ms 冲完，贴近原始传奇前冲节奏。
+                if (CurrentAction == MirAction.DashL || CurrentAction == MirAction.DashR)
+                {
+                    FrameInterval = Math.Max(16, FrameInterval / 6);
+                }
                 EffectFrameInterval = Frame.EffectInterval;
 
                 if (this == User)
