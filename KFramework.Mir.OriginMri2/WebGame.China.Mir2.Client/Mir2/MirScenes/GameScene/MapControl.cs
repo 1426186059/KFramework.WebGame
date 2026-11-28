@@ -2486,8 +2486,6 @@ public sealed class MapControl : MirControl
     private bool CanRun(MirDirection dir)
     {
         if (User.InTrapRock) return false;
-        if (User.CurrentBagWeight > User.Stats[Stat.BagWeight]) return false;
-        if (User.CurrentWearWeight > User.Stats[Stat.BagWeight]) return false;
         if (CanWalk(dir) && EmptyCell(Functions.PointMove(User.CurrentLocation, dir, 2)))
         {
             if (User.RidingMount || User.Sprint && !User.Sneaking)

@@ -13,7 +13,6 @@ namespace Client.MirObjects
             Stats.Clear();
 
             RefreshLevelStats();
-            RefreshBagWeight();
             RefreshEquipmentStats();
             // 装备穿脱/换取后经此统一入口重算地图外观模型号（_pgArmour/_pgWeapon/斗笠…）：
             // 几乎所有换装包最后都会调 User.RefreshStats()，这里一处覆盖，避免在每个包里重复补调用。
@@ -60,19 +59,6 @@ namespace Client.MirObjects
         }
 
 
-        private void RefreshBagWeight()
-        {
-            CurrentBagWeight = 0;
-
-            for (int i = 0; i < Inventory.Length; i++)
-            {
-                UserItem item = Inventory[i];
-                if (item != null)
-                {
-                    CurrentBagWeight += item.Weight;
-                }
-            }
-        }
 
 
         private void RefreshEquipmentStats()
@@ -82,9 +68,6 @@ namespace Client.MirObjects
             Armour = 0;
             WingEffect = 0;
             MountType = -1;
-
-            CurrentWearWeight = 0;
-            CurrentHandWeight = 0;
 
             ItemMode = SpecialItemMode.None;
             FastRun = false;
@@ -98,11 +81,6 @@ namespace Client.MirObjects
                 if (temp == null) continue;
 
                 ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
-
-                if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
-                    CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
-                else
-                    CurrentWearWeight = (int)Math.Min(int.MaxValue, CurrentWearWeight + temp.Weight);
 
                 if (temp.CurrentDura == 0 && realItem.Durability > 0) continue;
 
@@ -179,9 +157,6 @@ namespace Client.MirObjects
 
             if (ItemMode.HasFlag(SpecialItemMode.Muscle))
             {
-                Stats[Stat.BagWeight] = Stats[Stat.BagWeight] * 2;
-                Stats[Stat.WearWeight] = Stats[Stat.WearWeight] * 2;
-                Stats[Stat.HandWeight] = Stats[Stat.HandWeight] * 2;
             }
         }
 
@@ -207,11 +182,6 @@ namespace Client.MirObjects
 
                 if (temp == null) continue;
                 ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Level, Class, GameScene.ItemInfoList);
-
-                if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
-                    CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
-                else
-                    CurrentWearWeight = (int)Math.Min(int.MaxValue, CurrentWearWeight + temp.Weight);
 
                 if (temp.CurrentDura == 0 && realItem.Durability > 0) continue;
 
@@ -257,8 +227,6 @@ namespace Client.MirObjects
                 {
                     if (!hasHwanDevilSetBonus)
                     {
-                        Stats[Stat.WearWeight] += 5;
-                        Stats[Stat.BagWeight] += 20;
                         hasHwanDevilSetBonus = true;
                     }
                 }
@@ -354,23 +322,18 @@ namespace Client.MirObjects
                         break;
                     case ItemSet.Whisker1:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 25;
                         break;
                     case ItemSet.Whisker2:
                         Stats[Stat.MaxMC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Whisker3:
                         Stats[Stat.MaxSC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Whisker4:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 20;
                         break;
                     case ItemSet.Whisker5:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Hyeolryong:
                         Stats[Stat.MaxSC] += 2;
@@ -392,8 +355,6 @@ namespace Client.MirObjects
                         Stats[Stat.MaxDC] += 1;
                         Stats[Stat.MinMC] += 1;
                         Stats[Stat.MaxMC] += 1;
-                        Stats[Stat.HandWeight] += 1;
-                        Stats[Stat.WearWeight] += 2;
                         break;
                     case ItemSet.BlueFrostH:
                         Stats[Stat.MinDC] += 1;
@@ -417,7 +378,6 @@ namespace Client.MirObjects
             {
                 Stats[Stat.MaxAC] += 1;
                 Stats[Stat.MaxMAC] += 1;
-                Stats[Stat.BagWeight] += 70;
                 Stats[Stat.Luck] += 2;
                 Stats[Stat.AttackSpeed] += 2;
                 Stats[Stat.HP] += 70;
@@ -440,15 +400,11 @@ namespace Client.MirObjects
             {
                 Stats[Stat.MaxMAC] += 1;
                 Stats[Stat.MaxAC] += 1;
-                Stats[Stat.BagWeight] += 30;
-                Stats[Stat.WearWeight] += 17;
             }
             if (MirSet.Contains(EquipmentSlot.RingL) && MirSet.Contains(EquipmentSlot.RingR) && MirSet.Contains(EquipmentSlot.BraceletL) && MirSet.Contains(EquipmentSlot.BraceletR) && MirSet.Contains(EquipmentSlot.Necklace))
             {
                 Stats[Stat.MaxMAC] += 1;
                 Stats[Stat.MaxAC] += 1;
-                Stats[Stat.BagWeight] += 20;
-                Stats[Stat.WearWeight] += 10;
             }
             if (MirSet.Contains(EquipmentSlot.Armour) && MirSet.Contains(EquipmentSlot.Helmet) && MirSet.Contains(EquipmentSlot.Weapon))
             {
@@ -462,7 +418,6 @@ namespace Client.MirObjects
                 Stats[Stat.MaxDC] += 1;
                 Stats[Stat.MaxMC] += 1;
                 Stats[Stat.MaxSC] += 1;
-                Stats[Stat.HandWeight] += 17;
             }
             if (MirSet.Contains(EquipmentSlot.Armour) && MirSet.Contains(EquipmentSlot.Boots) && MirSet.Contains(EquipmentSlot.Belt) && MirSet.Contains(EquipmentSlot.Helmet) && MirSet.Contains(EquipmentSlot.Weapon))
             {
@@ -472,7 +427,6 @@ namespace Client.MirObjects
                 Stats[Stat.MaxMC] += 1;
                 Stats[Stat.MinSC] += 1;
                 Stats[Stat.MaxSC] += 1;
-                Stats[Stat.HandWeight] += 17;
             }
         }
 

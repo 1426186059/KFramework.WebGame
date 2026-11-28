@@ -603,7 +603,6 @@ namespace Server.MirObjects
                     }
                     MyGuild.StoredItems[to] = new GuildStorageItem() { Item = Info.Inventory[from], UserId = Info.Index };
                     Info.Inventory[from] = null;
-                    RefreshBagWeight();
                     MyGuild.SendItemInfo(MyGuild.StoredItems[to].Item);
                     MyGuild.SendServerPacket(new S.GuildStorageItemChange() { Type = 0, User = Info.Index, Item = MyGuild.StoredItems[to], To = to, From = from });
                     MyGuild.NeedSave = true;
@@ -644,7 +643,6 @@ namespace Server.MirObjects
                     Info.Inventory[to] = MyGuild.StoredItems[from].Item;
                     MyGuild.StoredItems[from] = null;
                     MyGuild.SendServerPacket(new S.GuildStorageItemChange() { Type = 1, User = Info.Index, To = to, From = from });
-                    RefreshBagWeight();
                     MyGuild.NeedSave = true;
                     break;
                 case 2: // Move Item

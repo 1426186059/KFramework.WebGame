@@ -200,7 +200,6 @@ namespace Server.MirObjects
                 Info.Inventory[from] = null;
 
                 packet.Success = true;
-                RefreshBagWeight();
                 UpdateRentalItem();
                 Report.ItemMoved(item, MirGridType.Inventory, MirGridType.Renting, from, to);
             }
@@ -239,7 +238,6 @@ namespace Server.MirObjects
                 ItemRentalDepositedItem = null;
 
                 packet.Success = true;
-                RefreshBagWeight();
                 UpdateRentalItem();
                 Report.ItemMoved(item, MirGridType.Renting, MirGridType.Inventory, from, to);
             }

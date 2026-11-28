@@ -1410,7 +1410,6 @@ public enum BuffType : int
     Exp = 1008,
     Drop = 1007,
     Gold = 1009,
-    BagWeight = 1010,
     Transform = 1011,
     Lover = 1013,
     Mentee = 1015,

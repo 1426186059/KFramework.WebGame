@@ -398,9 +398,6 @@ namespace Server.MirObjects
 
                                 if (item.GetTotal(Stat.MaxMAC) > 0)
                                     AddBuff(BuffType.MagicDefence, this, time * Settings.Minute, new Stats { [Stat.MaxMAC] = item.GetTotal(Stat.MaxMAC) });
-
-                                if (item.GetTotal(Stat.BagWeight) > 0)
-                                    AddBuff(BuffType.BagWeight, this, time * Settings.Minute, new Stats { [Stat.BagWeight] = item.GetTotal(Stat.BagWeight) });
                             }
                             break;
                         case 4: //Exp
@@ -604,7 +601,6 @@ namespace Server.MirObjects
 
             if (item.Count > 1) item.Count--;
             else Info.Inventory[index] = null;
-            RefreshBagWeight();
 
             Report?.ItemChanged(item, 1, 1);
 

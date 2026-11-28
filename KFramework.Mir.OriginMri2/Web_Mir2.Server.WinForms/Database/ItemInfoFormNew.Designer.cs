@@ -49,7 +49,6 @@ namespace Server.Database
             ItemEffect = new DataGridViewTextBoxColumn();
             ItemStackSize = new DataGridViewTextBoxColumn();
             ItemSlots = new DataGridViewTextBoxColumn();
-            ItemWeight = new DataGridViewTextBoxColumn();
             ItemLightRange = new DataGridViewTextBoxColumn();
             ItemLightIntensity = new DataGridViewTextBoxColumn();
             ItemDurability = new DataGridViewTextBoxColumn();
@@ -92,7 +91,7 @@ namespace Server.Database
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             itemInfoGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             itemInfoGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            itemInfoGridView.Columns.AddRange(new DataGridViewColumn[] { Modified, ItemIndex, ItemName, ItemType, ItemGrade, ItemRequiredType, ItemRequiredGender, ItemRequiredClass, ItemSet, ItemRandomStatsId, ItemRequiredAmount, ItemImage, ItemShape, ItemEffect, ItemStackSize, ItemSlots, ItemWeight, ItemLightRange, ItemLightIntensity, ItemDurability, ItemPrice, ItemToolTip, StartItem, NeedIdentify, ShowGroupPickup, GlobalDropNotify, ClassBased, LevelBased, CanMine, CanFastRun, CanAwakening });
+            itemInfoGridView.Columns.AddRange(new DataGridViewColumn[] { Modified, ItemIndex, ItemName, ItemType, ItemGrade, ItemRequiredType, ItemRequiredGender, ItemRequiredClass, ItemSet, ItemRandomStatsId, ItemRequiredAmount, ItemImage, ItemShape, ItemEffect, ItemStackSize, ItemSlots, ItemLightRange, ItemLightIntensity, ItemDurability, ItemPrice, ItemToolTip, StartItem, NeedIdentify, ShowGroupPickup, GlobalDropNotify, ClassBased, LevelBased, CanMine, CanFastRun, CanAwakening });
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = SystemColors.Window;
             dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
@@ -222,11 +221,7 @@ namespace Server.Database
             ItemSlots.HeaderText = "Slots";
             ItemSlots.Name = "ItemSlots";
             // 
-            // ItemWeight
             // 
-            ItemWeight.DataPropertyName = "ItemWeight";
-            ItemWeight.HeaderText = "Weight";
-            ItemWeight.Name = "ItemWeight";
             // 
             // ItemLightRange
             // 
@@ -564,7 +559,6 @@ namespace Server.Database
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemEffect;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemStackSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemSlots;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ItemWeight;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemLightRange;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemLightIntensity;
         private System.Windows.Forms.DataGridViewTextBoxColumn ItemDurability;

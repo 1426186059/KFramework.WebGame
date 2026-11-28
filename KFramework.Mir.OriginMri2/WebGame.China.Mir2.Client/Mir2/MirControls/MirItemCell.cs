@@ -1902,14 +1902,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 }
-
-                                if (GameScene.SelectedCell.Item.Weight + MapObject.Hero.CurrentBagWeight > MapObject.Hero.Stats[Stat.BagWeight])
-                                {
-                                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TooHeavyToTransfer"), ChatType.System);
-                                    GameScene.SelectedCell = null;
-                                    return;
-                                }
-
                                 if (Item != null)
                                 {
                                     if (GameScene.SelectedCell.Item.Info == Item.Info && Item.Count < Item.Info.StackSize)
@@ -2451,23 +2443,6 @@ namespace Client.MirControls
                         return false;
                     }
                     break;
-            }
-
-            if (i.Info.Type == ItemType.Weapon || i.Info.Type == ItemType.Torch)
-            {
-                if (i.Weight - (Item != null ? Item.Weight : 0) + actor.CurrentHandWeight > actor.Stats[Stat.HandWeight])
-                {
-                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("TooHeavyToHold"), ChatType.System);
-                    return false;
-                }
-            }
-            else
-            {
-                if (i.Weight - (Item != null ? Item.Weight : 0) + actor.CurrentWearWeight > actor.Stats[Stat.WearWeight])
-                {
-                    GameScene.Scene.ChatDialog.ReceiveChat(LanguageMgr.Get("ItIsTooHeavyToWear"), ChatType.System);
-                    return false;
-                }
             }
 
             switch (i.Info.Type)

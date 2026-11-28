@@ -78,7 +78,6 @@ public enum StatFormula : byte
 {
     Health,
     Mana,
-    Weight,
     Stat
 }
 
@@ -101,9 +100,6 @@ public enum Stat : byte
     MP = 13,
     AttackSpeed = 14,
     Luck = 15,
-    BagWeight = 16,
-    HandWeight = 17,
-    WearWeight = 18,
     Reflect = 19,
     Strong = 20,
     Holy = 21,

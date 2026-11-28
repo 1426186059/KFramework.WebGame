@@ -1143,21 +1143,34 @@ namespace Client.MirScenes
         }
         public static void Bind(UserItem item)
         {
+            ItemInfoTable found = null;
             for (int i = 0; i < ItemInfoList.Count; i++)
             {
                 if (ItemInfoList[i].Index != item.ItemIndex) continue;
+                found = ItemInfoList[i];
+                break;
+            }
 
-                item.Info = ItemInfoList[i];
-                if (item.Info.Image > 0) Mir2OriginObjectLibrary.PreLoadItemIcon((int)item.Info.Image);
-
-                for (int s = 0; s < item.Slots.Length; s++)
-                {
-                    if (item.Slots[s] == null) continue;
-
-                    Bind(item.Slots[s]);
-                }
-
+            // 根因：ItemInfoList 只由服务端 S.NewItemInfo 按需下发填充，刚获得的物品可能还没下发详情；
+            // ExcelTableMgr.Items 是本地全量 12594 条，查不到时用本地表补全，避免 item.Info 为 null。
+            if (found == null && ExcelTableMgr.TryGetItem(item.ItemIndex, out ItemInfoTable local))
+            {
+                found = local;
+                ItemInfoList.Add(local);
+            }
+            if (found == null)
+            {
                 return;
+            }
+
+            item.Info = found;
+            if (item.Info.Image > 0) Mir2OriginObjectLibrary.PreLoadItemIcon((int)item.Info.Image);
+
+            for (int s = 0; s < item.Slots.Length; s++)
+            {
+                if (item.Slots[s] == null) continue;
+
+                Bind(item.Slots[s]);
             }
         }
 

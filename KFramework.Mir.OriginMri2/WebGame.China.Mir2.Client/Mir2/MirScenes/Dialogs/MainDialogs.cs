@@ -17,11 +17,11 @@ namespace Client.MirScenes.Dialogs
         }
 
         public MirProgressBar ExperienceBar, SExpBar;
-        public MirImageControl WeightBar, LeftCap, RightCap;
+        public MirImageControl LeftCap, RightCap;
+        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, SExpLabel, GoldLabel, SpaceLabel, AModeLabel, PModeLabel;
         public MirButton GameShopButton, InventoryButton, CharacterButton, SkillButton;
         public MirButton SettingButton, AuctionButton, RebirthButton;
         public MirControl HealthOrb;
-        public MirLabel HealthLabel, ManaLabel, TopLabel, BottomLabel, LevelLabel, CharacterName, ExperienceLabel, SExpLabel, GoldLabel, WeightLabel, SpaceLabel, AModeLabel, PModeLabel;
         public HeroInfoPanel HeroInfoPanel;
         public HeroBehaviourPanel HeroBehaviourPanel;
 

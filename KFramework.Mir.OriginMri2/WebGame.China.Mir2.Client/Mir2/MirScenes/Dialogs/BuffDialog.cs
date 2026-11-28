@@ -340,7 +340,6 @@ namespace Client.MirScenes.Dialogs
                 case BuffType.Gold:
                     return 168;
                 case BuffType.Knapsack:
-                case BuffType.BagWeight:
                     return 235;
                 case BuffType.Transform:
                     return 241;

@@ -132,7 +132,7 @@ namespace Server.MirObjects
         {
             get
             {
-                return !Dead && Envir.Time >= ActionTime && (_stepCounter > 0 || FastRun) && (!Sneaking || ActiveSwiftFeet) && CurrentBagWeight <= Stats[Stat.BagWeight] && !CurrentPoison.HasFlag(PoisonType.Paralysis) && !CurrentPoison.HasFlag(PoisonType.LRParalysis) && !CurrentPoison.HasFlag(PoisonType.Frozen);
+                return !Dead && Envir.Time >= ActionTime && (_stepCounter > 0 || FastRun) && (!Sneaking || ActiveSwiftFeet) && !CurrentPoison.HasFlag(PoisonType.Paralysis) && !CurrentPoison.HasFlag(PoisonType.LRParalysis) && !CurrentPoison.HasFlag(PoisonType.Frozen);
             }
         }
         public virtual bool CanAttack
@@ -163,10 +163,6 @@ namespace Server.MirObjects
         public short TransformType;
         public short Looks_Armour = 0, Looks_Weapon = -1, Looks_WeaponEffect = 0;
         public byte Looks_Wings = 0;
-
-        public int CurrentHandWeight,
-                   CurrentWearWeight,
-                   CurrentBagWeight;
 
         public bool HasElemental;
         public int ElementsLevel;
@@ -1740,7 +1736,6 @@ namespace Server.MirObjects
             Stats.Clear();
 
             RefreshLevelStats();
-            RefreshBagWeight();
             RefreshEquipmentStats();
             RefreshItemSetStats();
             RefreshMirSetStats();
@@ -1781,19 +1776,6 @@ namespace Server.MirObjects
                 Stats[stat.Type] = stat.Calculate(Class, Level);
             }
         }
-        public void RefreshBagWeight()
-        {
-            CurrentBagWeight = 0;
-
-            for (int i = 0; i < Info.Inventory.Length; i++)
-            {
-                UserItem item = Info.Inventory[i];
-                if (item != null)
-                {
-                    CurrentBagWeight += item.Weight;
-                }
-            }
-        }
         private void RefreshEquipmentStats()
         {
             short OldLooks_Weapon = Looks_Weapon;
@@ -1808,8 +1790,6 @@ namespace Server.MirObjects
             Looks_WeaponEffect = 0;
             Looks_Wings = 0;
             Light = 0;
-            CurrentWearWeight = 0;
-            CurrentHandWeight = 0;
             Mount.MountType = -1;
 
             SpecialMode = SpecialItemMode.None;
@@ -1829,11 +1809,6 @@ namespace Server.MirObjects
                 UserItem temp = Info.Equipment[i];
                 if (temp == null) continue;
                 ItemInfoTable realItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
-
-                if (realItem.Type == ItemType.Weapon || realItem.Type == ItemType.Torch)
-                    CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
-                else
-                    CurrentWearWeight = (int)Math.Min(int.MaxValue, CurrentWearWeight + temp.Weight);
 
                 if (temp.CurrentDura == 0 && temp.Info.Durability > 0) continue;
 
@@ -1921,9 +1896,6 @@ namespace Server.MirObjects
 
             if (SpecialMode.HasFlag(SpecialItemMode.Muscle))
             {
-                Stats[Stat.BagWeight] = Stats[Stat.BagWeight] * 2;
-                Stats[Stat.WearWeight] = Stats[Stat.WearWeight] * 2;
-                Stats[Stat.HandWeight] = Stats[Stat.HandWeight] * 2;
             }
 
             if ((OldLooks_Armour != Looks_Armour) || (OldLooks_Weapon != Looks_Weapon) || (OldLooks_WeaponEffect != Looks_WeaponEffect) || (OldLooks_Wings != Looks_Wings) || (OldLight != Light))
@@ -1956,11 +1928,6 @@ namespace Server.MirObjects
                 if (temp == null) continue;
 
                 ItemInfoTable RealItem = Functions.GetRealItem(temp.Info, Info.Level, Info.Class, Envir.ItemInfoList);
-
-                if (RealItem.Type == ItemType.Weapon || RealItem.Type == ItemType.Torch)
-                    CurrentHandWeight = (int)Math.Min(int.MaxValue, CurrentHandWeight + temp.Weight);
-                else
-                    CurrentWearWeight = (int)Math.Min(int.MaxValue, CurrentWearWeight + temp.Weight);
 
                 if (temp.CurrentDura == 0 && temp.Info.Durability > 0) continue;
 
@@ -2012,8 +1979,6 @@ namespace Server.MirObjects
                 {
                     if (!hasHwanDevilSetBonus)
                     {
-                        Stats[Stat.WearWeight] += 5;
-                        Stats[Stat.BagWeight] += 20;
                         hasHwanDevilSetBonus = true;
                     }
                 }
@@ -2109,23 +2074,18 @@ namespace Server.MirObjects
                         break;
                     case ItemSet.Whisker1:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 25;
                         break;
                     case ItemSet.Whisker2:
                         Stats[Stat.MaxMC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Whisker3:
                         Stats[Stat.MaxSC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Whisker4:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 20;
                         break;
                     case ItemSet.Whisker5:
                         Stats[Stat.MaxDC] += 1;
-                        Stats[Stat.BagWeight] += 17;
                         break;
                     case ItemSet.Hyeolryong:
                         Stats[Stat.MaxSC] += 2;
@@ -2147,8 +2107,6 @@ namespace Server.MirObjects
                         Stats[Stat.MaxDC] += 1;
                         Stats[Stat.MinMC] += 1;
                         Stats[Stat.MaxMC] += 1;
-                        Stats[Stat.HandWeight] += 1;
-                        Stats[Stat.WearWeight] += 2;
                         break;
                     case ItemSet.BlueFrostH:
                         Stats[Stat.MinDC] += 1;
@@ -2170,7 +2128,6 @@ namespace Server.MirObjects
             {
                 Stats[Stat.MaxAC] += 1;
                 Stats[Stat.MaxMAC] += 1;
-                Stats[Stat.BagWeight] += 70;
                 Stats[Stat.Luck] += 2;
                 Stats[Stat.AttackSpeed] += 2;
                 Stats[Stat.HP] += 70;
@@ -2193,15 +2150,11 @@ namespace Server.MirObjects
             {
                 Stats[Stat.MaxMAC] += 1;
                 Stats[Stat.MaxAC] += 1;
-                Stats[Stat.BagWeight] += 30;
-                Stats[Stat.WearWeight] += 17;
             }
             if (MirSet.Contains(EquipmentSlot.RingL) && MirSet.Contains(EquipmentSlot.RingR) && MirSet.Contains(EquipmentSlot.BraceletL) && MirSet.Contains(EquipmentSlot.BraceletR) && MirSet.Contains(EquipmentSlot.Necklace))
             {
                 Stats[Stat.MaxMAC] += 1;
                 Stats[Stat.MaxAC] += 1;
-                Stats[Stat.BagWeight] += 20;
-                Stats[Stat.WearWeight] += 10;
             }
             if (MirSet.Contains(EquipmentSlot.Armour) && MirSet.Contains(EquipmentSlot.Helmet) && MirSet.Contains(EquipmentSlot.Weapon))
             {
@@ -2215,7 +2168,6 @@ namespace Server.MirObjects
                 Stats[Stat.MaxDC] += 1;
                 Stats[Stat.MaxMC] += 1;
                 Stats[Stat.MaxSC] += 1;
-                Stats[Stat.HandWeight] += 17;
             }
             if (MirSet.Contains(EquipmentSlot.Armour) && MirSet.Contains(EquipmentSlot.Boots) && MirSet.Contains(EquipmentSlot.Belt) && MirSet.Contains(EquipmentSlot.Helmet) && MirSet.Contains(EquipmentSlot.Weapon))
             {
@@ -2225,7 +2177,6 @@ namespace Server.MirObjects
                 Stats[Stat.MaxMC] += 1;
                 Stats[Stat.MinSC] += 1;
                 Stats[Stat.MaxSC] += 1;
-                Stats[Stat.HandWeight] += 17;
             }
         }
         public void RefreshStatCaps()
@@ -2510,11 +2461,6 @@ namespace Server.MirObjects
         }
         public bool Run(MirDirection dir)
         {
-            if (CurrentBagWeight > Stats[Stat.BagWeight])
-            {
-                Walk(dir);
-            }
-
             var steps = RidingMount || ActiveSwiftFeet && !Sneaking ? 3 : 2;
 
             if (!CanMove || !CanWalk || !CanRun)
@@ -8124,15 +8070,6 @@ namespace Server.MirObjects
                     break;
             }
 
-            if (item.Info.Type == ItemType.Weapon || item.Info.Type == ItemType.Torch)
-            {
-                if (item.Weight - (Info.Equipment[slot] != null ? Info.Equipment[slot].Weight : 0) + CurrentHandWeight > Stats[Stat.HandWeight])
-                    return false;
-            }
-            else
-                if (item.Weight - (Info.Equipment[slot] != null ? Info.Equipment[slot].Weight : 0) + CurrentWearWeight > Stats[Stat.WearWeight])
-                return false;
-
             if (RidingMount && item.Info.Type != ItemType.Torch)
             {
                 return false;
@@ -8150,7 +8087,6 @@ namespace Server.MirObjects
             Enqueue(new S.GainedItem { Item = clonedItem }); //Cloned because we are probably going to change the amount.
 
             AddItem(item);
-            RefreshBagWeight();
 
             // 原始传奇"学习技能"支线：获得对应职业技能书时任务才出现（学习：火球术）。
             if (this is PlayerObject player && item.Info != null && item.Info.Type == ItemType.Book)

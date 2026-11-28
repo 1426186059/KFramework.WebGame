@@ -83,7 +83,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.RAmountTextBox = new System.Windows.Forms.TextBox();
-            this.WeightTextBox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.ImageTextBox = new System.Windows.Forms.TextBox();
@@ -162,13 +161,10 @@
             this.label38 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.MacRateTextbox = new System.Windows.Forms.TextBox();
-            this.BWeightText = new System.Windows.Forms.TextBox();
             this.label30 = new System.Windows.Forms.Label();
             this.ACRateTextbox = new System.Windows.Forms.TextBox();
-            this.HWeightTextBox = new System.Windows.Forms.TextBox();
             this.label36 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
-            this.WWeightTextBox = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.noMailBox = new System.Windows.Forms.CheckBox();
             this.unableToDisassemble_CheckBox = new System.Windows.Forms.CheckBox();
@@ -405,7 +401,6 @@
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.label9);
             this.tabPage1.Controls.Add(this.RAmountTextBox);
-            this.tabPage1.Controls.Add(this.WeightTextBox);
             this.tabPage1.Controls.Add(this.label10);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.ImageTextBox);
@@ -783,14 +778,6 @@
             this.RAmountTextBox.TabIndex = 10;
             this.RAmountTextBox.TextChanged += new System.EventHandler(this.RAmountTextBox_TextChanged);
             // 
-            // WeightTextBox
-            // 
-            this.WeightTextBox.Location = new System.Drawing.Point(365, 121);
-            this.WeightTextBox.MaxLength = 3;
-            this.WeightTextBox.Name = "WeightTextBox";
-            this.WeightTextBox.Size = new System.Drawing.Size(30, 20);
-            this.WeightTextBox.TabIndex = 2;
-            this.WeightTextBox.TextChanged += new System.EventHandler(this.WeightTextBox_TextChanged);
             // 
             // label10
             // 
@@ -808,7 +795,6 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(44, 13);
             this.label8.TabIndex = 20;
-            this.label8.Text = "Weight:";
             // 
             // ImageTextBox
             // 
@@ -955,13 +941,10 @@
             this.tabPage2.Controls.Add(this.label38);
             this.tabPage2.Controls.Add(this.label31);
             this.tabPage2.Controls.Add(this.MacRateTextbox);
-            this.tabPage2.Controls.Add(this.BWeightText);
             this.tabPage2.Controls.Add(this.label30);
             this.tabPage2.Controls.Add(this.ACRateTextbox);
-            this.tabPage2.Controls.Add(this.HWeightTextBox);
             this.tabPage2.Controls.Add(this.label36);
             this.tabPage2.Controls.Add(this.label32);
-            this.tabPage2.Controls.Add(this.WWeightTextBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -1573,7 +1556,6 @@
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(66, 13);
             this.label31.TabIndex = 66;
-            this.label31.Text = "Bag Weight:";
             // 
             // MacRateTextbox
             // 
@@ -1584,14 +1566,6 @@
             this.MacRateTextbox.TabIndex = 79;
             this.MacRateTextbox.TextChanged += new System.EventHandler(this.MacRateTextbox_TextChanged);
             // 
-            // BWeightText
-            // 
-            this.BWeightText.Location = new System.Drawing.Point(77, 119);
-            this.BWeightText.MaxLength = 4;
-            this.BWeightText.Name = "BWeightText";
-            this.BWeightText.Size = new System.Drawing.Size(30, 20);
-            this.BWeightText.TabIndex = 64;
-            this.BWeightText.TextChanged += new System.EventHandler(this.BWeightText_TextChanged);
             // 
             // label30
             // 
@@ -1600,7 +1574,6 @@
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(73, 13);
             this.label30.TabIndex = 67;
-            this.label30.Text = "Hand Weight.";
             // 
             // ACRateTextbox
             // 
@@ -1611,14 +1584,6 @@
             this.ACRateTextbox.TabIndex = 77;
             this.ACRateTextbox.TextChanged += new System.EventHandler(this.ACRateTextbox_TextChanged);
             // 
-            // HWeightTextBox
-            // 
-            this.HWeightTextBox.Location = new System.Drawing.Point(261, 119);
-            this.HWeightTextBox.MaxLength = 4;
-            this.HWeightTextBox.Name = "HWeightTextBox";
-            this.HWeightTextBox.Size = new System.Drawing.Size(30, 20);
-            this.HWeightTextBox.TabIndex = 65;
-            this.HWeightTextBox.TextChanged += new System.EventHandler(this.HWeightTextBox_TextChanged);
             // 
             // label36
             // 
@@ -1636,16 +1601,7 @@
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(73, 13);
             this.label32.TabIndex = 69;
-            this.label32.Text = "Wear Weight.";
             // 
-            // WWeightTextBox
-            // 
-            this.WWeightTextBox.Location = new System.Drawing.Point(453, 121);
-            this.WWeightTextBox.MaxLength = 4;
-            this.WWeightTextBox.Name = "WWeightTextBox";
-            this.WWeightTextBox.Size = new System.Drawing.Size(32, 20);
-            this.WWeightTextBox.TabIndex = 68;
-            this.WWeightTextBox.TextChanged += new System.EventHandler(this.WWeightTextBox_TextChanged);
             // 
             // tabPage3
             // 
@@ -2113,11 +2069,8 @@
         #endregion
 
         private System.Windows.Forms.Panel ItemInfoPanel;
-        private System.Windows.Forms.TextBox WWeightTextBox;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.TextBox HWeightTextBox;
         private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.TextBox BWeightText;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.CheckBox StartItemCheckBox;
         private System.Windows.Forms.TextBox LuckTextBox;
@@ -2162,7 +2115,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox LightTextBox;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox WeightTextBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox ShapeTextBox;
         private System.Windows.Forms.Label label7;

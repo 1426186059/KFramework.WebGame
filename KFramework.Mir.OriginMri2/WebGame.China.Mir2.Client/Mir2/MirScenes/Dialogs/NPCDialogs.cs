@@ -902,11 +902,6 @@ namespace Client.MirScenes.Dialogs
                         infoLines.Add(LanguageMgr.Get("ClassRequired", item.RequiredClass.ToLocalizedString()));
                     }
 
-                    if (item.Weight > 0)
-                    {
-                        infoLines.Add(LanguageMgr.Get("ItemTooltipWeight", item.Weight));
-                    }
-
                     return string.Join("\n", infoLines);
                 }
 

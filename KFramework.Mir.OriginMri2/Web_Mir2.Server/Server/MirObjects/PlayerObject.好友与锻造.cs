@@ -140,7 +140,6 @@ namespace Server.MirObjects
             {
                 Info.Refine[to] = temp;
                 Info.Inventory[from] = null;
-                RefreshBagWeight();
 
                 Report.ItemMoved(temp, MirGridType.Inventory, MirGridType.Refine, from, to);
 
@@ -183,7 +182,6 @@ namespace Server.MirObjects
                 Report.ItemMoved(temp, MirGridType.Refine, MirGridType.Inventory, from, to);
 
                 p.Success = true;
-                RefreshBagWeight();
                 Enqueue(p);
 
                 return;

@@ -235,8 +235,6 @@ namespace Client.MirScenes
             }
 
             List<string> tailParts = new List<string>();
-            if (HoverItem.Weight > 0)
-                tailParts.Add(string.Format("{0} {1}", LanguageMgr.Get("Weight"), HoverItem.Weight));
             if (!string.IsNullOrEmpty(text))
                 tailParts.Add(text);
 
@@ -457,11 +455,7 @@ namespace Client.MirScenes
             {
                 count++;
 
-                if (realItem.Type == ItemType.Pets && realItem.Shape == 28)
-                {
-                    text = LanguageMgr.Get("BagWeightPercent", minValue + addValue);
-                }
-                else if (realItem.Type == ItemType.Potion && realItem.Shape == 4)
+                if (realItem.Type == ItemType.Potion && realItem.Shape == 4)
                 {
                     text = LanguageMgr.Get("ExpPercent", minValue + addValue);
                 }
@@ -1441,75 +1435,6 @@ namespace Client.MirScenes
             int addValue = 0;
 
 
-            minValue = realItem.Stats[Stat.HandWeight];
-            maxValue = 0;
-            addValue = 0;
-
-            if (minValue > 0 || maxValue > 0 || addValue > 0)
-            {
-                count++;
-                MirLabel HANDWEIGHTLabel = new MirLabel
-                {
-                    AutoSize = true,
-                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
-                    Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
-                    OutLine = true,
-                    Parent = ItemLabel,
-                    //Text = string.Format("Hand Weight + {0}", minValue + addValue)
-                    Text = LanguageMgr.Get("HandWeightPlus", minValue + addValue) + (addValue > 0 ? $" (+{addValue})" : String.Empty)
-                };
-
-                ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, HANDWEIGHTLabel.DisplayRectangle.Right + 4),
-                    Math.Max(ItemLabel.Size.Height, HANDWEIGHTLabel.DisplayRectangle.Bottom));
-            }
-
-
-
-            minValue = realItem.Stats[Stat.WearWeight];
-            maxValue = 0;
-            addValue = 0;
-
-            if (minValue > 0 || maxValue > 0 || addValue > 0)
-            {
-                count++;
-                MirLabel WEARWEIGHTLabel = new MirLabel
-                {
-                    AutoSize = true,
-                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
-                    Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
-                    OutLine = true,
-                    Parent = ItemLabel,
-                    //Text = string.Format("Wear Weight + {0}", minValue + addValue)
-                    Text = LanguageMgr.Get("WearWeightPlus", minValue + addValue) + (addValue > 0 ? $" (+{addValue})" : String.Empty)
-                };
-
-                ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, WEARWEIGHTLabel.DisplayRectangle.Right + 4),
-                    Math.Max(ItemLabel.Size.Height, WEARWEIGHTLabel.DisplayRectangle.Bottom));
-            }
-
-
-
-            minValue = realItem.Stats[Stat.BagWeight];
-            maxValue = 0;
-            addValue = 0;
-
-            if (minValue > 0 || maxValue > 0 || addValue > 0)
-            {
-                count++;
-                MirLabel BAGWEIGHTLabel = new MirLabel
-                {
-                    AutoSize = true,
-                    ForeColour = addValue > 0 ? CommonColor.Cyan : CommonColor.White,
-                    Location = new Point(4, ItemLabel.DisplayRectangle.Bottom),
-                    OutLine = true,
-                    Parent = ItemLabel,
-                    //Text = string.Format("Bag Weight + {0}", minValue + addValue)
-                    Text = LanguageMgr.Get("BagWeightPlus", minValue + addValue) + (addValue > 0 ? $" (+{addValue})" : String.Empty)
-                };
-
-                ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, BAGWEIGHTLabel.DisplayRectangle.Right + 4),
-                    Math.Max(ItemLabel.Size.Height, BAGWEIGHTLabel.DisplayRectangle.Bottom));
-            }
 
 
 

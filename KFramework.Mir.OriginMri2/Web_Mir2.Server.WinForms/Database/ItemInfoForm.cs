@@ -108,7 +108,6 @@ namespace Server
 
                 ItemIndexTextBox.Text = string.Empty;
                 ItemNameTextBox.Text = string.Empty;
-                WeightTextBox.Text = string.Empty;
                 ImageTextBox.Text = string.Empty;
                 DuraTextBox.Text = string.Empty;
                 ITypeComboBox.SelectedItem = null;
@@ -141,10 +140,6 @@ namespace Server
                 ASpeedTextBox.Text = string.Empty;
                 LuckTextBox.Text = string.Empty;
                 StartItemCheckBox.Checked = false;
-
-                WWeightTextBox.Text = string.Empty;
-                HWeightTextBox.Text = string.Empty;
-                BWeightText.Text = string.Empty;
                 EffectTextBox.Text = string.Empty;
                 
                 PoisonRecoverytextBox.Text = string.Empty;
@@ -215,7 +210,6 @@ namespace Server
 
             ItemIndexTextBox.Text = info.Index.ToString();
             ItemNameTextBox.Text = info.Name;
-            WeightTextBox.Text = info.Weight.ToString();
             ImageTextBox.Text = info.Image.ToString();
             DuraTextBox.Text = info.Durability.ToString();
             ITypeComboBox.SelectedItem = info.Type;
@@ -247,10 +241,6 @@ namespace Server
             AgilityTextBox.Text = info.Stats[Stat.Agility].ToString();
             ASpeedTextBox.Text = info.Stats[Stat.AttackSpeed].ToString();
             LuckTextBox.Text = info.Stats[Stat.Luck].ToString();
-
-            WWeightTextBox.Text = info.Stats[Stat.WearWeight].ToString();
-            HWeightTextBox.Text = info.Stats[Stat.HandWeight].ToString();
-            BWeightText.Text = info.Stats[Stat.BagWeight].ToString();
 
             StartItemCheckBox.Checked = info.StartItem;
             EffectTextBox.Text = info.Effect.ToString();
@@ -332,8 +322,6 @@ namespace Server
 
                 if (ItemIndexTextBox.Text != info.Index.ToString()) ItemIndexTextBox.Text = string.Empty;
                 if (ItemNameTextBox.Text != info.Name) ItemNameTextBox.Text = string.Empty;
-
-                if (WeightTextBox.Text != info.Weight.ToString()) WeightTextBox.Text = string.Empty;
                 if (ImageTextBox.Text != info.Image.ToString()) ImageTextBox.Text = string.Empty;
                 if (DuraTextBox.Text != info.Durability.ToString()) DuraTextBox.Text = string.Empty;
                 if (ITypeComboBox.SelectedItem == null || (ItemType)ITypeComboBox.SelectedItem != info.Type) ITypeComboBox.SelectedItem = null;
@@ -365,10 +353,6 @@ namespace Server
                 if (AgilityTextBox.Text != info.Stats[Stat.Agility].ToString()) AgilityTextBox.Text = string.Empty;
                 if (ASpeedTextBox.Text != info.Stats[Stat.AttackSpeed].ToString()) ASpeedTextBox.Text = string.Empty;
                 if (LuckTextBox.Text != info.Stats[Stat.Luck].ToString()) LuckTextBox.Text = string.Empty;
-
-                if (WWeightTextBox.Text != info.Stats[Stat.WearWeight].ToString()) WWeightTextBox.Text = string.Empty;
-                if (HWeightTextBox.Text != info.Stats[Stat.HandWeight].ToString()) HWeightTextBox.Text = string.Empty;
-                if (BWeightText.Text != info.Stats[Stat.BagWeight].ToString()) BWeightText.Text = string.Empty;
 
                 if (StartItemCheckBox.Checked != info.StartItem) StartItemCheckBox.CheckState = CheckState.Indeterminate;
                 if (EffectTextBox.Text != info.Effect.ToString()) EffectTextBox.Text = string.Empty;
@@ -546,23 +530,6 @@ namespace Server
 
             for (int i = 0; i < _selectedItemInfos.Count; i++)
                 _selectedItemInfos[i].StartItem = StartItemCheckBox.Checked;
-        }
-        private void WeightTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (ActiveControl != sender) return;
-
-            byte temp;
-
-            if (!byte.TryParse(ActiveControl.Text, out temp))
-            {
-                ActiveControl.BackColor = Color.Red;
-                return;
-            }
-            ActiveControl.BackColor = SystemColors.Window;
-
-
-            for (int i = 0; i < _selectedItemInfos.Count; i++)
-                _selectedItemInfos[i].Weight = temp;
         }
         private void ImageTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -970,60 +937,6 @@ namespace Server
 
             for (int i = 0; i < _selectedItemInfos.Count; i++)
                 _selectedItemInfos[i].Stats[Stat.Luck] = temp;
-        }
-        private void BWeightText_TextChanged(object sender, EventArgs e)
-        {
-
-            if (ActiveControl != sender) return;
-
-            byte temp;
-
-            if (!byte.TryParse(ActiveControl.Text, out temp))
-            {
-                ActiveControl.BackColor = Color.Red;
-                return;
-            }
-            ActiveControl.BackColor = SystemColors.Window;
-
-
-            for (int i = 0; i < _selectedItemInfos.Count; i++)
-                _selectedItemInfos[i].Stats[Stat.BagWeight] = temp;
-        }
-        private void HWeightTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-            if (ActiveControl != sender) return;
-
-            byte temp;
-
-            if (!byte.TryParse(ActiveControl.Text, out temp))
-            {
-                ActiveControl.BackColor = Color.Red;
-                return;
-            }
-            ActiveControl.BackColor = SystemColors.Window;
-
-
-            for (int i = 0; i < _selectedItemInfos.Count; i++)
-                _selectedItemInfos[i].Stats[Stat.HandWeight] = temp;
-        }
-        private void WWeightTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-            if (ActiveControl != sender) return;
-
-            byte temp;
-
-            if (!byte.TryParse(ActiveControl.Text, out temp))
-            {
-                ActiveControl.BackColor = Color.Red;
-                return;
-            }
-            ActiveControl.BackColor = SystemColors.Window;
-
-
-            for (int i = 0; i < _selectedItemInfos.Count; i++)
-                _selectedItemInfos[i].Stats[Stat.WearWeight] = temp;
         }
         private void EffectTextBox_TextChanged(object sender, EventArgs e)
         {

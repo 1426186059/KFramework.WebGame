@@ -42,10 +42,6 @@ public class UserItem
         get { return AddedStats.Count > 0 || Slots.Length > Info.Slots; }
     }
 
-    public int Weight
-    {
-        get { return (Info.Type == ItemType.Amulet || Info.Type == ItemType.Bait) ? Info.Weight : Info.Weight * Count; }
-    }
 
     public string FriendlyName
     {

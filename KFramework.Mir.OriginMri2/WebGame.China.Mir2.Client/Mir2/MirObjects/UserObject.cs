@@ -15,10 +15,6 @@ namespace Client.MirObjects
 
         public Stats Stats;
 
-        public int CurrentHandWeight,
-                      CurrentWearWeight,
-                      CurrentBagWeight;
-
         public long Experience, MaxExperience;
         public uint SExp; // 10倍经验点剩余数量
 

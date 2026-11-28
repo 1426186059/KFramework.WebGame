@@ -21,7 +21,6 @@ public class ItemInfoTable
     public ItemSet Set { get; set; }
 
     public short Shape { get; set; }
-    public byte Weight { get; set; }
     public byte Light { get; set; }
     public byte RequiredAmount { get; set; }
 
@@ -91,7 +90,6 @@ public class ItemInfoTable
         Set = (ItemSet)reader.ReadByte();
 
         Shape = reader.ReadInt16();
-        Weight = reader.ReadByte();
         Light = reader.ReadByte();
         RequiredAmount = reader.ReadByte();
 
@@ -128,9 +126,6 @@ public class ItemInfoTable
 
         if (version <= 84)
         {
-            Stats[Stat.BagWeight] = reader.ReadByte();
-            Stats[Stat.HandWeight] = reader.ReadByte();
-            Stats[Stat.WearWeight] = reader.ReadByte();
         }
 
         Effect = reader.ReadByte();
@@ -223,7 +218,6 @@ public class ItemInfoTable
         writer.Write((byte)Set);
 
         writer.Write(Shape);
-        writer.Write(Weight);
         writer.Write(Light);
         writer.Write(RequiredAmount);
 

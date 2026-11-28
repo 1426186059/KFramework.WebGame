@@ -90,7 +90,6 @@ namespace Server.Database
             ItemEffect.ValueType = typeof(byte);
             ItemStackSize.ValueType = typeof(ushort);
             ItemSlots.ValueType = typeof(byte);
-            ItemWeight.ValueType = typeof(byte);
 
             ItemLightIntensity.ValueType = typeof(byte);
             ItemLightRange.ValueType = typeof(byte);
@@ -247,7 +246,6 @@ namespace Server.Database
                 row["ItemEffect"] = item.Effect;
                 row["ItemStackSize"] = item.StackSize;
                 row["ItemSlots"] = item.Slots;
-                row["ItemWeight"] = item.Weight;
                 row["ItemLightRange"] = (byte)(item.Light % 15);
                 row["ItemLightIntensity"] = (byte)(item.Light / 15);
                 row["ItemDurability"] = item.Durability;
@@ -363,7 +361,6 @@ namespace Server.Database
                 item.Effect = (byte)row.Cells["ItemEffect"].Value;
                 item.StackSize = (uint)row.Cells["ItemStackSize"].Value;
                 item.Slots = (byte)row.Cells["ItemSlots"].Value;
-                item.Weight = (byte)row.Cells["ItemWeight"].Value;
 
                 item.StartItem = (bool)row.Cells["StartItem"].Value;
                 item.NeedIdentify = (bool)row.Cells["NeedIdentify"].Value;
@@ -935,7 +932,6 @@ namespace Server.Database
             row.Cells["ItemEffect"].Value = (byte)0;
             row.Cells["ItemStackSize"].Value = (ushort)1;
             row.Cells["ItemSlots"].Value = (byte)0;
-            row.Cells["ItemWeight"].Value = (byte)0;
             row.Cells["ItemLightRange"].Value = (byte)0;
             row.Cells["ItemLightIntensity"].Value = (byte)0;
             row.Cells["ItemDurability"].Value = (ushort)0;

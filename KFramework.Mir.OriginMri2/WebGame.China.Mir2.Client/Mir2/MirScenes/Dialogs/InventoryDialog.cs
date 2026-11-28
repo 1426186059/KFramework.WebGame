@@ -17,8 +17,7 @@ namespace Client.MirScenes.Dialogs
         public MirButton CloseButton, Bag1Button, Bag2Button, StorageButton;
         public MirButton Bag1SelectButton, Bag2SelectButton, StorageSelectButton;
         public MirButton YiJianShiYongButton, ZhengLiButton, HuiShouButton;
-
-        public MirLabel GoldLabel, WeightLabel;
+    public MirLabel GoldLabel;
 
         private bool _deleteMode;
         private Size _binSize;

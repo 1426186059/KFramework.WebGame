@@ -1203,8 +1203,6 @@ namespace Server.MirObjects
             for (int i = start; i < array.Length; i++) array[i] = null;
             int slot = start;
             foreach (UserItem item in items) array[slot++] = item;
-
-            RefreshBagWeight();
             RefreshStats();
 
             // 4) 整体下发整理后的背包（含空槽），客户端替换数组并刷新界面
@@ -1281,7 +1279,6 @@ namespace Server.MirObjects
             {
                 Account.Storage[to] = temp;
                 Info.Inventory[from] = null;
-                RefreshBagWeight();
 
                 Report.ItemMoved(temp, MirGridType.Inventory, MirGridType.Storage, from, to);
 
@@ -1354,7 +1351,6 @@ namespace Server.MirObjects
                 Report.ItemMoved(temp, MirGridType.Storage, MirGridType.Inventory, from, to);
 
                 p.Success = true;
-                RefreshBagWeight();
                 Enqueue(p);
 
                 return;
@@ -1566,8 +1562,6 @@ namespace Server.MirObjects
                 Report.ItemMoved(temp, MirGridType.HeroInventory, MirGridType.Inventory, from, to);
 
                 p.Success = true;
-                RefreshBagWeight();
-                Hero.RefreshBagWeight();
                 Enqueue(p);
 
                 return;
@@ -1609,14 +1603,6 @@ namespace Server.MirObjects
                 Enqueue(p);
                 return;
             }
-
-            if (temp.Weight + Hero.CurrentBagWeight > Hero.Stats[Stat.BagWeight])
-            {
-                ReceiveChat(LanguageMgr.Get("TooHeavyToTransfer"), ChatType.System);
-                Enqueue(p);
-                return;
-            }
-
             if (CurrentHero.Inventory[to] == null)
             {
                 CurrentHero.Inventory[to] = temp;
@@ -1625,8 +1611,6 @@ namespace Server.MirObjects
                 Report.ItemMoved(temp, MirGridType.Inventory, MirGridType.HeroInventory, from, to);
 
                 p.Success = true;
-                RefreshBagWeight();
-                Hero.RefreshBagWeight();
                 Enqueue(p);
 
                 return;
@@ -1746,7 +1730,6 @@ namespace Server.MirObjects
 
                 if (item.Count > 1) item.Count--;
                 else Info.Inventory[index] = null;
-                RefreshBagWeight();
                 Report.ItemChanged(item, 1, 1);
 
                 p.Success = true;
@@ -1787,7 +1770,6 @@ namespace Server.MirObjects
 
                 if (item.Count > 1) item.Count--;
                 else Info.Inventory[index] = null;
-                RefreshBagWeight();
                 Report.ItemChanged(item, 1, 1);
 
                 p.Success = true;
@@ -1845,9 +1827,6 @@ namespace Server.MirObjects
 
                                 if (item.GetTotal(Stat.MaxMAC) > 0 || item.GetTotal(Stat.MinMAC) > 0)
                                     AddBuff(BuffType.MagicDefence, this, time * Settings.Minute, new Stats { [Stat.MaxMAC] = item.GetTotal(Stat.MaxMAC), [Stat.MinMAC] = item.GetTotal(Stat.MinMAC) });
-
-                                if (item.GetTotal(Stat.BagWeight) > 0)
-                                    AddBuff(BuffType.BagWeight, this, time * Settings.Minute, new Stats { [Stat.BagWeight] = item.GetTotal(Stat.BagWeight) });
                             }
                             break;
                         case 4: //Exp
@@ -2101,7 +2080,6 @@ namespace Server.MirObjects
                                 {
                                     if (item.Count > 1) item.Count--;
                                     else Info.Inventory[index] = null;
-                                    RefreshBagWeight();
                                     p.Success = true;
                                     Enqueue(p);
                                     BlackstoneRewardItem();
@@ -2166,7 +2144,6 @@ namespace Server.MirObjects
                                     byte boxtype = item.Info.Effect;
                                     if (item.Count > 1) item.Count--;
                                     else Info.Inventory[index] = null;
-                                    RefreshBagWeight();
                                     p.Success = true;
                                     Enqueue(p);
                                     StrongboxRewardItem(boxtype);
@@ -2191,8 +2168,6 @@ namespace Server.MirObjects
                             case 28://Knapsack
                                 {
                                     var time = item.Info.Durability;
-
-                                    AddBuff(BuffType.Knapsack, this, time * Settings.Minute, new Stats { [Stat.BagWeight] = item.GetTotal(Stat.Luck) });
                                 }
                                 break;
                         }
@@ -2301,7 +2276,6 @@ namespace Server.MirObjects
 
             if (item.Count > 1) item.Count--;
             else Info.Inventory[index] = null;
-            RefreshBagWeight();
 
             Report.ItemChanged(item, 1, 1);
 
@@ -2410,7 +2384,6 @@ namespace Server.MirObjects
                     {
                         if (array[i] != null) continue;
                         array[i] = temp;
-                        RefreshBagWeight();
                         return;
                     }
                 }
@@ -2420,7 +2393,6 @@ namespace Server.MirObjects
                     {
                         if (array[i] != null) continue;
                         array[i] = temp;
-                        RefreshBagWeight();
                         return;
                     }
                 }
@@ -2430,7 +2402,6 @@ namespace Server.MirObjects
             {
                 if (array[i] != null) continue;
                 array[i] = temp;
-                RefreshBagWeight();
                 return;
             }
 
@@ -2438,7 +2409,6 @@ namespace Server.MirObjects
             {
                 if (array[i] != null) continue;
                 array[i] = temp;
-                RefreshBagWeight();
                 return;
             }
         }
@@ -3087,10 +3057,8 @@ namespace Server.MirObjects
             switch (grid)
             {
                 case MirGridType.Inventory:
-                    RefreshBagWeight();
                     break;
                 case MirGridType.HeroInventory:
-                    Hero.RefreshBagWeight();
                     break;
             }
 
@@ -3322,8 +3290,6 @@ namespace Server.MirObjects
                 array[idx] = null;
 
             Report?.ItemDeleted(item, count, "InventoryDelete");
-
-            RefreshBagWeight();
             Enqueue(resp);
         }
 
@@ -3433,12 +3399,10 @@ namespace Server.MirObjects
 
             if (p.HeroItem)
             {
-                currentHero.RefreshBagWeight();
                 currentHero.Report.ItemChangedHero(temp, count, 1);
             }
             else
             {
-                RefreshBagWeight();
                 Report.ItemChanged(temp, count, 1);
             }
         }

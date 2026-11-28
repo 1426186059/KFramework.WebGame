@@ -618,9 +618,6 @@ namespace Client.MirScenes.Dialogs
             Add("中毒恢复", a => "+" + a.Stats[Stat.PoisonRecovery]);
             Add("伤害反弹", a => a.Stats[Stat.Reflect].ToString());
             Add("强　　壮", a => a.Stats[Stat.Strong].ToString());
-            Add("背包负重", a => a.CurrentBagWeight + "/" + a.Stats[Stat.BagWeight]);
-            Add("穿戴负重", a => a.CurrentWearWeight + "/" + a.Stats[Stat.WearWeight]);
-            Add("手持负重", a => a.CurrentHandWeight + "/" + a.Stats[Stat.HandWeight]);
             Add("经验进度", a => string.Format("{0:0.##%}", a.Experience / (double)a.MaxExperience));
 
             // —— 倍率/加成项：页游属性页同样会列大量加成，靠滚动查看 ——

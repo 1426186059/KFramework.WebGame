@@ -337,7 +337,6 @@ namespace Server.MirObjects
                 p.Success = true;
                 Enqueue(p);
                 GainGold(temp.Price() / 2);
-                RefreshBagWeight();
 
                 return;
             }
@@ -564,7 +563,6 @@ namespace Server.MirObjects
                 Info.Gold -= cost;
 
                 Enqueue(new S.LoseGold { Gold = cost });
-                RefreshBagWeight();
             }
 
             Enqueue(p);

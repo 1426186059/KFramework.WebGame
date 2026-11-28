@@ -54,7 +54,6 @@ namespace Server.MirObjects
             {
                 Info.Trade[to] = temp;
                 Info.Inventory[from] = null;
-                RefreshBagWeight();
                 TradeItem();
 
                 Report.ItemMoved(temp, MirGridType.Inventory, MirGridType.Trade, from, to);
@@ -96,7 +95,6 @@ namespace Server.MirObjects
                 Info.Trade[from] = null;
 
                 p.Success = true;
-                RefreshBagWeight();
                 TradeItem();
 
                 Report.ItemMoved(temp, MirGridType.Trade, MirGridType.Inventory, from, to);
