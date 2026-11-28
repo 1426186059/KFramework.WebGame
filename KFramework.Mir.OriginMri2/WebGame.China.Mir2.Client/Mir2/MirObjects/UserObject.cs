@@ -116,6 +116,10 @@ namespace Client.MirObjects
                 Magics[i].CastTime += CMain.Time;
             }
 
+            // 已学技能列表到这里才到位：SetUserOriginModels 在第 85 行先于 Magics 赋值执行，
+            // 那次预载遍历的是空列表；这里补一次全量预载（高优先级、各方向），否则之后被去重逻辑跳过永不加载。
+            PreLoadSelfMagicEffects();
+
             IntelligentCreatures = info.IntelligentCreatures;
             SummonedCreatureType = info.SummonedCreatureType;
             CreatureSummoned = info.CreatureSummoned;

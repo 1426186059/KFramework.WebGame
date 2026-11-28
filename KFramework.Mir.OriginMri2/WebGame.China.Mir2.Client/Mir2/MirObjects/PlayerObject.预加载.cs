@@ -40,18 +40,24 @@ namespace Client.MirObjects
             PreLoadSelfMagicEffects();
         }
 
-        /// <summary>后台静默预载自己已学技能的特效帧：skills_condition → effLevelID → skillEffects → effect.model。
-        /// 最低优先级、不阻塞；命中缓存/在途请求由 Mir2OriginObjectLibrary.Request 短路，重复调用无网络开销。</summary>
+        /// <summary>预载自己已学技能的特效帧：skills_condition → effLevelID → skillEffects → effect.model。
+        /// 高优先级（与自身模型同级），避免被地图/UI/可见实体请求长期饿死；
+        /// 命中缓存/在途请求由 Mir2OriginObjectLibrary.Request 短路，重复调用无网络开销。</summary>
 
-        private void PreLoadSelfMagicEffects()
+        public void PreLoadSelfMagicEffects()
         {
             UserObject self = this as UserObject;
             if (self == null || self != User || self.Magics == null) return;
 
+            int requests = 0;
+            int learned = 0;
             foreach (ClientMagic magic in self.Magics)
             {
-                PreLoadMagicEffectsCore(magic);
+                if (magic == null || magic.MaxLevel <= 0) continue; // 未学技能（MaxLevel=0 占位）不预载
+                learned++;
+                requests += PreLoadMagicEffectsCore(magic);
             }
+            PrintTool.Log($"[技能特效预载] 已学 {learned}/{self.Magics.Count} 个技能，发起 {requests} 个方向请求（优先级 User）");
         }
 
         /// <summary>新学技能 / 技能升级时，只预载这一个技能当前等级的特效。</summary>
@@ -66,10 +72,11 @@ namespace Client.MirObjects
         }
 
 
-        private void PreLoadMagicEffectsCore(ClientMagic magic)
+        private int PreLoadMagicEffectsCore(ClientMagic magic)
         {
-            if (magic == null || magic.MaxLevel <= 0) return;
-            if (!ExcelTableMgr.TryGetSkillEffects((int)magic.Spell, magic.Level, out var steps) || steps == null) return;
+            int requests = 0;
+            if (magic == null || magic.MaxLevel <= 0) return 0;
+            if (!ExcelTableMgr.TryGetSkillEffects((int)magic.Spell, magic.Level, out var steps) || steps == null) return 0;
 
             foreach (var step in steps)
             {
@@ -80,17 +87,20 @@ namespace Client.MirObjects
                 if (effect.totaldir <= 1)
                 {
                     // 不区分方向的特效固定用配置的 dir，与 OriginEffect 的 _direction 口径一致。
-                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, effect.dir, EResLoadPriority.Background);
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, effect.dir, EResLoadPriority.User);
+                    requests++;
                 }
                 else
                 {
                     int maxDir = effect.totaldir == 5 ? 4 : 7;
                     for (int d = 0; d <= maxDir; d++)
                     {
-                        Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, d, EResLoadPriority.Background);
+                        Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, d, EResLoadPriority.User);
+                        requests++;
                     }
                 }
             }
+            return requests;
         }
 
         /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身/换动作不跳帧（低优先级，空闲才下）。</summary>
