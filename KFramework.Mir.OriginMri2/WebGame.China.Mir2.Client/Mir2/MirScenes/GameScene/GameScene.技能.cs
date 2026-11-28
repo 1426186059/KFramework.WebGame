@@ -852,7 +852,6 @@ namespace Client.MirScenes
 
         private void UserDash(S.UserDash p)
         {
-            KFramework.MonoGame.PrintTool.Log($"[冲撞DBG] 客户端收到UserDash 终点={p.Location} 当前位置={User.CurrentLocation} 起点={User.DashStartLocation}");
             // 不能再用"位置+朝向相同"早退：服务端现在发的是终点包，
             // 心跳/位置同步可能已把 CurrentLocation 放到终点，早退会让冲撞动画不入队、直接瞬移。
 

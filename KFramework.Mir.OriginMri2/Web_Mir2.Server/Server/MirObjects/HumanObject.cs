@@ -5183,7 +5183,6 @@ namespace Server.MirObjects
             }
 
             ActionTime = Envir.Time + MoveDelay;
-            MessageQueue.Enqueue($"[冲撞DBG] 进入ShoulderDash dist={dist} 起点={CurrentLocation} 方向={Direction} 目标={target?.Name ?? "无"}");
 
             for (int i = 0; i < dist; i++)
             {
@@ -5202,8 +5201,11 @@ namespace Server.MirObjects
                 }
 
 
-                // acquire target
-                if (i == 0)
+                // 每一格都尝试锁定目标（不再只在 i == 0）：选中的怪隔 1~3 格时，
+                // 冲到它所在那一格才检测得到，否则第一格空就错过，表现为"撞不上去"。
+                // 锁定后走下方 _target.Pushed(this, Direction, 1)，怪被推到玩家前方一格、
+                // 玩家跟进，逐格重复即"怪被推着跟着玩家移动"。
+                if (_target == null)
                 {
                     Cell targetCell = CurrentMap.GetCell(_nextLocation);
 
@@ -5215,11 +5217,17 @@ namespace Server.MirObjects
                         {
                             MapObject ob = targetCell.Objects[j];
 
+                            if (ob == this)
+                            {
+                                continue;
+                            }
+
+                            // 去掉 ob.Level < Level 的等级压制：原始传奇野蛮冲撞不挑目标等级，
+                            // 旧条件会让等级不低于自己的怪全部被跳过，是"概率太低"的主因之一。
                             if ((ob.Race == ObjectType.Player ||
-                                ob.Race == ObjectType.Monster ||
-                                ob.Race == ObjectType.Hero) &&
-                                ob.IsAttackTarget(this) &&
-                                ob.Level < Level)
+                                 ob.Race == ObjectType.Monster ||
+                                 ob.Race == ObjectType.Hero) &&
+                                ob.IsAttackTarget(this))
                             {
                                 _target = ob;
                                 break;
@@ -5307,7 +5315,8 @@ namespace Server.MirObjects
                         _canDash = true;
                         _blocking = true;
                     }
-                    else if (_target.Pushed(this, Direction, 1) == 0)
+                    // 按目标等级/战力/配置判断能否推动：推得动就一路顶着走，推不动就撞到它前面停下。
+                    else if (!CanDashPushTarget(_target) || _target.Pushed(this, Direction, 1) == 0)
                     {
                         _blocking = true;
                     }
@@ -5374,7 +5383,6 @@ namespace Server.MirObjects
                 // 整段冲撞只发一个包：Location 是最终落点，客户端据此一次动画插值走完全程。
                 Enqueue(new S.UserDash { Direction = Direction, Location = CurrentLocation });
                 Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
-                MessageQueue.Enqueue($"[冲撞DBG] 发终点包 cells={_cellsTravelled} 终点={CurrentLocation} 方向={Direction}");
 
                 // 安全区内只产生撞击位移，不造成伤害（安全区禁止 PK）。
                 if (_target != null &&
@@ -5392,6 +5400,52 @@ namespace Server.MirObjects
 
             CellTime = now + 500;
             _stepCounter = 0;
+        }
+
+        /// <summary>
+        /// 野蛮冲撞能否推动目标：配置（CanPush/IsBoss）优先，再看等级与战力，
+        /// 推不动时撞到它前面停下（不位移、不穿过），推得动则逐格顶着走完剩余冲撞距离。
+        /// </summary>
+        private bool CanDashPushTarget(MapObject target)
+        {
+            if (target == null || target.Dead)
+            {
+                return false;
+            }
+
+            if (target is MonsterObject monster)
+            {
+                // 配置层：显式不可推的怪（BOSS/特殊怪）一律推不动。
+                if (!monster.Info.CanPush || monster.Info.IsBoss)
+                {
+                    return false;
+                }
+
+                // 等级层：怪等级不低于玩家时推不动（保留经典 Mir2 的等级压制，
+                // 但应用在"推动"而非"目标识别"，所以仍能撞到并造成伤害）。
+                if (monster.Info.Level >= Level)
+                {
+                    return false;
+                }
+            }
+            else if (target.Race == ObjectType.Player || target.Race == ObjectType.Hero)
+            {
+                // 玩家/英雄：等级不低于自己时推不动。
+                if (target.Level >= Level)
+                {
+                    return false;
+                }
+            }
+
+            // 战力层：目标最大攻击远超自己（>2 倍）时推不动，避免低战力撞飞高战力。
+            int targetAttack = (int)target.Stats[Stat.MaxDC] + (int)target.Stats[Stat.MaxMC] + (int)target.Stats[Stat.MaxSC];
+            int selfAttack = (int)Stats[Stat.MaxDC] + (int)Stats[Stat.MaxMC] + (int)Stats[Stat.MaxSC];
+            if (targetAttack > selfAttack * 2)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void SlashingBurst(MagicInfoRunItem magic)

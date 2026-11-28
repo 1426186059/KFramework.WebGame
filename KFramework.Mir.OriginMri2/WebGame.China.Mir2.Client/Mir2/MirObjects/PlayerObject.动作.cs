@@ -232,9 +232,10 @@ namespace Client.MirObjects
                         {
                             case Spell.野蛮冲撞: // 野蛮冲撞
                             {
-                                // 起手不预测位移、不直接进 DashL：服务端只回一个终点包，
-                                // 冲撞表现全部由那一个包驱动的一次 action4 动画完成，避免播两次。
-                                Frames.TryGetValue(MirAction.Attack1, out Frame);
+                                // 原始传奇野蛮冲撞没有独立施法起手动作：按下即冲。
+                                // 用 1 帧 1ms 的空帧代替 Attack1 施法帧，起手动作瞬间结束、看不见，
+                                // 唯一表现交给服务端终点包驱动的那一次 action4 冲撞动画。
+                                Frame = new Frame(0, 1, 0, 1);
 
                                 // 有选中目标就朝目标真实位置冲；没有目标才用鼠标/键盘给出的方向。
                                 MapObject dashTarget = MapObject.CanAttackTargetObject ?? MapObject.SelectionTarget;
@@ -1366,7 +1367,6 @@ namespace Client.MirObjects
 
                         if (this == User) GameScene.Scene.MapControl.FloorValid = false;
 
-                        if (this == User) KFramework.MonoGame.PrintTool.Log($"[冲撞DBG] 帧推进 前FrameIndex={FrameIndex} Count={Frame.Count} 间隔={FrameInterval} Skip={SkipFrames} 格数={DashSteps} 位置={CurrentLocation}");
                         if (SkipFrames) FrameIndex = Frame.Count;
                         if (UpdateFrame() >= Frame.Count)
                         {
