@@ -1,4 +1,4 @@
-﻿using Client.MirControls;
+using Client.MirControls;
 using Client.MirNetwork;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
@@ -108,7 +108,7 @@ namespace Client.MirScenes
                 };
 
             // 登录界面一显示就在后台静默预载过场动画 9 帧（Login_00049~00057），不阻塞首屏。
-            LoginSceneLayout.PreloadCutscene();
+            LoginSceneLayout.PreLoadCutscene();
             PreLoadRes();
         }
 

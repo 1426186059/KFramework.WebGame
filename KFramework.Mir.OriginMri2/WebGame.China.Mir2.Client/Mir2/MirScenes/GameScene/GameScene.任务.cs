@@ -24,7 +24,7 @@ namespace Client.MirScenes
                         User.CurrentQuests.Add(p.Quest);
                     }
                     // 后台预载所有任务（待接取 + 进行中）的目标地点地图瓦片。
-                    QuestMapTilePrefetcher.PrefetchAll();
+                    QuestMapTilePrefetcher.PreLoadAll();
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)
                     {
@@ -109,7 +109,7 @@ namespace Client.MirScenes
                         User.OfferedQuests.Add(p.Quest);
                     }
                     // 后台预载所有任务（待接取 + 进行中）的目标地点地图瓦片。
-                    QuestMapTilePrefetcher.PrefetchAll();
+                    QuestMapTilePrefetcher.PreLoadAll();
 
                     GameScene.Scene.QuestTrackingDialog.DisplayQuests();
                     break;

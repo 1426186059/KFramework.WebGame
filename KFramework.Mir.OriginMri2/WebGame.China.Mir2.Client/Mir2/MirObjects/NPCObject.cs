@@ -6,7 +6,7 @@ using S = ServerPackets;
 
 namespace Client.MirObjects
 {
-    public class NPCObject : MapObject
+    public partial class NPCObject : MapObject
     {
         public override ObjectType Race
         {
@@ -40,12 +40,6 @@ namespace Client.MirObjects
         private static readonly System.Collections.Generic.Dictionary<int, int> _npcDrawDiag = new();
 
         /// <summary>后台懒预取：把自己当前动作的各方向暖好（低优先级，空闲才下）。</summary>
-        public override void PrefetchBackground()
-        {
-            if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
-        }
-
         public QuestIcon QuestIcon = QuestIcon.None;
 
         // ===== NPC 头顶任务标记（原始传奇 effect 499 / model 10102 循环特效）=====

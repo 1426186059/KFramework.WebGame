@@ -29,18 +29,18 @@ public static class QuestMapTilePrefetcher
     {
         if (_mapReady) return;
         _mapReady = true;
-        PrefetchAll();
+        PreLoadAll();
     }
 
     /// <summary>遍历 CurrentQuests + OfferedQuests 的所有目标，后台批量预载（地图未就绪时不下载）。</summary>
-    public static void PrefetchAll()
+    public static void PreLoadAll()
     {
         if (!_mapReady) return;
         _ = Task.Run(async () =>
         {
             try
             {
-                await PrefetchAllAsync().ConfigureAwait(false);
+                await PreLoadAllAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ public static class QuestMapTilePrefetcher
         });
     }
 
-    private static async Task PrefetchAllAsync()
+    private static async Task PreLoadAllAsync()
     {
         if (MapObject.User == null)
         {

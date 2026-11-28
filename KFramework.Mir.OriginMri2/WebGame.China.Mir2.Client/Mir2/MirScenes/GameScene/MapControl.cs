@@ -585,7 +585,7 @@ public sealed class MapControl : MirControl
         {
             _nextPrefetch = CMain.Time + 500;
             for (int i = ObjectsList.Count - 1; i >= 0; i--)
-                ObjectsList[i].PrefetchBackground();
+                ObjectsList[i].PreLoadBackground();
         }
 
         if (MapObject.TargetObject != null && MapObject.TargetObject is MonsterObject && MapObject.TargetObject.AI == 64)

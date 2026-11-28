@@ -139,16 +139,16 @@ namespace Client.MirScenes
         /// 登录界面一显示就在后台静默预载过场帧：串行、用普通优先级（与登录 UI 同级但排在其后），
         /// 不阻塞也不抢占首屏。结果同时进浏览器 Cache Storage 与静态数组，后续播放时零等待。
         /// </summary>
-        public static void PreloadCutscene()
+        public static void PreLoadCutscene()
         {
             // MirScene.ActiveScene 的静态初始化那次 GDevice 还没就绪，直接跳过，
             // 等 CMain.Init 构造的正式场景再启动，避免空跑一遍把帧全记成 null。
             if (_cutsceneLoading || CutsceneReady || DXManager.GDevice == null) return;
             _cutsceneLoading = true;
-            _ = PreloadCutsceneAsync();
+            _ = PreLoadCutsceneAsync();
         }
 
-        private static async Task PreloadCutsceneAsync()
+        private static async Task PreLoadCutsceneAsync()
         {
             try
             {

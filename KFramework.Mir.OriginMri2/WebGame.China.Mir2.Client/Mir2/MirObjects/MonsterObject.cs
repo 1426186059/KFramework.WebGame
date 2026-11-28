@@ -7,7 +7,7 @@ using S = ServerPackets;
 
 namespace Client.MirObjects
 {
-    class MonsterObject : MapObject
+    partial class MonsterObject : MapObject
     {
         public override ObjectType Race
         {
@@ -56,11 +56,6 @@ namespace Client.MirObjects
         public int OriginModel => _originModel;
 
         /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身不跳帧（低优先级，空闲才下）。</summary>
-        public override void PrefetchBackground()
-        {
-            if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
-        }
         private static bool _originImageLogged;
         public byte Effect;
         public bool Skeleton;
@@ -102,8 +97,8 @@ namespace Client.MirObjects
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
                                             Mir2OriginObjectLibrary.ActionStand, 0, EResLoadPriority.Visible);
 
-            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionAttack, EResLoadPriority.Background);
+            Mir2OriginObjectLibrary.PreLoadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, EResLoadPriority.User);
+            Mir2OriginObjectLibrary.PreLoadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionAttack, EResLoadPriority.Background);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
                 _originImageLogged = true;

@@ -1148,7 +1148,7 @@ namespace Client.MirScenes
                 if (ItemInfoList[i].Index != item.ItemIndex) continue;
 
                 item.Info = ItemInfoList[i];
-                if (item.Info.Image > 0) Mir2OriginObjectLibrary.PreloadItemIcon((int)item.Info.Image);
+                if (item.Info.Image > 0) Mir2OriginObjectLibrary.PreLoadItemIcon((int)item.Info.Image);
 
                 for (int s = 0; s < item.Slots.Length; s++)
                 {
@@ -1164,7 +1164,7 @@ namespace Client.MirScenes
         public ItemInfoTable GetItemInfo(int index)
         {
             var info = ItemInfoList.Find(x => x.Index == index);
-            if (info != null && info.Image > 0) Mir2OriginObjectLibrary.PreloadItemIcon((int)info.Image);
+            if (info != null && info.Image > 0) Mir2OriginObjectLibrary.PreLoadItemIcon((int)info.Image);
             return info;
         }
 

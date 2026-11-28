@@ -1,14 +1,9 @@
 using Client.MirControls;
-using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes.Dialogs;
-using Client.MirSounds;
-using SlimDX;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
-using Effect = Client.MirObjects.Effect;
-using S = ServerPackets;
 
 namespace Client.MirScenes
 {

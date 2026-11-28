@@ -10,7 +10,7 @@ using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {
-    public class PlayerObject : MapObject
+    public partial class PlayerObject : MapObject
     {
         public override ObjectType Race
         {
@@ -30,7 +30,7 @@ namespace Client.MirObjects
         public MLibrary WeaponLibrary1, WeaponEffectLibrary1, WeaponLibrary2, HairLibrary, WingLibrary, MountLibrary;
 
         // 原始传奇玩家角色模型号（按 职业+性别 映射，参考模型 9027）。0 = 不走 origin（回退 .Lib 分层绘制）。
-        private int _originModel;
+        protected int _originModel;
 
         // 原始传奇 skillEffects.delaytime 以“施法起始时刻”为基准；命中特效在动画结束帧才创建，
         // 用这两个字段把基准拉回施法瞬间，避免额外多等一个 delaytime（雷电术 400ms）。
@@ -39,10 +39,10 @@ namespace Client.MirObjects
 
         // 各层【页游 id】（服务端在 ObjectPlayer 下发）。0 = 走裸身/不绘制回退。
         // 身体/武器来自 cm.item[col17]；装扮类(装扮/幻武/足迹/称号/徽记/法阵/旋光)来自 cm.title[id].model。
-        private int _pgArmour, _pgWeapon, _pgWing, _pgMount;
+        protected int _pgArmour, _pgWeapon, _pgWing, _pgMount;
         private int _pgZhuangBan, _pgHuanWu, _pgFoot, _pgTitle, _pgHuiJi, _pgZhenfa, _pgXuanGuang;
         // 页游装饰装备层（cm.item[type] 角色精灵）：斗笠/面纱/玉佩/勋章/护盾/护肩/披风/疗伤石。
-        private int _pgDouLi, _pgMianSha, _pgYuPei, _pgXunZhang, _pgHuDun, _pgHuJian, _pgPiFeng, _pgLiaoShang;
+        protected int _pgDouLi, _pgMianSha, _pgYuPei, _pgXunZhang, _pgHuDun, _pgHuJian, _pgPiFeng, _pgLiaoShang;
 
         // 原始页游玩家外观是【分层复合精灵】（仿 animal.init2 / updateEquipments）：
         //   坐骑(底) → 翅膀(后) → 身体 → 武器 → 帽/时装(前)
@@ -56,7 +56,7 @@ namespace Client.MirObjects
         private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, byte> _loggedBodyFallback = new();
 
         // 身体层：装扮 type0（时装身体，覆盖盔甲） > 盔甲槽 cm.item[col17] > 裸身 9001(男)/9002(女)。
-        private int PlayerBodyModelResolved()
+        protected int PlayerBodyModelResolved()
         {
             int costume = Mir2OriginModelResolver.GetTitleModel(_pgZhuangBan, Gender == MirGender.Female, 0);
             if (costume > 0) return costume;                       // 时装身体（覆盖盔甲）
@@ -67,127 +67,6 @@ namespace Client.MirObjects
         // 本地玩家(UserObject)没有 ObjectPlayer 包，需从自身 Equipment 反推各层 origin 模型号（页游物品 id = ItemInfoTable.Index）。
         // 与服务端 ObjectPlayer.OriginArmourID = Equipment[Armour]?.Info.Index 同义；盔甲/武器/坐骑来自装备槽。
         // 翅膀/装扮等本服务端未在下发的 UserInformation 中追踪，回落 0（不绘制）。仅按传入 Equipment 解算；装备变化(SetSlots)时再次调用刷新。
-        protected void SetUserOriginModels(UserItem[] equipment)
-        {
-            int armour = equipment != null && (int)EquipmentSlot.Armour < equipment.Length ? equipment[(int)EquipmentSlot.Armour]?.Info?.Index ?? 0 : 0;
-            int weapon = equipment != null && (int)EquipmentSlot.Weapon < equipment.Length ? equipment[(int)EquipmentSlot.Weapon]?.Info?.Index ?? 0 : 0;
-            int mount  = equipment != null && (int)EquipmentSlot.Mount  < equipment.Length ? equipment[(int)EquipmentSlot.Mount]?.Info?.Index ?? 0 : 0;
-            // 装饰层：斗笠/面纱/玉佩/勋章/疗伤石也有装备槽，必须与服务端 ObjectPlayer.Origin*ID 同口径，
-            // 否则自己的这些层恒为 0 被 DrawLayer 跳过（别人却能看到）。
-            int douLi    = equipment != null && (int)EquipmentSlot.DouLi     < equipment.Length ? equipment[(int)EquipmentSlot.DouLi]?.Info?.Index ?? 0 : 0;
-            int mianSha  = equipment != null && (int)EquipmentSlot.MianSha   < equipment.Length ? equipment[(int)EquipmentSlot.MianSha]?.Info?.Index ?? 0 : 0;
-            int yuPei    = equipment != null && (int)EquipmentSlot.YuPei     < equipment.Length ? equipment[(int)EquipmentSlot.YuPei]?.Info?.Index ?? 0 : 0;
-            int xunZhang = equipment != null && (int)EquipmentSlot.XunZhang  < equipment.Length ? equipment[(int)EquipmentSlot.XunZhang]?.Info?.Index ?? 0 : 0;
-            int liaoShang= equipment != null && (int)EquipmentSlot.LiaoShang < equipment.Length ? equipment[(int)EquipmentSlot.LiaoShang]?.Info?.Index ?? 0 : 0;
-
-            bool changed = armour != _pgArmour || weapon != _pgWeapon || mount != _pgMount
-                        || douLi != _pgDouLi || mianSha != _pgMianSha || yuPei != _pgYuPei
-                        || xunZhang != _pgXunZhang || liaoShang != _pgLiaoShang;
-
-            _pgArmour = armour;
-            _pgWeapon = weapon;
-            _pgMount  = mount;
-            _pgDouLi = douLi;
-            _pgMianSha = mianSha;
-            _pgYuPei = yuPei;
-            _pgXunZhang = xunZhang;
-            _pgLiaoShang = liaoShang;
-            _originModel = PlayerBodyModelResolved();
-
-            // 装备没变则不重复预载（RefreshStats 调用频繁），变了才重新走急队列预载新装备层。
-            if (changed || !_selfModelsPreloded)
-            {
-                PreloadSelfModels();
-                _selfModelsPreloded = true;
-            }
-        }
-        private bool _selfModelsPreloded;
-
-        /// <summary>后台静默预载「自己」的全部装备层（身体/头发/护肩/武器/坐骑/装饰…），对齐原始 ActionLoader 的急队列：
-        /// 出场即开始加载，不等待绘制；装备变化(SetSlots)时再次刷新。仅对 User 调用（this != User 直接返回）。</summary>
-        private void PreloadSelfModels()
-        {
-            if (this != User) return;
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, _originModel, EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHairModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuJianModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuiJiModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWeaponModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMountModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerZhenfaModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerFootModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerPiFengModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerDouLiModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMianShaModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerYuPeiModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXunZhangModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuDunModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXuanGuangModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerTitleModel(), EResLoadPriority.User);
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWingModel(), EResLoadPriority.User);
-            // 裸身兜底模型（身体 CDN 缺失时回落 9001/9002）也预载，避免回退时再等待。
-            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, Gender == MirGender.Female ? 9002 : 9001, EResLoadPriority.User);
-
-            PreloadSelfMagicEffects();
-        }
-
-        /// <summary>后台静默预载自己已学技能的特效帧：skills_condition → effLevelID → skillEffects → effect.model。
-        /// 最低优先级、不阻塞；命中缓存/在途请求由 Mir2OriginObjectLibrary.Request 短路，重复调用无网络开销。</summary>
-        private void PreloadSelfMagicEffects()
-        {
-            UserObject self = this as UserObject;
-            if (self == null || self != User || self.Magics == null) return;
-
-            foreach (ClientMagic magic in self.Magics)
-            {
-                PreloadMagicEffectsCore(magic);
-            }
-        }
-
-        /// <summary>新学技能 / 技能升级时，只预载这一个技能当前等级的特效。</summary>
-        public void PreloadMagicEffects(ClientMagic magic)
-        {
-            if (this != User)
-            {
-                return;
-            }
-            PreloadMagicEffectsCore(magic);
-        }
-
-        private void PreloadMagicEffectsCore(ClientMagic magic)
-        {
-            if (magic == null || magic.MaxLevel <= 0) return;
-            if (!ExcelTableMgr.TryGetSkillEffects((int)magic.Spell, magic.Level, out var steps) || steps == null) return;
-
-            foreach (var step in steps)
-            {
-                if (step.effect <= 0) continue;
-                if (!ExcelTableMgr.TryGetEffect(step.effect, out var effect) || effect == null || effect.model <= 0) continue;
-
-                int action = effect.action > 0 ? effect.action : 1;
-                if (effect.totaldir <= 1)
-                {
-                    // 不区分方向的特效固定用配置的 dir，与 OriginEffect 的 _direction 口径一致。
-                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, effect.dir, EResLoadPriority.Background);
-                }
-                else
-                {
-                    int maxDir = effect.totaldir == 5 ? 4 : 7;
-                    for (int d = 0; d <= maxDir; d++)
-                    {
-                        Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, effect.model, action, d, EResLoadPriority.Background);
-                    }
-                }
-            }
-        }
-
-        /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身/换动作不跳帧（低优先级，空闲才下）。</summary>
-        public override void PrefetchBackground()
-        {
-            if (_originModel > 0)
-                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), EResLoadPriority.Background);
-        }
-        // 武器层：优先【幻武 type1】（时装武器，覆盖普通武器）；否则武器槽 cm.item[col17]；无则 0 不绘制。
         private int PlayerWeaponModel()
             => Mir2OriginModelResolver.GetTitleModel(_pgHuanWu, Gender == MirGender.Female,
                 Mir2OriginModelResolver.GetModel(_pgWeapon, Gender == MirGender.Female, 0));

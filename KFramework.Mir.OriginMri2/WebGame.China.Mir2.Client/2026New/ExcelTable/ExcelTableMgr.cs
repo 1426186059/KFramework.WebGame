@@ -83,7 +83,7 @@ public static partial class ExcelTableMgr
             {
                 PrintTool.Log("[ExcelTableMgr] Start initializing");
                 // 1) 预加载 config 分片（0=map，2=modelInfo，5=effect 特效）
-                await PreloadShardsAsync(new[] { 0, 2, 5 }, ct).ConfigureAwait(false);
+                await PreLoadShardsAsync(new[] { 0, 2, 5 }, ct).ConfigureAwait(false);
 
                 PrintTool.Log("[ExcelTableMgr] 配置表预加载完成");
 
@@ -163,16 +163,16 @@ public static partial class ExcelTableMgr
         }
     }
 
-    private static async Task PreloadShardsAsync(int[] shards, CancellationToken ct)
+    private static async Task PreLoadShardsAsync(int[] shards, CancellationToken ct)
     {
         foreach (var shard in shards)
         {
             if (shard == 0)
             {
                 if (_config0 != null) continue;
-                PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 0000");
+                PrintTool.Log("[ExcelTableMgr] PreLoadShardsAsync 0000");
                 string text = await Mir2OriginResource.GetConfigShardTextAsync(shard, ct).ConfigureAwait(false);
-                PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
+                PrintTool.Log("[ExcelTableMgr] PreLoadShardsAsync 11111");
                 if (string.IsNullOrEmpty(text)) continue;
                 var info = AppJsonContext.Default.OriginMir2Config0;
                 _config0 = JsonTool.FromJson<OriginMir2Config0>(text, info);
@@ -180,9 +180,9 @@ public static partial class ExcelTableMgr
             else if (shard == 2)
             {
                 if (_config2 != null) continue;
-                PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 0000");
+                PrintTool.Log("[ExcelTableMgr] PreLoadShardsAsync 0000");
                 string text = await Mir2OriginResource.GetConfigShardTextAsync(shard, ct).ConfigureAwait(false);
-                PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
+                PrintTool.Log("[ExcelTableMgr] PreLoadShardsAsync 11111");
                 if (string.IsNullOrEmpty(text)) continue;
                 var info = AppJsonContext.Default.OriginMir2Config2;
                 _config2 = JsonTool.FromJson<OriginMir2Config2>(text, info);

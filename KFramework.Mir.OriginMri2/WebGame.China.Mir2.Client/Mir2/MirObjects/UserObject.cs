@@ -5,7 +5,7 @@ using S = ServerPackets;
 
 namespace Client.MirObjects
 {
-    public class UserObject : PlayerObject
+    public partial class UserObject : PlayerObject
     {
         public uint Id;
 

@@ -7,7 +7,7 @@ using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {
-    public abstract class MapObject
+    public abstract partial class MapObject
     {
         public static Font ChatFont = FontConst.F10;
         public static List<MirLabel> LabelList = new List<MirLabel>();
@@ -268,8 +268,6 @@ namespace Client.MirObjects
         public abstract bool MouseOver(Point p);
 
         /// <summary>后台静默预取（懒队列）：每帧由 MapControl 节流调用，仅发起低优先级请求暖缓存，不阻塞；默认空实现。</summary>
-        public virtual void PrefetchBackground() { }
-
         private void RestoreTargetStates()
         {
             if (MouseObjectID == ObjectID)

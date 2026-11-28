@@ -487,7 +487,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>预载某模型所有登记动作 × 所需方向（自己=急队列，出场/换装即齐，不等待绘制）。
     /// 方向数按 modelInfo.totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）；模型不在内嵌表时兜底预载常见动作 0..7。
     /// 仅发起异步请求（命中缓存/在途任务直接返回），不阻塞；缺失帧由 _missing 缓存，不会重复请求。</summary>
-    public static void PreloadModel(Mir2ObjectKind kind, int id, EResLoadPriority priority = EResLoadPriority.User)
+    public static void PreLoadModel(Mir2ObjectKind kind, int id, EResLoadPriority priority = EResLoadPriority.User)
     {
         if (id <= 0) return;
         if (ExcelTableMgr.TryGetModelActions(id, out var acts) && acts != null)
@@ -512,7 +512,7 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>预载某模型单个动作的全部方向（后台懒队列用）：对齐原始 ActionLoader，实体转身/切换动作前先把同动作各方向暖好，避免转向跳帧。
     /// 方向数按该动作的 totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）。</summary>
-    public static void PreloadAction(Mir2ObjectKind kind, int id, int action, EResLoadPriority priority = EResLoadPriority.Background)
+    public static void PreLoadAction(Mir2ObjectKind kind, int id, int action, EResLoadPriority priority = EResLoadPriority.Background)
     {
         if (id <= 0) return;
         int td = ExcelTableMgr.TryGetModelInfo(id, action, out var r) ? r!.totaldir : DefaultTotalDir;
@@ -523,7 +523,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>统一后台静默预下载物品/装备图标（iconId）。最低优先级（EResLoadPriority.Background），不阻塞、不等待；
     /// 内部复用 GetItemTextureAsync 的 Key 加载状态逻辑：已下载完成 / 正在下载都直接复用，未下载才开拉。
     /// 供收到服务器消息协议里的任何人的物品/装备、经 GameScene.Bind / GetItemInfo 解析出 icon 时调用。</summary>
-    public static void PreloadItemIcon(int iconId, string iconSubDir = "tool")
+    public static void PreLoadItemIcon(int iconId, string iconSubDir = "tool")
     {
         if (iconId <= 0) return;
         _ = GetItemTextureAsync(iconId, iconSubDir, priority: EResLoadPriority.Background);

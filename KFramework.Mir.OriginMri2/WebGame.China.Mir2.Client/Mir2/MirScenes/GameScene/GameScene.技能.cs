@@ -38,7 +38,7 @@ namespace Client.MirScenes
             actor.RefreshStats();
             if (actor == User)
             {
-                User.PreloadMagicEffects(existing ?? magic);
+                User.PreLoadMagicEffects(existing ?? magic);
             }
             SkillBarDialogs.UpdateUI();
         }
@@ -65,7 +65,7 @@ namespace Client.MirScenes
                     actor.RefreshStats();
                     if (actor == User)
                     {
-                        User.PreloadMagicEffects(magic);
+                        User.PreLoadMagicEffects(magic);
                     }
                 }
 
