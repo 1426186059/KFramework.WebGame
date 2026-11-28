@@ -618,22 +618,6 @@ namespace Client.MirScenes
         }
 
 
-        private void MapEffect(S.MapEffect p)
-        {
-            switch (p.Effect)
-            {
-                case SpellEffect.Mine:
-                    SoundManager.PlaySound(10091);
-                    Effect HitWall = new Effect(Libraries.Effect, 8 * p.Value, 3, 240, p.Location) { Light = 0 };
-                    MapControl.Effects.Add(HitWall);
-                    break;
-                case SpellEffect.Tester:
-                    Effect eff = new Effect(Libraries.Effect, 328, 10, 500, p.Location) { Light = 0 };
-                    MapControl.Effects.Add(eff);
-                    break;
-            }
-        }
-
         private void ObjectRangeAttack(S.ObjectRangeAttack p)
         {
             if (p.ObjectID == User.ObjectID && !Observing) return;
@@ -1063,5 +1047,176 @@ namespace Client.MirScenes
             }
         }
 
+
+        public void UseSpell(int key, bool fromHold = false)
+        {
+            if (key > 0 && key < _holdSkillNextTry.Length)
+            {
+                _holdSkillNextTry[key] = CMain.Time + 100;
+            }
+
+            UserObject actor = User;
+            if (key > 16)
+            {
+                if (HeroObject == null || CMain.Time < HeroSpellTime) return;
+
+                actor = Hero;
+                HeroSpellTime = CMain.Time + 200;
+            }
+
+            if (actor.Dead || actor.RidingMount || actor.Fishing) return;
+
+            if (!actor.HasClassWeapon && actor.Weapon >= 0)
+            {
+                ChatDialog.ReceiveChat(LanguageMgr.Get("MustWearSuitableWeapon"), ChatType.System);
+                return;
+            }
+
+            if (CMain.Time < actor.BlizzardStopTime || CMain.Time < actor.ReincarnationStopTime) return;
+
+            ClientMagic magic = null;
+
+            for (int i = 0; i < actor.Magics.Count; i++)
+            {
+                if (actor.Magics[i].Key != key) continue;
+                magic = actor.Magics[i];
+                break;
+            }
+
+            if (magic == null) return;
+
+            switch (magic.Spell)
+            {
+                case Spell.反击: // 反击
+                    if ((CMain.Time < magic.CastTime + magic.Delay))
+                    {
+                        if (CMain.Time >= OutputDelay)
+                        {
+                            OutputDelay = CMain.Time + 1000;
+                            Scene.OutputMessage(LanguageMgr.Get("CannotCastForSeconds", magic.Name,
+                                ((magic.CastTime + magic.Delay) - CMain.Time - 1) / 1000 + 1));
+                        }
+
+                        return;
+                    }
+                    magic.CastTime = CMain.Time;
+                    break;
+            }
+
+            int cost;
+            string prefix = actor == Hero ? LanguageMgr.Get("Hero"): string.Empty;
+            // 214 条技能全部用原始 id：按效果 Spell 路由到已有的被动/开关分支。
+            Spell effectSpell = SkillDescriptionHelper.EffectSpellOf(magic);
+            if (effectSpell == Spell.无) effectSpell = magic.Spell;
+            switch (effectSpell)
+            {
+                case Spell.基本剑术: // 基本剑术
+                case Spell.致命剑: // 致命剑
+                case Spell.吸魔: // 吸魔
+                case Spell.出血: // 出血
+                case Spell.精神力战法: // 精神力战法
+                case Spell.攻杀剑术: // 攻杀剑术
+                case Spell.专注: // 专注
+                case Spell.冥想: // 冥想
+                    return;
+                case Spell.刺杀剑术: // 刺杀剑术
+                    if (CMain.Time < ToggleTime) return;
+                    bool wasThrusting = actor.Thrusting;
+                    actor.Thrusting = fromHold ? true : !actor.Thrusting;
+                    if (actor.Thrusting == wasThrusting) return;
+                    ChatDialog.ReceiveChat(
+                        prefix + (actor.Thrusting ? LanguageMgr.Get("UseThrusting"): LanguageMgr.Get("DoNotUseThrusting")),
+                        ChatType.System);
+                    ToggleTime = CMain.Time + 1000;
+                    SendSpellToggle(actor, magic.Spell, actor.Thrusting);
+                    break;
+                case Spell.半月弯刀: // 半月弯刀
+                    if (CMain.Time < ToggleTime) return;
+                    bool wasHalfMoon = actor.HalfMoon;
+                    actor.HalfMoon = fromHold ? true : !actor.HalfMoon;
+                    if (actor.HalfMoon == wasHalfMoon) return;
+                    ChatDialog.ReceiveChat(
+                        prefix + (actor.HalfMoon ? LanguageMgr.Get("UseHalfMoon"): LanguageMgr.Get("DoNotUseHalfMoon")),
+                        ChatType.System);
+                    ToggleTime = CMain.Time + 1000;
+                    SendSpellToggle(actor, magic.Spell, actor.HalfMoon);
+                    break;
+                case Spell.双半月: // 半月弯刀（双）
+                    if (CMain.Time < ToggleTime) return;
+                    bool wasCrossHalfMoon = actor.CrossHalfMoon;
+                    actor.CrossHalfMoon = fromHold ? true : !actor.CrossHalfMoon;
+                    if (actor.CrossHalfMoon == wasCrossHalfMoon) return;
+                    ChatDialog.ReceiveChat(
+                        prefix + (actor.CrossHalfMoon ? LanguageMgr.Get("UseCrossHalfMoon"): LanguageMgr.Get("DoNotUseCrossHalfMoon")),
+                        ChatType.System);
+                    ToggleTime = CMain.Time + 1000;
+                    SendSpellToggle(actor, magic.Spell, actor.CrossHalfMoon);
+                    break;
+                case Spell.双斩: // 双斩
+                    if (CMain.Time < ToggleTime) return;
+                    bool wasDoubleSlash = actor.DoubleSlash;
+                    actor.DoubleSlash = fromHold ? true : !actor.DoubleSlash;
+                    if (actor.DoubleSlash == wasDoubleSlash) return;
+                    ChatDialog.ReceiveChat(
+                        prefix + (actor.DoubleSlash ? LanguageMgr.Get("UseDoubleSlash"): LanguageMgr.Get("DoNotUseDoubleSlash")),
+                        ChatType.System);
+                    ToggleTime = CMain.Time + 1000;
+                    SendSpellToggle(actor, magic.Spell, actor.DoubleSlash);
+                    break;
+                case Spell.双烈火剑: // 双烈火剑
+                    if (CMain.Time < ToggleTime) return;
+                    ToggleTime = CMain.Time + 500;
+
+                    cost = magic.Level * magic.LevelCost + magic.BaseCost;
+                    if (cost > actor.MP)
+                    {
+                        Scene.OutputMessage(LanguageMgr.Get("LowMana"));
+                        return;
+                    }
+                    actor.TwinDrakeBlade = true;
+                    SendSpellToggle(actor, magic.Spell, true);
+                    if (actor == Hero)
+                        HeroObject?.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, HeroObject));
+                    else
+                        actor.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, actor));
+                    break;
+                case Spell.烈火剑法: // 烈火剑法
+                    if (CMain.Time < ToggleTime) return;
+                    ToggleTime = CMain.Time + 500;
+
+                    cost = magic.Level * magic.LevelCost + magic.BaseCost;
+                    if (cost > actor.MP)
+                    {
+                        Scene.OutputMessage(LanguageMgr.Get("LowMana"));
+                        return;
+                    }
+                    SendSpellToggle(actor, magic.Spell, true);
+                    break;
+                case Spell.反击: // 反击
+                    cost = magic.Level * magic.LevelCost + magic.BaseCost;
+                    if (cost > actor.MP)
+                    {
+                        Scene.OutputMessage(LanguageMgr.Get("LowMana"));
+                        return;
+                    }
+
+                    SoundManager.PlaySound(20000 + (ushort)Spell.反击 * 10);
+                    SendSpellToggle(actor, magic.Spell, true);
+                    break;
+                case Spell.精神状态: // 精神状态
+                    if (CMain.Time < ToggleTime) return;
+                    ToggleTime = CMain.Time + 500;
+                    SendSpellToggle(actor, magic.Spell, true);
+                    break;
+                default:
+                    actor.NextMagic = magic;
+                    actor.NextMagicLocation = MapControl.MapLocation;
+                    actor.NextMagicDirection = MapControl.MouseDirection();
+
+                    if (actor == Hero)
+                        MapControl.UseMagic(Hero.NextMagic, Hero);
+                    break;
+            }
+        }
     }
 }

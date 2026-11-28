@@ -19,27 +19,6 @@ namespace Client.MirScenes
             if (p.Time == 0) return;
             CMain.PingTime = (CMain.Time - p.Time);
         }
-        private void MapInformation(S.MapInformation p)
-        {
-            if (MapControl != null && !MapControl.IsDisposed)
-                MapControl.Dispose();
-            MapControl = new MapControl
-            {
-                Index = p.MapIndex,
-                FileName = Path.Combine(Settings.MapPath, p.FileName + ".map"),
-                Title = p.Title,
-                MiniMap = p.MiniMap,
-                BigMap = p.BigMap,
-                Lightning = p.Lightning,
-                Fire = p.Fire,
-                Music = p.Music
-            };
-            // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
-            MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
-            //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
-            _ = MapControl.LoadMapAsync();
-            InsertControl(0, MapControl);
-        }
 
         private void WorldMapSetup(S.WorldMapSetupInfo info)
         {
@@ -218,6 +197,89 @@ namespace Client.MirScenes
             GameScene.NPCInfoList.RemoveAll(x => x.Index == info.Info.Index);
             GameScene.NPCInfoList.Add(info.Info);
             GameScene.OnNPCInfoReceived(info.Info.Index);
+        }
+
+
+        private void MapChanged(S.MapChanged p)
+        {
+            var isCurrentMap = (MapControl.Index == p.MapIndex);
+
+            if (isCurrentMap)
+                MapControl.ResetMap(false);
+            else
+            {
+                MapControl.Index = p.MapIndex;
+                MapControl.FileName = Path.Combine(Settings.MapPath, p.FileName + ".map");
+                MapControl.Title = p.Title;
+                MapControl.MiniMap = p.MiniMap;
+                MapControl.BigMap = p.BigMap;
+                MapControl.Music = p.Music;
+                MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
+                //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
+                _ = MapControl.LoadMapAsync();
+            }
+
+            MapControl.NextAction = 0;
+            Scene.MapControl.AutoPath = false;
+            User.CurrentLocation = p.Location;
+            User.MapLocation = p.Location;
+            MapControl.AddObject(User);
+
+            User.Direction = p.Direction;
+
+            User.QueuedAction = null;
+            User.ActionFeed.Clear();
+            User.ClearMagic();
+            User.SetAction();
+
+            GameScene.CanRun = false;
+
+            MapControl.FloorValid = false;
+            MapControl.InputDelay = CMain.Time + 400;
+        }
+
+        private void MapInformation(S.MapInformation p)
+        {
+            if (MapControl != null && !MapControl.IsDisposed)
+                MapControl.Dispose();
+            MapControl = new MapControl
+            {
+                Index = p.MapIndex,
+                FileName = Path.Combine(Settings.MapPath, p.FileName + ".map"),
+                Title = p.Title,
+                MiniMap = p.MiniMap,
+                BigMap = p.BigMap,
+                Lightning = p.Lightning,
+                Fire = p.Fire,
+                Music = p.Music
+            };
+            // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
+            MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
+            //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
+            _ = MapControl.LoadMapAsync();
+            InsertControl(0, MapControl);
+        }
+
+        private void TeleportIn()
+        {
+            User.Effects.Add(new Effect(Libraries.Magic, 260, 10, 500, User));
+            SoundManager.PlaySound(SoundList.Teleport);
+        }
+
+        private void MapEffect(S.MapEffect p)
+        {
+            switch (p.Effect)
+            {
+                case SpellEffect.Mine:
+                    SoundManager.PlaySound(10091);
+                    Effect HitWall = new Effect(Libraries.Effect, 8 * p.Value, 3, 240, p.Location) { Light = 0 };
+                    MapControl.Effects.Add(HitWall);
+                    break;
+                case SpellEffect.Tester:
+                    Effect eff = new Effect(Libraries.Effect, 328, 10, 500, p.Location) { Light = 0 };
+                    MapControl.Effects.Add(eff);
+                    break;
+            }
         }
 
     }

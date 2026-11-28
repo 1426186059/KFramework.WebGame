@@ -143,43 +143,6 @@ namespace Client.MirScenes
                 ob.Poison = p.Poison;
         }
 
-        private void MapChanged(S.MapChanged p)
-        {
-            var isCurrentMap = (MapControl.Index == p.MapIndex);
-
-            if (isCurrentMap)
-                MapControl.ResetMap(false);
-            else
-            {
-                MapControl.Index = p.MapIndex;
-                MapControl.FileName = Path.Combine(Settings.MapPath, p.FileName + ".map");
-                MapControl.Title = p.Title;
-                MapControl.MiniMap = p.MiniMap;
-                MapControl.BigMap = p.BigMap;
-                MapControl.Music = p.Music;
-                MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
-                //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
-                _ = MapControl.LoadMapAsync();
-            }
-
-            MapControl.NextAction = 0;
-            Scene.MapControl.AutoPath = false;
-            User.CurrentLocation = p.Location;
-            User.MapLocation = p.Location;
-            MapControl.AddObject(User);
-
-            User.Direction = p.Direction;
-
-            User.QueuedAction = null;
-            User.ActionFeed.Clear();
-            User.ClearMagic();
-            User.SetAction();
-
-            GameScene.CanRun = false;
-
-            MapControl.FloorValid = false;
-            MapControl.InputDelay = CMain.Time + 400;
-        }
         private void ObjectTeleportOut(S.ObjectTeleportOut p)
         {
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
@@ -355,11 +318,6 @@ namespace Client.MirScenes
             }
         }
 
-        private void TeleportIn()
-        {
-            User.Effects.Add(new Effect(Libraries.Magic, 260, 10, 500, User));
-            SoundManager.PlaySound(SoundList.Teleport);
-        }
         private void NPCGoods(S.NPCGoods p)
         {
             // 收到商店商品包说明服务端已确认商店请求，清掉购买链接的节流，保证关闭后可再次打开
