@@ -782,54 +782,54 @@ public enum Monster : ushort
 
 public enum MirAction : byte
 {
-    Standing,
-    Walking,
-    Running,
-    Pushed,
-    DashL,
-    DashR,
-    DashFail,
-    Stance,
-    Stance2,
-    Attack1,
-    Attack2,
-    Attack3,
-    Attack4,
-    Attack5,
-    AttackRange1,
-    AttackRange2,
-    AttackRange3,
-    Special,
-    Struck,
-    Harvest,
-    Spell,
-    Die,
-    Dead,
-    Skeleton,
-    Show,
-    Hide,
-    Stoned,
-    Appear,
-    Revive,
-    SitDown,
-    Mine,
-    Sneek,
-    DashAttack,
-    Lunge,
+    Standing,      // 站立待机（原始传奇 action=1）
+    Walking,       // 普通行走（action=2）
+    Running,       // 奔跑（action=2，速度更快）
+    Pushed,        // 被推挤位移
+    DashL,         // 冲撞左半段；野蛮冲撞整段冲撞也用它（原始传奇 action=4 前冲姿态）
+    DashR,         // 冲撞右半段（经典 Mir2 左右脚各半程）
+    DashFail,      // 冲撞失败/被挡（原地退回）
+    Stance,        // 战斗站姿 1
+    Stance2,       // 战斗站姿 2
+    Attack1,       // 近战攻击 1（原始传奇 action=4）
+    Attack2,       // 近战攻击 2
+    Attack3,       // 近战攻击 3
+    Attack4,       // 近战攻击 4
+    Attack5,       // 近战攻击 5
+    AttackRange1,  // 远程攻击 1（弓箭/投掷）
+    AttackRange2,  // 远程攻击 2
+    AttackRange3,  // 远程攻击 3
+    Special,       // 特殊动作
+    Struck,        // 被击中硬直（原始传奇 action=10）
+    Harvest,       // 采集/挖矿动作
+    Spell,         // 施法（原始传奇 action=5）
+    Die,           // 死亡倒地过程（原始传奇 action=12）
+    Dead,          // 死亡静止状态
+    Skeleton,      // 骷髅形态（道士召唤物）
+    Show,          // 显示/登场
+    Hide,          // 隐藏/隐身
+    Stoned,        // 被石化
+    Appear,        // 传送出现
+    Revive,        // 复活
+    SitDown,       // 坐下休息
+    Mine,          // 挖矿
+    Sneek,         // 潜行/蹲伏移动
+    DashAttack,    // 冲刺攻击（十步一杀）
+    Lunge,         // 突刺/前冲攻击
 
-    WalkingBow,
-    RunningBow,
-    Jump,
+    WalkingBow,    // 持弓行走
+    RunningBow,    // 持弓奔跑
+    Jump,          // 跳跃
 
-    MountStanding,
-    MountWalking,
-    MountRunning,
-    MountStruck,
-    MountAttack,
+    MountStanding, // 骑乘站立
+    MountWalking,  // 骑乘行走
+    MountRunning,  // 骑乘奔跑
+    MountStruck,   // 骑乘被击中
+    MountAttack,   // 骑乘攻击
 
-    FishingCast,
-    FishingWait,
-    FishingReel
+    FishingCast,   // 抛竿钓鱼
+    FishingWait,   // 等待鱼咬钩
+    FishingReel    // 收竿钓鱼
 }
 
 public enum CellAttribute : byte

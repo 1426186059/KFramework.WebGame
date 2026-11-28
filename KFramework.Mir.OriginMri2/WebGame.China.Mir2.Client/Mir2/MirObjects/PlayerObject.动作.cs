@@ -1356,18 +1356,26 @@ namespace Client.MirObjects
                 case MirAction.DashR:
                     if (!GameScene.CanMove) return;
 
-                    GameScene.Scene.MapControl.TextureValid = false;
-
-                    if (this == User) GameScene.Scene.MapControl.FloorValid = false;
-
-                    // 冲撞一次动画走完全程：播满 action4 的全部帧才结束，中途不 SetAction 重播。
-                    if (UpdateFrame() >= Frame.Count)
+                    // 冲撞一次动画走完全程：必须按 FrameInterval 节流推进，否则每帧+1 会瞬间播完 6 帧变成瞬移。
+                    if (CMain.Time >= NextMotion)
                     {
-                        FrameIndex = Frame.Count - 1;
-                        SetAction();
-                    }
+                        GameScene.Scene.MapControl.TextureValid = false;
 
-                    if (UpdateFrame2() >= Frame.EffectCount) EffectFrameIndex = Frame.EffectCount - 1;
+                        if (this == User) GameScene.Scene.MapControl.FloorValid = false;
+
+                        if (SkipFrames) FrameIndex = Frame.Count;
+                        if (UpdateFrame() >= Frame.Count)
+                        {
+                            FrameIndex = Frame.Count - 1;
+                            SetAction();
+                        }
+                        else
+                        {
+                            NextMotion = CMain.Time + FrameInterval;
+                        }
+
+                        if (UpdateFrame2() >= Frame.EffectCount) EffectFrameIndex = Frame.EffectCount - 1;
+                    }
                     break;
                 case MirAction.Pushed:
                     if (!GameScene.CanMove) return;
