@@ -316,14 +316,21 @@ public static class Mir2OriginObjectLibrary
     }
 
     /// <summary>
-    /// 技能图标相对路径：assets/resource/icon/skills/{图标号}.png?ver=1.0.2
-    /// 图标号来自 MagicInfo.OriginIcon（如 "11021"=攻杀剑术）。技能图标不走 resourceVersion 版本目录
-    /// （线上实测 https://cdn.yscq-wy.yscq.com/fugu_20201203/assets/resource/icon/skills/11021.png?ver=1.0.2 可直接访问）。
+    /// 技能图标相对路径：assets/resource/{ver}/icon/skills/{图标号}.png?ver=1.0.2
+    /// 图标号来自 MagicInfo.OriginIcon（如 "11201"=十步一杀）。版本段从 resourceVersion.json 查，
+    /// 与 ModelFramePath / ItemIconPath 一致；版本表未就绪时回退无版本路径。
     /// </summary>
     public static string SkillIconPath(string iconId)
     {
         if (string.IsNullOrWhiteSpace(iconId)) return null;
-        return $"{AssetsRoot}icon/skills/{iconId}.png" + VerQuery;
+        string key = $"icon/skills/{iconId}.png";
+        string ver = GetVersion(key);
+        if (string.IsNullOrEmpty(ver) && !_versionsReady)
+        {
+            ver = "10.721.1";  // 版本表未就绪时的稳定兜底（icon/skills 目录实测固定此版本）
+        }
+        string rel = string.IsNullOrEmpty(ver) ? AssetsRoot + key : $"{AssetsRoot}{ver}/{key}";
+        return rel + VerQuery;
     }
 
     private static string CacheKey(Mir2ObjectKind kind, int id, int action, int direction)
