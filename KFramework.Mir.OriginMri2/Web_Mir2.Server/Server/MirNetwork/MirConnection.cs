@@ -1669,18 +1669,30 @@ namespace Server.MirNetwork
         }
         private void Magic(C.Magic p)
         {
-            if (Stage != GameStage.Game) return;
+            if (Stage != GameStage.Game)
+            {
+                return;
+            }
 
             HumanObject actor = Player;
             if (Player.HeroSpawned && p.ObjectID == Player.Hero.ObjectID)
+            {
                 actor = Player.Hero;
+            }
 
-            if (actor.Dead) return;
+            if (actor.Dead)
+            {
+                return;
+            }
 
             if (!actor.Dead && (actor.ActionTime > Envir.Time || actor.SpellTime > Envir.Time))
+            {
                 _retryList.Enqueue(p);
+            }
             else
+            {
                 actor.BeginMagic(p.Spell, p.Direction, p.TargetID, p.Location, p.SpellTargetLock);
+            }
         }
 
         private void SwitchGroup(C.SwitchGroup p)
