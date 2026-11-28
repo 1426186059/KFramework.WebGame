@@ -229,7 +229,8 @@ namespace Client.MirObjects
                                 }
                                 else
                                 {
-                                    Direction = olddirection;
+                                    // 没有选中目标：按鼠标当前位置方向冲撞（不是施法前的朝向）。
+                                    Direction = MapControl.MouseDirection();
                                     dashTarget = null;
                                 }
 
@@ -247,10 +248,10 @@ namespace Client.MirObjects
 
                                 if (this == User)
                                 {
-                                    // NextAction 是下一次动作可开始的节流，不能再挡 2500ms：
-                                    // 服务端逐格回 S.UserDash，被挡住会让 4 个 Dash 包堆积到 2.5 秒后一次性播放，
-                                    // 表现为冲撞完成后闪回原点。技能冷却仍由 SpellTime 保持 2500ms。
-                                    MapControl.NextAction = CMain.Time + 250;
+                                    // 不设置 MapControl.NextAction：服务端逐格回 S.UserDash，
+                                    // 任何节流都会把 Dash 包挡在 ActionFeed 里导致残影丢失/闪回。
+                                    // 冲撞期间靠 CurrentAction=DashL 的动画本身占位，技能冷却由 SpellTime 控制。
+                                    MapControl.NextAction = 0;
                                     GameScene.SpellTime = CMain.Time + 2500; //Spell Delay
 
                                     Network.Enqueue(new C.Magic
@@ -528,11 +529,55 @@ namespace Client.MirObjects
                         case MirAction.Attack1:
                         case MirAction.MountAttack:
 
-                            // 普通攻击一律发 Spell.无：攻杀剑术由服务端按概率被动触发（HumanObject.Attack），
-                            // 半月弯刀/刺杀剑术/烈火等主动技能只能由玩家按键或点击技能栏走 UseSpell 施放。
-                            // 自动战斗的智能施法在 MapControl.ProcessAutoFight 里单独走 UseSpell，不经过这里。
+                            // 开关类技能（玩家按技能栏开启后）由普攻触发，对齐原始传奇 getAttackSkill：
+                            //   群攻(周围有别的怪) → 半月；否则隔位刺杀；烈火/双烈火下一击强化；
+                            //   其余一律 Spell.无，攻杀剑术由服务端概率被动结算。
+                            // 注意：自动战斗的智能施法不在这里，走 MapControl.TryAutoCastSpell。
+                            if (!RidingMount)
+                            {
+                                ClientMagic castMagic;
+                                MapControl map = GameScene.Scene.MapControl;
+
+                                if (GameScene.User.TwinDrakeBlade &&
+                                    (castMagic = User.GetMagic(Spell.双烈火剑)) != null &&
+                                    castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
+                                {
+                                    Spell = Spell.双烈火剑;
+                                }
+                                else if (GameScene.User.FlamingSword &&
+                                         (castMagic = User.GetMagic(Spell.烈火剑法)) != null)
+                                {
+                                    Spell = Spell.烈火剑法;
+                                }
+                                else if (GameScene.User.HalfMoon && map.CanHalfMoon(CurrentLocation, TargetObject) &&
+                                         (castMagic = User.GetMagic(Spell.半月弯刀)) != null &&
+                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
+                                {
+                                    Spell = Spell.半月弯刀;
+                                }
+                                else if (GameScene.User.Thrusting &&
+                                         map.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
+                                {
+                                    Spell = Spell.刺杀剑术;
+                                }
+                            }
 
                             Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell });
+
+                            // 开关技能挂在普攻上：服务端不会回 S.Magic(Cast=true)，
+                            // 特效/CD 必须在这里本地驱动。
+                            if (Spell != Spell.无)
+                            {
+                                magic = User.GetMagic(Spell);
+                                if (magic != null)
+                                {
+                                    SpellLevel = magic.Level;
+                                    if (PlayOriginCastEffects(Spell, SpellLevel))
+                                    {
+                                        magic.CastTime = CMain.Time;
+                                    }
+                                }
+                            }
 
                             GameScene.AttackTime = CMain.Time + User.AttackSpeed;
                             MapControl.NextAction = CMain.Time + 2500;
