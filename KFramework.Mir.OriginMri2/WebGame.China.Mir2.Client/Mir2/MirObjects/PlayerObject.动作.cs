@@ -528,79 +528,11 @@ namespace Client.MirObjects
                         case MirAction.Attack1:
                         case MirAction.MountAttack:
 
-                            if (!RidingMount)
-                            {
-                                ClientMagic castMagic;
-
-                                // 战士开关技能一次攻击只能触发一个。旧实现是顺序覆盖：半月弯刀写在刺杀之后，
-                                // 且只要 TargetObject != null 就命中，把刺杀剑术永久覆盖成半月弯刀，
-                                // 表现为"每次攻击都播半月特效、刺杀永远不出"。按强度/条件严格度取一个。
-                                if (GameScene.User.TwinDrakeBlade && (TargetObject != null || GameScene.Observing) &&
-                                    (castMagic = User.GetMagic(Spell.双烈火剑)) != null &&
-                                    castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.双烈火剑;
-                                }
-                                else if (GameScene.User.FlamingSword && TargetObject != null &&
-                                         (castMagic = User.GetMagic(Spell.烈火剑法)) != null)
-                                {
-                                    Spell = Spell.烈火剑法;
-                                    castMagic.CastTime = CMain.Time;
-                                }
-                                else if (GameScene.User.DoubleSlash &&
-                                         (castMagic = User.GetMagic(Spell.双斩)) != null &&
-                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.双斩;
-                                }
-                                else if (GameScene.User.CrossHalfMoon &&
-                                         GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation, TargetObject) &&
-                                         (castMagic = User.GetMagic(Spell.双半月)) != null &&
-                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.双半月;
-                                }
-                                else if (GameScene.User.Thrusting &&
-                                         GameScene.Scene.MapControl.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
-                                {
-                                    Spell = Spell.刺杀剑术;
-                                }
-                                else if (GameScene.User.HalfMoon &&
-                                         GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, TargetObject) &&
-                                         (castMagic = User.GetMagic(Spell.半月弯刀)) != null &&
-                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.半月弯刀;
-                                }
-                                else if (GameScene.User.Slaying && (TargetObject != null || GameScene.Observing))
-                                {
-                                    Spell = Spell.攻杀剑术;
-                                }
-                            }
+                            // 普通攻击一律发 Spell.无：攻杀剑术由服务端按概率被动触发（HumanObject.Attack），
+                            // 半月弯刀/刺杀剑术/烈火等主动技能只能由玩家按键或点击技能栏走 UseSpell 施放。
+                            // 自动战斗的智能施法在 MapControl.ProcessAutoFight 里单独走 UseSpell，不经过这里。
 
                             Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell });
-
-                            if (Spell == Spell.攻杀剑术)
-                                GameScene.User.Slaying = false;
-                            if (Spell == Spell.双烈火剑)
-                                GameScene.User.TwinDrakeBlade = false;
-                            if (Spell == Spell.烈火剑法)
-                                GameScene.User.FlamingSword = false;
-
-                            magic = User.GetMagic(Spell);
-
-                            if (magic != null) SpellLevel = magic.Level;
-
-                            // 挂在普通攻击上的开关技能（攻杀/刺杀/半月弯刀/烈火剑法等）不发 S.Magic、
-                            // 服务端也不会回 Cast=true，所以 CD 与特效必须在这里（本地攻击动作）驱动。
-                            // 按 5config.skillEffects 查到的条目播 CDN 刀光 + 挥刀音，并记 CastTime 让技能栏 CD 走起来。
-                            // PlayOriginCastEffects 查不到数据时返回 false，普通攻击不受影响。
-                            // 注意：MirAction.Spell 分支也有一次调用，但半月弯刀等走的是 Attack，必须在这里补上，
-                            // 否则 skillEffects 永远不会被触发——这是"战士技能特效不显示"的根因。
-                            if (PlayOriginCastEffects(Spell, SpellLevel) && magic != null)
-                            {
-                                magic.CastTime = CMain.Time;
-                            }
 
                             GameScene.AttackTime = CMain.Time + User.AttackSpeed;
                             MapControl.NextAction = CMain.Time + 2500;

@@ -1296,16 +1296,18 @@ public sealed class MapControl : MirControl
 
         if (CMain.Time < InputDelay || User.Poison.HasFlag(PoisonType.Paralysis) || User.Poison.HasFlag(PoisonType.LRParalysis) || User.Poison.HasFlag(PoisonType.Frozen) || User.Fishing) return;
 
-        // 自动战斗接管移动/攻击（在手动输入之前），避免与鼠标操作冲突。
-        if (AutoFight)
-        {
-            ProcessAutoFight();
-            return;
-        }
-
+        // 手动施法优先：玩家按键/点击技能栏设置的 NextMagic 必须先于自动战斗消费，
+        // 否则自动战斗在前面 return 会把手动技能吞掉（表现为"自动战斗时按技能没反应"）。
         if (User.NextMagic != null && !User.RidingMount)
         {
             UseMagic(User.NextMagic, User);
+            return;
+        }
+
+        // 自动战斗接管移动/攻击
+        if (AutoFight)
+        {
+            ProcessAutoFight();
             return;
         }
 
@@ -1679,6 +1681,72 @@ public sealed class MapControl : MirControl
         User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = direction, Location = Functions.PointMove(User.CurrentLocation, direction, 1) };
     }
 
+    // ===== 自动战斗智能施法（区别于手动 UseSpell）=====
+    // 原始传奇口径：islearnAndCDMP = 已学(level>0) && 不在CD && MP足够；
+    // 自动按技能面板顺序(OriginIndex)取第一个"可施放且对当前目标有效"的攻击技能。
+    // 被动/开关类技能（攻杀/刺杀/半月/烈火开关等）不在这里——它们由普攻和服务端被动处理，
+    // 手动 UseSpell 也不会为它们发 C.Magic，二者职责严格分离。
+    private long _autoCastNextTry;
+    private bool TryAutoCastSpell(MapObject target)
+    {
+        if (target == null || target.Dead) return false;
+        if (CMain.Time < _autoCastNextTry) return false;
+        if (CMain.Time < GameScene.SpellTime) return false;
+
+        // 技能施法节流：避免每帧尝试，失败也至少隔 300ms 再试。
+        _autoCastNextTry = CMain.Time + 300;
+
+        ClientMagic best = null;
+        foreach (ClientMagic magic in User.Magics)
+        {
+            if (magic == null || magic.Level <= 0 || magic.MaxLevel <= 0) continue;
+
+            Spell spell = magic.Spell;
+
+            // 被动/开关类跳过（与 GameScene.UseSpell 的 return / SendSpellToggle 分支一致）
+            if (spell == Spell.基本剑术 || spell == Spell.攻杀剑术 || spell == Spell.致命剑 ||
+                spell == Spell.吸魔 || spell == Spell.出血 || spell == Spell.精神力战法 ||
+                spell == Spell.专注 || spell == Spell.冥想 || spell == Spell.反击 ||
+                spell == Spell.刺杀剑术 || spell == Spell.半月弯刀 || spell == Spell.双半月 ||
+                spell == Spell.双斩 || spell == Spell.双烈火剑 || spell == Spell.烈火剑法 ||
+                spell == Spell.精神状态)
+            {
+                continue;
+            }
+
+            // 增益/召唤类（TargetType=3）自动战斗不主动放，专注输出
+            if (magic.TargetType == 3) continue;
+
+            // 未学完 / CD 中 / MP 不足
+            if (CMain.Time <= magic.CastTime + magic.Delay) continue;
+            if (magic.BaseCost + magic.Level * magic.LevelCost > User.MP) continue;
+
+            // 射程校验：NeedTarget 或 Range>0 的技能必须目标在范围内
+            int castRange = Math.Max(1, (int)magic.Range);
+            if ((magic.Range > 0 || magic.NeedTarget) &&
+                !Functions.InRange(User.CurrentLocation, target.CurrentLocation, castRange))
+            {
+                continue;
+            }
+
+            // 按技能面板顺序取最靠前的可施放技能（原始传奇 from skill index 顺序）
+            if (best == null || magic.OriginIndex < best.OriginIndex)
+            {
+                best = magic;
+            }
+        }
+
+        if (best == null) return false;
+
+        // 走与手动施法完全相同的 UseMagic 发包链（QueuedAction → C.Magic），
+        // 只是触发源是自动战斗；服务端不区分自动/手动。
+        User.NextMagic = best;
+        User.NextMagicLocation = target.CurrentLocation;
+        User.NextMagicDirection = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
+        UseMagic(best, User);
+        return true;
+    }
+
     /// <summary>
     /// 自动战斗核心：AutoFightSearchRange 格内找最近可攻击怪 → 追击并攻击；无怪则定向巡逻（防原地往返）。
     /// 由 CheckInput 在手动输入之前调用；一切移动/攻击仍走引擎标准 QueuedAction 流程。
@@ -1719,6 +1787,12 @@ public sealed class MapControl : MirControl
             int attackRange = (User.Class == MirClass.Archer && User.HasClassWeapon) ? Globals.MaxAttackRange : 1;
             if (Functions.InRange(target.CurrentLocation, User.CurrentLocation, attackRange))
             {
+                // 自动战斗专属：优先尝试智能施法（与手动 UseSpell 严格分离）；
+                // 没有可施法技能时才退化为普攻（攻杀由服务端被动概率触发）。
+                if (CMain.Time > GameScene.AttackTime && TryAutoCastSpell(target))
+                {
+                    return;
+                }
                 if (CMain.Time > GameScene.AttackTime)
                 {
                     MirDirection face = Functions.DirectionFromPoint(User.CurrentLocation, target.CurrentLocation);
