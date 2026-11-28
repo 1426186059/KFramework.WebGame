@@ -5183,6 +5183,7 @@ namespace Server.MirObjects
             }
 
             ActionTime = Envir.Time + MoveDelay;
+            MessageQueue.Enqueue($"[冲撞DBG] 进入ShoulderDash dist={dist} 起点={CurrentLocation} 方向={Direction} 目标={target?.Name ?? "无"}");
 
             for (int i = 0; i < dist; i++)
             {
@@ -5373,6 +5374,7 @@ namespace Server.MirObjects
                 // 整段冲撞只发一个包：Location 是最终落点，客户端据此一次动画插值走完全程。
                 Enqueue(new S.UserDash { Direction = Direction, Location = CurrentLocation });
                 Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
+                MessageQueue.Enqueue($"[冲撞DBG] 发终点包 cells={_cellsTravelled} 终点={CurrentLocation} 方向={Direction}");
 
                 // 安全区内只产生撞击位移，不造成伤害（安全区禁止 PK）。
                 if (_target != null &&

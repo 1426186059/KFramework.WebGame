@@ -852,13 +852,18 @@ namespace Client.MirScenes
 
         private void UserDash(S.UserDash p)
         {
+            KFramework.MonoGame.PrintTool.Log($"[冲撞DBG] 客户端收到UserDash 终点={p.Location} 当前位置={User.CurrentLocation} 起点={User.DashStartLocation}");
             // 不能再用"位置+朝向相同"早退：服务端现在发的是终点包，
             // 心跳/位置同步可能已把 CurrentLocation 放到终点，早退会让冲撞动画不入队、直接瞬移。
 
             // 服务端整段冲撞只回一个终点包：一次 Dash 动作 + 一次 action4 动画走完全程。
+            // 必须清掉 MapControl.NextAction：起手施法把它设成了未来时间点，SetAction 开头的
+            // "CMain.Time < NextAction → return" 会把 Dash 动作卡在 ActionFeed 里不播放，
+            // 位置却被同步到终点 = 瞬移。
+            MapControl.NextAction = 0;
             // Params[0] 存冲撞起点（起手施法时记录的真实起点），供 SetAction/Process 按起点→终点距离插值。
             Point dashStart = User.DashStartLocation;
-            User.ActionFeed.Add(new QueuedAction
+            User.ActionFeed.Insert(0, new QueuedAction
             {
                 Action = MirAction.DashL,
                 Direction = p.Direction,

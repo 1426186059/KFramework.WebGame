@@ -23,12 +23,13 @@ namespace Client.MirObjects
                     case MirAction.MountWalking:
                     case MirAction.MountRunning:
                     case MirAction.Pushed:
-                    case MirAction.DashL:
-                    case MirAction.DashR:
                     case MirAction.Sneek:
                     case MirAction.Jump:
                     case MirAction.DashAttack:
                         return;
+                    // DashL/DashR（野蛮冲撞）不在此列：它是服务端驱动的固定动画，
+                    // 施法后玩家往往已松手(CanMove=false)，在这里 return 会让冲撞动作卡在队首不播、
+                    // 位置却被同步到终点 = 瞬移。
                 }
             }
 
@@ -1365,6 +1366,7 @@ namespace Client.MirObjects
 
                         if (this == User) GameScene.Scene.MapControl.FloorValid = false;
 
+                        if (this == User) KFramework.MonoGame.PrintTool.Log($"[冲撞DBG] 帧推进 前FrameIndex={FrameIndex} Count={Frame.Count} 间隔={FrameInterval} Skip={SkipFrames} 格数={DashSteps} 位置={CurrentLocation}");
                         if (SkipFrames) FrameIndex = Frame.Count;
                         if (UpdateFrame() >= Frame.Count)
                         {
