@@ -1,4 +1,5 @@
 using System.Drawing;
+using Server.ExcelConfig;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using System.Text.RegularExpressions;
@@ -1355,6 +1356,40 @@ namespace Server.MirObjects
 
             UserItem item = (isBuyBack || isUsed) ? goods : Envir.CreateFreshItem(goods.Info);
             item.Count = goods.Count;
+
+            // 直接读原始传奇 1config.item：col33=1（获得时自动使用）+ col22="物品id#数量"。
+            // 小飞鞋礼盒 8335 → "8015#100"：购买即展开，不把礼盒放进背包。价格和扣费仍按礼盒计算（上面已扣）。
+            if (!isBuyBack && !isUsed && item.Info != null
+                && Envir.TryGetOriginAutoUseRewards(item.Info.Index, out List<(int ItemIndex, int Count)> originRewards))
+            {
+                List<UserItem> rewardItems = new List<UserItem>();
+                foreach ((int rewardId, int rewardCount) in originRewards)
+                {
+                    ItemInfoTable rewardInfo = Envir.GetItemInfo(rewardId);
+                    if (rewardInfo == null)
+                    {
+                        throw new InvalidOperationException($"[商店] 礼盒 {item.Info.Index} 的奖励物品 {rewardId} 不在物品表中");
+                    }
+
+                    UserItem rewardItem = Envir.CreateFreshItem(rewardInfo);
+                    rewardItem.Count = (ushort)Math.Min(goods.Count * rewardCount, ushort.MaxValue);
+                    rewardItems.Add(rewardItem);
+                }
+                foreach (UserItem rewardItem in rewardItems)
+                {
+                    if (!player.CanGainItem(rewardItem))
+                    {
+                        player.ReceiveOutputMessage("购买失败，背包空间不足，无法放入奖励物品。", OutputMessageType.Error);
+                        return;
+                    }
+                }
+
+                item = rewardItems[0];
+                for (int i = 1; i < rewardItems.Count; i++)
+                {
+                    player.GainItem(rewardItems[i]);
+                }
+            }
 
             if (!player.CanGainItem(item))
             {

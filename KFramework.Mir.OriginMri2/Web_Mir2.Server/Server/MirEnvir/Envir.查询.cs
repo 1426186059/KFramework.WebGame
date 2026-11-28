@@ -1,5 +1,6 @@
 // partial 文件：Envir 类按功能拆分，方法体从原 Envir.cs 原样迁入。
 using ClientPackets;
+using Server.ExcelConfig;
 using Server.Library.MirDatabase;
 using Server.Library.Utils;
 using Server.MirDatabase;
@@ -180,6 +181,47 @@ namespace Server.MirEnvir
                 return info;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 直接读原始传奇 1config.item：col33=1（获得时自动使用，JS: sendReqUseItem）+
+        /// col22=使用参数 "物品id#数量"（可 ; 分段），如小飞鞋礼盒 8335 的 "8015#100"。
+        /// 只返回服务端物品表里确实存在的物品奖励；4=经验/1=金币等虚拟 id 由其它系统处理，这里跳过。
+        /// </summary>
+        public bool TryGetOriginAutoUseRewards(int itemIndex, out List<(int ItemIndex, int Count)> rewards)
+        {
+            rewards = new List<(int, int)>();
+            if (!OriginConfigs.TryGetValue(1, out OriginConfigRoot cfg) || cfg is not OriginMir2Config1 cfg1)
+            {
+                return false;
+            }
+            if (!cfg1.item.TryGetValue(itemIndex.ToString(), out OriginItemTable item) || item == null)
+            {
+                return false;
+            }
+            if (item.AutoUseOnGain != 1 || string.IsNullOrEmpty(item.UseParam))
+            {
+                return false;
+            }
+
+            foreach (string seg in item.UseParam.Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                string[] parts = seg.Split('#');
+                if (parts.Length < 2)
+                {
+                    continue;
+                }
+                if (!int.TryParse(parts[0], out int rewardId) || !int.TryParse(parts[1], out int count))
+                {
+                    continue;
+                }
+                if (count <= 0 || GetItemInfo(rewardId) == null)
+                {
+                    continue;
+                }
+                rewards.Add((rewardId, count));
+            }
+            return rewards.Count > 0;
         }
 
         public ItemInfoTable GetItemInfo(string name)

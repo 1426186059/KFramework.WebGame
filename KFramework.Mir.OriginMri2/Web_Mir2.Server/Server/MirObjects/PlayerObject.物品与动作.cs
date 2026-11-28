@@ -1,6 +1,7 @@
 // partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
 using System.Drawing;
 using C = ClientPackets;
+using Server.ExcelConfig;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirNetwork;
@@ -1742,6 +1743,47 @@ namespace Server.MirObjects
                 RefreshStats();
 
                 CheckSkillGoalQuests(); // 原始传奇"学习技能"支线：学会对应技能即自动完成领奖
+
+                if (item.Count > 1) item.Count--;
+                else Info.Inventory[index] = null;
+                RefreshBagWeight();
+                Report.ItemChanged(item, 1, 1);
+
+                p.Success = true;
+                Enqueue(p);
+                return;
+            }
+
+            // 直接读原始传奇 1config.item：col33=1（获得时自动使用）+ col22="物品id#数量"，右键使用即展开。
+            if (Envir.TryGetOriginAutoUseRewards(item.Info.Index, out List<(int ItemIndex, int Count)> originRewards))
+            {
+                List<UserItem> rewardItems = new List<UserItem>();
+                foreach ((int rewardId, int rewardCount) in originRewards)
+                {
+                    ItemInfoTable rewardInfo = Envir.GetItemInfo(rewardId);
+                    if (rewardInfo == null)
+                    {
+                        throw new InvalidOperationException($"[使用物品] 礼盒 {item.Info.Index} 的奖励物品 {rewardId} 不在物品表中");
+                    }
+
+                    UserItem rewardItem = Envir.CreateFreshItem(rewardInfo);
+                    rewardItem.Count = (ushort)Math.Min(item.Count * rewardCount, ushort.MaxValue);
+                    rewardItems.Add(rewardItem);
+                }
+                foreach (UserItem rewardItem in rewardItems)
+                {
+                    if (!CanGainItem(rewardItem))
+                    {
+                        ReceiveChat("背包空间不足，无法开启礼盒。", ChatType.System);
+                        Enqueue(p);
+                        return;
+                    }
+                }
+
+                foreach (UserItem rewardItem in rewardItems)
+                {
+                    AddItem(rewardItem);
+                }
 
                 if (item.Count > 1) item.Count--;
                 else Info.Inventory[index] = null;
