@@ -3153,8 +3153,9 @@ namespace Server.MirObjects
                         ActionList.Add(action);
                         LevelMagic(magic);
                         break;
-                    case Spell.刺杀剑术: // 刺杀剑术
+                    case Spell.刺杀剑术: // 刺杀剑术（正前 1 格：套技能加成 + 正常 AC 减伤；隔 1 格走 Thrusting 段无视防御）
                         magic = GetMagic(Spell.刺杀剑术);
+                        damageFinal = magic.GetDamage(damageBase);
                         LevelMagic(magic);
                         break;
                     case Spell.半月弯刀: // 半月弯刀
@@ -3484,16 +3485,6 @@ namespace Server.MirObjects
                 return;
             }
 
-            RegenTime = Envir.Time + RegenDelay;
-            ChangeMP(-cost);
-
-            if (spell == Spell.野蛮冲撞 && Race == ObjectType.Hero)
-                dir = Direction;
-
-            Direction = dir;
-            if (spell != Spell.野蛮冲撞 && spell != Spell.后退 && spell != Spell.十步一杀)
-                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
-
             MapObject target = null;
 
             if (targetID == ObjectID)
@@ -3509,6 +3500,25 @@ namespace Server.MirObjects
             {
                 target = null;
             }
+
+            // 按目标真实坐标校验施法距离（原仅校验客户端上报的 location，可被伪造/none 绕过）。
+            // 超距不扣蓝、不进 CD、不广播施法。
+            if (target != null && target != this && magic.Info.Range != 0 &&
+                Functions.InRange(CurrentLocation, target.CurrentLocation, magic.Info.Range) == false)
+            {
+                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
+                return;
+            }
+
+            RegenTime = Envir.Time + RegenDelay;
+            ChangeMP(-cost);
+
+            if (spell == Spell.野蛮冲撞 && Race == ObjectType.Hero)
+                dir = Direction;
+
+            Direction = dir;
+            if (spell != Spell.野蛮冲撞 && spell != Spell.后退 && spell != Spell.十步一杀)
+                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
 
             if (target != null && !target.Dead && target.IsAttackTarget(this) && !target.IsFriendlyTarget(this))
             {
@@ -3622,6 +3632,7 @@ namespace Server.MirObjects
                     break;
                 case Spell.野蛮冲撞: // 野蛮冲撞
                     ShoulderDash(magic);
+                    magic.CastTime = Envir.Time;  // 位移技能不走通用尾部，需在此记 CD 起始
                     return;
                 case Spell.地狱雷光: // 地狱雷光
                 case Spell.狂雷紫电: // 狂雷紫电
@@ -3744,6 +3755,7 @@ namespace Server.MirObjects
                     break;
                 case Spell.十步一杀: // 十步一杀
                     FlashDash(magic);
+                    magic.CastTime = Envir.Time;  // 位移技能不走通用尾部，需在此记 CD 起始
                     return;
                 case Spell.新月斩: // 新月斩
                     CrescentSlash(magic);
@@ -5201,7 +5213,14 @@ namespace Server.MirObjects
             bool _canDash = false;
 
             int _cellsTravelled = 0;
-            int dist = Envir.Random.Next(2) + magic.Level + 2;
+
+            // 原始传奇 5config.skill：areaDis 是冲撞格数（野蛮冲撞=4），releaseDis=99 只是施法释放距离。
+            // 旧的 Random.Next(2)+Level+2 只有 2~3 格，表现为冲撞距离过短。
+            int dist = magic.Info.AreaDis;
+            if (dist <= 0)
+            {
+                throw new System.InvalidOperationException($"[野蛮冲撞] 技能 {magic.Spell}({magic.Info.Name}) 的 AreaDis 配置无效：{dist}");
+            }
 
             ActionTime = Envir.Time + MoveDelay;
 

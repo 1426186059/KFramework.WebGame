@@ -880,6 +880,9 @@ namespace Client.MirObjects
             _originCastTime = CMain.Time;
 
             bool any = false;
+            // 战士刀光必须跟随施法朝向；法师/道士特效按 effect 配置固定 dir（原始传奇就是这样）。
+            bool followDir = Class == MirClass.Warrior;
+            int dir = followDir ? (int)Direction : -1;
             foreach (var s in steps)
             {
                 if (s.type != 0 || s.effect <= 0) continue;
@@ -888,7 +891,8 @@ namespace Client.MirObjects
                 // 只加 skillEffects 自身的 x/y 像素偏移（配置里通常是 0），不做额外抬升（yOffset=0）。
                 int xOffset = s.x, yOffset = -s.y;  // OriginEffect 的 yOffset 语义是“向上”，配置 y 是“向下”
                 Effects.Add(new OriginEffect(s.effect, this, starttime: start,
-                                             xOffset: xOffset, yOffset: yOffset));
+                                             xOffset: xOffset, yOffset: yOffset,
+                                             direction: dir, front: followDir ? s.front : 0));
                 if (s.sound > 0) SoundManager.PlaySound(s.sound);
                 any = true;
             }
@@ -920,12 +924,15 @@ namespace Client.MirObjects
                 // 不再从动画结束帧重新加 400ms（之前因此施放到命中多等了一截）。
                 long baseTime = _originCastSpell == spell && _originCastTime > 0 ? _originCastTime : CMain.Time;
                 bool any = false;
+                bool followDir = Class == MirClass.Warrior;
+                int dir = followDir ? (int)Direction : -1;
                 foreach (var s in hits)
                 {
                     long start = Math.Max(CMain.Time, baseTime + Math.Max(0, s.delaytime));
                     MapObject owner = s.pos == 0 ? this : (target ?? this);
                     owner.Effects.Add(new OriginEffect(s.effect, owner, starttime: start,
-                                                       xOffset: s.x, yOffset: -s.y));
+                                                       xOffset: s.x, yOffset: -s.y,
+                                                       direction: dir, front: followDir ? s.front : 0));
                     if (s.sound > 0) SoundManager.PlaySound(s.sound);
                     any = true;
                 }
@@ -940,14 +947,18 @@ namespace Client.MirObjects
             Point dest = target != null ? target.CurrentLocation : targetPoint;
             OriginMissile missile = new OriginMissile(fly.effect, this, target, dest,
                                                       flightDuration: Math.Max(1, fly.delaytime));
+            bool followDirHit = Class == MirClass.Warrior;
+            int hitDir = followDirHit ? (int)Direction : -1;
             foreach (var s in hits)
             {
                 int hitEffect = s.effect, hitSound = s.sound;
+                int hitFront = followDirHit ? s.front : 0;
                 MapObject hitOwner = target ?? this;
                 missile.Complete += (o, e) =>
                 {
                     if (hitOwner.CurrentAction == MirAction.Dead) return;
-                    hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner));
+                    hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner,
+                                                          direction: hitDir, front: hitFront));
                     if (hitSound > 0) SoundManager.PlaySound(hitSound);
                 };
             }
@@ -1307,9 +1318,23 @@ namespace Client.MirObjects
                                 CurrentAction = MirAction.DashL;
                                 Direction = olddirection;
                                 CurrentLocation = Functions.PointMove(CurrentLocation, Direction, 1);
+
+                                // SetAction 开头按"目标格 - 1"把 MapLocation 设成了施法起点前一格，
+                                // 预测前移一格后必须把绘制锚点拉回真正的起点，否则角色视觉上停在起点后方。
+                                Point dashStart = Functions.PointMove(CurrentLocation, Direction, -1);
+                                if (MapLocation != dashStart)
+                                {
+                                    GameScene.Scene.MapControl.RemoveObject(this);
+                                    MapLocation = dashStart;
+                                    GameScene.Scene.MapControl.AddObject(this);
+                                }
+
                                 if (this == User)
                                 {
-                                    MapControl.NextAction = CMain.Time + 2500;
+                                    // NextAction 是下一次动作可开始的节流，不能再挡 2500ms：
+                                    // 服务端逐格回 S.UserDash，被挡住会让 4 个 Dash 包堆积到 2.5 秒后一次性播放，
+                                    // 表现为冲撞完成后闪回原点。技能冷却仍由 SpellTime 保持 2500ms。
+                                    MapControl.NextAction = CMain.Time + 250;
                                     GameScene.SpellTime = CMain.Time + 2500; //Spell Delay
 
                                     Network.Enqueue(new C.Magic { ObjectID = GameScene.User.ObjectID, Spell = Spell, Direction = Direction, });
@@ -1650,14 +1675,15 @@ namespace Client.MirObjects
 
                             if (magic != null) SpellLevel = magic.Level;
 
-                            // 攻杀/刺杀是挂在普通攻击上的开关技能，不发 S.Magic、服务端也不会回 Cast=true，
-                            // 所以 CD 与特效必须在这里（本地攻击动作）驱动：
-                            // 按 5config.skillEffects 的 1102101/1103101 播 effect 603/601（add 混合刀光）+ 挥刀音，
-                            // 并记 CastTime 让技能栏 CD 走起来。PlayOriginCastEffects 查不到数据时返回 false，不影响普通攻击。
-                            if (Spell == Spell.攻杀剑术 || Spell == Spell.刺杀剑术)
+                            // 挂在普通攻击上的开关技能（攻杀/刺杀/半月弯刀/烈火剑法等）不发 S.Magic、
+                            // 服务端也不会回 Cast=true，所以 CD 与特效必须在这里（本地攻击动作）驱动。
+                            // 按 5config.skillEffects 查到的条目播 CDN 刀光 + 挥刀音，并记 CastTime 让技能栏 CD 走起来。
+                            // PlayOriginCastEffects 查不到数据时返回 false，普通攻击不受影响。
+                            // 注意：MirAction.Spell 分支也有一次调用，但半月弯刀等走的是 Attack，必须在这里补上，
+                            // 否则 skillEffects 永远不会被触发——这是"战士技能特效不显示"的根因。
+                            if (PlayOriginCastEffects(Spell, SpellLevel) && magic != null)
                             {
-                                PlayOriginCastEffects(Spell, SpellLevel);
-                                if (magic != null) magic.CastTime = CMain.Time;
+                                magic.CastTime = CMain.Time;
                             }
 
                             GameScene.AttackTime = CMain.Time + User.AttackSpeed;
@@ -1730,6 +1756,12 @@ namespace Client.MirObjects
                         GameScene.Scene.Redraw();
                         break;
                     case MirAction.DashL:
+                        // 野蛮冲撞等位移技能走的是 DashL 而非 Spell 分支，显式接入数据驱动起手特效。
+                        PlayOriginCastEffects(Spell, SpellLevel);
+                        FrameIndex = 0;
+                        EffectFrameIndex = 0;
+                        GameScene.Scene.Redraw();
+                        break;
                     case MirAction.Jump:
                         FrameIndex = 0;
                         EffectFrameIndex = 0;
@@ -1751,6 +1783,9 @@ namespace Client.MirObjects
                         //FrameIndex = 0;
                         //EffectFrameIndex = 0;
                         GameScene.Scene.Redraw();
+
+                        // 十步一杀走 DashAttack，不经过 Spell 分支，显式接入数据驱动起手特效。
+                        PlayOriginCastEffects(Spell, SpellLevel);
 
                         if (IsDashAttack())
                         {

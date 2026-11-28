@@ -23,13 +23,17 @@ namespace Client.MirObjects
         private readonly int _xOffset;     // skillEffects.x：相对目标/施法者的屏幕 X 像素偏移
         private readonly int _yOffset;     // 向上为正；skillEffects.y(向下为正)取反，或子弹终点补偿
         private readonly float _scale;     // 原始传奇 action show/100 缩放；<=0 表示不缩放
+        private readonly int _frontSteps;  // skillEffects.front：>0 时把特效锚点沿施法方向前移的格数
 
+        /// <param name="direction">施法者逻辑方向（MirDirection 的 int）；-1 表示用 effect 配置的固定 dir（不跟随朝向）。</param>
         public OriginEffect(int effectId, MapObject owner, long starttime = 0,
-                            int xOffset = 0, int yOffset = 0, float scale = 1f)
+                            int xOffset = 0, int yOffset = 0, float scale = 1f,
+                            int direction = -1, int front = 0)
             : base(null, 0, 1, 0, owner, starttime)
         {
             _xOffset = xOffset;
             _yOffset = yOffset;
+            _frontSteps = front > 0 ? front : 0;
             if (!ExcelTableMgr.TryGetEffect(effectId, out var effect))
             {
                 _model = 0;
@@ -38,7 +42,8 @@ namespace Client.MirObjects
 
             _model = effect.model;
             _action = effect.action > 0 ? effect.action : 1;
-            _direction = effect.dir;
+            // totaldir==1 表示该特效不区分方向，保持配置 dir；否则跟随施法者方向 + 配置 dir 作为基准偏移。
+            _direction = effect.totaldir <= 1 ? effect.dir : (direction >= 0 ? direction : effect.dir);
             _intval = effect.intval > 0 ? effect.intval : 50;
             _addBlend = effect.blendmode == "add";
             _scale = scale > 0 ? scale : 1f;
@@ -88,6 +93,25 @@ namespace Client.MirObjects
             // 帧内容自然落在原始传奇 JS 中对应的位置（frame.y + h 恒定 = 脚底）。
             int screenX = DrawLocation.X + _xOffset;
             int screenY = DrawLocation.Y - _yOffset;
+
+            // 战士刀光：front>0 时把锚点沿施法方向前移，避免被角色模型挡住（法师/道士 front 恒为 0）。
+            if (_frontSteps > 0)
+            {
+                int stepX = 0, stepY = 0;
+                switch (_direction)
+                {
+                    case 0: stepY = -1; break;
+                    case 1: stepX = 1; stepY = -1; break;
+                    case 2: stepX = 1; break;
+                    case 3: stepX = 1; stepY = 1; break;
+                    case 4: stepY = 1; break;
+                    case 5: stepX = -1; stepY = 1; break;
+                    case 6: stepX = -1; break;
+                    case 7: stepX = -1; stepY = -1; break;
+                }
+                screenX += stepX * _frontSteps * MapControl.CellWidth;
+                screenY += stepY * _frontSteps * MapControl.CellHeight;
+            }
             Mir2OriginObjectLibrary.DrawAnchored(
                 Mir2ObjectKind.Monster, _model, _action, _direction, CurrentFrame,
                 screenX, screenY, CommonColor.White, scale: _scale,
