@@ -600,7 +600,8 @@ namespace Server.MirObjects
                     case 252:
                         return 5000;
                     default:
-                        return 180000;
+                        // 普通怪物死亡后 3 秒内消失：DeadTime 到时 Process 会 Despawn 并广播。
+                        return 3000;
                 }
             }
         }
