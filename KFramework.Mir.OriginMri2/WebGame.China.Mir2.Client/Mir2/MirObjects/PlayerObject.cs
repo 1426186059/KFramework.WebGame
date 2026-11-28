@@ -39,6 +39,8 @@ namespace Client.MirObjects
 
         // 野蛮冲撞整段格数：服务端一次回终点包，客户端用它在一次 action4 动画内从起点插值到终点。
         public int DashSteps;
+        // 起手施法时的真实起点（服务端终点包到达前，CurrentLocation 可能已被心跳同步到终点）。
+        public Point DashStartLocation;
 
         // 各层【页游 id】（服务端在 ObjectPlayer 下发）。0 = 走裸身/不绘制回退。
         // 身体/武器来自 cm.item[col17]；装扮类(装扮/幻武/足迹/称号/徽记/法阵/旋光)来自 cm.title[id].model。

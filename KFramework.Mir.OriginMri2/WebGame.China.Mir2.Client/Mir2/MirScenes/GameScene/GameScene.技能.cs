@@ -852,15 +852,12 @@ namespace Client.MirScenes
 
         private void UserDash(S.UserDash p)
         {
-            if (User.Direction == p.Direction && User.CurrentLocation == p.Location)
-            {
-                MapControl.NextAction = 0;
-                return;
-            }
+            // 不能再用"位置+朝向相同"早退：服务端现在发的是终点包，
+            // 心跳/位置同步可能已把 CurrentLocation 放到终点，早退会让冲撞动画不入队、直接瞬移。
 
             // 服务端整段冲撞只回一个终点包：一次 Dash 动作 + 一次 action4 动画走完全程。
-            // Params[0] 存冲撞起点，供 SetAction/Process 按起点→终点距离插值，避免逐格重播动画。
-            Point dashStart = User.CurrentLocation;
+            // Params[0] 存冲撞起点（起手施法时记录的真实起点），供 SetAction/Process 按起点→终点距离插值。
+            Point dashStart = User.DashStartLocation;
             User.ActionFeed.Add(new QueuedAction
             {
                 Action = MirAction.DashL,

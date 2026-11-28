@@ -250,6 +250,8 @@ namespace Client.MirObjects
 
                                 if (this == User)
                                 {
+                                    // 记录真实起点：服务端终点包到达前，CurrentLocation 可能已被心跳同步到终点。
+                                    DashStartLocation = CurrentLocation;
                                     // 不设置 MapControl.NextAction：服务端终点包要能立即入 ActionFeed。
                                     MapControl.NextAction = 0;
                                     GameScene.SpellTime = CMain.Time + 2500; //Spell Delay
@@ -1354,9 +1356,9 @@ namespace Client.MirObjects
                     break;
                 case MirAction.DashL:
                 case MirAction.DashR:
-                    if (!GameScene.CanMove) return;
-
-                    // 冲撞一次动画走完全程：必须按 FrameInterval 节流推进，否则每帧+1 会瞬间播完 6 帧变成瞬移。
+                    // 冲撞是服务端驱动的固定动画，不能受玩家移动输入脉冲(CanMove)限制，
+                    // 否则松手瞬间 CanMove=false 会跳过帧推进、动画不播而位置已在终点 = 瞬移。
+                    // 按 FrameInterval 节流推进，一次动画走完全程。
                     if (CMain.Time >= NextMotion)
                     {
                         GameScene.Scene.MapControl.TextureValid = false;
