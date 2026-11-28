@@ -554,7 +554,7 @@ namespace Client.MirObjects
                                     Spell = Spell.双斩;
                                 }
                                 else if (GameScene.User.CrossHalfMoon &&
-                                         (TargetObject != null || GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation)) &&
+                                         GameScene.Scene.MapControl.CanCrossHalfMoon(CurrentLocation, TargetObject) &&
                                          (castMagic = User.GetMagic(Spell.双半月)) != null &&
                                          castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
                                 {
@@ -566,7 +566,7 @@ namespace Client.MirObjects
                                     Spell = Spell.刺杀剑术;
                                 }
                                 else if (GameScene.User.HalfMoon &&
-                                         GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, Direction) &&
+                                         GameScene.Scene.MapControl.CanHalfMoon(CurrentLocation, TargetObject) &&
                                          (castMagic = User.GetMagic(Spell.半月弯刀)) != null &&
                                          castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
                                 {

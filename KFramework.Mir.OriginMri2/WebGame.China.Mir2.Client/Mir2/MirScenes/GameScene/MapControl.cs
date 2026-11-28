@@ -2494,23 +2494,39 @@ public sealed class MapControl : MirControl
         return false;
     }
 
-    public bool CanHalfMoon(Point p, MirDirection d)
+    /// <summary>
+    /// 原始传奇 JS useGroupSkill(e)：遍历怪物，排除当前攻击目标自己，
+    /// 只要周围 8 格（checkClose(x,y,1,1) 即 dx&lt;=1 且 dy&lt;=1）还有别的活怪才返回 true。
+    /// 旧实现用"前/左/右/后四个方向有任意阻挡对象"，把正前方那只被攻击目标自己算进去了，
+    /// 导致单挑时每次攻击都判定成半月弯刀。
+    /// </summary>
+    public bool CanHalfMoon(Point p, MapObject excludeTarget)
     {
-        d = Functions.PreviousDir(d);
-        for (int i = 0; i < 4; i++)
+        foreach (var ob in Objects.Values)
         {
-            if (HasTarget(Functions.PointMove(p, d, 1))) return true;
-            d = Functions.NextDir(d);
+            if (ob == null || ob == excludeTarget || ob.Race != ObjectType.Monster || ob.Dead)
+            {
+                continue;
+            }
+            if (Math.Abs(p.X - ob.CurrentLocation.X) <= 1 && Math.Abs(p.Y - ob.CurrentLocation.Y) <= 1)
+            {
+                return true;
+            }
         }
         return false;
     }
-    public bool CanCrossHalfMoon(Point p)
+    public bool CanCrossHalfMoon(Point p, MapObject excludeTarget)
     {
-        MirDirection dir = MirDirection.Up;
-        for (int i = 0; i < 8; i++)
+        foreach (var ob in Objects.Values)
         {
-            if (HasTarget(Functions.PointMove(p, dir, 1))) return true;
-            dir = Functions.NextDir(dir);
+            if (ob == null || ob == excludeTarget || ob.Race != ObjectType.Monster || ob.Dead)
+            {
+                continue;
+            }
+            if (Math.Abs(p.X - ob.CurrentLocation.X) <= 2 && Math.Abs(p.Y - ob.CurrentLocation.Y) <= 2)
+            {
+                return true;
+            }
         }
         return false;
     }
