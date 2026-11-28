@@ -306,8 +306,9 @@ namespace Client.MirScenes
             NPCTeleporterDialog = new NPCTeleporterDialog { Parent = this, Visible = false };
             NPCTeleporterDialog.OnTeleport += d =>
             {
-                // 复用现有 NPC 脚本机制：发 C.CallNPC 到对应的 @mv_xxx 页（服务端执行 MOVE），无需新增服务端包。
-                Network.Enqueue(new C.CallNPC { ObjectID = NPCTeleporterDialog.CurrentNPCID, Key = "[@" + d.Action + "]" });
+                // 复用原有 C.CallNPC 协议：Key="@deliver:<deliverId>"（对齐原始传奇 send1(deliverId)）。
+                // 服务端 Player.CallNPC 识别该前缀后按 3config.deliver 表结算传送，不依赖 NPC 脚本页。
+                Network.Enqueue(new C.CallNPC { ObjectID = NPCTeleporterDialog.CurrentNPCID, Key = "@deliver:" + d.Id });
                 NPCTeleporterDialog.Hide();
             };
             NPCGoodsDialog = new NPCGoodsDialog(PanelType.Buy) { Parent = this, Visible = false };

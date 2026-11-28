@@ -1108,21 +1108,16 @@ public sealed class MapControl : MirControl
                     if (npc != null)
                     {
                         MapObject.SelectTarget(npc); // 选定 NPC：统一入口，脚底环移到 NPC、攻击目标按 NPC 语义清空
-                        // 城市传送员：自定义分类传送对话框（开关 TeleporterData.UseCustomDialog，默认关，暂用原 NPC 脚本菜单）。
-                        if (TeleporterData.UseCustomDialog && TeleporterData.IsCityTeleporter(npc.Name))
+                        // 城市传送员：直接打开原始传奇 DeliverDialog 分类面板。
+                        // 这批 NPC（600/13051）在服务端 NPCInfo.FileName 为空、没有对话脚本，
+                        // 发 [@Main] 不会收到任何 NPCResponse —— 这就是"点了没反应"的根因。
+                        // 面板目的地复用 C.CallNPC("@deliver:<id>")，由服务端按 3config.deliver 表结算传送。
+                        if (TeleporterData.UseCustomDialog && TeleporterData.IsCityTeleporter(npc))
                         {
                             GameScene.NPCID = npc.ObjectID;
                             GameScene.NPCTime = CMain.Time + 5000;
-                            if (!GameScene.Scene.NPCTeleporterDialog.Visible)
-                            {
-                                // 先发 @Main 在服务端“开起”与传送员的对话（设置 NPCObjectID/NPCScriptID）；
-                                // 否则后续点目的地发 [@mv_xxx] 时服务端对话上下文不对，会落到随机传送。
-                                // 该回包仅用于建立对话，SuppressNpcDialog 让 NPCResponse 忽略它，不弹原菜单。
-                                NPCTeleporterDialog.SuppressNpcDialog = true;
-                                GameScene.Scene.NPCDialog.Hide();
-                                Network.Enqueue(new C.CallNPC { ObjectID = npc.ObjectID, Key = "[@Main]" });
-                                GameScene.Scene.NPCTeleporterDialog.Open("传送员", TeleporterData.GetDestinations(), npc.ObjectID);
-                            }
+                            GameScene.Scene.NPCDialog.Hide();
+                            GameScene.Scene.NPCTeleporterDialog.Open("传送员", TeleporterData.GetDestinations(), npc.ObjectID);
                             return;
                         }
 

@@ -1,4 +1,5 @@
 // partial 文件：PlayerObject 功能拆分（原 PlayerObject.cs 原样迁入）。
+using Server.ExcelConfig;
 using Server.MirDatabase;
 using Server.MirEnvir;
 using Server.MirNetwork;
@@ -354,7 +355,22 @@ namespace Server.MirObjects
         }
         protected override void NewCharacter()
         {
-            if (Envir.StartPoints.Count == 0) return;
+            // 每个新角色固定赠送 999 个小飞鞋，供传送员面板使用；不依赖 ItemInfo.json 的 StartItem 标记。
+            // 物品表里找不到 8015 属于配置异常，直接抛异常，不静默漏发。
+            ItemInfoTable bootsInfo = Envir.GetItemInfo(FlyingBootsIndex);
+            if (bootsInfo == null)
+            {
+                throw new InvalidOperationException("[新角色] 小飞鞋(ItemIndex 8015) 不在物品表中，无法发放初始物资");
+            }
+
+            UserItem boots = Envir.CreateFreshItem(bootsInfo);
+            boots.Count = 999;
+            AddItem(boots);
+
+            if (Envir.StartPoints.Count == 0)
+            {
+                return;
+            }
 
             SetBind();
 

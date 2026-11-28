@@ -101,6 +101,22 @@ namespace Server.MirObjects
             Enqueue(new S.NPCUpdate { NPCID = objectID });
 
             key = key.ToUpper();
+
+            // 传送员目的地复用 C.CallNPC 协议：Key="@deliver:<deliverId>"（对应原始传奇 send1(deliverId)）。
+            // 这批传送员 NPC 没有脚本文件，必须在脚本分派前拦截，否则 script.Call 会走空脚本。
+            const string deliverPrefix = "@DELIVER:";
+            if (key.StartsWith(deliverPrefix, StringComparison.Ordinal))
+            {
+                if (!int.TryParse(key.Substring(deliverPrefix.Length), out int deliverId))
+                {
+                    throw new InvalidOperationException($"[传送员] 非法 deliverId: {key}");
+                }
+
+                DeliverTo(deliverId);
+                OpenQuestPanelOnNextNPCResponse = false;
+                return;
+            }
+
             MessageQueue.Enqueue($"[NPC诊断] Player.CallNPC: objectID={objectID} key={key} Map={CurrentMap.Info.Index} NPCs.Count={CurrentMap.NPCs.Count} NPCObjectID(本次交互)={NPCObjectID}");
 
             bool found = false;
