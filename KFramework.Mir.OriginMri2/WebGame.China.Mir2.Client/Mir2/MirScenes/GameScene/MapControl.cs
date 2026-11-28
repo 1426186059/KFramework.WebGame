@@ -1703,12 +1703,10 @@ public sealed class MapControl : MirControl
 
             Spell spell = magic.Spell;
 
-            // 被动/开关类跳过（与 GameScene.UseSpell 的 return / SendSpellToggle 分支一致）
+            // 只跳过被动/自身增益类；刺杀/半月/烈火等已改为即时释放，自动战斗可以选它们。
             if (spell == Spell.基本剑术 || spell == Spell.攻杀剑术 || spell == Spell.致命剑 ||
                 spell == Spell.吸魔 || spell == Spell.出血 || spell == Spell.精神力战法 ||
                 spell == Spell.专注 || spell == Spell.冥想 || spell == Spell.反击 ||
-                spell == Spell.刺杀剑术 || spell == Spell.半月弯刀 || spell == Spell.双半月 ||
-                spell == Spell.双斩 || spell == Spell.双烈火剑 || spell == Spell.烈火剑法 ||
                 spell == Spell.精神状态)
             {
                 continue;

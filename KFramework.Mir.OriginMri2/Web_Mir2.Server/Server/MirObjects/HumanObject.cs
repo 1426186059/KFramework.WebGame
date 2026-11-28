@@ -4001,9 +4001,9 @@ namespace Server.MirObjects
         private static readonly Dictionary<int, Spell> OriginEffectSpellBySkillId = new()
         {
             // 战士 Warrior
-            // 被动/开关型技能（基本剑术11011/攻杀11021/刺杀11031/半月11041/烈火11061）不在此表：
-            // 它们走客户端本地攻击路径（SpellToggle 开关 + C.Attack），不进 Magic() 施法 switch。
-            // 若误列会路由到 switch 却无 case，落 default: cast=false，导致 CD/特效全部失效。
+            // 被动技能（基本剑术11011/攻杀11021）不在此表：服务端按概率被动结算，不进 Magic()。
+            // 刺杀11031/半月11041/烈火11061 等即时释放技能也不在此表：EffectSpellOf 返回 Spell.无，
+            // 由 OriginMagicCast 按 5config 的 Aoe 结算（半月3x3群、烈火单体），避免路由到无 case 的 switch。
             {11051, Spell.野蛮冲撞},  // 野蛮冲撞 ht5 突进
             {11071, Spell.开天斩}, // 开天斩 ht12 直线DC
             {11081, Spell.逐日剑法}, // 逐日剑法 ht12 直线+突进

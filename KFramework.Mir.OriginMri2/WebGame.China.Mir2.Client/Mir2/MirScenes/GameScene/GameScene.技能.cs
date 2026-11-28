@@ -1119,79 +1119,9 @@ namespace Client.MirScenes
                 case Spell.专注: // 专注
                 case Spell.冥想: // 冥想
                     return;
-                case Spell.刺杀剑术: // 刺杀剑术
-                    if (CMain.Time < ToggleTime) return;
-                    bool wasThrusting = actor.Thrusting;
-                    actor.Thrusting = fromHold ? true : !actor.Thrusting;
-                    if (actor.Thrusting == wasThrusting) return;
-                    ChatDialog.ReceiveChat(
-                        prefix + (actor.Thrusting ? LanguageMgr.Get("UseThrusting"): LanguageMgr.Get("DoNotUseThrusting")),
-                        ChatType.System);
-                    ToggleTime = CMain.Time + 1000;
-                    SendSpellToggle(actor, magic.Spell, actor.Thrusting);
-                    break;
-                case Spell.半月弯刀: // 半月弯刀
-                    if (CMain.Time < ToggleTime) return;
-                    bool wasHalfMoon = actor.HalfMoon;
-                    actor.HalfMoon = fromHold ? true : !actor.HalfMoon;
-                    if (actor.HalfMoon == wasHalfMoon) return;
-                    ChatDialog.ReceiveChat(
-                        prefix + (actor.HalfMoon ? LanguageMgr.Get("UseHalfMoon"): LanguageMgr.Get("DoNotUseHalfMoon")),
-                        ChatType.System);
-                    ToggleTime = CMain.Time + 1000;
-                    SendSpellToggle(actor, magic.Spell, actor.HalfMoon);
-                    break;
-                case Spell.双半月: // 半月弯刀（双）
-                    if (CMain.Time < ToggleTime) return;
-                    bool wasCrossHalfMoon = actor.CrossHalfMoon;
-                    actor.CrossHalfMoon = fromHold ? true : !actor.CrossHalfMoon;
-                    if (actor.CrossHalfMoon == wasCrossHalfMoon) return;
-                    ChatDialog.ReceiveChat(
-                        prefix + (actor.CrossHalfMoon ? LanguageMgr.Get("UseCrossHalfMoon"): LanguageMgr.Get("DoNotUseCrossHalfMoon")),
-                        ChatType.System);
-                    ToggleTime = CMain.Time + 1000;
-                    SendSpellToggle(actor, magic.Spell, actor.CrossHalfMoon);
-                    break;
-                case Spell.双斩: // 双斩
-                    if (CMain.Time < ToggleTime) return;
-                    bool wasDoubleSlash = actor.DoubleSlash;
-                    actor.DoubleSlash = fromHold ? true : !actor.DoubleSlash;
-                    if (actor.DoubleSlash == wasDoubleSlash) return;
-                    ChatDialog.ReceiveChat(
-                        prefix + (actor.DoubleSlash ? LanguageMgr.Get("UseDoubleSlash"): LanguageMgr.Get("DoNotUseDoubleSlash")),
-                        ChatType.System);
-                    ToggleTime = CMain.Time + 1000;
-                    SendSpellToggle(actor, magic.Spell, actor.DoubleSlash);
-                    break;
-                case Spell.双烈火剑: // 双烈火剑
-                    if (CMain.Time < ToggleTime) return;
-                    ToggleTime = CMain.Time + 500;
-
-                    cost = magic.Level * magic.LevelCost + magic.BaseCost;
-                    if (cost > actor.MP)
-                    {
-                        Scene.OutputMessage(LanguageMgr.Get("LowMana"));
-                        return;
-                    }
-                    actor.TwinDrakeBlade = true;
-                    SendSpellToggle(actor, magic.Spell, true);
-                    if (actor == Hero)
-                        HeroObject?.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, HeroObject));
-                    else
-                        actor.Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, actor));
-                    break;
-                case Spell.烈火剑法: // 烈火剑法
-                    if (CMain.Time < ToggleTime) return;
-                    ToggleTime = CMain.Time + 500;
-
-                    cost = magic.Level * magic.LevelCost + magic.BaseCost;
-                    if (cost > actor.MP)
-                    {
-                        Scene.OutputMessage(LanguageMgr.Get("LowMana"));
-                        return;
-                    }
-                    SendSpellToggle(actor, magic.Spell, true);
-                    break;
+                // 战士攻击技能一律即时释放：按技能栏直接走 default → NextMagic → C.Magic，
+                // 不再是 SendSpellToggle 开关；服务端按 5config 的 handlerType/Aoe 结算。
+                // 攻杀剑术(11021, handlerType=14) 仍是被动，在上面被动分支 return。
                 case Spell.反击: // 反击
                     cost = magic.Level * magic.LevelCost + magic.BaseCost;
                     if (cost > actor.MP)

@@ -529,55 +529,9 @@ namespace Client.MirObjects
                         case MirAction.Attack1:
                         case MirAction.MountAttack:
 
-                            // 开关类技能（玩家按技能栏开启后）由普攻触发，对齐原始传奇 getAttackSkill：
-                            //   群攻(周围有别的怪) → 半月；否则隔位刺杀；烈火/双烈火下一击强化；
-                            //   其余一律 Spell.无，攻杀剑术由服务端概率被动结算。
-                            // 注意：自动战斗的智能施法不在这里，走 MapControl.TryAutoCastSpell。
-                            if (!RidingMount)
-                            {
-                                ClientMagic castMagic;
-                                MapControl map = GameScene.Scene.MapControl;
-
-                                if (GameScene.User.TwinDrakeBlade &&
-                                    (castMagic = User.GetMagic(Spell.双烈火剑)) != null &&
-                                    castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.双烈火剑;
-                                }
-                                else if (GameScene.User.FlamingSword &&
-                                         (castMagic = User.GetMagic(Spell.烈火剑法)) != null)
-                                {
-                                    Spell = Spell.烈火剑法;
-                                }
-                                else if (GameScene.User.HalfMoon && map.CanHalfMoon(CurrentLocation, TargetObject) &&
-                                         (castMagic = User.GetMagic(Spell.半月弯刀)) != null &&
-                                         castMagic.BaseCost + castMagic.LevelCost * castMagic.Level <= User.MP)
-                                {
-                                    Spell = Spell.半月弯刀;
-                                }
-                                else if (GameScene.User.Thrusting &&
-                                         map.HasTarget(Functions.PointMove(CurrentLocation, Direction, 2)))
-                                {
-                                    Spell = Spell.刺杀剑术;
-                                }
-                            }
-
+                            // 所有攻击技能改为即时释放后，普攻一律 Spell.无；
+                            // 攻杀剑术由服务端概率被动结算，主动技能走 C.Magic 施法分支。
                             Network.Enqueue(new C.Attack { Direction = Direction, Spell = Spell });
-
-                            // 开关技能挂在普攻上：服务端不会回 S.Magic(Cast=true)，
-                            // 特效/CD 必须在这里本地驱动。
-                            if (Spell != Spell.无)
-                            {
-                                magic = User.GetMagic(Spell);
-                                if (magic != null)
-                                {
-                                    SpellLevel = magic.Level;
-                                    if (PlayOriginCastEffects(Spell, SpellLevel))
-                                    {
-                                        magic.CastTime = CMain.Time;
-                                    }
-                                }
-                            }
 
                             GameScene.AttackTime = CMain.Time + User.AttackSpeed;
                             MapControl.NextAction = CMain.Time + 2500;
