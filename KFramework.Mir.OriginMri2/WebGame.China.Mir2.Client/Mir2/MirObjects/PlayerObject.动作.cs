@@ -175,7 +175,8 @@ namespace Client.MirObjects
                         break;
                     case MirAction.DashL:
                     case MirAction.DashR:
-                        Frames.TryGetValue(MirAction.Running, out Frame);
+                        // 冲撞逐格动作：原始传奇 skill.action=0 → setAction(4) 前冲姿态，不是跑步帧。
+                        Frames.TryGetValue(MirAction.Attack1, out Frame);
                         break;
                     case MirAction.DashAttack:
                         Frames.TryGetValue(MirAction.DashAttack, out Frame);
@@ -218,7 +219,7 @@ namespace Client.MirObjects
                         {
                             case Spell.野蛮冲撞: // 野蛮冲撞
                             {
-                                Frames.TryGetValue(MirAction.Running, out Frame);
+                                Frames.TryGetValue(MirAction.Attack1, out Frame);
                                 CurrentAction = MirAction.DashL;
 
                                 // 有选中目标就朝目标真实位置冲；没有目标才用鼠标/键盘给出的方向。

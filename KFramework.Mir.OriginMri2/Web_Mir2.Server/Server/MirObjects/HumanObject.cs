@@ -5193,7 +5193,9 @@ namespace Server.MirObjects
 
                 _nextLocation = Functions.PointMove(CurrentLocation, Direction, 1);
 
-                if (!CurrentMap.ValidPoint(_nextLocation) || CurrentMap.GetSafeZone(_nextLocation) != null)
+                // 安全区只禁止"把别人推走"，不禁止施法者自己冲撞位移。
+                // 旧逻辑把"下一格在安全区"直接 break，导致安全区内野蛮冲撞一格都走不了、原地不动。
+                if (!CurrentMap.ValidPoint(_nextLocation))
                 {
                     break;
                 }
@@ -5222,14 +5224,23 @@ namespace Server.MirObjects
                                 break;
                             }
 
-                            if(ob.Blocking)
+                            if (ob.Blocking)
                             {
-                                _blocking = true;
+                                // 安全区内的玩家不能推走，但仍允许冲撞者撞到他身上（产生位移后停下），
+                                // 不能当成普通阻挡直接 break，否则安全区内野蛮冲撞一格都走不了。
+                                if (ob.Race == ObjectType.Player && CurrentMap.GetSafeZone(ob.CurrentLocation) != null)
+                                {
+                                    _target = ob;
+                                }
+                                else
+                                {
+                                    _blocking = true;
+                                }
                                 break;
                             }
                         }
                     }
-                    
+
                     if (_blocking)
                     {
                         break;
@@ -5242,6 +5253,8 @@ namespace Server.MirObjects
 
                 if (_target == null)
                 {
+                    bool hitSafeZonePlayer = false;
+
                     if (dashCell.Objects != null)
                     {
                         int cellCnt = dashCell.Objects.Count;
@@ -5252,12 +5265,21 @@ namespace Server.MirObjects
 
                             if (ob.Blocking)
                             {
-                                _blocking = true;
+                                // 后续格子上的安全区玩家同样只撞不推，允许冲撞者撞到他身上。
+                                if (ob.Race == ObjectType.Player && CurrentMap.GetSafeZone(ob.CurrentLocation) != null)
+                                {
+                                    _target = ob;
+                                    hitSafeZonePlayer = true;
+                                }
+                                else
+                                {
+                                    _blocking = true;
+                                }
                                 break;
                             }
                         }
 
-                        if(!_blocking)
+                        if (!_blocking)
                         {
                             _canDash = true;
                         }
@@ -5266,11 +5288,25 @@ namespace Server.MirObjects
                     {
                         _canDash = true;
                     }
+
+                    if (hitSafeZonePlayer)
+                    {
+                        // 撞上安全区玩家后停止后续冲撞，但保留本次位移。
+                        _blocking = true;
+                    }
                 }
                 else
                 {
-                    // try to push
-                    if (_target.Pushed(this, Direction, 1) == 0)
+                    // 安全区只禁止"把别人推走"，不禁止施法者自己冲撞位移。
+                    // 撞到安全区内玩家时不调用 Pushed，直接冲到其所在格（撞到身上）并停止后续冲撞。
+                    bool targetInSafeZone = _target.Race == ObjectType.Player &&
+                                            CurrentMap.GetSafeZone(_target.CurrentLocation) != null;
+                    if (targetInSafeZone)
+                    {
+                        _canDash = true;
+                        _blocking = true;
+                    }
+                    else if (_target.Pushed(this, Direction, 1) == 0)
                     {
                         _blocking = true;
                     }
@@ -5335,7 +5371,12 @@ namespace Server.MirObjects
             }
             else
             {
-                _target?.Attacked(this, magic.GetDamage(0), DefenceType.None, false);
+                // 安全区内只产生撞击位移，不造成伤害（安全区禁止 PK）。
+                if (_target != null &&
+                    !(_target.Race == ObjectType.Player && CurrentMap.GetSafeZone(_target.CurrentLocation) != null))
+                {
+                    _target.Attacked(this, magic.GetDamage(0), DefenceType.None, false);
+                }
                 LevelMagic(magic);
 
                 // Broadcast(new S.ObjectDash { ObjectID = ObjectID, Direction = Direction, Location = Front });

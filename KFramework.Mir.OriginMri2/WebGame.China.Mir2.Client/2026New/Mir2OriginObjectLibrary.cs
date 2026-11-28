@@ -219,15 +219,17 @@ public static class Mir2OriginObjectLibrary
             // 跑：movestep==2 → _moveAction=false → setAction(3)
             case MirAction.Running:
             case MirAction.RunningBow:
-            case MirAction.DashL:
-            case MirAction.DashR:
-            case MirAction.DashAttack:
             case MirAction.Lunge:
             case MirAction.Jump:
             case MirAction.MountRunning:
                 return ActionRun;
 
-            // 普攻：skill.action==0 → setAction(4)
+            // 普攻/冲撞：skill.action==0 → setAction(4)。
+            // 野蛮冲撞(11051) 的 skill.action=0，原始传奇客户端逐格冲撞时播的就是 action4 前冲姿态，
+            // 不是 action3 跑步；DashL/DashR 必须走这里，否则表现为"向前走几步"而不是冲撞。
+            case MirAction.DashL:
+            case MirAction.DashR:
+            case MirAction.DashAttack:
             case MirAction.Attack1:
             case MirAction.Attack2:
             case MirAction.Attack3:
