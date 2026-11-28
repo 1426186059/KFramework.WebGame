@@ -27,9 +27,6 @@ namespace Client.MirObjects
                     case MirAction.Jump:
                     case MirAction.DashAttack:
                         return;
-                    // DashL/DashR（野蛮冲撞）不在此列：它是服务端驱动的固定动画，
-                    // 施法后玩家往往已松手(CanMove=false)，在这里 return 会让冲撞动作卡在队首不播、
-                    // 位置却被同步到终点 = 瞬移。
                 }
             }
 

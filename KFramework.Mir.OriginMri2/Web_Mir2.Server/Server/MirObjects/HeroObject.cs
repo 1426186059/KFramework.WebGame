@@ -57,6 +57,7 @@ namespace Server.MirObjects
                 return base.CanAttack && !ActiveBlizzard && !ActiveReincarnation && (Owner.PMode == PetMode.AttackOnly || Owner.PMode == PetMode.Both || Owner.PMode == PetMode.FocusMasterTarget);
             }
         }
+        /// <summary>在 HumanObject.CanCast 基础上叠加"不在暴风雪/重生中 + 宠物模式允许施法"。</summary>
         protected override bool CanCast
         {
             get

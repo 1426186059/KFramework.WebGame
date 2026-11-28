@@ -188,7 +188,17 @@ namespace Client.MirObjects
 
         public uint LastTargetObjectId => lastTargetObjectId;
 
+        /// <summary>
+        /// 对象的动作队列（FIFO）：服务端下发的 Walk/Run/Attack/Hit/Dash 等动作先入队，
+        /// 由 MapObject.ProcessFrames 逐个取出播放，保证动画与位置同步。
+        /// 与 MapControl.NextAction（全局动作冷却时间戳）是两个不同的东西，别混淆。
+        /// </summary>
         public List<QueuedAction> ActionFeed = new List<QueuedAction>();
+
+        /// <summary>
+        /// 队首动作（ActionFeed[0]），即"当前正在等待播放的下一个动作"；队列为空时返回 null。
+        /// SetAction 用它判断动作是否已经被占用，ProcessFrames 播放完成后从 ActionFeed 移除。
+        /// </summary>
         public QueuedAction NextAction
         {
             get { return ActionFeed.Count > 0 ? ActionFeed[0] : null; }

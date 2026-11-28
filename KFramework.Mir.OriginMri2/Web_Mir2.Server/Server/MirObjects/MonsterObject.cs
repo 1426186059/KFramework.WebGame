@@ -633,6 +633,7 @@ namespace Server.MirObjects
                 return !Dead;
             }
         }
+        /// <summary>怪物能否回血：距上次回血已过 RegenDelay（默认 10 秒），到点由 ProcessRegen 重置 RegenTime。</summary>
         protected virtual bool CanRegen
         {
             get { return Envir.Time >= RegenTime; }

@@ -1,3 +1,9 @@
+// ============================================================================
+// 原始传奇（fugu_20201203）技能特效处理（客户端）
+// 数据来自 5config.skillEffects：skills_condition[skill][level].effLevelID → skillEffects。
+// 全部特效/音效客户端本地按配置时序播放，服务端施法包只带伤害数据。
+// type=0 起手特效、type=1 命中特效、type=2 飞行物（OriginMissile）。
+// ============================================================================
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
 
@@ -15,10 +21,12 @@ namespace Client.MirObjects
 
         /// <summary>起手特效(type=0)：施法瞬间在施法者身上播放。原始传奇 type=0 是角色起手动作，
         /// pos 字段对它无意义（雷电术 type=0 的 pos=1 不是让特效挂到怪物身上）。在施法动作起始帧调用。</summary>
-
         private bool PlayOriginCastEffects(Spell spell, int level)
         {
-            if (!TryGetOriginSteps(spell, level, out var steps)) return false;
+            if (!TryGetOriginSteps(spell, level, out var steps))
+            {
+                return false;
+            }
 
             // JS: SkillBase.release() 里 initEffects() 在技能状态进入时立即执行，delaytime 从这一刻起算。
             _originCastSpell = spell;
@@ -30,7 +38,11 @@ namespace Client.MirObjects
             int dir = followDir ? (int)Direction : -1;
             foreach (var s in steps)
             {
-                if (s.type != 0 || s.effect <= 0) continue;
+                if (s.type != 0 || s.effect <= 0)
+                {
+                    continue;
+                }
+
                 long start = CMain.Time + Math.Max(0, s.delaytime);
                 // 原始传奇 JS：addEffect(effect, null, t.x, t.y, ..., u.x, u.y) —— 起手特效画在施法者坐标，
                 // 只加 skillEffects 自身的 x/y 像素偏移（配置里通常是 0），不做额外抬升（yOffset=0）。
@@ -38,7 +50,11 @@ namespace Client.MirObjects
                 Effects.Add(new OriginEffect(s.effect, this, starttime: start,
                                              xOffset: xOffset, yOffset: yOffset,
                                              direction: dir, front: followDir ? s.front : 0));
-                if (s.sound > 0) SoundManager.PlayOriginSound(s.sound);
+                if (s.sound > 0)
+                {
+                    SoundManager.PlayOriginSound(s.sound);
+                }
+
                 any = true;
             }
             return any || steps.Any(x => x.type == 1 || x.type == 2);
@@ -51,13 +67,18 @@ namespace Client.MirObjects
         /// 无子弹技能（雷电术）则 type=1 命中按“相对施法起始”的 delaytime 挂到目标（已过时刻则立即播放）。
         /// 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，这里不重复。
         /// </summary>
-
         private bool PlayOriginHitEffects(Spell spell, int level, MapObject target, Point targetPoint)
         {
-            if (!TryGetOriginSteps(spell, level, out var steps)) return false;
+            if (!TryGetOriginSteps(spell, level, out var steps))
+            {
+                return false;
+            }
 
             // 灵魂火符走旧 switch 里精心调校的 OriginMissile(653/752→654/754)，不在此重复。
-            if (spell == Spell.灵魂火符) return false;
+            if (spell == Spell.灵魂火符)
+            {
+                return false;
+            }
 
             var fly = steps.FirstOrDefault(s => s.type == 2 && s.effect > 0);
             var hits = steps.Where(s => s.type == 1 && s.effect > 0).ToList();
@@ -79,7 +100,11 @@ namespace Client.MirObjects
                     owner.Effects.Add(new OriginEffect(s.effect, owner, starttime: start,
                                                        xOffset: s.x, yOffset: -s.y,
                                                        direction: dir, front: followDir ? s.front : 0));
-                    if (s.sound > 0) SoundManager.PlayOriginSound(s.sound);
+                    if (s.sound > 0)
+                    {
+                        SoundManager.PlayOriginSound(s.sound);
+                    }
+
                     any = true;
                 }
                 return any || steps.Any(x => x.type == 0);
@@ -89,7 +114,11 @@ namespace Client.MirObjects
             //   · 子弹仅用自己 model 的 stand，不做覆盖（火球子弹 485 / 命中 537 本来不同，灵魂火符 485/530 也不同却正常）
             //   · 终点用目标 CurrentLocation（格子坐标），由 OriginMissile 内部按起点抬 60、终点脚底处理
             //   · 命中特效 new OriginEffect(effect, owner)，yOffset=0（灵魂火符就是这样），不额外抬 60
-            if (fly.sound > 0) SoundManager.PlayOriginSound(fly.sound);
+            if (fly.sound > 0)
+            {
+                SoundManager.PlayOriginSound(fly.sound);
+            }
+
             Point dest = target != null ? target.CurrentLocation : targetPoint;
             OriginMissile missile = new OriginMissile(fly.effect, this, target, dest,
                                                       flightDuration: Math.Max(1, fly.delaytime));
@@ -102,16 +131,21 @@ namespace Client.MirObjects
                 MapObject hitOwner = target ?? this;
                 missile.Complete += (o, e) =>
                 {
-                    if (hitOwner.CurrentAction == MirAction.Dead) return;
+                    if (hitOwner.CurrentAction == MirAction.Dead)
+                    {
+                        return;
+                    }
+
                     hitOwner.Effects.Add(new OriginEffect(hitEffect, hitOwner,
                                                           direction: hitDir, front: hitFront));
-                    if (hitSound > 0) SoundManager.PlaySound(hitSound);
+                    if (hitSound > 0)
+                    {
+                        SoundManager.PlaySound(hitSound);
+                    }
                 };
             }
             Effects.Add(missile);
             return true;
         }
-
-
     }
 }

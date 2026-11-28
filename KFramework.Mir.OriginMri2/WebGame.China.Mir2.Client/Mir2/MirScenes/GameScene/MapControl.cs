@@ -335,7 +335,14 @@ public sealed class MapControl : MirControl
     public static Point MouseLocation;
     public static long InputDelay;
 
+    /// <summary>
+    /// 玩家"全局动作冷却"时间戳（CMain.Time 基准）：客户端主动发起动作（走路/攻击/施法）时
+    /// 设为 CMain.Time + 延迟，期间 SetAction 会拒绝新的移动/施法动作，防止刷动作。
+    /// 与 MapObject.NextAction（对象自己的动作队列队首）是完全不同的东西，别混淆。
+    /// </summary>
     private static long nextAction;
+
+    /// <summary>MapControl.NextAction 的对外读写口；观战模式下不可写。</summary>
     public static long NextAction
     {
         get { return nextAction; }

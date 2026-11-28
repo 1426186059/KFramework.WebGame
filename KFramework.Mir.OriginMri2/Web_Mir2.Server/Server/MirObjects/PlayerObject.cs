@@ -82,6 +82,7 @@ namespace Server.MirObjects
                 return base.CanAttack && !Fishing;
             }
         }
+        /// <summary>在 HumanObject.CanCast 基础上叠加"钓鱼时不能施法"（钓鱼占用动作，但不属于战斗状态）。</summary>
         protected override bool CanCast
         {
             get
