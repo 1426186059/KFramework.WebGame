@@ -11,6 +11,7 @@ using Timer = Server.MirEnvir.Timer;
 
 namespace Server.MirObjects
 {
+    /// <summary>真实玩家：在 HumanObject 战斗能力之上叠加账号、登录/换图、社交（行会/组队/好友/婚姻）、任务、英雄、GM 等玩家专属业务。</summary>
     public partial class PlayerObject : HumanObject
     {
         private long NextTradeTime;

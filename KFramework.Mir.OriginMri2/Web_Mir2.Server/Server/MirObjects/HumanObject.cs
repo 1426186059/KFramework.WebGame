@@ -8,6 +8,7 @@ using S = ServerPackets;
 
 namespace Server.MirObjects
 {
+    /// <summary>人形战斗单位基类：玩家/英雄/人形怪共用——移动、攻击、施法、装备属性、物品栏、buff、PK、死亡复活等通用战斗逻辑。</summary>
     public partial class HumanObject : MapObject
     {
         public override ObjectType Race

@@ -1685,7 +1685,7 @@ namespace Server.MirNetwork
                 return;
             }
 
-            if (!actor.Dead && (actor.ActionTime > Envir.Time || actor.SpellTime > Envir.Time))
+            if (actor.ActionTime > Envir.Time || actor.SpellTime > Envir.Time)
             {
                 _retryList.Enqueue(p);
             }
